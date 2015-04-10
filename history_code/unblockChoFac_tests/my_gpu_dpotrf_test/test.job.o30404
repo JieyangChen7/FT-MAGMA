@@ -1,0 +1,10 @@
+GPUSize:2---Real_time:3.51609e-05---Proc_time:3.4889e-05---Total flpins:51.421---MFLOPS:1.46692
+GPUSize:4---Real_time:7.69031e-05---Proc_time:7.63652e-05---Total flpins:145.874---MFLOPS:3.74304
+GPUSize:8---Real_time:0.000141523---Proc_time:0.000137577---Total flpins:369.618---MFLOPS:7.41014
+GPUSize:16---Real_time:0.000299034---Proc_time:0.000294456---Total flpins:1193.14---MFLOPS:12.6679
+GPUSize:32---Real_time:0.000910901---Proc_time:0.000905152---Total flpins:4892.35---MFLOPS:18.7255
+GPUSize:64---Real_time:0.00353258---Proc_time:0.00352437---Total flpins:21314.8---MFLOPS:24.9955
+GPUSize:128---Real_time:0.0147453---Proc_time:0.0147298---Total flpins:92231.3---MFLOPS:31.3242
+GPUSize:256---Real_time:0.0630885---Proc_time:0.0630458---Total flpins:398588---MFLOPS:37.665
+GPUSize:512---Real_time:0.330172---Proc_time:0.330004---Total flpins:2.09016e+06---MFLOPS:44.0014
+GPUSize:1024---Real_time:2.59866---Proc_time:2.59748---Total flpins:1.64109e+07---MFLOPS:50.3171

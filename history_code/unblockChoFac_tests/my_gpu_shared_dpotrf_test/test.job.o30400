@@ -1,0 +1,10 @@
+GPU SHARED:Size:2---Real_time:3.49371e-05---Proc_time:3.47151e-05---Total flpins:65.389---MFLOPS:1.89581
+GPU SHARED:Size:4---Real_time:7.69455e-05---Proc_time:7.50654e-05---Total flpins:182.714---MFLOPS:4.81414
+GPU SHARED:Size:8---Real_time:0.000130946---Proc_time:0.000128712---Total flpins:417.72---MFLOPS:9.20404
+GPU SHARED:Size:16---Real_time:0.000277158---Proc_time:0.000274425---Total flpins:1445.96---MFLOPS:16.264
+GPU SHARED:Size:32---Real_time:0.000825367---Proc_time:0.000821693---Total flpins:5936.43---MFLOPS:24.4694
+GPU SHARED:Size:64---Real_time:0.00322815---Proc_time:0.00322225---Total flpins:26335.1---MFLOPS:32.9669
+GPU SHARED:Size:128---Real_time:0.00325929---Proc_time:0.00325302---Total flpins:26335.1---MFLOPS:32.9669
+GPU SHARED:Size:256---Real_time:0.00329714---Proc_time:0.00329019---Total flpins:26335.1---MFLOPS:32.9669
+GPU SHARED:Size:512---Real_time:0.00333841---Proc_time:0.00333059---Total flpins:26335.1---MFLOPS:32.9669
+GPU SHARED:Size:1024---Real_time:0.0033812---Proc_time:0.0033724---Total flpins:26335.1---MFLOPS:32.9669

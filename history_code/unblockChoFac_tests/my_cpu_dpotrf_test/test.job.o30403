@@ -1,0 +1,10 @@
+CPUSize:2---Real_time:4.11241e-05---Proc_time:4.0879e-05---Total flpins:55.076---MFLOPS:1.33394
+CPUSize:4---Real_time:8.40347e-05---Proc_time:8.35267e-05---Total flpins:134.3---MFLOPS:3.18522
+CPUSize:8---Real_time:0.000129509---Proc_time:0.000128681---Total flpins:386.678---MFLOPS:8.79791
+CPUSize:16---Real_time:0.000186491---Proc_time:0.000185171---Total flpins:1934.91---MFLOPS:36.3675
+CPUSize:32---Real_time:0.000308585---Proc_time:0.00030673---Total flpins:13440.3---MFLOPS:131.205
+CPUSize:64---Real_time:0.000947135---Proc_time:0.000944259---Total flpins:103001---MFLOPS:271.922
+CPUSize:128---Real_time:0.00581319---Proc_time:0.00580683---Total flpins:810601---MFLOPS:417.462
+CPUSize:256---Real_time:0.0498655---Proc_time:0.0498367---Total flpins:6.43701e+06---MFLOPS:546.229
+CPUSize:512---Real_time:0.360721---Proc_time:0.360543---Total flpins:5.13097e+07---MFLOPS:690.88
+CPUSize:1024---Real_time:4.10319---Proc_time:4.10095---Total flpins:4.09753e+08---MFLOPS:786.716

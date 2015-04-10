@@ -1,0 +1,10 @@
+GPU MAGMA:Size:2---Real_time:3.39201e-05---Proc_time:3.37451e-05---Total flpins:44.365---MFLOPS:1.30988
+GPU MAGMA:Size:4---Real_time:7.42715e-05---Proc_time:7.38175e-05---Total flpins:125.168---MFLOPS:3.3238
+GPU MAGMA:Size:8---Real_time:0.000131087---Proc_time:0.000130308---Total flpins:300.126---MFLOPS:6.42582
+GPU MAGMA:Size:16---Real_time:0.000272549---Proc_time:0.000271139---Total flpins:956.101---MFLOPS:11.0869
+GPU MAGMA:Size:32---Real_time:0.000770094---Proc_time:0.000767909---Total flpins:3651.11---MFLOPS:16.5122
+GPU MAGMA:Size:64---Real_time:0.00280834---Proc_time:0.00280434---Total flpins:15162.9---MFLOPS:22.1653
+GPU MAGMA:Size:128---Real_time:0.0113577---Proc_time:0.0113482---Total flpins:64106---MFLOPS:27.8937
+GPU MAGMA:Size:256---Real_time:0.0474849---Proc_time:0.0474565---Total flpins:271559---MFLOPS:33.639
+GPU MAGMA:Size:512---Real_time:0.212273---Proc_time:0.212166---Total flpins:1.21885e+06---MFLOPS:39.3903
+GPU MAGMA:Size:1024---Real_time:1.3662---Proc_time:1.36551---Total flpins:7.85109e+06---MFLOPS:45.1408

@@ -1,0 +1,10 @@
+CULA:Size:2---Real_time:5.48771e-05---Proc_time:5.45971e-05---Total flpins:43.2---MFLOPS:0.79701
+CULA:Size:4---Real_time:0.000111604---Proc_time:0.000110993---Total flpins:133.435---MFLOPS:2.40904
+CULA:Size:8---Real_time:0.000170888---Proc_time:0.000169898---Total flpins:453.422---MFLOPS:7.89693
+CULA:Size:16---Real_time:0.000238642---Proc_time:0.000237089---Total flpins:2325.6---MFLOPS:36.0432
+CULA:Size:32---Real_time:0.00033167---Proc_time:0.00032758---Total flpins:15127.5---MFLOPS:178.609
+CULA:Size:64---Real_time:0.00053156---Proc_time:0.000526571---Total flpins:109491---MFLOPS:654.674
+CULA:Size:128---Real_time:0.00122979---Proc_time:0.00121419---Total flpins:166028---MFLOPS:737.809
+CULA:Size:256---Real_time:0.00531234---Proc_time:0.00528941---Total flpins:275942---MFLOPS:771.366
+CULA:Size:512---Real_time:0.00804439---Proc_time:0.00801685---Total flpins:381016---MFLOPS:792.707
+CULA:Size:1024---Real_time:0.00805826---Proc_time:0.00802977---Total flpins:381016---MFLOPS:792.707

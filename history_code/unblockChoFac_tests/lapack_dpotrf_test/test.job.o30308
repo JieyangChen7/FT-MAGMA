@@ -1,0 +1,10 @@
+LAPACK:Size:2---Real_time:4.30259e-05---Proc_time:4.28329e-05---Total flpins:49.718---MFLOPS:1.17162
+LAPACK:Size:4---Real_time:8.94925e-05---Proc_time:8.90635e-05---Total flpins:178.65---MFLOPS:3.97991
+LAPACK:Size:8---Real_time:0.000141328---Proc_time:0.000140555---Total flpins:624.042---MFLOPS:12.7278
+LAPACK:Size:16---Real_time:0.000199786---Proc_time:0.00019857---Total flpins:2784.2---MFLOPS:50.4287
+LAPACK:Size:32---Real_time:0.000277266---Proc_time:0.000275455---Total flpins:16314.3---MFLOPS:228.045
+LAPACK:Size:64---Real_time:0.000433487---Proc_time:0.00043101---Total flpins:113021---MFLOPS:850.99
+LAPACK:Size:128---Real_time:0.000955999---Proc_time:0.000950018---Total flpins:852458---MFLOPS:2277.53
+LAPACK:Size:256---Real_time:0.00300794---Proc_time:0.0029869---Total flpins:6.63238e+06---MFLOPS:5117.91
+LAPACK:Size:512---Real_time:0.0126311---Proc_time:0.0125951---Total flpins:5.23334e+07---MFLOPS:9876.44
+LAPACK:Size:1024---Real_time:0.065062---Proc_time:0.0649675---Total flpins:4.15114e+08---MFLOPS:16803.8
