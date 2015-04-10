@@ -23,11 +23,7 @@
 #include<curand.h>
 #include"acml.h"
 #include"papi.h"
-//#include"cblas.h"
-//#include"lapacke.h"
-//#include"blas.h"
-//#include<cuda.h>
-//#include<cuda_runtime.h>
+
 
 #define FMULS_POTRF(__n) ((__n) * (((1. / 6.) * (__n) + 0.5) * (__n) + (1. / 3.)))
 #define FADDS_POTRF(__n) ((__n) * (((1. / 6.) * (__n)      ) * (__n) - (1. / 6.)))
