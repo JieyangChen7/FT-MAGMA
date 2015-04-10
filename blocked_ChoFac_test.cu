@@ -1,4 +1,4 @@
-/*Blocked Cholesky Factorization v1.4.
+/*Blocked Cholesky Factorization with Fault tolerance.
 *potf on CPU and dtrsm on GPU, dgemm on GPU. Compute either upper or lower. Initial data is on GPU, so transfer the data to GPU is not taken care of.
 *Jieyang Chen, University of California, Riverside
 **/
