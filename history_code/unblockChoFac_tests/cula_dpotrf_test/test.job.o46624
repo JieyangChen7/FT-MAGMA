@@ -1,0 +1,49 @@
+Result passed!
+CULA:Size:1024---Real_time:0.020289---Proc_time:0.018521---Total flpins:542117---MFLOPS:29.2704
+Result passed!
+CULA:Size:2048---Real_time:0.049141---Proc_time:0.047343---Total flpins:1.55992e+06---MFLOPS:64.5839
+Result passed!
+CULA:Size:3072---Real_time:0.123445---Proc_time:0.121591---Total flpins:3.41603e+06---MFLOPS:89.5826
+Result passed!
+CULA:Size:4096---Real_time:0.270484---Proc_time:0.268524---Total flpins:6.16487e+06---MFLOPS:108.291
+Result passed!
+CULA:Size:5120---Real_time:0.527099---Proc_time:0.52495---Total flpins:9.77704e+06---MFLOPS:122.377
+Result passed!
+CULA:Size:6144---Real_time:0.937232---Proc_time:0.934767---Total flpins:1.48651e+07---MFLOPS:134.793
+Result passed!
+CULA:Size:7168---Real_time:1.54245---Proc_time:1.53954---Total flpins:2.10678e+07---MFLOPS:145.049
+Result passed!
+CULA:Size:8192---Real_time:2.39883---Proc_time:2.3953---Total flpins:2.90726e+07---MFLOPS:154.403
+Result passed!
+CULA:Size:9216---Real_time:3.58283---Proc_time:3.57849---Total flpins:3.91919e+07---MFLOPS:162.956
+Result passed!
+CULA:Size:10240---Real_time:5.13562---Proc_time:5.13002---Total flpins:5.09799e+07---MFLOPS:170.553
+Result passed!
+CULA:Size:11264---Real_time:7.14367---Proc_time:7.13664---Total flpins:6.59092e+07---MFLOPS:177.993
+ERROR:
+Result passed!
+CULA:Size:12288---Real_time:7.14372---Proc_time:7.13669---Total flpins:6.59092e+07---MFLOPS:177.993
+ERROR:
+Result passed!
+CULA:Size:13312---Real_time:7.14376---Proc_time:7.13672---Total flpins:6.59092e+07---MFLOPS:177.993
+ERROR:
+Result passed!
+CULA:Size:14336---Real_time:7.1438---Proc_time:7.13677---Total flpins:6.59092e+07---MFLOPS:177.993
+ERROR:
+Result passed!
+CULA:Size:15360---Real_time:7.14384---Proc_time:7.13681---Total flpins:6.59092e+07---MFLOPS:177.993
+ERROR:
+Result passed!
+CULA:Size:16384---Real_time:7.14388---Proc_time:7.13685---Total flpins:6.59092e+07---MFLOPS:177.993
+ERROR:
+Result passed!
+CULA:Size:17408---Real_time:7.14392---Proc_time:7.13689---Total flpins:6.59092e+07---MFLOPS:177.993
+ERROR:
+Result passed!
+CULA:Size:18432---Real_time:7.14396---Proc_time:7.13693---Total flpins:6.59092e+07---MFLOPS:177.993
+ERROR:
+Result passed!
+CULA:Size:19456---Real_time:7.144---Proc_time:7.13697---Total flpins:6.59092e+07---MFLOPS:177.993
+ERROR:
+Result passed!
+CULA:Size:20480---Real_time:7.14404---Proc_time:7.13701---Total flpins:6.59092e+07---MFLOPS:177.993

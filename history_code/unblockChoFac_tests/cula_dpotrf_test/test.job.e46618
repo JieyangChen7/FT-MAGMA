@@ -1,0 +1,4 @@
+/var/spool/torque/mom_priv/jobs/46618.head.SC: line 0: unalias: gfortran46: not found
+/var/spool/torque/mom_priv/jobs/46618.head.SC: line 0: unalias: g++46: not found
+/var/spool/torque/mom_priv/jobs/46618.head.SC: line 0: unalias: gcc46: not found
+./a.out: error while loading shared libraries: libcula_lapack.so: cannot open shared object file: No such file or directory

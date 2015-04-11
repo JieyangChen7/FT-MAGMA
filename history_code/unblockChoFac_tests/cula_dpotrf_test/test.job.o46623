@@ -1,0 +1,10 @@
+Result passed!
+CULA:Size:1024---Real_time:0.09368---Proc_time:0.092196---Total flpins:662868---MFLOPS:7.18977
+Result passed!
+CULA:Size:2048---Real_time:0.122719---Proc_time:0.121156---Total flpins:1.70557e+06---MFLOPS:43.1947
+Result passed!
+CULA:Size:4096---Real_time:0.270747---Proc_time:0.269068---Total flpins:4.21911e+06---MFLOPS:60.1881
+Result passed!
+CULA:Size:8192---Real_time:1.12943---Proc_time:1.12706---Total flpins:1.19498e+07---MFLOPS:69.1983
+Result passed!
+CULA:Size:16384---Real_time:6.75554---Proc_time:6.74955---Total flpins:4.68889e+07---MFLOPS:75.4125

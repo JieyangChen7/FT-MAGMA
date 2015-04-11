@@ -19,17 +19,32 @@ bool resultVerify_gpu(double * realResult, double * testResult, int N, int B);
 //void printMatrix_host(double * matrix_host, int N);
 //void printMatrix_gpu(double * matrix_gpu, int N);
 
+void fillRandomDouble(int m, int n, double* a, double min, double max)
+{
+  int i, j;
 
-void test(int c, int N, int B, char uplo, float * real_time, float * proc_time, long long * flpins, float * mflops){
+  srand(1);
+
+  for (j=0; j<m; j++)
+    {
+      for (i=0; i<n; i++)
+        {
+	  a[j*n+i] = min + (max-min) * rand()/RAND_MAX;
+        }
+    }
+}
+
+void test(int N, int B, char uplo, float * real_time, float * proc_time, long long * flpins, float * mflops){
     double * matrix;
     double * result;
     double * temp = new double[N*N]();
     int info = 0;
-    cudaMalloc((void**)&matrix,N*N*sizeof(double));
-    cudaMalloc((void**)&result,N*N*sizeof(double));
-    
-    matrixGenerator_gpu(uplo, matrix, result, N, B);
-    
+    //cudaMalloc((double*)&matrix,N*N*sizeof(double));
+    //cudaMalloc((double*)&result,N*N*sizeof(double));
+    matrix = (double *) malloc(N*N*sizeof(double));
+    //matrixGenerator_gpu(uplo, matrix, result, N, B);
+    fillRandomDouble(N, N, matrix, -10.0f, 10.0f);
+
     culaInitialize();
 
     if(PAPI_flops(real_time, proc_time, flpins, mflops)<PAPI_OK){
@@ -37,8 +52,8 @@ void test(int c, int N, int B, char uplo, float * real_time, float * proc_time, 
         return;
     }
     
-    culaStatus s = culaDeviceDpotrf(uplo,N,matrix,N);
-    
+    //culaStatus s = culaDeviceDpotrf(uplo,N,matrix,N);
+    culaStatus s = culaDpotrf(uplo,N,matrix,N);
     if( s != culaNoError )
       {
 	int info;
@@ -46,7 +61,7 @@ void test(int c, int N, int B, char uplo, float * real_time, float * proc_time, 
 	info = culaGetErrorInfo();
 	culaGetErrorInfoString(s, info, buf, sizeof(buf));
 
-	//cout<<"ERROR:"<<buf<<endl;
+	cout<<"ERROR:"<<buf<<endl;
       }
    
 
@@ -55,11 +70,11 @@ void test(int c, int N, int B, char uplo, float * real_time, float * proc_time, 
         return;
     }
     
-    if(resultVerify_gpu(result,matrix,N,2)){
-      //cout<<"Result passed!"<<endl;
-    }else{
-      //cout<<"Result failed!"<<endl;
-    }
+    //    if(resultVerify_gpu(result,matrix,N,2)){
+    // cout<<"Result passed!"<<endl;
+    //}else{
+    //  cout<<"Result failed!"<<endl;
+    // }
 
     culaShutdown();
     
@@ -82,9 +97,9 @@ int main(){
     
     int TEST_NUM = 1;
     
-    for(int n=20000;n<20001;n*=2){
+    for(int n=20480;n<=20480;n+=1024){
         for(int i=0;i<TEST_NUM;i++){
-            test(0,n,2,'u',&real_time,&proc_time,&flpins,&mflops);
+            test(n,2,'u',&real_time,&proc_time,&flpins,&mflops);
             total_real_time += real_time;
             total_proc_time += proc_time;
             total_flpins += flpins;
