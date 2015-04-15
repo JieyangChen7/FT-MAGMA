@@ -188,40 +188,96 @@ bool resultVerify_gpu(double * realResult,int real_ld, double * testResult, int 
     
 }
 
-void cm1helper(double * cm1v, double * cm1,double * matrix, int ld,  int N, int B ){
-  cublasStatus_t cublasStatus;
-  cublasHandle_t handle1;
-  cublasStatus = cublasCreate(&handle1);
-  if(cublasStatus != CUBLAS_STATUS_SUCCESS)
-    cout<<"CUBLAS NOT INITIALIZED(handle1) in cm1helper"<<endl;
-  //initial the checksum vector
-  double * cm1vh = new double[B];
-  for(int i=0;i<B;i++)
-    cm1vh[i]=1;
-  cudaMemcpy(cm1v,cm1vh,B*sizeof(double),cudaMemcpyHostToDevice);
-  cout<<"checksum v1:"<<endl;
-  printVector_gpu(cm1v,B);
-
-  //start calculation using cublas
-  for(int i=0;i<N;i+=B){
-    double alpha =1;
-    cublasDgemv(handle1,
-		CUBLAS_OP_T,
-		B,
-		N,
-		&alpha,
-		matrix+i,
-		ld,
-		cm1v,
-		1,
-		&alpha,
-		cm1+(i/B)*N,
-		1);
-  }
-  cublasDestroy(handle1);
-
+double get(double * matrix, int ld, int n, int i, int j ){
+	if(i>ld||j>n) cout<<"matrix_get_error"<<endl;
+	return matrix+j*ld+i;
 }
 
+
+void dpotrfFT(int B, double * temp){
+	double * bv1=new double[B];
+	double * bv2=new double[B];
+	double * av1=new double[B];
+	double * av2=new double[B];
+	
+	for(int i=0;i<B;i++){
+		bv1[i]=1;
+		bv2[i]=i;
+		av1[i]=1;
+		av2[i]=i;
+	}
+	
+	dtrmv('L','T','N',B,temp,B,bv1,1);
+	dtrmv('L','T','N',B,temp,B,bv2,1);
+	
+	int info;
+	dpotrf('L',B,temp,B,&info);
+	
+	dtrmv('L','T','N',B,temp,B,av1,1);
+	dtrmv('L','T','N',B,temp,B,av2,1);
+	
+	for(int i=0;i<B;i++){
+		bv1[i]=bv1[i]/get(temp,B,B,i,i);
+		for(int j=i+1;j<B;j++){
+			bv1[j]=bv1[j]-bv1[i]*get(temp,B,B,j,i);
+		}
+	}
+	
+	for(int i=0;i<B;i++){
+			bv2[i]=bv2[i]/get(temp,B,B,i,i);
+			for(int j=i+1;j<B;j++){
+				bv2[j]=bv2[j]-bv2[i]*get(temp,B,B,j,i);
+			}
+	}
+	
+	//checking error to be finished
+	
+}
+
+/*
+ * m: number of row of B
+ * n: number of col of B
+ */
+
+void dtrsmFT(int m, int n, double * A, int lda, double * B, int ldb){
+	double * bv1=new double[m];
+	double * bv2=new double[m];
+	double * av1=new double[m];
+	double * av2=new double[m];
+	for(int i=0;i<B;i++){
+			bv1[i]=1;
+			bv2[i]=i;
+			av1[i]=1;
+			av2[i]=i;
+	}
+	
+	double * hA=new double[n*n];
+	double * hB=new double[m*n];
+	
+	cudaMemcpy2D(hA,n*sizeof(double),A,lda*sizeof(double),n,n,cudaMemcpyDeviceToHost);
+	cudaMemcpy2D(hB,m*sizeof(double),B,ldb*sizeof(double),m,n,cudaMemcpyDeviceToHost);
+	
+	for(int i=0;i<m;i+=n){
+		int alpha=1;
+		int beta=0;
+		dgemv('T',n,n,&alpha,hB+i,m,B,bv1+i,1,&beta,bv1+i,1);
+		dgemv('T',n,n,&alpha,hB+i,m,B,bv2+i,1,&beta,bv2+i,1);
+	}
+	
+	double alpha = 1;
+	cublasDtrsm(handle1,
+				CUBLAS_SIDE_LEFT,
+				CUBLAS_FILL_MODE_UPPER,
+				CUBLAS_OP_T,
+				CUBLAS_DIAG_NON_UNIT,
+				B,
+				N-i-B,
+				&alpha,
+				matrix+i*ld+i,
+				ld,
+				matrix+(i+B)*ld+i,
+				ld);
+}
 
 void cublasDsyrkFT(cublasHandle_t handle,
 		   cublasFillMode_t uplo,
@@ -304,28 +360,6 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,float * real_tim
   //size_t b_size_double = b_size*sizeof(double);
   //size_t ld_double = ld*sizeof(double);
   
-  //initial checksums
-  double * cm1v;
-  cudaMalloc((void**)&cm1v,B*sizeof(double));
-  double * cm1;
-  cudaMalloc((void**)&cm1,N*N/B*sizeof(double));
-   
-  //initialize cm1
-  cm1helper(cm1v, cm1, matrix, ld, N, B);
-
-    for(int i=0;i<N/B;i++)
-      printVector_gpu(cm1+i*N,N);
-  
-
-
-
-
-
-
-
-
-
-
   for(int i=0;i<N;i+=B){
         //b_size = min(B,N-i);
     	//cout<<"block size:"<<b_size<<"  ";
