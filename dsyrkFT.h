@@ -1,4 +1,19 @@
 //dsyrk with FT
+
+__global__ detectAndCorrectForSyrk(double * C, int ldc,
+		double * chksumC1, int incC1, double * chksumC2, int incC2,
+		double * chkC1, int incC1_2, double * chkC2, int incC2_2){
+	//determin the reponsisble column 
+	int col = threadIdx.x;
+	double diff = abs(*(chkC1+col*incC1_2)-*(chksumC1+col*incC1);
+	if(diff>0.1){
+		double diff2=abs(*(chkC2+col*incC2_2)-*(chksumC2+col*incC2);
+		int row = (int)round(diff2/diff);
+		*(C+row+col*ldc) += *(chksumC1+col*incC1)-*(chkC1+col*incC1_2);
+	}
+}
+
+
 /**
  * n: number of row of A
  * m: number of col of A
@@ -52,4 +67,8 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, m, n, negone, checksumA2, incA2, A, lda, one, checksumC2, incC2);
 	
 	//detect error and correct error
+	detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
+			checksumC1, incC1, checksumC2, incC2,
+			 chkC1, chk1_ld, chk2, chk2_ld);
+	
 }
