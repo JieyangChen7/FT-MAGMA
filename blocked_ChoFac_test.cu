@@ -181,89 +181,12 @@ bool resultVerify_gpu(double * realResult, int real_ld, double * testResult,
 
 }
 
-double get(double * matrix, int ld, int n, int i, int j) {
-	if (i > ld || j > n)
-		cout << "matrix_get_error" << endl;
-	return matrix + j * ld + i;
-}
 
-void dpotrfFT(int B, double * temp) {
-	double * bv1 = new double[B];
-	double * bv2 = new double[B];
-	double * av1 = new double[B];
-	double * av2 = new double[B];
 
-	for (int i = 0; i < B; i++) {
-		bv1[i] = 1;
-		bv2[i] = i;
-		av1[i] = 1;
-		av2[i] = i;
-	}
 
-	dtrmv('L', 'T', 'N', B, temp, B, bv1, 1);
-	dtrmv('L', 'T', 'N', B, temp, B, bv2, 1);
 
-	int info;
-	dpotrf('L', B, temp, B, &info);
 
-	dtrmv('L', 'T', 'N', B, temp, B, av1, 1);
-	dtrmv('L', 'T', 'N', B, temp, B, av2, 1);
 
-	for (int i = 0; i < B; i++) {
-		bv1[i] = bv1[i] / get(temp, B, B, i, i);
-		for (int j = i + 1; j < B; j++) {
-			bv1[j] = bv1[j] - bv1[i] * get(temp, B, B, j, i);
-		}
-	}
-
-	for (int i = 0; i < B; i++) {
-		bv2[i] = bv2[i] / get(temp, B, B, i, i);
-		for (int j = i + 1; j < B; j++) {
-			bv2[j] = bv2[j] - bv2[i] * get(temp, B, B, j, i);
-		}
-	}
-
-	//checking error to be finished
-
-}
-
-/*
- * m: number of row of B
- * n: number of col of B
- */
-
-void dtrsmFT(int m, int n, double * A, int lda, double * B, int ldb) {
-	double * bv1 = new double[m];
-	double * bv2 = new double[m];
-	double * av1 = new double[m];
-	double * av2 = new double[m];
-	for (int i = 0; i < B; i++) {
-		bv1[i] = 1;
-		bv2[i] = i;
-		av1[i] = 1;
-		av2[i] = i;
-	}
-
-	double * hA = new double[n * n];
-	double * hB = new double[m * n];
-
-	cudaMemcpy2D(hA, n * sizeof(double), A, lda * sizeof(double), n, n,
-			cudaMemcpyDeviceToHost);
-	cudaMemcpy2D(hB, m * sizeof(double), B, ldb * sizeof(double), m, n,
-			cudaMemcpyDeviceToHost);
-
-	for (int i = 0; i < m; i += n) {
-		int alpha = 1;
-		int beta = 0;
-		dgemv('T', n, n, &alpha, hB + i, m, B, bv1 + i, 1, &beta, bv1 + i, 1);
-		dgemv('T', n, n, &alpha, hB + i, m, B, bv2 + i, 1, &beta, bv2 + i, 1);
-	}
-
-	double alpha = 1;
-	cublasDtrsm(handle1, CUBLAS_SIDE_LEFT, CUBLAS_FILL_MODE_UPPER, CUBLAS_OP_T,
-			CUBLAS_DIAG_NON_UNIT, B, N - i - B, &alpha, matrix + i * ld + i, ld,
-			matrix + (i + B) * ld + i, ld);
-}
 
 void cublasDsyrkFT(cublasHandle_t handle, cublasFillMode_t uplo,
 		cublasOperation_t trans, int n, int k, const double * alpha,
@@ -274,33 +197,27 @@ void cublasDsyrkFT(cublasHandle_t handle, cublasFillMode_t uplo,
 
 }
 
-double * initializeChecksum(double * matrix, int ld, int N, int B, double * v) {
+double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int N, int B, double * v) {
 
-	double * v1d;
-	size_t v1d_pitch;
-	cudaMallocPitch((void**) &v1d, &v1d_pitch, B * sizeof(double), 1);
-	cudaMemcpy2DAsync(v1d, v1d_pitch, v, B * sizeof(double), B * sizeof(double),
+	double * vd;
+	size_t vd_pitch;
+	cudaMallocPitch((void**) &vd, &vd_pitch, B * sizeof(double), 1);
+	cudaMemcpy2DAsync(vd, vd_pitch, v, B * sizeof(double), B * sizeof(double),
 			1, cudaMemcpyHostToDevice);
 
 	double * chksum;
 	size_t chksum_pitch;
-	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) * sizeof(double),
-			N);
+	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) * sizeof(double), N);
 	cudaMemset2D((void*) chksum, chksum_pitch, 0, (N / B) * sizeof(double), N);
-	int chksum_ld = chksum_pitch * sizeof(double);
-
-	cublasHandle_t handle1;
-	cublasStatus = cublasCreate(&handle1);
-	if (cublasStatus != CUBLAS_STATUS_SUCCESS)
-		cout << "CUBLAS NOT INITIALIZED(handle1) in initializeChecksum "
-				<< endl;
+	int chksum_ld = chksum_pitch / sizeof(double);
 
 	double alpha = 1;
 	double beta = 0;
 	for (int i = 0; i < N; i += B) {
-		cublasDgemv(handle, CUBLAS_OP_T, N, B, &alpha, matrix + i, ld, v1d, 1,
+		cublasDgemv(handle, CUBLAS_OP_T, N, B, &alpha, matrix + i, ld, vd, 1,
 				&beta, chksum + (i / B), chksum_ld);
 	}
+	return chksum;
 
 }
 
@@ -340,39 +257,28 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	cublasStatus = cublasSetStream(handle1, stream1);
 	if (cublasStatus != CUBLAS_STATUS_SUCCESS)
 		cout << "CUBLAS SET STREAM NOT INITIALIZED(handle1) in my_dpotrf"
-				<< endl;
-
-	//cout<<"cublas initialized"<<endl;
-	//for timing
-	//cudaEvent_t start0, stop0, start1, stop1;
-	//cudaEventCreate(&start0);
-	//cudaEventCreate(&stop0);
-	//cudaEventCreate(&start1);
-	//cudaEventCreate(&stop1);
-	//cout<<"cuda event"<<endl;
-
-	//float t=0;
-	//cout<<"Inital complete"<<endl;
-
-	//cout<<"entering loop"<<endl;
-	//start the loop of calculation----------------------------
-	//b_size = B;
-	//size_t b_size_double = b_size*sizeof(double);
-	//size_t ld_double = ld*sizeof(double);    
+				<< endl;   
 
 	if (PAPI_flops(real_time, proc_time, flpins, mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
+	
+	//intialize checksum1 and checksum2
+	double * v1=new double[B];
+	double * v2=new double[B];
+	for(int i=0;i<B;i++){
+		v1[i]=1;
+		v2[i]=i;
+	}
+	double * checksum1=initializeChecksum(handle1, matrix, ld, N, B, v1);
+	double * checksum2=initializeChecksum(handle1, matrix, ld, N, B, v2);
 
-	//b_size = B;
-	//size_t b_size_double = b_size*sizeof(double);
-	//size_t ld_double = ld*sizeof(double);
-
+	
 	for (int i = 0; i < N; i += B) {
 		//b_size = min(B,N-i);
 		//cout<<"block size:"<<b_size<<"  ";
-		//double * matrix_i_ld = matrix+i*ld;
+		
 
 		if (i > 0) {
 
@@ -386,35 +292,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					ld);
 			//cudaEventRecord(stop0,stream0);
 		}
-
-		/*if(i!=0&&i+b_size<N){
-		 double alpha = -1;
-		 double beta = 1;
-		 //cudaEventRecord(start1,stream1);
-		 cublasDgemm(handle1,
-		 CUBLAS_OP_T,
-		 CUBLAS_OP_N,
-		 b_size,
-		 N-i-b_size,
-		 i,
-		 &alpha,
-		 matrix_i_ld,
-		 ld,
-		 matrix_i_b_size_ld,
-		 ld,
-		 &beta,
-		 matrix_i_b_size_ld_i,
-		 ld);
-		 //cudaEventRecord(stop1,stream1);
-		 }
-		 */
-
-		/*if(i>0){
-		 cudaEventSynchronize(stop0);
-		 cudaEventElapsedTime(&t,start0,stop0);
-		 cout<<"SYRK: "<<t<<"ms  ";
-		 }*/
-
+		
 		cudaStreamSynchronize(stream1);
 		//cudaEventRecord(start0,stream0);
 		//cudaHostAlloc((void**)&temp,b_size*b_size*sizeof(double),cudaHostAllocDefault);
