@@ -28,6 +28,7 @@
 #include"dtrsmFT.h"
 #include"dsyrkFT.h"
 #include"dgemmFT.h"
+#include"checksumGenerator.h"
 
 
 #define FMULS_POTRF(__n) ((__n) * (((1. / 6.) * (__n) + 0.5) * (__n) + (1. / 3.)))

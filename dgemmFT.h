@@ -1,15 +1,16 @@
+using namespace std;
 //dgemm with FT
 
-__global__ detectAndCorrectForGemm(double * C, int ldc, int n,
+__global__ void detectAndCorrectForGemm(double * C, int ldc, int n,
 		double * chksumC1, int incC1, double * chksumC2, int incC2,
 		double * chkC1, int incC1_2, double * chkC2, int incC2_2){
 	//determin the reponsisble column 
 	int block = blockIdx.x;
 	int col = threadIdx.x;
-	double diff = abs(*(chkC1+block+col*incC1_2)-*(chksumC1+block+col*incC1);
+	double diff = abs(*(chkC1+block+col*incC1_2)-*(chksumC1+block+col*incC1));
 	if(diff>0.1){
-		double diff2=abs(*(chkC2+block+col*incC2_2)-*(chksumC2+block+col*incC2);
-		int row = (int)round(diff2/diff);
+		double diff2=abs(*(chkC2+block+col*incC2_2)-*(chksumC2+block+col*incC2));
+		int row = (int)round(diff2/diff)-1;
 		*(C+n*block+row+col*ldc) += *(chksumC1+block+col*incC1)-*(chkC1+block+col*incC1_2);
 	}
 }
@@ -42,9 +43,9 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	int chk1_ld = chk1_pitch / sizeof(double);
 	int chk2_ld = chk2_pitch / sizeof(double);
 
-	double * v1 = new double[B];
-	double * v2 = new double[B];
-	for (int i = 0; i < B; i++) {
+	double * v1 = new double[n];
+	double * v2 = new double[n];
+	for (int i = 0; i < n; i++) {
 		v1[i] = 1;
 		v2[i] = i + 1;
 	}
@@ -75,6 +76,6 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	//error detection and error correction
 	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
 			checksumC1, incC1, checksumC2, incC2,
-			chk1, chk1_ld, chk2, chk2_ld)
+			chk1, chk1_ld, chk2, chk2_ld);
 
 }

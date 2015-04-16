@@ -1,3 +1,4 @@
+using namespace std;
 //initialize checksum
 double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int N, int B, double * v) {
 

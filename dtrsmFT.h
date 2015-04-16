@@ -1,15 +1,16 @@
+using namespace std;
 //TRSM with FT on GPU using cuBLAS
 
-__global__ detectAndCorrectForTrsm(double * B, int ldb, int n,
+__global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 		double * chksumB1, int incB1, double * chksumB2, int incB2,
 		double * chkB1, int incB1_2, double * chkB2, int incB2_2){
 	//determin the reponsisble column 
 	int block = blockIdx.x;
 	int col = threadIdx.x;
-	double diff = abs(*(chkB1+block+col*incB1_2)-*(chksumB1+block+col*incB1);
+	double diff = abs(*(chkB1+block+col*incB1_2)-*(chksumB1+block+col*incB1));
 	if(diff>0.1){
-		double diff2=abs(*(chkB2+block+col*incB2_2)-*(chksumB2+block+col*incB2);
-		int row = (int)round(diff2/diff);
+		double diff2=abs(*(chkB2+block+col*incB2_2)-*(chksumB2+block+col*incB2));
+		int row = (int)round(diff2/diff)-1;
 		*(B+n*block+row+col*ldb) += *(chksumB1+block+col*incB1)-*(chkB1+block+col*incB1_2);
 	}
 }
@@ -20,8 +21,8 @@ __global__ detectAndCorrectForTrsm(double * B, int ldb, int n,
  */
 
 void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * B, int ldb, 
-	double * chksumA1, int incA1, double * chksumA2, int incA2,
-	double * chksumB1, int incB1, double * chksumB2, int incB2) {
+	double * checksumA1, int incA1, double * checksumA2, int incA2,
+	double * checksumB1, int incB1, double * checksumB2, int incB2) {
 	
 	double alpha = 1;
 	cublasDtrsm(handle, 
@@ -43,9 +44,9 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 	int chk1_ld = chk1_pitch / sizeof(double);
 	int chk2_ld = chk2_pitch / sizeof(double);
 	
-	double * v1 = new double[B];
-	double * v2 = new double[B];
-	for (int i = 0; i < B; i++) {
+	double * v1 = new double[n];
+	double * v2 = new double[n];
+	for (int i = 0; i < n; i++) {
 			v1[i] = 1;
 			v2[i] = i+1;
 		}

@@ -1,14 +1,15 @@
+using namespace std;
 //dsyrk with FT
 
-__global__ detectAndCorrectForSyrk(double * C, int ldc,
+__global__ void detectAndCorrectForSyrk(double * C, int ldc,
 		double * chksumC1, int incC1, double * chksumC2, int incC2,
 		double * chkC1, int incC1_2, double * chkC2, int incC2_2){
 	//determin the reponsisble column 
 	int col = threadIdx.x;
-	double diff = abs(*(chkC1+col*incC1_2)-*(chksumC1+col*incC1);
+	double diff = abs(*(chkC1+col*incC1_2)-*(chksumC1+col*incC1));
 	if(diff>0.1){
-		double diff2=abs(*(chkC2+col*incC2_2)-*(chksumC2+col*incC2);
-		int row = (int)round(diff2/diff);
+		double diff2=abs(*(chkC2+col*incC2_2)-*(chksumC2+col*incC2));
+		int row = (int)round(diff2/diff)-1;
 		*(C+row+col*ldc) += *(chksumC1+col*incC1)-*(chkC1+col*incC1_2);
 	}
 }
@@ -39,9 +40,9 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	int chk1_ld = chk1_pitch / sizeof(double);
 	int chk2_ld = chk2_pitch / sizeof(double);
 		
-	double * v1 = new double[B];
-	double * v2 = new double[B];
-	for (int i = 0; i < B; i++) {
+	double * v1 = new double[n];
+	double * v2 = new double[n];
+	for (int i = 0; i < n; i++) {
 			v1[i] = 1;
 			v2[i] = i+1;
 	}

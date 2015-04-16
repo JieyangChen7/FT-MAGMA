@@ -1,3 +1,5 @@
+using namespace std;
+
 //matrix generate tools
 __global__ void matrixDiagonalizeAndScale(double * matrix, int ld, char uplo,
 		double alpha, double beta) {
