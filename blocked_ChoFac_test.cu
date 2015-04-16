@@ -22,6 +22,13 @@
 #include<curand.h>
 #include"acml.h"
 #include"papi.h"
+#include"printHelper.h"
+#include"matrixGenerator.h"
+#include"dpotrfFT.h"
+#include"dtrsmFT.h"
+#include"dsyrkFT.h"
+#include"dgemmFT.h"
+
 
 #define FMULS_POTRF(__n) ((__n) * (((1. / 6.) * (__n) + 0.5) * (__n) + (1. / 3.)))
 #define FADDS_POTRF(__n) ((__n) * (((1. / 6.) * (__n)      ) * (__n) - (1. / 6.)))
