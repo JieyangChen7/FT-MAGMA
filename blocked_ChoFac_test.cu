@@ -82,9 +82,9 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	double * checksum1=initializeChecksum(handle1, matrix, ld, N, B, v1, checksum1_pitch);
 	double * checksum2=initializeChecksum(handle1, matrix, ld, N, B, v2, checksum2_pitch);
 	cout<<"checksum1:"<<endl;
-	printMatrix_gpu(checksum1, checksum1_pitch, N);
+	printMatrix_gpu(checksum1, checksum1_pitch, N/B, N);
 	cout<<"checksum2:"<<endl;
-	printMatrix_gpu(checksum2, checksum2_pitch, N);
+	printMatrix_gpu(checksum2, checksum2_pitch, N/B, N);
 
 	double one = 1;
 	double negone = -1;
