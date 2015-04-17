@@ -8,6 +8,9 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 	cudaMemcpy2D(vd, vd_pitch, v, B*sizeof(double), B * sizeof(double),
 			1, cudaMemcpyHostToDevice);
 
+	cout<<"checksum vector on GPU:"<<endl;
+	printVector_host(vd,B);
+			
 	double * chksum;
 	//size_t chksum_pitch;
 	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) * sizeof(double), N);
@@ -19,6 +22,8 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 	for (int i = 0; i < N; i += B) {
 		cublasDgemv(handle, CUBLAS_OP_T, N, B, &alpha, matrix + i, ld, vd, 1,
 				&beta, chksum + (i / B), chksum_ld);
+		
+		printMatrix_gpu(chksum + (i / B), chksum_pitch, 1, N);
 	}
 	return chksum;
 

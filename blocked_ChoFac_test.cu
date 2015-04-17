@@ -77,6 +77,12 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		v1[i]=1;
 		v2[i]=i;
 	}
+	cout<<"checksum vector 1 on CPU:"<<endl;
+	printVector_host(v1,B);
+	cout<<"checksum vector 2 on CPU:"<<endl;
+	printVector_host(v2,B);
+	
+	
 	size_t checksum1_pitch;
 	size_t checksum2_pitch;
 	double * checksum1=initializeChecksum(handle1, matrix, ld, N, B, v1, checksum1_pitch);
