@@ -26,7 +26,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
-	cublasDsyrk(handle, 'L', CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
+	cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	
 	//recalculate checksum1 and checksum2
 	double * chk1;
@@ -49,13 +49,13 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		
 	double * v1d;
 	size_t v1d_pitch;
-	cudaMallocPitch((void**) &v1d, &v1d_pitch, B * sizeof(double), 1);
-	cudaMemcpy2D(v1d, v1d_pitch, v1, B * sizeof(double), B * sizeof(double),
+	cudaMallocPitch((void**) &v1d, &v1d_pitch, n * sizeof(double), 1);
+	cudaMemcpy2D(v1d, v1d_pitch, v1, n * sizeof(double), n * sizeof(double),
 					1, cudaMemcpyHostToDevice);
 	double * v2d;
 	size_t v2d_pitch;
-	cudaMallocPitch((void**) &v2d, &v2d_pitch, B * sizeof(double), 1);
-	cudaMemcpy2D(v2d, v2d_pitch, v2, B * sizeof(double), B * sizeof(double),
+	cudaMallocPitch((void**) &v2d, &v2d_pitch, n * sizeof(double), 1);
+	cudaMemcpy2D(v2d, v2d_pitch, v2, n * sizeof(double), n * sizeof(double),
 							1, cudaMemcpyHostToDevice);
 	
 	cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v1d, 1,
@@ -64,12 +64,12 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 							&zero, chk2, chk2_ld);
 	
 	//update checksum1 and checksum2
-	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, m, n, negone, checksumA1, incA1, A, lda, one, checksumC1, incC1);
-	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, m, n, negone, checksumA2, incA2, A, lda, one, checksumC2, incC2);
+	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, m, n, &negone, checksumA1, incA1, A, lda, &one, checksumC1, incC1);
+	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, m, n, &negone, checksumA2, incA2, A, lda, &one, checksumC2, incC2);
 	
 	//detect error and correct error
 	detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
 			checksumC1, incC1, checksumC2, incC2,
-			 chkC1, chk1_ld, chk2, chk2_ld);
+			 chk1, chk1_ld, chk2, chk2_ld);
 	
 }

@@ -52,14 +52,14 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 
 	double * v1d;
 	size_t v1d_pitch;
-	cudaMallocPitch((void**) &v1d, &v1d_pitch, B * sizeof(double), 1);
-	cudaMemcpy2D(v1d, v1d_pitch, v1, B * sizeof(double), B * sizeof(double), 1,
+	cudaMallocPitch((void**) &v1d, &v1d_pitch, n * sizeof(double), 1);
+	cudaMemcpy2D(v1d, v1d_pitch, v1, n * sizeof(double), n * sizeof(double), 1,
 			cudaMemcpyHostToDevice);
 	
 	double * v2d;
 	size_t v2d_pitch;
-	cudaMallocPitch((void**) &v2d, &v2d_pitch, B * sizeof(double), 1);
-	cudaMemcpy2D(v2d, v2d_pitch, v2, B * sizeof(double), B * sizeof(double), 1,
+	cudaMallocPitch((void**) &v2d, &v2d_pitch, n * sizeof(double), 1);
+	cudaMemcpy2D(v2d, v2d_pitch, v2, n * sizeof(double), n * sizeof(double), 1,
 			cudaMemcpyHostToDevice);
 	
 	for (int i = 0; i < m; i += n) {

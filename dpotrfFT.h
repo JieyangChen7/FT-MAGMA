@@ -3,7 +3,7 @@ using namespace std;
 double get(double * matrix, int ld, int n, int i, int j) {
 	if (i > ld || j > n)
 		cout << "matrix_get_error" << endl;
-	return matrix + j * ld + i;
+	return *(matrix + j * ld + i);
 }
 /**
  * Cholesky factorization with FT on CPU using ACML
@@ -25,7 +25,7 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	double * v2 = new double[n];
 	double * chk1 = new double[n];
 	double * chk2 = new double[n];
-	for (int i = 0; i < B; i++) {
+	for (int i = 0; i < n; i++) {
 		v1[i] = 1;
 		v2[i] = i+1;
 	}
