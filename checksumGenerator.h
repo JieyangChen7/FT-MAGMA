@@ -1,9 +1,9 @@
 using namespace std;
 //initialize checksum
-double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int N, int B, double * v) {
+double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int N, int B, double * v, size_t& vd_pitch) {
 
 	double * vd;
-	size_t vd_pitch;
+	//size_t vd_pitch;
 	cudaMallocPitch((void**) &vd, &vd_pitch, B * sizeof(double), 1);
 	cudaMemcpy2DAsync(vd, vd_pitch, v, B * sizeof(double), B * sizeof(double),
 			1, cudaMemcpyHostToDevice);
