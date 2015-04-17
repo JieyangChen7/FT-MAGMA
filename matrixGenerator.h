@@ -39,8 +39,6 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 	curandGenerateUniformDouble(gen, result, result_ld * N);
 	cudaDeviceSynchronize();
 
-	//print result
-	//printMatrix_gpu(result,result_ld*sizeof(double),N);
 	matrixDiagonalizeAndScale<<<dim3(N/B,N/B),dim3(B,B)>>>(result, result_ld, uplo, a,1);
 	cudaDeviceSynchronize();
 
@@ -60,9 +58,13 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 
 	matrixDiagonalizeAndScale<<<dim3(N/B,N/B),dim3(B,B)>>>(matrix, matrix_ld, uplo, 1.0,0);
 	cudaDeviceSynchronize();
-
+	cublasDestroy(handle);
+	
 	//print matrix
 	printMatrix_gpu(matrix, matrix_ld * sizeof(double), N);
+	//print result
+	printMatrix_gpu(result,result_ld*sizeof(double),N);
+	
 }
 
 __global__ void resultVerify_gpu_help(double * realResult, int real_ld,
@@ -80,7 +82,7 @@ bool resultVerify_gpu(double * realResult, int real_ld, double * testResult,
 	resultVerify_gpu_help<<<dim3(N/B,N/B),dim3(B,B)>>>(realResult,real_ld,testResult,test_ld,diff,N);
 
 	//printMatrix_gpu(realResult,real_ld*sizeof(double),N);
-	//printMatrix_gpu(testResult,test_ld*sizeof(double),N);
+	printMatrix_gpu(testResult,test_ld*sizeof(double),N);
 
 	double * diff_host = new double[N * N]();
 	cudaMemcpy(diff_host, diff, N * N * sizeof(double), cudaMemcpyDeviceToHost);
