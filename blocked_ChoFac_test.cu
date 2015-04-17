@@ -93,8 +93,6 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	for (int i = 0; i < N; i += B) {
 		
 		if (i > 0) {
-			double alpha = -1;
-			double beta = 1;
 			
 			cublasDsyrk(handle1, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, B, i,
 					&negone, matrix + i, ld, &one, matrix + i * ld + i,
@@ -109,9 +107,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 				cudaMemcpyDeviceToHost, stream0);
 
 		if (i != 0 && i + B < N) {
-			double alpha = -1;
-			double beta = 1;
-			                                             
+			                   
 			cublasDgemm(handle1, CUBLAS_OP_N, CUBLAS_OP_T, N - i - B, B, i,
 					&negone, matrix + (i + B), ld, matrix + i, ld,
 					&one, matrix + i * ld + (i + B), ld);
@@ -127,8 +123,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//update B                                                                      
 		if (i + B < N) {
 			cudaStreamSynchronize(stream0);
-			double alpha = 1;
-			
+		
 			cublasDtrsm(handle1, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
 					CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, N - i - B, B,  &one,
 					matrix + i * ld + i, ld, matrix + i * ld + i + B, ld);
