@@ -75,7 +75,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	double * v2=new double[B];
 	for(int i=0;i<B;i++){
 		v1[i]=1;
-		v2[i]=i;
+		v2[i]=i+1;
 	}
 	cout<<"checksum vector 1 on CPU:"<<endl;
 	printVector_host(v1,B);

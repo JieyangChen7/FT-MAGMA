@@ -9,7 +9,7 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 			1, cudaMemcpyHostToDevice);
 
 	cout<<"checksum vector on GPU:"<<endl;
-	printVector_host(vd,B);
+	printVector_gpu(vd,B);
 			
 	double * chksum;
 	//size_t chksum_pitch;
