@@ -9,7 +9,7 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 			1, cudaMemcpyHostToDevice);
 
 	double * chksum;
-	size_t chksum_pitch;
+	//size_t chksum_pitch;
 	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) * sizeof(double), N);
 	cudaMemset2D((void*) chksum, chksum_pitch, 0, (N / B) * sizeof(double), N);
 	int chksum_ld = chksum_pitch / sizeof(double);
