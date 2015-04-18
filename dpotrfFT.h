@@ -16,9 +16,30 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * inc2: stride between elememts in chksum2
  */
 void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * chksum2, int inc2 ) {
+	double * v1 = new double[n];
+	double * v2 = new double[n];
+	for (int i = 0; i < n; i++) {
+			v1[i] = 1;
+			v2[i] = i+1;
+	}
+	
+	double * fullA = new double[n*n];
+	for(int i=0;i<n;i++){
+		for(int j=i;j<n;j++){
+			*(fullA+i*lda+j) = *(A+i*lda+j)
+			*(fullA+j*lda+i) = *(A+i*lda+j)
+		}
+	}
+	
+	double alpha = 1;
+	double beta = 0;
+	dgemv('T', n, n, alpha, fullA, lda, v1, 1, beta, chksum1, 1);
+	dgemv('T', n, n, alpha, fullA, lda, v2, 1, beta, chksum2, 1);
+	delete[] fullA;
 	
 	//do Choleksy factorization
 	int info;
+	
 	dpotrf('L', n, A, n, &info);
 	
 	cout<<"checksum on CPU before factorization:"<<endl;
@@ -26,16 +47,9 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	printVector_host(chksum2, n);
 	
 	//recalculate checksum1 and checksum2
-	double * v1 = new double[n];
-	double * v2 = new double[n];
+	
 	double * chk1 = new double[n];
 	double * chk2 = new double[n];
-	for (int i = 0; i < n; i++) {
-		v1[i] = 1;
-		v2[i] = i+1;
-	}
-	double alpha = 1;
-	double beta = 0;
 	dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
 	dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
 
@@ -70,7 +84,7 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 			double diff2 = abs(chk2[i]-chksum2[i]);
 			int j=(int)round(diff2/diff)-1;
 			//correct error
-			*(A+i*n+j) += chksum1[i] - chk1[i];
+			*(A+i*lda+j) += chksum1[i] - chk1[i];
 		}
 	}
 	

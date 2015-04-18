@@ -56,7 +56,7 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 	}
 	cudaDeviceSynchronize();
 
-	//matrixDiagonalizeAndScale<<<dim3(N/B,N/B),dim3(B,B)>>>(matrix, matrix_ld, uplo, 1.0,0);
+	matrixDiagonalizeAndScale<<<dim3(N/B,N/B),dim3(B,B)>>>(matrix, matrix_ld, uplo, 1.0,0);
 	cudaDeviceSynchronize();
 	cublasDestroy(handle);
 	
