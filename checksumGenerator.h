@@ -22,7 +22,9 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 	for (int i = 0; i < N; i += B) {
 		cublasDgemv(handle, CUBLAS_OP_T, B, N, &alpha, matrix + i, ld, vd, 1,
 				&beta, chksum + (i / B), chksum_ld);
-		
+		cout<<"i="<<i<<endl;
+		printMatrix_gpu(matrix+i,ld*sizeof(double),B,N);
+		printVector_gpu(vd,B);
 		printMatrix_gpu(chksum + (i / B), chksum_pitch, 1, N);
 	}
 	return chksum;
