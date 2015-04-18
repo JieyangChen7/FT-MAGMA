@@ -6,7 +6,7 @@ void printMatrix_host(double * matrix_host, int M, int N) {
 		for (int j = 0; j < N; j++) {
 			cout.width(5);
 			cout.setf(ios::left);
-			cout << matrix_host[j * N + i];
+			cout << matrix_host[j * M + i];
 		}
 		cout << endl;
 	}
@@ -20,7 +20,7 @@ void printMatrix_gpu(double * matrix_device, size_t matrix_pitch, int M, int N) 
 	double * matrix_host = new double[M * N]();
 	cudaMemcpy2D(matrix_host, M * sizeof(double), matrix_device, matrix_pitch,
 			M * sizeof(double), N, cudaMemcpyDeviceToHost);
-	printMatrix_host(matrix_host, N, M);
+	printMatrix_host(matrix_host, M, N);
 	delete[] matrix_host;
 }
 
