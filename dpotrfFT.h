@@ -26,8 +26,8 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	double * fullA = new double[n*n];
 	for(int i=0;i<n;i++){
 		for(int j=i;j<n;j++){
-			*(fullA+i*lda+j) = *(A+i*lda+j)
-			*(fullA+j*lda+i) = *(A+i*lda+j)
+			*(fullA+i*lda+j) = *(A+i*lda+j);
+			*(fullA+j*lda+i) = *(A+i*lda+j);
 		}
 	}
 	
