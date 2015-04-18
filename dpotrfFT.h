@@ -16,9 +16,14 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * inc2: stride between elememts in chksum2
  */
 void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * chksum2, int inc2 ) {
+	
 	//do Choleksy factorization
 	int info;
 	dpotrf('L', n, A, n, &info);
+	
+	cout<<"checksum on CPU before factorization:"<<endl;
+	printVector_host(chksum1, n);
+	printVector_host(chksum2, n);
 	
 	//recalculate checksum1 and checksum2
 	double * v1 = new double[n];
@@ -34,6 +39,10 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
 	dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
 
+	cout<<"recalcuated checksum on CPU after factorization:"<<endl;
+	printVector_host(chk1, n);
+	printVector_host(chk2, n);
+	
 	//update checksum1 and checksum2
 	for (int i = 0; i < n; i++) {
 		chksum1[i] = chksum1[i] / get(A, n, n, i, i);
@@ -48,6 +57,10 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 			chksum2[j] = chksum2[j] - chksum2[i] * get(A, n, n, j, i);
 		}
 	}
+	
+	cout<<"updated checksum on CPU after factorization:"<<endl;
+	printVector_host(chksum1, n);
+	printVector_host(chksum2, n);
 
 	//checking error to be finished
 	for(int i=0;i<n;i++){
