@@ -119,10 +119,10 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		double * chk1 = new double[B];
 		double * chk2 = new double[B];
 		cudaMemcpy2DAsync(chk1, 1 * sizeof(double), checksum1 + (i/B) + i*checksum1_ld,
-				checksum1_ld, 1 * sizeof(double), B,
+				checksum1_pitch, 1 * sizeof(double), B,
 				cudaMemcpyDeviceToHost, stream0);
 		cudaMemcpy2DAsync(chk2, 1 * sizeof(double), checksum2 + (i/B) + i*checksum2_ld,
-				checksum2_ld, 1 * sizeof(double), B,
+				checksum2_pitch, 1 * sizeof(double), B,
 				cudaMemcpyDeviceToHost, stream0);
 		
 		if (i != 0 && i + B < N) {
@@ -143,10 +143,10 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
 				B * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
-		cudaMemcpy2DAsync(checksum1 + (i/B) + i*checksum1_ld,checksum1_ld, chk1, 1 * sizeof(double), 
+		cudaMemcpy2DAsync(checksum1 + (i/B) + i*checksum1_ld,checksum1_pitch, chk1, 1 * sizeof(double), 
 				1 * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
-		cudaMemcpy2DAsync(checksum2 + (i/B) + i*checksum2_ld,checksum2_ld, chk2, 1 * sizeof(double), 
+		cudaMemcpy2DAsync(checksum2 + (i/B) + i*checksum2_ld,checksum2_pitch, chk2, 1 * sizeof(double), 
 				1 * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
 		
