@@ -61,9 +61,9 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 	cublasDestroy(handle);
 	
 	//print matrix
-	printMatrix_gpu(matrix, matrix_ld * sizeof(double),N, N);
+	//printMatrix_gpu(matrix, matrix_ld * sizeof(double),N, N);
 	//print result
-	printMatrix_gpu(result,result_ld*sizeof(double),N,N);
+	//printMatrix_gpu(result,result_ld*sizeof(double),N,N);
 	
 }
 
@@ -82,7 +82,7 @@ bool resultVerify_gpu(double * realResult, int real_ld, double * testResult,
 	resultVerify_gpu_help<<<dim3(N/B,N/B),dim3(B,B)>>>(realResult,real_ld,testResult,test_ld,diff,N);
 
 	//printMatrix_gpu(realResult,real_ld*sizeof(double),N);
-	printMatrix_gpu(testResult,test_ld*sizeof(double),N,N);
+	//printMatrix_gpu(testResult,test_ld*sizeof(double),N,N);
 
 	double * diff_host = new double[N * N]();
 	cudaMemcpy(diff_host, diff, N * N * sizeof(double), cudaMemcpyDeviceToHost);
