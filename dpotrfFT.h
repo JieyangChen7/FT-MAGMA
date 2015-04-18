@@ -55,9 +55,9 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
 	dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
 
-	//cout<<"recalcuated checksum on CPU after factorization:"<<endl;
-	//printVector_host(chk1, n);
-	//printVector_host(chk2, n);
+	cout<<"recalcuated checksum on CPU after factorization:"<<endl;
+	printVector_host(chk1, n);
+	printVector_host(chk2, n);
 	
 	//update checksum1 and checksum2
 	for (int i = 0; i < n; i++) {
@@ -74,9 +74,9 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 		}
 	}
 	
-	//cout<<"updated checksum on CPU after factorization:"<<endl;
-	//printVector_host(chksum1, n);
-	//printVector_host(chksum2, n);
+	cout<<"updated checksum on CPU after factorization:"<<endl;
+	printVector_host(chksum1, n);
+	printVector_host(chksum2, n);
 
 	//checking error to be finished
 	for(int i=0;i<n;i++){
