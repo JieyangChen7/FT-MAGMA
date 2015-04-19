@@ -156,11 +156,12 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//update B                                                                      
 		if (i + B < N) {
 			cudaStreamSynchronize(stream0);
-		
-			cublasDtrsm(handle1, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
+			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld, matrix + i * ld + i + B, ld, 
+				checksum1+(i+B)/B+i*checksum1_ld, checksum1_ld, checksum2+(i+B)/B+i*checksum2_ld, checksum2_ld);
+			/*cublasDtrsm(handle1, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
 					CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, N - i - B, B,  &one,
 					matrix + i * ld + i, ld, matrix + i * ld + i + B, ld);
-	
+			*/
 		}
 
 	}
