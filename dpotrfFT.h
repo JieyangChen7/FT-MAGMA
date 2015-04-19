@@ -42,7 +42,7 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	
 	dpotrf('L', n, A, n, &info);
 	
-	*(A+1)=5;
+	
 	
 	//cout<<"checksum on CPU before factorization:"<<endl;
 	//printVector_host(chksum1, n);
