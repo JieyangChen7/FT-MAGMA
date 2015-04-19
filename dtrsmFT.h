@@ -79,6 +79,9 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 	cout<<"recalculated checksum2 of B after dtrsm:"<<endl;
 	printMatrix_gpu(chk2,chk2_pitch,m/n,n);
 	
+	cout<<"matrix A:"<<endl;
+	printMatrix_gpu(A,lda*sizeof(double),n,n);
+	
 	//update checksum1 and checksum2
 	cublasDtrsm(handle, 
 				CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, 
@@ -92,6 +95,10 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 				m/n, n, &alpha, 
 				A, lda,
 				checksumB2, incB2);
+	
+	cudaStream_t stream1;
+	cublasGetStream(handle, &stream1);
+	udaStreamSynchronize(stream1);
 	
 	cout<<"updated checksum1 of B after dtrsm:"<<endl;
 	printMatrix_gpu(checksumB1,incB1*sizeof(double),m/n,n);
