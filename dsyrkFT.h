@@ -29,7 +29,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	cout<<"checksum2 of A before dsyrk:"<<endl;
 	printMatrix_gpu(checksumA2, incA2*sizeof(double), 1,m);
 	
-	out<<"checksum1 of C before dsyrk:"<<endl;
+	cout<<"checksum1 of C before dsyrk:"<<endl;
 	printMatrix_gpu(checksumC1, incC1*sizeof(double), 1,n);
 	cout<<"checksum2 of C before dsyrk:"<<endl;
 	printMatrix_gpu(checksumC2, incC2*sizeof(double), 1,n);
