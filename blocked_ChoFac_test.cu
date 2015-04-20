@@ -104,11 +104,15 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		printMatrix_gpu(checksum2, checksum2_pitch, N/B, N);
 		
 		if (i > 0) {
+			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
+					checksum1+i/B, checksum1_ld, checksum2+i/B, checksum2_ld,
+					checksum1 + (i/B) + i*checksum1_ld,checksum1_pitch, 
+					checksum2 + (i/B) + i*checksum2_ld,checksum2_pitch);
 			
-			cublasDsyrk(handle1, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, B, i,
+			/*cublasDsyrk(handle1, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, B, i,
 					&negone, matrix + i, ld, &one, matrix + i * ld + i,
 					ld);
-			
+			*/
 		}
 		
 		cudaStreamSynchronize(stream1);
@@ -127,11 +131,18 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 				cudaMemcpyDeviceToHost, stream0);
 		*/
 		if (i != 0 && i + B < N) {
-			                   
-			cublasDgemm(handle1, CUBLAS_OP_N, CUBLAS_OP_T, N - i - B, B, i,
+			
+			dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld,
+					matrix + i, ld, matrix + i * ld + (i + B), ld,
+					checksum1+(i + B)/B, checksum1_ld, 
+					checksum2+(i + B)/B, checksum2_ld, 
+					checksum1 + i * checksum1_ld + (i + B)/B, checksum1_ld,
+					checksum2 + i * checksum2_ld + (i + B)/B, checksum2_ld);
+			
+			/*cublasDgemm(handle1, CUBLAS_OP_N, CUBLAS_OP_T, N - i - B, B, i,
 					&negone, matrix + (i + B), ld, matrix + i, ld,
 					&one, matrix + i * ld + (i + B), ld);
-			                                                
+			 */                                               
 		}
 		cudaStreamSynchronize(stream0);
 		
