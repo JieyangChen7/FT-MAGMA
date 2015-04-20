@@ -84,7 +84,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, m, n, &negone, checksumA1, incA1, A, lda, &one, checksumC1, incC1);
 	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, m, n, &negone, checksumA2, incA2, A, lda, &one, checksumC2, incC2);
 	
-	out<<"updated checksum1 of C after dsyrk:"<<endl;
+	cout<<"updated checksum1 of C after dsyrk:"<<endl;
 	printMatrix_gpu(checksumC1, incC1*sizeof(double), 1,n);
 	cout<<"updated checksum2 of C after dsyrk:"<<endl;
 	printMatrix_gpu(checksumC2, incC2*sizeof(double), 1,n);
