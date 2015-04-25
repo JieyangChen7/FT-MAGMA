@@ -16,6 +16,8 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * inc2: stride between elememts in chksum2
  */
 void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * chksum2, int inc2 ) {
+	double alpha = 1;
+	double beta = 0;
 	double * v1 = new double[n];
 	double * v2 = new double[n];
 	for (int i = 0; i < n; i++) {
@@ -31,8 +33,7 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 		}
 	}
 	
-	double alpha = 1;
-	double beta = 0;
+	
 	dgemv('T', n, n, alpha, fullA, lda, v1, 1, beta, chksum1, 1);
 	dgemv('T', n, n, alpha, fullA, lda, v2, 1, beta, chksum2, 1);
 	delete[] fullA;
