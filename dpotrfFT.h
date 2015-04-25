@@ -44,10 +44,10 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	
 	
 	
-	cout<<"checksum on CPU before factorization:"<<endl;
+	/*cout<<"checksum on CPU before factorization:"<<endl;
 	printVector_host(chksum1, n);
 	printVector_host(chksum2, n);
-	
+	*/
 	//recalculate checksum1 and checksum2
 	
 	double * chk1 = new double[n];
@@ -83,6 +83,7 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 		double diff = abs(chk1[i]-chksum1[i]);
 		if(diff>0.1){//error detected
 			//determine position
+			cout<<"Error detected in dpotrf"<<endl;
 			double diff2 = abs(chk2[i]-chksum2[i]);
 			int j=(int)round(diff2/diff)-1;
 			//correct error

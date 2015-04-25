@@ -87,8 +87,8 @@ bool resultVerify_gpu(double * realResult, int real_ld, double * testResult,
 	double * diff_host = new double[N * N]();
 	cudaMemcpy(diff_host, diff, N * N * sizeof(double), cudaMemcpyDeviceToHost);
 	//  printMatrix(diff_host,N);
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
+	for (int j = 0; j < N; j++) {
+		for (int i = 0; i < j+1; i++) {
 			if (abs(diff_host[i * N + j]) > 1e-3) {
 				//  cout<<"diff:"<<abs(diff_host[i*N+j])<<endl;
 				delete[] diff_host;
