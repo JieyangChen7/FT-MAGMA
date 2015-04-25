@@ -77,11 +77,11 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		v1[i]=1;
 		v2[i]=i+1;
 	}
-	cout<<"checksum vector 1 on CPU:"<<endl;
+	/*cout<<"checksum vector 1 on CPU:"<<endl;
 	printVector_host(v1,B);
 	cout<<"checksum vector 2 on CPU:"<<endl;
 	printVector_host(v2,B);
-	
+	*/
 	
 	size_t checksum1_pitch;
 	size_t checksum2_pitch;
@@ -99,14 +99,14 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	for (int i = 0; i < N; i += B) {
 		
 		
-		cout<<"i="<<i<<endl;
+		/*cout<<"i="<<i<<endl;
 		cout<<"matrix:"<<endl;
 		printMatrix_gpu(matrix, ld*sizeof(double), N, N);
 		cout<<"checksum1:"<<endl;
 		printMatrix_gpu(checksum1, checksum1_pitch, N/B, N);
 		cout<<"checksum2:"<<endl;
 		printMatrix_gpu(checksum2, checksum2_pitch, N/B, N);
-		
+		*/
 		if (i > 0) {
 			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
 					checksum1+i/B, checksum1_ld, checksum2+i/B, checksum2_ld,
@@ -228,7 +228,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 
 int main(int argc, char**argv) {
 
-	int TEST_NUM = 1;
+	int TEST_NUM = 10;
 	int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
 	int b = 256;
 	for (int k = 0; k < 1; k++) {
