@@ -90,8 +90,8 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	printMatrix_gpu(checksumC2, incC2*sizeof(double), 1,n);
 	
 	//detect error and correct error
-	/*detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
+	detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
 			checksumC1, incC1, checksumC2, incC2,
 			 chk1, chk1_ld, chk2, chk2_ld);
-	*/
+	
 }

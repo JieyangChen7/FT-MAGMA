@@ -100,8 +100,8 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	printMatrix_gpu(checksumC2, incC2*sizeof(double), m/n,n);
 	
 	//error detection and error correction
-	/*detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
+	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
 			checksumC1, incC1, checksumC2, incC2,
 			chk1, chk1_ld, chk2, chk2_ld);
-	*/
+	
 }
