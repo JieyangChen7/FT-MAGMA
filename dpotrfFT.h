@@ -25,28 +25,15 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 			v2[i] = i+1;
 	}
 	
-	/*double * fullA = new double[n*n];
-	for(int i=0;i<n;i++){
-		for(int j=i;j<n;j++){
-			*(fullA+i*lda+j) = *(A+i*lda+j);
-			*(fullA+j*lda+i) = *(A+i*lda+j);
-		}
-	}
-	
-	
-	dgemv('T', n, n, alpha, fullA, lda, v1, 1, beta, chksum1, 1);
-	dgemv('T', n, n, alpha, fullA, lda, v2, 1, beta, chksum2, 1);
-	delete[] fullA;
-	*/
-	cout<<"matrix A before dpotrf:"<<endl;
-	printMatrix_host(A,n,n);
+	//cout<<"matrix A before dpotrf:"<<endl;
+	//printMatrix_host(A,n,n);
 	
 	//do Choleksy factorization
 	int info;
 	dpotrf('L', n, A, n, &info);
 	
-	cout<<"matrix A after dpotrf:"<<endl;
-	printMatrix_host(A,n,n);
+	//cout<<"matrix A after dpotrf:"<<endl;
+	//printMatrix_host(A,n,n);
 	
 	/*cout<<"checksum on CPU before factorization:"<<endl;
 	printVector_host(chksum1, n);
@@ -59,9 +46,9 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
 	dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
 
-	cout<<"recalcuated checksum on CPU after factorization:"<<endl;
-	printVector_host(chk1, n);
-	printVector_host(chk2, n);
+	//cout<<"recalcuated checksum on CPU after factorization:"<<endl;
+	//printVector_host(chk1, n);
+	//printVector_host(chk2, n);
 	
 	//update checksum1 and checksum2
 	for (int i = 0; i < n; i++) {
@@ -78,12 +65,12 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 		}
 	}
 	
-	cout<<"updated checksum on CPU after factorization:"<<endl;
-	printVector_host(chksum1, n);
-	printVector_host(chksum2, n);
+	//cout<<"updated checksum on CPU after factorization:"<<endl;
+	//printVector_host(chksum1, n);
+	//printVector_host(chksum2, n);
 
 	//checking error to be finished
-	for(int i=0;i<n;i++){
+	/*for(int i=0;i<n;i++){
 		double diff = abs(chk1[i]-chksum1[i]);
 		if(diff>0.1){//error detected
 			//determine position
@@ -94,5 +81,6 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 			*(A+i*lda+j) += chksum1[i] - chk1[i];
 		}
 	}
+	*/
 	
 }
