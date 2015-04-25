@@ -37,12 +37,16 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	dgemv('T', n, n, alpha, fullA, lda, v2, 1, beta, chksum2, 1);
 	delete[] fullA;
 	
+	cout<<"matrix A before dpotrf:"<<endl;
+	printMatrix_host(A,n,n);
+	
 	//do Choleksy factorization
 	int info;
 	
 	dpotrf('L', n, A, n, &info);
 	
-	
+	cout<<"matrix A after dpotrf:"<<endl;
+	printMatrix_host(A,n,n);
 	
 	/*cout<<"checksum on CPU before factorization:"<<endl;
 	printVector_host(chksum1, n);
