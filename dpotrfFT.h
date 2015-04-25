@@ -23,7 +23,7 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 			v2[i] = i+1;
 	}
 	
-	double * fullA = new double[n*n];
+	/*double * fullA = new double[n*n];
 	for(int i=0;i<n;i++){
 		for(int j=i;j<n;j++){
 			*(fullA+i*lda+j) = *(A+i*lda+j);
@@ -36,13 +36,12 @@ void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * c
 	dgemv('T', n, n, alpha, fullA, lda, v1, 1, beta, chksum1, 1);
 	dgemv('T', n, n, alpha, fullA, lda, v2, 1, beta, chksum2, 1);
 	delete[] fullA;
-	
+	*/
 	cout<<"matrix A before dpotrf:"<<endl;
 	printMatrix_host(A,n,n);
 	
 	//do Choleksy factorization
 	int info;
-	
 	dpotrf('L', n, A, n, &info);
 	
 	cout<<"matrix A after dpotrf:"<<endl;

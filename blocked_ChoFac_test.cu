@@ -127,13 +127,13 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		double * chk1 = new double[B];
 		double * chk2 = new double[B];
 		
-		/*cudaMemcpy2DAsync(chk1, 1 * sizeof(double), checksum1 + (i/B) + i*checksum1_ld,
+		cudaMemcpy2DAsync(chk1, 1 * sizeof(double), checksum1 + (i/B) + i*checksum1_ld,
 				checksum1_pitch, 1 * sizeof(double), B,
 				cudaMemcpyDeviceToHost, stream0);
 		cudaMemcpy2DAsync(chk2, 1 * sizeof(double), checksum2 + (i/B) + i*checksum2_ld,
 				checksum2_pitch, 1 * sizeof(double), B,
 				cudaMemcpyDeviceToHost, stream0);
-		*/
+		
 		if (i != 0 && i + B < N) {
 			
 			dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld,
