@@ -24,6 +24,9 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * B, int ldb, 
 	double * checksumB1, int incB1, double * checksumB2, int incB2) {
 	
+	cout<<"matrix A before dtrsm:"<<endl;
+	printMatrix_gpu(A,lda*sizeof(double),n,n);
+	
 	cout<<"checksum1 of B before dtrsm:"<<endl;
 	printMatrix_gpu(checksumB1,incB1*sizeof(double),m/n,n);
 	cout<<"checksum2 of B before dtrsm:"<<endl;
@@ -37,6 +40,9 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 			m, n, &alpha, 
 			A, lda,
 			B, ldb);
+	
+	cout<<"matrix A after dtrsm:"<<endl;
+	printMatrix_gpu(A,lda*sizeof(double),n,n);
 	
 	//recalculate checksum1 and checksum2
 	double * chk1;
@@ -80,8 +86,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 	cout<<"recalculated checksum2 of B after dtrsm:"<<endl;
 	printMatrix_gpu(chk2,chk2_pitch,m/n,n);
 	
-	cout<<"matrix A:"<<endl;
-	printMatrix_gpu(A,lda*sizeof(double),n,n);
+	
 	
 	//update checksum1 and checksum2
 	cublasDtrsm(handle, 
