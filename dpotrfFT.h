@@ -18,13 +18,13 @@ double get(double * matrix, int ld, int n, int i, int j) {
 void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * chksum2, int inc2, double * v1, double v2 ) {
 	double alpha = 1;
 	double beta = 0;
-	double * v1 = new double[n];
+	/*double * v1 = new double[n];
 	double * v2 = new double[n];
 	for (int i = 0; i < n; i++) {
 			v1[i] = 1;
 			v2[i] = i+1;
 	}
-	
+	*/
 	//cout<<"matrix A before dpotrf:"<<endl;
 	//printMatrix_host(A,n,n);
 	
