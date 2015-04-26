@@ -77,6 +77,18 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		v1[i]=1;
 		v2[i]=i+1;
 	}
+	
+	double * v1d;
+	size_t v1d_pitch;
+	cudaMallocPitch((void**) &v1d, &v1d_pitch, n * sizeof(double), 1);
+	cudaMemcpy2D(v1d, v1d_pitch, v1, n * sizeof(double), n * sizeof(double),
+						1, cudaMemcpyHostToDevice);
+	double * v2d;
+	size_t v2d_pitch;
+	cudaMallocPitch((void**) &v2d, &v2d_pitch, n * sizeof(double), 1);
+	cudaMemcpy2D(v2d, v2d_pitch, v2, n * sizeof(double), n * sizeof(double),
+								1, cudaMemcpyHostToDevice);
+	
 	/*cout<<"checksum vector 1 on CPU:"<<endl;
 	printVector_host(v1,B);
 	cout<<"checksum vector 2 on CPU:"<<endl;
@@ -85,8 +97,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	
 	size_t checksum1_pitch;
 	size_t checksum2_pitch;
-	double * checksum1=initializeChecksum(handle1, matrix, ld, N, B, v1, checksum1_pitch);
-	double * checksum2=initializeChecksum(handle1, matrix, ld, N, B, v2, checksum2_pitch);
+	double * checksum1=initializeChecksum(handle1, matrix, ld, N, B, v1d, checksum1_pitch);
+	double * checksum2=initializeChecksum(handle1, matrix, ld, N, B, v2d, checksum2_pitch);
 	int checksum1_ld = checksum1_pitch/sizeof(double);
 	int checksum2_ld = checksum2_pitch/sizeof(double);
 	
@@ -111,7 +123,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
 					checksum1+i/B, checksum1_ld, checksum2+i/B, checksum2_ld,
 					checksum1 + (i/B) + i*checksum1_ld,checksum1_ld, 
-					checksum2 + (i/B) + i*checksum2_ld,checksum2_ld);
+					checksum2 + (i/B) + i*checksum2_ld,checksum2_ld,
+					v1d, v2d);
 			
 			/*cublasDsyrk(handle1, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, B, i,
 					&negone, matrix + i, ld, &one, matrix + i * ld + i,
@@ -141,7 +154,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum1+(i + B)/B, checksum1_ld, 
 					checksum2+(i + B)/B, checksum2_ld, 
 					checksum1 + i * checksum1_ld + (i + B)/B, checksum1_ld,
-					checksum2 + i * checksum2_ld + (i + B)/B, checksum2_ld);
+					checksum2 + i * checksum2_ld + (i + B)/B, checksum2_ld,
+					v1d, v2d);
 			
 			/*cublasDgemm(handle1, CUBLAS_OP_N, CUBLAS_OP_T, N - i - B, B, i,
 					&negone, matrix + (i + B), ld, matrix + i, ld,
@@ -152,7 +166,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		//int info;
 		//dpotrf('L', B, temp, B, &info);
-		dpotrfFT(temp, B, B, chk1, 1, chk2, 1);
+		dpotrfFT(temp, B, B, chk1, 1, chk2, 1, v1, v2);
 		
 		
 		
@@ -172,7 +186,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		if (i + B < N) {
 			cudaStreamSynchronize(stream0);
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld, matrix + i * ld + i + B, ld, 
-				checksum1+(i+B)/B+i*checksum1_ld, checksum1_ld, checksum2+(i+B)/B+i*checksum2_ld, checksum2_ld);
+				checksum1+(i+B)/B+i*checksum1_ld, checksum1_ld, checksum2+(i+B)/B+i*checksum2_ld, checksum2_ld,
+				v1d, v2d);
 			/*cublasDtrsm(handle1, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
 					CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, N - i - B, B,  &one,
 					matrix + i * ld + i, ld, matrix + i * ld + i + B, ld);

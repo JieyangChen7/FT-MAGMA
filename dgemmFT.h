@@ -24,7 +24,8 @@ __global__ void detectAndCorrectForGemm(double * C, int ldc, int n,
 void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		double * B, int ldb, double * C, int ldc, double * checksumA1,
 		int incA1, double * checksumA2, int incA2, double * checksumC1,
-		int incC1, double * checksumC2, int incC2) {
+		int incC1, double * checksumC2, int incC2,
+		double * v1d, double * v2d) {
 
 	/*cout<<"checksum1 of A before dgemm:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), m/n,k);
@@ -54,7 +55,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	int chk1_ld = chk1_pitch / sizeof(double);
 	int chk2_ld = chk2_pitch / sizeof(double);
 
-	double * v1 = new double[n];
+	/*double * v1 = new double[n];
 	double * v2 = new double[n];
 	for (int i = 0; i < n; i++) {
 		v1[i] = 1;
@@ -72,7 +73,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	cudaMallocPitch((void**) &v2d, &v2d_pitch, n * sizeof(double), 1);
 	cudaMemcpy2D(v2d, v2d_pitch, v2, n * sizeof(double), n * sizeof(double), 1,
 			cudaMemcpyHostToDevice);
-	
+	*/
 	for (int i = 0; i < m; i += n) {
 		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, v1d, 1,
 				&zero, chk1 + (i / n), chk1_ld);

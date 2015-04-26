@@ -22,7 +22,8 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
  */
 
 void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * B, int ldb, 
-	double * checksumB1, int incB1, double * checksumB2, int incB2) {
+	double * checksumB1, int incB1, double * checksumB2, int incB2,
+	double * v1d, double * v2d) {
 	
 	/*cout<<"matrix A before dtrsm:"<<endl;
 	printMatrix_gpu(A,lda*sizeof(double),n,n);
@@ -56,7 +57,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 	int chk1_ld = chk1_pitch / sizeof(double);
 	int chk2_ld = chk2_pitch / sizeof(double);
 	
-	double * v1 = new double[n];
+	/*double * v1 = new double[n];
 	double * v2 = new double[n];
 	for (int i = 0; i < n; i++) {
 			v1[i] = 1;
@@ -73,6 +74,8 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 	cudaMallocPitch((void**) &v2d, &v2d_pitch, n * sizeof(double), 1);
 	cudaMemcpy2D(v2d, v2d_pitch, v2, n * sizeof(double), n * sizeof(double),
 						1, cudaMemcpyHostToDevice);
+						
+	*/
 	double beta = 0;
 	for(int i=0;i<m;i+=n){
 		cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B+i, ldb, v1d, 1,

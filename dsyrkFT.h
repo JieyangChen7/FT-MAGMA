@@ -22,7 +22,8 @@ __global__ void detectAndCorrectForSyrk(double * C, int ldc,
  */
 void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * C, int ldc,
 		double * checksumA1, int incA1, double * checksumA2, int incA2,
-		double * checksumC1, int incC1, double * checksumC2, int incC2){
+		double * checksumC1, int incC1, double * checksumC2, int incC2,
+		double * v1d, double * v2d){
 	
 	/*cout<<"checksum1 of A before dsyrk:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), 1,m);
@@ -52,7 +53,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	int chk1_ld = chk1_pitch / sizeof(double);
 	int chk2_ld = chk2_pitch / sizeof(double);
 		
-	double * v1 = new double[n];
+	/*double * v1 = new double[n];
 	double * v2 = new double[n];
 	for (int i = 0; i < n; i++) {
 			v1[i] = 1;
@@ -69,7 +70,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	cudaMallocPitch((void**) &v2d, &v2d_pitch, n * sizeof(double), 1);
 	cudaMemcpy2D(v2d, v2d_pitch, v2, n * sizeof(double), n * sizeof(double),
 							1, cudaMemcpyHostToDevice);
-	
+	*/
 	cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v1d, 1,
 							&zero, chk1, chk1_ld);
 	cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v2d, 1,
