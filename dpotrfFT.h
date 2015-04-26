@@ -15,7 +15,7 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * chksum2: checksum 2
  * inc2: stride between elememts in chksum2
  */
-void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * chksum2, int inc2, double * v1, double v2 ) {
+void dpotrfFT(double * A, int lda, int n, double * chksum1, int inc1, double * chksum2, int inc2, double * v1, double * v2 ) {
 	double alpha = 1;
 	double beta = 0;
 	/*double * v1 = new double[n];
