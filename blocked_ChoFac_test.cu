@@ -81,7 +81,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	double * v1d;
 	size_t v1d_pitch;
 	cudaMallocPitch((void**) &v1d, &v1d_pitch, N * sizeof(double), 1);
-	cudaMemcpy2D(v1d, v1d_pitch, v1, n * sizeof(double), N * sizeof(double),
+	cudaMemcpy2D(v1d, v1d_pitch, v1, N * sizeof(double), N * sizeof(double),
 						1, cudaMemcpyHostToDevice);
 	double * v2d;
 	size_t v2d_pitch;
