@@ -228,10 +228,10 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 
 int main(int argc, char**argv) {
 
-	int TEST_NUM = 10;
+	int TEST_NUM = 1;
 	int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
 	int b = 256;
-	for (int k = 0; k < 1; k++) {
+	for (int k = 0; k < 10; k++) {
 		float total_real_time = 0.0;
 		float total_proc_time = 0.0;
 		long long total_flpins = 0.0;
