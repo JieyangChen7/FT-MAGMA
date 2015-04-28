@@ -23,7 +23,8 @@ __global__ void detectAndCorrectForSyrk(double * C, int ldc,
 void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * C, int ldc,
 		double * checksumA1, int incA1, double * checksumA2, int incA2,
 		double * checksumC1, int incC1, double * checksumC2, int incC2,
-		double * v1d, double * v2d){
+		double * v1d, double * v2d,
+		double * chk1, int chk1_ld, double * chk2, int chk2_ld){
 	
 	/*cout<<"checksum1 of A before dsyrk:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), 1,m);
@@ -42,7 +43,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	//recalculate checksum1 and checksum2
-	double * chk1;
+	/*double * chk1;
 	double * chk2;
 	size_t chk1_pitch;
 	size_t chk2_pitch;
@@ -52,7 +53,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 
 	int chk1_ld = chk1_pitch / sizeof(double);
 	int chk2_ld = chk2_pitch / sizeof(double);
-		
+	*/
 	/*double * v1 = new double[n];
 	double * v2 = new double[n];
 	for (int i = 0; i < n; i++) {
