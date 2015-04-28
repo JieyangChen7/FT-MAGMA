@@ -23,7 +23,8 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 
 void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * B, int ldb, 
 	double * checksumB1, int incB1, double * checksumB2, int incB2,
-	double * v1d, double * v2d) {
+	double * v1d, double * v2d, 
+	double * chk1, int chk1_ld, double * chk2, int chk2_ld) {
 	
 	/*cout<<"matrix A before dtrsm:"<<endl;
 	printMatrix_gpu(A,lda*sizeof(double),n,n);
@@ -46,7 +47,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 	printMatrix_gpu(A,lda*sizeof(double),n,n);
 	*/
 	//recalculate checksum1 and checksum2
-	double * chk1;
+	/*double * chk1;
 	double * chk2;
 	size_t chk1_pitch;
 	size_t chk2_pitch;
@@ -56,7 +57,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 
 	int chk1_ld = chk1_pitch / sizeof(double);
 	int chk2_ld = chk2_pitch / sizeof(double);
-	
+	*/
 	/*double * v1 = new double[n];
 	double * v2 = new double[n];
 	for (int i = 0; i < n; i++) {
