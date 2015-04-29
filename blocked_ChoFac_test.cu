@@ -270,33 +270,34 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 }
 
 int main(int argc, char**argv) {
-
+	int N = atoi(argv[0]);
+	int B = atoi(argv[1]);
 	int TEST_NUM = 1;
-	int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
-	int b = 256; 
-	for (int k = 0; k < 1; k++) {
-		float total_real_time = 0.0;
-		float total_proc_time = 0.0;
-		long long total_flpins = 0.0;
-		float total_mflops = 0.0;
-		float real_time = 0.0;
-		float proc_time = 0.0;
-		long long flpins = 0.0;
-		float mflops = 0.0;
-		double flops = FLOPS_DPOTRF(n[k]) / 1e9;
+	//int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
+	//int b = 256; 
+	//for (int k = 0; k < 1; k++) {
+	float total_real_time = 0.0;
+	float total_proc_time = 0.0;
+	long long total_flpins = 0.0;
+	float total_mflops = 0.0;
+	float real_time = 0.0;
+	float proc_time = 0.0;
+	long long flpins = 0.0;
+	float mflops = 0.0;
+	double flops = FLOPS_DPOTRF(n[k]) / 1e9;
 		//cout<<"flops:"<<flops<<"  ";
 
-		for (int i = 0; i < TEST_NUM; i++) {
-			test_mydpotrf(n[k], b, &real_time, &proc_time, &flpins, &mflops);
-			total_real_time += real_time;
-			total_proc_time += proc_time;
-			total_flpins += flpins;
-			total_mflops += mflops;
-		}
-		cout << "Size:" << n[k] << "(" << b << ")---Real_time:"
-				<< total_real_time / (double) TEST_NUM << "---" << "Proc_time:"
-				<< total_proc_time / (double) TEST_NUM << "---"
-				<< "Total GFlops:"
-				<< flops / (total_proc_time / (double) TEST_NUM) << endl;
+	for (int i = 0; i < TEST_NUM; i++) {
+		test_mydpotrf(N, B, &real_time, &proc_time, &flpins, &mflops);
+		total_real_time += real_time;
+		total_proc_time += proc_time;
+		total_flpins += flpins;
+		total_mflops += mflops;
+	}
+	cout << "Size:" << N << "(" << B << ")---Real_time:"
+			<< total_real_time / (double) TEST_NUM << "---" << "Proc_time:"
+			<< total_proc_time / (double) TEST_NUM << "---"
+			<< "Total GFlops:"
+			<< flops / (total_proc_time / (double) TEST_NUM) << endl;
 	}
 }
