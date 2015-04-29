@@ -299,4 +299,5 @@ int main(int argc, char**argv) {
 			<< total_proc_time / (double) TEST_NUM << "---"
 			<< "Total GFlops:"
 			<< flops / (total_proc_time / (double) TEST_NUM) << endl;
+	cudaDeviceReset();
 }
