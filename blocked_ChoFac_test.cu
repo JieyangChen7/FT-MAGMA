@@ -270,8 +270,8 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 }
 
 int main(int argc, char**argv) {
-	int N = atoi(argv[0]);
-	int B = atoi(argv[1]);
+	int N = atoi(argv[1]);
+	int B = atoi(argv[2]);
 	int TEST_NUM = 1;
 	//int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
 	//int b = 256; 
