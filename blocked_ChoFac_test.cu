@@ -284,7 +284,7 @@ int main(int argc, char**argv) {
 	float proc_time = 0.0;
 	long long flpins = 0.0;
 	float mflops = 0.0;
-	double flops = FLOPS_DPOTRF(n[k]) / 1e9;
+	double flops = FLOPS_DPOTRF(N) / 1e9;
 		//cout<<"flops:"<<flops<<"  ";
 
 	for (int i = 0; i < TEST_NUM; i++) {
