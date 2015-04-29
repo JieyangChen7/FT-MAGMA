@@ -29,6 +29,7 @@ dpotf on CPU and dtrsm on GPU, dgemm on GPU. Compute either upper or lower. Init
 #include"dsyrkFT.h"
 #include"dgemmFT.h"
 #include"checksumGenerator.h"
+#include"cuda_profiler_api.h"
 
 
 #define FMULS_POTRF(__n) ((__n) * (((1. / 6.) * (__n) + 0.5) * (__n) + (1. / 3.)))
@@ -69,6 +70,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
+	//start of profiling
+	cudaProfilerStart();
 	
 	//intialize checksum1 and checksum2
 	double * v1=new double[B];
@@ -217,6 +220,9 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		}
 
 	}
+	
+	//end of profiling
+	cudaProfilerStop();
 	
 	if (PAPI_flops(real_time, proc_time, flpins, mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
