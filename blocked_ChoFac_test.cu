@@ -259,7 +259,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	matrixGenerator_gpu(uplo, matrix, matrix_ld, result, result_ld, N, 2);
 	cudaFree(result);
 	
-	//my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins,mflops, FT);
+	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins,mflops, FT);
 
 	//Verify result
 	/*if(resultVerify_gpu(result,result_ld,matrix,matrix_ld,N,2)){
@@ -277,7 +277,7 @@ int main(int argc, char**argv) {
 	int N = atoi(argv[1]);
 	int B = atoi(argv[2]);
 	bool FT = false;
-	//if(argv[3][0]=='1')
+	if(argv[3][0]=='1')
 		FT = true;
 	int TEST_NUM = 1;
 	cout<<"Input config:N="<<N<<", B="<<B<<", FT="<<FT<<endl;
