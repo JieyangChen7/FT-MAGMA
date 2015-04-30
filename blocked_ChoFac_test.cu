@@ -41,7 +41,7 @@ using namespace std;
 
 void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		float * real_time, float * proc_time, long long * flpins,
-		float * mflops) {
+		float * mflops, bool FT) {
 	
 	
 	double * temp;
@@ -53,7 +53,6 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	cudaStreamCreate(&stream0);
 	cudaStreamCreate(&stream1);
 
-	//cout<<"Streams initialized"<<endl;
 	//intial cublas
 	cublasStatus_t cublasStatus;
 	cublasHandle_t handle1;
@@ -65,6 +64,27 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cout << "CUBLAS SET STREAM NOT INITIALIZED(handle1) in my_dpotrf"
 				<< endl;   
 
+	//variables for FT
+	double * v1;
+	double * v2;
+	double * v1d;
+	double * v2d;
+	size_t v1d_pitch;
+	size_t v2d_pitch;
+	double * chk1;
+	double * chk2;
+	double * chk1d;
+	double * chk2d;
+	size_t chk1d_pitch;
+	size_t chk2d_pitch;
+	int chk1d_ld;
+	int chk2d_ld;
+	size_t checksum1_pitch;
+	size_t checksum2_pitch;
+	double * checksum1;
+	double * checksum2;
+	int checksum1_ld;
+	int checksum2_ld;
 	
 	if (PAPI_flops(real_time, proc_time, flpins, mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
@@ -73,57 +93,40 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	//start of profiling
 	cudaProfilerStart();
 	
-	//intialize checksum1 and checksum2
-	double * v1=new double[B];
-	double * v2=new double[B];
-	for(int i=0;i<B;i++){
-		v1[i]=1;
-		v2[i]=i+1;
+	if(FT){
+		//intialize checksum vector on CPU
+		v1=new double[B];
+		v2=new double[B];
+		for(int i=0;i<B;i++){
+			v1[i]=1;
+			v2[i]=i+1;
+		}
+		
+		//intialize checksum vector on GPU
+		cudaMallocPitch((void**) &v1d, &v1d_pitch, N * sizeof(double), 1);
+		cudaMemcpy2D(v1d, v1d_pitch, v1, N * sizeof(double), N * sizeof(double),
+							1, cudaMemcpyHostToDevice);
+		cudaMallocPitch((void**) &v2d, &v2d_pitch, N * sizeof(double), 1);
+		cudaMemcpy2D(v2d, v2d_pitch, v2, N * sizeof(double), N * sizeof(double),
+									1, cudaMemcpyHostToDevice);
+		
+		//allocate space for recalculated checksum on CPU
+		chk1 = new double[B];
+		chk2 = new double[B];
+		
+		//allocate space for reclaculated checksum on CPU
+		cudaMallocPitch((void**) &chk1d, &chk1d_pitch, (N / B) * sizeof(double), B);
+		cudaMallocPitch((void**) &chk2d, &chk2d_pitch, (N / B) * sizeof(double), B);
+	
+		chk1d_ld = chk1d_pitch / sizeof(double);
+		chk2d_ld = chk2d_pitch / sizeof(double);
+		
+		//initialize checksums
+		checksum1=initializeChecksum(handle1, matrix, ld, N, B, v1d, checksum1_pitch);
+		checksum2=initializeChecksum(handle1, matrix, ld, N, B, v2d, checksum2_pitch);
+		checksum1_ld = checksum1_pitch/sizeof(double);
+		checksum2_ld = checksum2_pitch/sizeof(double);
 	}
-	
-	double * v1d;
-	size_t v1d_pitch;
-	cudaMallocPitch((void**) &v1d, &v1d_pitch, N * sizeof(double), 1);
-	cudaMemcpy2D(v1d, v1d_pitch, v1, N * sizeof(double), N * sizeof(double),
-						1, cudaMemcpyHostToDevice);
-	double * v2d;
-	size_t v2d_pitch;
-	cudaMallocPitch((void**) &v2d, &v2d_pitch, N * sizeof(double), 1);
-	cudaMemcpy2D(v2d, v2d_pitch, v2, N * sizeof(double), N * sizeof(double),
-								1, cudaMemcpyHostToDevice);
-	
-	//allocate space for recalculated checksum on CPU
-	double * chk1 = new double[B];
-	double * chk2 = new double[B];
-	
-	//allocate space for reclaculated checksum on CPU
-	double * chk1d;
-	double * chk2d;
-	size_t chk1d_pitch;
-	size_t chk2d_pitch;
-
-	cudaMallocPitch((void**) &chk1d, &chk1d_pitch, (N / B) * sizeof(double), B);
-	cudaMallocPitch((void**) &chk2d, &chk2d_pitch, (N / B) * sizeof(double), B);
-
-	int chk1d_ld = chk1d_pitch / sizeof(double);
-	int chk2d_ld = chk2d_pitch / sizeof(double);
-	
-	
-	
-			
-			
-	/*cout<<"checksum vector 1 on CPU:"<<endl;
-	printVector_host(v1,B);
-	cout<<"checksum vector 2 on CPU:"<<endl;
-	printVector_host(v2,B);
-	*/
-	
-	size_t checksum1_pitch;
-	size_t checksum2_pitch;
-	double * checksum1=initializeChecksum(handle1, matrix, ld, N, B, v1d, checksum1_pitch);
-	double * checksum2=initializeChecksum(handle1, matrix, ld, N, B, v2d, checksum2_pitch);
-	int checksum1_ld = checksum1_pitch/sizeof(double);
-	int checksum2_ld = checksum2_pitch/sizeof(double);
 	
 	
 
@@ -148,7 +151,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum1 + (i/B) + i*checksum1_ld,checksum1_ld, 
 					checksum2 + (i/B) + i*checksum2_ld,checksum2_ld,
 					v1d, v2d,
-					chk1d, chk1d_ld, chk2d, chk2d_ld);
+					chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
 			
 			/*cublasDsyrk(handle1, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, B, i,
 					&negone, matrix + i, ld, &one, matrix + i * ld + i,
@@ -162,13 +165,14 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 				ld * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyDeviceToHost, stream0);
 		
-		
-		cudaMemcpy2DAsync(chk1, 1 * sizeof(double), checksum1 + (i/B) + i*checksum1_ld,
-				checksum1_pitch, 1 * sizeof(double), B,
-				cudaMemcpyDeviceToHost, stream0);
-		cudaMemcpy2DAsync(chk2, 1 * sizeof(double), checksum2 + (i/B) + i*checksum2_ld,
-				checksum2_pitch, 1 * sizeof(double), B,
-				cudaMemcpyDeviceToHost, stream0);
+		if(FT){
+			cudaMemcpy2DAsync(chk1, 1 * sizeof(double), checksum1 + (i/B) + i*checksum1_ld,
+					checksum1_pitch, 1 * sizeof(double), B,
+					cudaMemcpyDeviceToHost, stream0);
+			cudaMemcpy2DAsync(chk2, 1 * sizeof(double), checksum2 + (i/B) + i*checksum2_ld,
+					checksum2_pitch, 1 * sizeof(double), B,
+					cudaMemcpyDeviceToHost, stream0);
+		}
 		
 		if (i != 0 && i + B < N) {
 			
@@ -179,7 +183,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum1 + i * checksum1_ld + (i + B)/B, checksum1_ld,
 					checksum2 + i * checksum2_ld + (i + B)/B, checksum2_ld,
 					v1d, v2d,
-					chk1d, chk1d_ld, chk2d, chk2d_ld);
+					chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
 			
 			/*cublasDgemm(handle1, CUBLAS_OP_N, CUBLAS_OP_T, N - i - B, B, i,
 					&negone, matrix + (i + B), ld, matrix + i, ld,
@@ -190,21 +194,21 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		//int info;
 		//dpotrf('L', B, temp, B, &info);
-		dpotrfFT(temp, B, B, chk1, 1, chk2, 1, v1, v2);
+		dpotrfFT(temp, B, B, chk1, 1, chk2, 1, v1, v2,FT);
 		
 		
 		
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
 				B * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
-		
-		cudaMemcpy2DAsync(checksum1 + (i/B) + i*checksum1_ld,checksum1_pitch, chk1, 1 * sizeof(double), 
-				1 * sizeof(double), B,
-				cudaMemcpyHostToDevice, stream0);
-		cudaMemcpy2DAsync(checksum2 + (i/B) + i*checksum2_ld,checksum2_pitch, chk2, 1 * sizeof(double), 
-				1 * sizeof(double), B,
-				cudaMemcpyHostToDevice, stream0);
-		
+		if(FT){
+			cudaMemcpy2DAsync(checksum1 + (i/B) + i*checksum1_ld,checksum1_pitch, chk1, 1 * sizeof(double), 
+					1 * sizeof(double), B,
+					cudaMemcpyHostToDevice, stream0);
+			cudaMemcpy2DAsync(checksum2 + (i/B) + i*checksum2_ld,checksum2_pitch, chk2, 1 * sizeof(double), 
+					1 * sizeof(double), B,
+					cudaMemcpyHostToDevice, stream0);
+		}
 	
 		//update B                                                                      
 		if (i + B < N) {
@@ -212,7 +216,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld, matrix + i * ld + i + B, ld, 
 				checksum1+(i+B)/B+i*checksum1_ld, checksum1_ld, checksum2+(i+B)/B+i*checksum2_ld, checksum2_ld,
 				v1d, v2d,
-				chk1d, chk1d_ld, chk2d, chk2d_ld);
+				chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
 			/*cublasDtrsm(handle1, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
 					CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, N - i - B, B,  &one,
 					matrix + i * ld + i, ld, matrix + i * ld + i + B, ld);
@@ -238,7 +242,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 }
 
 void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
-		long long * flpins, float * mflops) {
+		long long * flpins, float * mflops, bool FT) {
 
 	char uplo = 'l';
 	double * matrix;
@@ -256,7 +260,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	cudaFree(result);
 	
 	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins,
-			mflops);
+			mflops, FT);
 
 	//Verify result
 	/*if(resultVerify_gpu(result,result_ld,matrix,matrix_ld,N,2)){
@@ -273,6 +277,9 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 int main(int argc, char**argv) {
 	int N = atoi(argv[1]);
 	int B = atoi(argv[2]);
+	bool FT = false;
+	if(argv[3][0]=='1')
+		FT = true;
 	int TEST_NUM = 1;
 	//int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
 	//int b = 256; 
@@ -289,12 +296,13 @@ int main(int argc, char**argv) {
 		//cout<<"flops:"<<flops<<"  ";
 
 	for (int i = 0; i < TEST_NUM; i++) {
-		test_mydpotrf(N, B, &real_time, &proc_time, &flpins, &mflops);
+		test_mydpotrf(N, B, &real_time, &proc_time, &flpins, &mflops, FT);
 		total_real_time += real_time;
 		total_proc_time += proc_time;
 		total_flpins += flpins;
 		total_mflops += mflops;
 	}
+	if(FT) cout<<"FT enabled"<<endl;
 	cout << "Size:" << N << "(" << B << ")---Real_time:"
 			<< total_real_time / (double) TEST_NUM << "---" << "Proc_time:"
 			<< total_proc_time / (double) TEST_NUM << "---"
