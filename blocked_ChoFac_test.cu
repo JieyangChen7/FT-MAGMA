@@ -278,7 +278,7 @@ int main(int argc, char**argv) {
 	int N = atoi(argv[1]);
 	int B = atoi(argv[2]);
 	bool FT = false;
-	if(argv[3][0]=='1')
+	//if(argv[3][0]=='1')
 		FT = true;
 	int TEST_NUM = 1;
 	//int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
