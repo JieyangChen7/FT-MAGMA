@@ -105,11 +105,11 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cout<<"checksum vector on CPU initialized"<<endl;
 		
 		//intialize checksum vector on GPU
-		cudaMallocPitch((void**) &v1d, &v1d_pitch, N * sizeof(double), 1);
-		cudaMemcpy2D(v1d, v1d_pitch, v1, N * sizeof(double), N * sizeof(double),
+		cudaMallocPitch((void**) &v1d, &v1d_pitch, B * sizeof(double), 1);
+		cudaMemcpy2D(v1d, v1d_pitch, v1, B * sizeof(double), B * sizeof(double),
 							1, cudaMemcpyHostToDevice);
-		cudaMallocPitch((void**) &v2d, &v2d_pitch, N * sizeof(double), 1);
-		cudaMemcpy2D(v2d, v2d_pitch, v2, N * sizeof(double), N * sizeof(double),
+		cudaMallocPitch((void**) &v2d, &v2d_pitch, B * sizeof(double), 1);
+		cudaMemcpy2D(v2d, v2d_pitch, v2, B * sizeof(double), B * sizeof(double),
 									1, cudaMemcpyHostToDevice);
 		cout<<"checksum vector on gpu initialized"<<endl;
 		
