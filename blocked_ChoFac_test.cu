@@ -259,8 +259,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	matrixGenerator_gpu(uplo, matrix, matrix_ld, result, result_ld, N, 2);
 	cudaFree(result);
 	
-	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins,
-			mflops, FT);
+	//my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins,mflops, FT);
 
 	//Verify result
 	/*if(resultVerify_gpu(result,result_ld,matrix,matrix_ld,N,2)){
