@@ -21,7 +21,7 @@ __global__ void matrixDiagonalizeAndScale(double * matrix, int ld, char uplo,
 }
 
 void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
-		double * result, int result_ld, int N, int B) {
+	 int N, int B) {
 	double a = 10.0;
 	//initialize cublas
 	cublasStatus_t cublasStatus;
@@ -36,10 +36,10 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 	curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
 	curandSetPseudoRandomGeneratorSeed(gen, 10ULL);
 	//generate random number in range (0,1] on result using curand
-	curandGenerateUniformDouble(gen, result, result_ld * N);
+	curandGenerateUniformDouble(gen, matrix, matrix_ld * N);
 	cudaDeviceSynchronize();
 
-	matrixDiagonalizeAndScale<<<dim3(N/B,N/B),dim3(B,B)>>>(result, result_ld, uplo, a,1);
+	matrixDiagonalizeAndScale<<<dim3(N/B,N/B),dim3(B,B)>>>(matrix, matrix_ld, uplo, a,1);
 	cudaDeviceSynchronize();
 
 	//do matrix-matrix multiplcation using cublas
@@ -48,11 +48,11 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 	double alpha = 1.0;
 	double beta = 1.0;
 	if (uplo == 'u') {
-		cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, N, N, N, &alpha, result,
-				result_ld, result, result_ld, &beta, matrix, matrix_ld);
+		cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, N, N, N, &alpha, matrix,
+				matrix_ld, matrix, matrix_ld, &beta, matrix, matrix_ld);
 	} else if (uplo == 'l') {
-		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, N, N, N, &alpha, result,
-				result_ld, result, result_ld, &beta, matrix, matrix_ld);
+		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, N, N, N, &alpha, matrix,
+				matrix_ld, matrix, matrix_ld, &beta, matrix, matrix_ld);
 	}
 	cudaDeviceSynchronize();
 
