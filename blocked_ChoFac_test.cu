@@ -126,6 +126,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		checksum2=initializeChecksum(handle1, matrix, ld, N, B, v2d, checksum2_pitch);
 		checksum1_ld = checksum1_pitch/sizeof(double);
 		checksum2_ld = checksum2_pitch/sizeof(double);
+		cout<<"check sum initialized"<<endl;
 	}
 	
 	
