@@ -134,11 +134,6 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	}
 	
 	
-
-	double one = 1;
-	double negone = -1;
-	double zero = 0;
-	
 	for (int i = 0; i < N; i += B) {
 		
 		
