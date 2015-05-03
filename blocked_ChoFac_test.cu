@@ -86,17 +86,12 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	int checksum1_ld;
 	int checksum2_ld;
 	
-	if (PAPI_flops(real_time, proc_time, flpins, mflops) < PAPI_OK) {
-		cout << "PAPI ERROR" << endl;
-		return;
-	}
-	//start of profiling
-	cudaProfilerStart();
+	
 	
 	if(FT){
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
-		/*v1=new double[B];
+		v1=new double[B];
 		v2=new double[B];
 		for(int i=0;i<B;i++){
 			v1[i]=1;
@@ -132,8 +127,16 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		checksum2_ld = checksum2_pitch/sizeof(double);
 		//cout<<"checksums initialized"<<endl;
 		 
-		 */
+		 
 	}
+	
+	
+	if (PAPI_flops(real_time, proc_time, flpins, mflops) < PAPI_OK) {
+			cout << "PAPI ERROR" << endl;
+			return;
+		}
+		//start of profiling
+		cudaProfilerStart();
 	
 	
 	for (int i = 0; i < N; i += B) {
@@ -153,7 +156,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum1 + (i/B) + i*checksum1_ld,checksum1_ld, 
 					checksum2 + (i/B) + i*checksum2_ld,checksum2_ld,
 					v1d, v2d,
-					chk1d, chk1d_ld, chk2d, chk2d_ld, false);
+					chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
 			
 			/*cublasDsyrk(handle1, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, B, i,
 					&negone, matrix + i, ld, &one, matrix + i * ld + i,
@@ -186,7 +189,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum1 + i * checksum1_ld + (i + B)/B, checksum1_ld,
 					checksum2 + i * checksum2_ld + (i + B)/B, checksum2_ld,
 					v1d, v2d,
-					chk1d, chk1d_ld, chk2d, chk2d_ld, false);
+					chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
 			
 			/*cublasDgemm(handle1, CUBLAS_OP_N, CUBLAS_OP_T, N - i - B, B, i,
 					&negone, matrix + (i + B), ld, matrix + i, ld,
@@ -197,7 +200,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		//int info;
 		//dpotrf('L', B, temp, B, &info);
-		dpotrfFT(temp, B, B, chk1, 1, chk2, 1, v1, v2,false);
+		dpotrfFT(temp, B, B, chk1, 1, chk2, 1, v1, v2,FT);
 		
 		
 		
@@ -220,7 +223,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld, matrix + i * ld + i + B, ld, 
 				checksum1+(i+B)/B+i*checksum1_ld, checksum1_ld, checksum2+(i+B)/B+i*checksum2_ld, checksum2_ld,
 				v1d, v2d,
-				chk1d, chk1d_ld, chk2d, chk2d_ld, false);
+				chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
 			/*cublasDtrsm(handle1, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
 					CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, N - i - B, B,  &one,
 					matrix + i * ld + i, ld, matrix + i * ld + i + B, ld);
