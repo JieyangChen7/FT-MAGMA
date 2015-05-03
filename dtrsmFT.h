@@ -91,7 +91,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 				checksumB1, incB1, checksumB2, incB2,
 				chk1, chk1_ld, chk2, chk2_ld);
 	}
-	cublasDtrsm(handle, 
+	/*cublasDtrsm(handle, 
 						CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, 
 						CUBLAS_OP_T,CUBLAS_DIAG_NON_UNIT, 
 						m/n, n, &alpha, 
@@ -103,5 +103,5 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda, double * 
 						m/n, n, &alpha, 
 						A, lda,
 						checksumB2, incB2);
-		
+	*/	
 }
