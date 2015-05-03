@@ -194,7 +194,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		//int info;
 		//dpotrf('L', B, temp, B, &info);
-		dpotrfFT(temp, B, B, chk1, 1, chk2, 1, v1, v2,FT);
+		dpotrfFT(temp, B, B, chk1, 1, chk2, 1, v1, v2,false);
 		
 		
 		
