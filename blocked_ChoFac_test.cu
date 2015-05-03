@@ -96,7 +96,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	if(FT){
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
-		v1=new double[B];
+		/*v1=new double[B];
 		v2=new double[B];
 		for(int i=0;i<B;i++){
 			v1[i]=1;
@@ -131,6 +131,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		checksum1_ld = checksum1_pitch/sizeof(double);
 		checksum2_ld = checksum2_pitch/sizeof(double);
 		//cout<<"checksums initialized"<<endl;
+		 
+		 */
 	}
 	
 	
