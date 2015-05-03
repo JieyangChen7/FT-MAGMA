@@ -151,7 +151,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum1 + (i/B) + i*checksum1_ld,checksum1_ld, 
 					checksum2 + (i/B) + i*checksum2_ld,checksum2_ld,
 					v1d, v2d,
-					chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
+					chk1d, chk1d_ld, chk2d, chk2d_ld, false);
 			
 			/*cublasDsyrk(handle1, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, B, i,
 					&negone, matrix + i, ld, &one, matrix + i * ld + i,
@@ -183,7 +183,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum1 + i * checksum1_ld + (i + B)/B, checksum1_ld,
 					checksum2 + i * checksum2_ld + (i + B)/B, checksum2_ld,
 					v1d, v2d,
-					chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
+					chk1d, chk1d_ld, chk2d, chk2d_ld, false);
 			
 			/*cublasDgemm(handle1, CUBLAS_OP_N, CUBLAS_OP_T, N - i - B, B, i,
 					&negone, matrix + (i + B), ld, matrix + i, ld,
