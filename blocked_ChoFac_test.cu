@@ -166,13 +166,13 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 				cudaMemcpyDeviceToHost, stream0);
 
 		if (FT) {
-			/*cudaMemcpy2DAsync(chk1, 1 * sizeof(double), checksum1 + (i/B) + i*checksum1_ld,
+			 cudaMemcpy2DAsync(chk1, 1 * sizeof(double), checksum1 + (i/B) + i*checksum1_ld,
 			 checksum1_pitch, 1 * sizeof(double), B,
 			 cudaMemcpyDeviceToHost, stream0);
 			 cudaMemcpy2DAsync(chk2, 1 * sizeof(double), checksum2 + (i/B) + i*checksum2_ld,
 			 checksum2_pitch, 1 * sizeof(double), B,
 			 cudaMemcpyDeviceToHost, stream0);
-			 */
+			 
 		}
 
 		if (i != 0 && i + B < N) {
@@ -199,13 +199,13 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 				B * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
 		if (FT) {
-			/*cudaMemcpy2DAsync(checksum1 + (i/B) + i*checksum1_ld,checksum1_pitch, chk1, 1 * sizeof(double), 
+			cudaMemcpy2DAsync(checksum1 + (i/B) + i*checksum1_ld,checksum1_pitch, chk1, 1 * sizeof(double), 
 			 1 * sizeof(double), B,
 			 cudaMemcpyHostToDevice, stream0);
 			 cudaMemcpy2DAsync(checksum2 + (i/B) + i*checksum2_ld,checksum2_pitch, chk2, 1 * sizeof(double), 
 			 1 * sizeof(double), B,
 			 cudaMemcpyHostToDevice, stream0);
-			 */
+			 
 		}
 
 		//update B                                                                      
@@ -279,7 +279,7 @@ int main(int argc, char**argv) {
 	bool FT = false;
 	if (argv[3][0] == '1')
 		FT = true;
-	int TEST_NUM = 100;
+	int TEST_NUM = 5;
 	cout << "Input config:N=" << N << ", B=" << B << ", FT=" << FT << endl;
 	//int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
 	//int b = 256; 
