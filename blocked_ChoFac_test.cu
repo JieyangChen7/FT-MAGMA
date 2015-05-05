@@ -279,7 +279,7 @@ int main(int argc, char**argv) {
 	bool FT = false;
 	if (argv[3][0] == '1')
 		FT = true;
-	int TEST_NUM = 5;
+	int TEST_NUM = 1;
 	cout << "Input config:N=" << N << ", B=" << B << ", FT=" << FT << endl;
 	//int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
 	//int b = 256; 
