@@ -44,13 +44,13 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
 	if(FT){
-		/*
+		
 		//recalculate checksum1 and checksum2
 		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v1d, 1,
 								&zero, chk1, chk1_ld);
 		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v2d, 1,
 								&zero, chk2, chk2_ld);
-		*/
+		
 		
 		/*cout<<"recalculated checksum1 of C after dsyrk:"<<endl;
 		printMatrix_gpu(chk1, chk1_pitch, 1, n);
