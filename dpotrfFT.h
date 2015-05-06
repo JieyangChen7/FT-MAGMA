@@ -58,7 +58,7 @@ void dpotrfFT(double * A, int lda, int n,
 		//update checksum1 and checksum2
 		for (int i = 0; i < n; i++) {
 			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
-			daxpy(n-i-1, negone*checksum1[i], A + i*lda + i+1, 1, checksum1 + i+1, 1 );
+			daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
 			/*for (int j = i + 1; j < n; j++) {
 				chksum1[j] = chksum1[j] - chksum1[i] * get(A, n, n, j, i);
 			}
@@ -67,7 +67,7 @@ void dpotrfFT(double * A, int lda, int n,
 	
 		for (int i = 0; i < n; i++) {
 			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
-			daxpy(n-i-1, negone*checksum2[i], A + i*lda + i+1, 1, checksum2 + i+1, 1 );
+			daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
 			/*for (int j = i + 1; j < n; j++) {
 				chksum2[j] = chksum2[j] - chksum2[i] * get(A, n, n, j, i);
 			}
