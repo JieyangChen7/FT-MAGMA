@@ -127,7 +127,13 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//cout<<"checksums initialized"<<endl;
 
 	}
-
+	
+	
+	cudaMemcpy2DAsync(temp, B * sizeof(double), matrix,
+					ld * sizeof(double), B * sizeof(double), B,
+					cudaMemcpyDeviceToHost, stream0);
+	cudaStreamSynchronize(stream0);
+	
 	if (PAPI_flops(real_time, proc_time, flpins, mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
 		return;
@@ -163,6 +169,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 				ld * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyDeviceToHost, stream0);
 		*/
+		/*
 		if (FT) {
 			 cudaMemcpy2DAsync(chk1, 1 * sizeof(double), checksum1 + (i/B) + i*checksum1_ld,
 			 checksum1_pitch, 1 * sizeof(double), B,
@@ -172,7 +179,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			 cudaMemcpyDeviceToHost, stream0);
 			 
 		}
-		
+		*/
 		/*
 		if (i != 0 && i + B < N) {
 
@@ -184,17 +191,17 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
 		}
 		*/
-		/*
-		cudaStreamSynchronize(stream0);
+		
+		//cudaStreamSynchronize(stream0);
 
 		//int info;
-		//dpotrf('L', B, temp, B, &info);
 		dpotrfFT(temp, B, B, chk1, 1, chk2, 1, v1, v2, FT);
-	
+		/*
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
 				B * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
 		*/
+		/*
 		if (FT) {
 			 cudaMemcpy2DAsync(checksum1 + (i/B) + i*checksum1_ld,checksum1_pitch, chk1, 1 * sizeof(double), 
 			 1 * sizeof(double), B,
@@ -204,6 +211,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			 cudaMemcpyHostToDevice, stream0);
 			 
 		}
+		*/
 		
 		//update B    
 		/*
