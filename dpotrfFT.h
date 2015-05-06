@@ -54,7 +54,7 @@ void dpotrfFT(double * A, int lda, int n,
 		//printVector_host(chk1, n);
 		//printVector_host(chk2, n);
 		
-		double * negone = -1;
+		double negone = -1;
 		//update checksum1 and checksum2
 		for (int i = 0; i < n; i++) {
 			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
