@@ -41,14 +41,16 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	double one = 1;
 	double zero = 0;
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
-	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
+	//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
 	if(FT){
+		/*
 		//recalculate checksum1 and checksum2
 		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v1d, 1,
 								&zero, chk1, chk1_ld);
 		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v2d, 1,
 								&zero, chk2, chk2_ld);
+		*/
 		
 		/*cout<<"recalculated checksum1 of C after dsyrk:"<<endl;
 		printMatrix_gpu(chk1, chk1_pitch, 1, n);
@@ -65,8 +67,9 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		printMatrix_gpu(checksumC2, incC2*sizeof(double), 1,n);
 		*/
 		//detect error and correct error
-		detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
+		/*detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
 				checksumC1, incC1, checksumC2, incC2,
 				 chk1, chk1_ld, chk2, chk2_ld);
+		*/
 	}
 }
