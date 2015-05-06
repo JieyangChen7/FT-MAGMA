@@ -61,14 +61,13 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		printMatrix_gpu(chk2, chk2_pitch, m/n,n);
 		*/	
 		
-		
+		/*
 		//update checksum1 and checksum2
-		//for(int i=0;i<20;i++){
 		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m/n, n, k, &negone,
 				checksumA1, incA1, B, ldb, &one, checksumC1, incC1);
 		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m/n, n, k, &negone,
 				checksumA2, incA2, B, ldb, &one, checksumC2, incC2);
-		//}
+		*/
 		
 		/*cout<<"updated checksum1 of C after dgemm:"<<endl;
 		printMatrix_gpu(checksumC1, incC1*sizeof(double), m/n,n);
