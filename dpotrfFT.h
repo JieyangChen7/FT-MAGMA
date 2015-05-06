@@ -20,19 +20,13 @@ void dpotrfFT(double * A, int lda, int n,
 		double * v1, double * v2, bool FT ) {
 	double alpha = 1;
 	double beta = 0;
-	/*double * v1 = new double[n];
-	double * v2 = new double[n];
-	for (int i = 0; i < n; i++) {
-			v1[i] = 1;
-			v2[i] = i+1;
-	}
-	*/
+	
 	//cout<<"matrix A before dpotrf:"<<endl;
 	//printMatrix_host(A,n,n);
 	
 	//do Choleksy factorization
 	int info;
-	//dpotrf('L', n, A, n, &info);
+	dpotrf('L', n, A, n, &info);
 	
 	if(FT){
 	
@@ -44,12 +38,12 @@ void dpotrfFT(double * A, int lda, int n,
 		printVector_host(chksum2, n);
 		*/
 		//recalculate checksum1 and checksum2
-		/*
+		
 		double * chk1 = new double[n];
 		double * chk2 = new double[n];
 		dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
 		dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
-		*/
+		
 		//cout<<"recalcuated checksum on CPU after factorization:"<<endl;
 		//printVector_host(chk1, n);
 		//printVector_host(chk2, n);
