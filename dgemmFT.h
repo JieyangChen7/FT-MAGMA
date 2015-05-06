@@ -45,7 +45,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	//		ldb, &one, C, ldc);
 
 	if(FT){
-		/*
+		
 		//recalculate checksum1 and checksum2
 		for (int i = 0; i < m; i += n) {
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, v1d, 1,
@@ -53,7 +53,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldb, v2d, 1,
 					&zero, chk2 + (i / n), chk2_ld);
 		}
-		*/
+		
 		
 		/*cout<<"recalculated checksum1 of C after dgemm:"<<endl;
 		printMatrix_gpu(chk1, chk1_pitch, m/n,n);
