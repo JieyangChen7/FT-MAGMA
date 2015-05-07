@@ -12,8 +12,8 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 	//printVector_gpu(vd,B);
 	*/
 	double * chksum;
-	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) * sizeof(double), N);
-	cudaMemset2D((void*) chksum, chksum_pitch, 0, (N / B) * sizeof(double), N);
+	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) *sizeof(double), N);
+	//cudaMemset2D((void*) chksum, chksum_pitch, 0, (N / B) * sizeof(double), N);
 	int chksum_ld = chksum_pitch / sizeof(double);
 	//printMatrix_gpu(matrix,ld*sizeof(double),N,N);
 	//printMatrix_gpu(matrix,ld*sizeof(double),B,N);
