@@ -67,7 +67,7 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 	
 }
 
-void matrixGenerator_gpu2(char uplo, double * matrix, int matrix_ld, double * result, int result_ld
+void matrixGenerator_gpu2(char uplo, double * matrix, int matrix_ld, double * result, int result_ld,
 	 int N, int B) {
 	double a = 10.0;
 	//initialize cublas
