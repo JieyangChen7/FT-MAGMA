@@ -4,7 +4,6 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 
 	//cout<<"checksum vector on GPU:"<<endl;
 	//printVector_gpu(vd,B);
-	*/
 	double * chksum;
 	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) * 2 * sizeof(double), N);
 	int chksum_ld = chksum_pitch / sizeof(double);
