@@ -93,7 +93,7 @@ void matrixGenerator_gpu2(char uplo, double * matrix, int matrix_ld, double * re
 	//cudaMemset(matrix, 0, matrix_ld * N * sizeof(double));
 
 	double alpha = 1.0;
-	double beta = 1.0;
+	double beta = 0.0;
 	if (uplo == 'u') {
 		cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, N, N, N, &alpha, result,
 				result_ld, result, result_ld, &beta, matrix, matrix_ld);
