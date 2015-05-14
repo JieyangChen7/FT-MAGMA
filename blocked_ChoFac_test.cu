@@ -63,6 +63,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 
 	//variables for FT
 	double * v;
+	int v_ld;
 	//double * v2;
 	double * vd;
 	//double * v2d;
@@ -96,7 +97,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		for (int i = 0; i < B; ++i) {
 			*(v + i + B) = i+1;
 		}
-		
+		v_ld = B;
 		printMatrix_host(v, B, 2);
 		
 		//cout<<"checksum vector on CPU initialized"<<endl;
