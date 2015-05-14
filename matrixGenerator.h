@@ -67,6 +67,53 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 	
 }
 
+void matrixGenerator_gpu2(char uplo, double * matrix, int matrix_ld, double * result, int result_ld
+	 int N, int B) {
+	double a = 10.0;
+	//initialize cublas
+	cublasStatus_t cublasStatus;
+	cublasHandle_t handle;
+	cublasStatus = cublasCreate(&handle);
+	if (cublasStatus != CUBLAS_STATUS_SUCCESS)
+		cout << "CUBLAS NOT INITIALIZED(handle1) in matrixGenerator_gpu"
+				<< endl;
+
+	//initialize curand
+	curandGenerator_t gen;
+	curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
+	curandSetPseudoRandomGeneratorSeed(gen, 10ULL);
+	//generate random number in range (0,1] on result using curand
+	curandGenerateUniformDouble(gen, result, result_ld * N);
+	cudaDeviceSynchronize();
+
+	matrixDiagonalizeAndScale<<<dim3(N/B,N/B),dim3(B,B)>>>(result, result_ld, uplo, a,1);
+	cudaDeviceSynchronize();
+
+	//do matrix-matrix multiplcation using cublas
+	//cudaMemset(matrix, 0, matrix_ld * N * sizeof(double));
+
+	double alpha = 1.0;
+	double beta = 1.0;
+	if (uplo == 'u') {
+		cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, N, N, N, &alpha, result,
+				result_ld, result, result_ld, &beta, matrix, matrix_ld);
+	} else if (uplo == 'l') {
+		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, N, N, N, &alpha, result,
+				result_ld, result, result_ld, &beta, matrix, matrix_ld);
+	}
+	cudaDeviceSynchronize();
+
+	matrixDiagonalizeAndScale<<<dim3(N/B,N/B),dim3(B,B)>>>(matrix, matrix_ld, uplo, 1.0,0);
+	cudaDeviceSynchronize();
+	cublasDestroy(handle);
+	
+	//print matrix
+	printMatrix_gpu(matrix, matrix_ld * sizeof(double),N, N);
+	//print result
+	printMatrix_gpu(result,result_ld*sizeof(double),N,N);
+	
+}
+
 __global__ void resultVerify_gpu_help(double * realResult, int real_ld,
 		double * testResult, int test_ld, double * diff, int N) {
 	int col = threadIdx.x + blockIdx.x * blockDim.x;
