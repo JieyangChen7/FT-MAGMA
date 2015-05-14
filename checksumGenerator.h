@@ -17,7 +17,7 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 				&zero, chksum + (i / B) * 2, chksum_ld);
 		cout<<"i="<<i<<endl;
 		printMatrix_gpu(matrix+i,ld*sizeof(double),B,N);
-		printMatrix_gpu(vd,vd_ld, vd_ld*sizeof(double), B, 2 );
+		printMatrix_gpu(vd, vd_ld*sizeof(double), B, 2 );
 		printMatrix_gpu(chksum + (i / B)*2, chksum_pitch, 2, N);
 		cout<<endl;
 	}
