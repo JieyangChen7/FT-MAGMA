@@ -43,7 +43,7 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 	cudaDeviceSynchronize();
 
 	//do matrix-matrix multiplcation using cublas
-	cudaMemset(matrix, 0, matrix_ld * N * sizeof(double));
+	//cudaMemset(matrix, 0, matrix_ld * N * sizeof(double));
 
 	double alpha = 1.0;
 	double beta = 1.0;
@@ -61,7 +61,7 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 	cublasDestroy(handle);
 	
 	//print matrix
-	//printMatrix_gpu(matrix, matrix_ld * sizeof(double),N, N);
+	printMatrix_gpu(matrix, matrix_ld * sizeof(double),N, N);
 	//print result
 	//printMatrix_gpu(result,result_ld*sizeof(double),N,N);
 	
