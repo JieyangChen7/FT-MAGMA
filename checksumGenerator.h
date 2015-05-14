@@ -15,11 +15,12 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 	for (int i = 0; i < N; i += B) {
 		cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, N, B, &one, vd, vd_ld, matrix + i, ld,
 				&zero, chksum + (i / B) * 2, chksum_ld);
-		cout<<"i="<<i<<endl;
+		/*cout<<"i="<<i<<endl;
 		printMatrix_gpu(matrix+i,ld*sizeof(double),B,N);
 		printMatrix_gpu(vd, vd_ld*sizeof(double), B, 2 );
 		printMatrix_gpu(chksum + (i / B)*2, chksum_pitch, 2, N);
 		cout<<endl;
+		*/
 	}
 	return chksum;
 
