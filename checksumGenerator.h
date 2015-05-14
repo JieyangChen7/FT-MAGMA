@@ -1,19 +1,12 @@
 using namespace std;
 //initialize checksum
-double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int N, int B, double * vd, size_t& chksum_pitch) {
-
-	/*double * vd;
-	size_t vd_pitch;
-	cudaMallocPitch((void**) &vd, &vd_pitch, B * sizeof(double), 1);
-	cudaMemcpy2D(vd, vd_pitch, v, B*sizeof(double), B * sizeof(double),
-			1, cudaMemcpyHostToDevice);
+double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int N, int B, double * vd, int vdld, size_t& chksum_pitch) {
 
 	//cout<<"checksum vector on GPU:"<<endl;
 	//printVector_gpu(vd,B);
 	*/
 	double * chksum;
-	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) *2*sizeof(double), N);
-	//cudaMemset2D((void*) chksum, chksum_pitch, 0, (N / B) * sizeof(double), N);
+	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) * 2 * sizeof(double), N);
 	int chksum_ld = chksum_pitch / sizeof(double);
 	//printMatrix_gpu(matrix,ld*sizeof(double),N,N);
 	//printMatrix_gpu(matrix,ld*sizeof(double),B,N);

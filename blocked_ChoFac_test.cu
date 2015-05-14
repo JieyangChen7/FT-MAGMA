@@ -62,68 +62,70 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 				<< endl;
 
 	//variables for FT
-	double * v1;
-	double * v2;
-	double * v1d;
-	double * v2d;
-	size_t v1d_pitch;
-	size_t v2d_pitch;
-	double * chk1;
-	double * chk2;
-	double * chk1d;
-	double * chk2d;
-	size_t chk1d_pitch;
-	size_t chk2d_pitch;
-	int chk1d_ld;
-	int chk2d_ld;
-	size_t checksum1_pitch;
-	size_t checksum2_pitch;
-	double * checksum1;
-	double * checksum2;
-	int checksum1_ld;
-	int checksum2_ld;
+	double * v;
+	//double * v2;
+	double * vd;
+	//double * v2d;
+	size_t vd_pitch;
+	//size_t v2d_pitch;
+	double * chk;
+	//double * chk2;
+	double * chkd;
+	//double * chk2d;
+	size_t chkd_pitch;
+	//size_t chk2d_pitch;
+	int chkd_ld;
+	//int chk2d_ld;
+	size_t checksum_pitch;
+	//size_t checksum2_pitch;
+	double * checksum;
+	//double * checksum2;
+	int checksum_ld;
+	//int checksum2_ld;
 
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
-		v1 = new double[B];
-		v2 = new double[B];
-		for (int i = 0; i < B; i++) {
-			v1[i] = 1;
-			v2[i] = i + 1;
+		v = new double[B * 2];
+		//v2 = new double[B];
+		//first vector
+		for (int i = 0; i < B; ++i) {
+			*(v + i) = 1;
 		}
+		for (int i = 0; i < B; ++i) {
+			*(v + i + B) = i;
+		}
+		
+		printMatrix_host(v, B, 2);
+		
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU
-		cudaMallocPitch((void**) &v1d, &v1d_pitch, B * sizeof(double), 1);
-		cudaMemcpy2D(v1d, v1d_pitch, v1, B * sizeof(double), B * sizeof(double),
-				1, cudaMemcpyHostToDevice);
-		cudaMallocPitch((void**) &v2d, &v2d_pitch, B * sizeof(double), 1);
-		cudaMemcpy2D(v2d, v2d_pitch, v2, B * sizeof(double), B * sizeof(double),
-				1, cudaMemcpyHostToDevice);
+		cudaMallocPitch((void**) &vd, &vd_pitch, B * sizeof(double), 2);
+		
+		cudaMemcpy2D(vd, vd_pitch, v, B * sizeof(double), B * sizeof(double),
+				2, cudaMemcpyHostToDevice);
+		
+		printMatrix_gpu(vd, vd_pitch, B, 2);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
+		
+		
 		//allocate space for recalculated checksum on CPU
-		chk1 = new double[B];
-		chk2 = new double[B];
+		chk = new double[B * 2];
 		//cout<<"allocate space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on CPU
-		cudaMallocPitch((void**) &chk1d, &chk1d_pitch, (N / B) * sizeof(double),
+		cudaMallocPitch((void**) &chkd, &chkd_pitch, (N / B) * 2 * sizeof(double),
 				B);
-		cudaMallocPitch((void**) &chk2d, &chk2d_pitch, (N / B) * sizeof(double),
-				B);
-		chk1d_ld = chk1d_pitch / sizeof(double);
-		chk2d_ld = chk2d_pitch / sizeof(double);
+		chkd_ld = chkd_pitch / sizeof(double);
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
 
+		
 		//initialize checksums
-		checksum1 = initializeChecksum(handle1, matrix, ld, N, B, v1d,
-				checksum1_pitch);
-		checksum2 = initializeChecksum(handle1, matrix, ld, N, B, v2d,
-				checksum2_pitch);
-		checksum1_ld = checksum1_pitch / sizeof(double);
-		checksum2_ld = checksum2_pitch / sizeof(double);
+		//checksum = initializeChecksum(handle1, matrix, ld, N, B, vd,checksum_pitch);
+		//checksum_ld = checksum_pitch / sizeof(double);
+		
 		//cout<<"checksums initialized"<<endl;
 
 	}
@@ -135,17 +137,17 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	}
 	//start of profiling
 	cudaProfilerStart();
-
+	/*
 	for (int i = 0; i < N; i += B) {
 
-		/*cout<<"i="<<i<<endl;
-		 cout<<"matrix:"<<endl;
-		 printMatrix_gpu(matrix, ld*sizeof(double), N, N);
-		 cout<<"checksum1:"<<endl;
-		 printMatrix_gpu(checksum1, checksum1_pitch, N/B, N);
-		 cout<<"checksum2:"<<endl;
-		 printMatrix_gpu(checksum2, checksum2_pitch, N/B, N);
-		 */
+		 //cout<<"i="<<i<<endl;
+		 //cout<<"matrix:"<<endl;
+		 //printMatrix_gpu(matrix, ld*sizeof(double), N, N);
+		 //cout<<"checksum1:"<<endl;
+		 //printMatrix_gpu(checksum1, checksum1_pitch, N/B, N);
+		 //cout<<"checksum2:"<<endl;
+		 //printMatrix_gpu(checksum2, checksum2_pitch, N/B, N);
+		 
 		
 		if (i > 0) {
 			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
@@ -157,7 +159,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			
 		}
 		
-		/*
+		
 		cudaStreamSynchronize(stream1);
 
 		cudaMemcpy2DAsync(temp, B * sizeof(double), matrix + i * ld + i,
@@ -175,7 +177,6 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			 
 		}
 		
-		*/
 		if (i != 0 && i + B < N) {
 
 			dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
@@ -186,7 +187,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
 		}
 		
-		/*
+		
 		cudaStreamSynchronize(stream0);
 
 		//int info;
@@ -219,10 +220,11 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
 		}
 		
-		*/
+		
 
 	}
 
+	*/
 	//end of profiling
 	cudaProfilerStop();
 
