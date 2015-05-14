@@ -93,7 +93,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			*(v + i) = 1;
 		}
 		for (int i = 0; i < B; ++i) {
-			*(v + i + B) = i;
+			*(v + i + B) = i+1;
 		}
 		
 		printMatrix_host(v, B, 2);
