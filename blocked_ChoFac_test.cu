@@ -140,15 +140,12 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	
 	for (int i = 0; i < N; i += B) {
 
-		 //cout<<"i="<<i<<endl;
-		 //cout<<"matrix:"<<endl;
-		 //printMatrix_gpu(matrix, ld*sizeof(double), N, N);
-		 //cout<<"checksum1:"<<endl;
-		 //printMatrix_gpu(checksum1, checksum1_pitch, N/B, N);
-		 //cout<<"checksum2:"<<endl;
-		 //printMatrix_gpu(checksum2, checksum2_pitch, N/B, N);
+		 cout<<"i="<<i<<endl;
+		 cout<<"matrix:"<<endl;
+		 printMatrix_gpu(matrix, ld*sizeof(double), N, N);
+		 cout<<"checksum:"<<endl;
+		 printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
 		 
-		/*
 		if (i > 0) {
 			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
 					checksum1 + i / B, checksum1_ld, checksum2 + i / B,
