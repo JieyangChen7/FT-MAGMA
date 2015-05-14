@@ -17,7 +17,7 @@ double get(double * matrix, int ld, int n, int i, int j) {
  */
 void dpotrfFT(double * A, int lda, int n, 
 				double * chksum, int chksum_ld, double * v, int v_ld, 
-				double * chk, int chk_ld, bool FT ) {
+				bool FT ) {
 	double one = 1;
 	double zero = 0;
 	double negone = -1;
