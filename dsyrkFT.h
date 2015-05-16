@@ -46,7 +46,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	if(FT){
 		
 		//recalculate checksum1 and checksum2
-		cubladDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C, ldc, &zero, chk, chk_ld);
+		cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C, ldc, &zero, chk, chk_ld);
 	//	cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v1d, 1,
 	//							&zero, chk1, chk1_ld);
 	//	cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v2d, 1,
