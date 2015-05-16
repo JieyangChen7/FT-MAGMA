@@ -30,6 +30,9 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
 		double * chk, int chk_ld, bool FT) {
+	double one = 1;
+	double zero = 0;
+	double negone = -1;
 
 	/*
 	 cout<<"matrix A before dtrsm:"<<endl;
