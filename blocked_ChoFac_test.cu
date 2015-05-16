@@ -173,20 +173,19 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			 //cudaMemcpyDeviceToHost, stream0);
 			 
 		}
-		/*
+		
 		if (i != 0 && i + B < N) {
 
 			dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
-					ld, matrix + i * ld + (i + B), ld, checksum1 + (i + B) / B,
-					checksum1_ld, checksum2 + (i + B) / B, checksum2_ld,
-					checksum1 + i * checksum1_ld + (i + B) / B, checksum1_ld,
-					checksum2 + i * checksum2_ld + (i + B) / B, checksum2_ld,
-					v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
+					ld, matrix + i * ld + (i + B), ld, 
+					checksum + ((i + B) / B)*2, checksum_ld,
+					checksum1 + i * checksum1_ld + ((i + B) / B)*2, checksum_ld,
+					vd, vd_ld, chkd, chkd_ld, FT);
 		}
 		
 		
 		cudaStreamSynchronize(stream0);
-		*/
+		
 		//int info;
 		dpotrfFT(temp, B, B, chk, 2, v, v_ld, FT);
 		
