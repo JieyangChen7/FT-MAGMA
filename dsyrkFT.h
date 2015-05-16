@@ -21,10 +21,10 @@ __global__ void detectAndCorrectForSyrk(double * C, int ldc,
  * m: number of col of A
  */
 void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * C, int ldc,
-		double * checksumA1, int incA1, double * checksumA2, int incA2,
-		double * checksumC1, int incC1, double * checksumC2, int incC2,
-		double * v1d, double * v2d,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT){
+		double * checksumA, int checksumA_ld,
+		double * checksumC, int checksumC_ld,
+		double * vd, int vd_ld,
+		double * chk, int chk_ld, bool FT){
 	
 	/*cout<<"checksum1 of A before dsyrk:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), 1,m);
@@ -41,30 +41,31 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	double one = 1;
 	double zero = 0;
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
-	//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
+	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
 	if(FT){
 		
 		//recalculate checksum1 and checksum2
+		cubladDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C, ldc, &zero, chk, chk_ld);
 	//	cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v1d, 1,
 	//							&zero, chk1, chk1_ld);
 	//	cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v2d, 1,
 	//							&zero, chk2, chk2_ld);
 		
 		
-		/*cout<<"recalculated checksum1 of C after dsyrk:"<<endl;
-		printMatrix_gpu(chk1, chk1_pitch, 1, n);
-		cout<<"recalculated checksum2 of C after dsyrk:"<<endl;
+		cout<<"recalculated checksum of C after dsyrk:"<<endl;
+		printMatrix_gpu(chk, chk_ld*sizeof(double), n, n);
+		/*cout<<"recalculated checksum2 of C after dsyrk:"<<endl;
 		printMatrix_gpu(chk2, chk2_pitch, 1, n);
 		*/
 		
 		//update checksum1 and checksum2
-		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 2, n, m, &negone, checksumA1, incA1, A, lda, &one, checksumC1, incC1);
+		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 2, n, m, &negone, checksumA, checksumA_ld, A, lda, &one, checksumC, checksumC_ld);
 		//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA2, incA2, A, lda, &one, checksumC2, incC2);
 		
-		/*cout<<"updated checksum1 of C after dsyrk:"<<endl;
-		printMatrix_gpu(checksumC1, incC1*sizeof(double), 1,n);
-		cout<<"updated checksum2 of C after dsyrk:"<<endl;
+		cout<<"updated checksum of C after dsyrk:"<<endl;
+		printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), 2,n);
+		/*cout<<"updated checksum2 of C after dsyrk:"<<endl;
 		printMatrix_gpu(checksumC2, incC2*sizeof(double), 1,n);
 		*/
 		//detect error and correct error
