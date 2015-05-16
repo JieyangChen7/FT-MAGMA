@@ -148,10 +148,10 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		 
 		if (i > 0) {
 			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
-					checksum1 + i / B, checksum1_ld, checksum2 + i / B,
-					checksum2_ld, checksum1 + (i / B) + i * checksum1_ld,
-					checksum1_ld, checksum2 + (i / B) + i * checksum2_ld,
-					checksum2_ld, v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld,
+					checksum + (i / B)*2, checksum_ld,
+					checksum + (i / B)*2 + i * checksum_ld, checksum_ld,
+					vd, vd_ld, 
+					chkd, chkd_ld,
 					FT);
 			
 		}
