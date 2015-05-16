@@ -98,7 +98,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			*(v + i + B) = i+1;
 		}
 		v_ld = B;
-		printMatrix_host(v, B, 2);
+		//printMatrix_host(v, B, 2);
 		
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
@@ -108,7 +108,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cudaMemcpy2D(vd, vd_pitch, v, B * sizeof(double), B * sizeof(double),
 				2, cudaMemcpyHostToDevice);
 		
-		printMatrix_gpu(vd, vd_pitch, B, 2);
+		//printMatrix_gpu(vd, vd_pitch, B, 2);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		
@@ -125,7 +125,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//initialize checksums
 		checksum = initializeChecksum(handle1, matrix, ld, N, B, vd, vd_ld, checksum_pitch);
 		checksum_ld = checksum_pitch / sizeof(double);
-		printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
+		//printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
 		//cout<<"checksums initialized"<<endl;
 
 	}
@@ -252,6 +252,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	int result_ld = result_pitch / sizeof(double);
 
 	matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
+	matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 	//cudaFree(result);
 
 	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins,

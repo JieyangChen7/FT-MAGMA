@@ -59,8 +59,8 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		}
 		
 		
-		cout<<"recalculated checksum of C after dgemm:"<<endl;
-		printMatrix_gpu(chk, chk_ld* sizeof(double), (m/n)*2,n);
+		//cout<<"recalculated checksum of C after dgemm:"<<endl;
+		//printMatrix_gpu(chk, chk_ld* sizeof(double), (m/n)*2,n);
 		/*cout<<"recalculated checksum2 of C after dgemm:"<<endl;
 		printMatrix_gpu(chk2, chk2_pitch, m/n,n);
 		*/	
@@ -73,8 +73,8 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		//		checksumA2, incA2, B, ldb, &one, checksumC2, incC2);
 		
 		
-		cout<<"updated checksum of C after dgemm:"<<endl;
-		printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), (m/n)*2,n);
+		//cout<<"updated checksum of C after dgemm:"<<endl;
+		//printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), (m/n)*2,n);
 		/*cout<<"updated checksum2 of C after dgemm:"<<endl;
 		printMatrix_gpu(checksumC2, incC2*sizeof(double), m/n,n);
 		*/
