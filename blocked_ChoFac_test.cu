@@ -140,11 +140,11 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	
 	for (int i = 0; i < N; i += B) {
 
-		 cout<<"i="<<i<<endl;
-		 cout<<"matrix:"<<endl;
-		 printMatrix_gpu(matrix, ld*sizeof(double), N, N);
-		 cout<<"checksum:"<<endl;
-		 printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
+		 //cout<<"i="<<i<<endl;
+		 //cout<<"matrix:"<<endl;
+		 //printMatrix_gpu(matrix, ld*sizeof(double), N, N);
+		 //cout<<"checksum:"<<endl;
+		 //printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
 		 /*
 		if (i > 0) {
 			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
@@ -205,19 +205,18 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			 
 		}
 		
-		/*
+		
 		//update B    
 		
 		if (i + B < N) {
 			cudaStreamSynchronize(stream0);
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld,
 					matrix + i * ld + i + B, ld,
-					checksum1 + (i + B) / B + i * checksum1_ld, checksum1_ld,
-					checksum2 + (i + B) / B + i * checksum2_ld, checksum2_ld,
-					v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
+					checksum + ((i + B) / B )*2 + i * checksum_ld, checksum_ld,
+					vd, vd_ld, chkd, chkd_ld, FT);
 		}
 		
-		*/
+		
 
 	}
 

@@ -27,11 +27,12 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
  */
 
 void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
-		double * B, int ldb, double * checksumB1, int incB1,
-		double * checksumB2, int incB2, double * v1d, double * v2d,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT) {
+		double * B, int ldb, double * checksumB, int checksumB_ld,
+		double * vd, int vd_ld,
+		double * chk, int chk_ld, bool FT) {
 
-	/*cout<<"matrix A before dtrsm:"<<endl;
+	/*
+	 cout<<"matrix A before dtrsm:"<<endl;
 	 printMatrix_gpu(A,lda*sizeof(double),n,n);
 	 
 	 cout<<"checksum1 of B before dtrsm:"<<endl;
@@ -53,38 +54,41 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		//recalculate checksum1 and checksum2
 		double beta = 0;
 		for (int i = 0; i < m; i += n) {
+			cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, one, vd, vd_ld, B, ldb, zero, chk, chk_ld);
+			/*
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, v1d, 1,
 					&beta, chk1 + (i / n), chk1_ld);
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, v2d, 1,
 					&beta, chk2 + (i / n), chk2_ld);
+			*/
 		}
 		
 		
-		/*cout<<"recalculated checksum1 of B after dtrsm:"<<endl;
-		 printMatrix_gpu(chk1,chk1_pitch,m/n,n);
-		 cout<<"recalculated checksum2 of B after dtrsm:"<<endl;
+		cout<<"recalculated checksum of B after dtrsm:"<<endl;
+		printMatrix_gpu(chk,chk_ld*sizeof(double),(m/n)*2,n);
+		 /*cout<<"recalculated checksum2 of B after dtrsm:"<<endl;
 		 printMatrix_gpu(chk2,chk2_pitch,m/n,n);
 		 */
 		
 		//update checksum1 and checksum2
 		cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
-				CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, m / n, n, &alpha, A, lda,
-				checksumB1, incB1);
-		cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
-				CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, m / n, n, &alpha, A, lda,
+				CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, (m / n)*2, n, &alpha, A, lda,
+				checksumB, checksumB_ld);
+		//cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, \
+				CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, m / n, n, &alpha, A, lda, \
 				checksumB2, incB2);
 		
 		//cudaStream_t stream1;
 		//cublasGetStream(handle, &stream1);
 		//cudaStreamSynchronize(stream1);
 
-		/*cout<<"updated checksum1 of B after dtrsm:"<<endl;
-		 printMatrix_gpu(checksumB1,incB1*sizeof(double),m/n,n);
-		 cout<<"updated checksum2 of B after dtrsm:"<<endl;
+		cout<<"updated checksum of B after dtrsm:"<<endl;
+		printMatrix_gpu(checksumB, checksumB_ld*sizeof(double),(m/n)*2,n);
+		 /*cout<<"updated checksum2 of B after dtrsm:"<<endl;
 		 printMatrix_gpu(checksumB2,incB2*sizeof(double),m/n,n);
 		 */
-		detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n,
-			checksumB1, incB1, checksumB2, incB2,
-			chk1, chk1_ld, chk2, chk2_ld);
+		//detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n, \
+			checksumB1, incB1, checksumB2, incB2, \
+			chk1, chk1_ld, chk2, chk2_ld); 
 	}
 }
