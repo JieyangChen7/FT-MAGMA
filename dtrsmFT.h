@@ -57,7 +57,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		//recalculate checksum1 and checksum2
 		double beta = 0;
 		for (int i = 0; i < m; i += n) {
-			cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, one, vd, vd_ld, B, ldb, zero, chk, chk_ld);
+			cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, B, ldb, &zero, chk, chk_ld);
 			/*
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, v1d, 1,
 					&beta, chk1 + (i / n), chk1_ld);
