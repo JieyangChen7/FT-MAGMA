@@ -179,7 +179,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
 					ld, matrix + i * ld + (i + B), ld, 
 					checksum + ((i + B) / B)*2, checksum_ld,
-					checksum1 + i * checksum1_ld + ((i + B) / B)*2, checksum_ld,
+					checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
 					vd, vd_ld, chkd, chkd_ld, FT);
 		}
 		
