@@ -246,7 +246,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	size_t result_pitch;
 	//Memory allocation on RAM and DRAM
 	cudaMallocPitch((void**) &matrix, &matrix_pitch, N * sizeof(double), N);
-	cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
+	//cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
 
 	int matrix_ld = matrix_pitch / sizeof(double);
 	int result_ld = result_pitch / sizeof(double);
