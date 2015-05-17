@@ -277,6 +277,17 @@ int main(int argc, char**argv) {
 		FT = true;
 	int TEST_NUM = 1;
 	cout << "Input config:N=" << N << ", B=" << B << ", FT=" << FT << endl;
+	
+	cout<<"test cublas"<<endl;
+	
+	cublasStatus_t cublasStatus;
+	cublasHandle_t handle;
+	cublasStatus = cublasCreate(&handle);
+	if (cublasStatus != CUBLAS_STATUS_SUCCESS)
+		cout << "CUBLAS NOT INITIALIZED(handle1) in main"
+			<< endl;
+	
+	
 	//int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
 	//int b = 256; 
 	//for (int k = 0; k < 1; k++) {
