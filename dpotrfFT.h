@@ -21,7 +21,7 @@ void dpotrfFT(double * A, int lda, int n,
 	double one = 1;
 	double zero = 0;
 	double negone = -1;
-	
+
 	//cout<<"matrix A before dpotrf:"<<endl;
 	//printMatrix_host(A,n,n);
 	
