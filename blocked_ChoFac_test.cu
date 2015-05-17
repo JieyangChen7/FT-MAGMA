@@ -136,7 +136,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		return;
 	}
 	//start of profiling
-	cudaProfilerStart();
+	//cudaProfilerStart();
 	
 	for (int i = 0; i < N; i += B) {
 
@@ -219,16 +219,16 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 
 	}
 
-	
+	cudaStreamSynchronize(stream0);
+	cudaStreamSynchronize(stream1);
 	//end of profiling
-	cudaProfilerStop();
+	//cudaProfilerStop();
 
 	if (PAPI_flops(real_time, proc_time, flpins, mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
-	cudaStreamSynchronize(stream0);
-	cudaStreamSynchronize(stream1);
+	
 
 	cublasDestroy(handle1);
 	cudaFreeHost(temp);
