@@ -241,20 +241,20 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 
 	char uplo = 'l';
 	double * matrix;
-	double * result;
+	//double * result;
 	size_t matrix_pitch;
-	size_t result_pitch;
+	//size_t result_pitch;
 	//Memory allocation on RAM and DRAM
 	cudaMallocPitch((void**) &matrix, &matrix_pitch, N * sizeof(double), N);
-	cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
+	//cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
 
 	int matrix_ld = matrix_pitch / sizeof(double);
-	int result_ld = result_pitch / sizeof(double);
+	//int result_ld = result_pitch / sizeof(double);
 
-	matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
-	//matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
+	//matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
+	matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 
-	//my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \
+	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \
 			mflops, FT);
 
 	//Verify result
@@ -265,7 +265,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	 }
 	 */
 	cudaFree(matrix);
-	cudaFree(result);
+	//cudaFree(result);
 
 }
 
@@ -277,17 +277,7 @@ int main(int argc, char**argv) {
 		FT = true;
 	int TEST_NUM = 1;
 	cout << "Input config:N=" << N << ", B=" << B << ", FT=" << FT << endl;
-	
-	cout<<"test cublas"<<endl;
-	
-	cublasStatus_t cublasStatus;
-	cublasHandle_t handle;
-	cublasStatus = cublasCreate(&handle);
-	if (cublasStatus != CUBLAS_STATUS_SUCCESS)
-		cout << "CUBLAS NOT INITIALIZED(handle1) in main"
-			<< endl;
-	
-	
+
 	//int n[10] = { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 };
 	//int b = 256; 
 	//for (int k = 0; k < 1; k++) {
