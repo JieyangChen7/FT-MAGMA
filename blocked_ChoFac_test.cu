@@ -246,15 +246,15 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	size_t result_pitch;
 	//Memory allocation on RAM and DRAM
 	cudaMallocPitch((void**) &matrix, &matrix_pitch, N * sizeof(double), N);
-	//cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
+	cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
 
 	int matrix_ld = matrix_pitch / sizeof(double);
 	int result_ld = result_pitch / sizeof(double);
 
-	//matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
-	matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
+	matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
+	//matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 
-	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins,
+	//my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \
 			mflops, FT);
 
 	//Verify result
@@ -265,7 +265,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	 }
 	 */
 	cudaFree(matrix);
-	//cudaFree(result);
+	cudaFree(result);
 
 }
 
