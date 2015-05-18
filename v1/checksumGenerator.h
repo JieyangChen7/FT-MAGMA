@@ -1,6 +1,6 @@
 using namespace std;
 //initialize checksum
-double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int N, int B, double * vd, int vdld, size_t& chksum_pitch) {
+double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int N, int B, double * vd, size_t& chksum_pitch) {
 
 	//cout<<"checksum vector on GPU:"<<endl;
 	//printVector_gpu(vd,B);
