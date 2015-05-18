@@ -89,15 +89,16 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
 		v = new double[B * 2];
+		v_ld = 2;
 		//v2 = new double[B];
 		//first vector
 		for (int i = 0; i < B; ++i) {
-			*(v + i * B) = 1;
+			*(v + i * v_ld) = 1;
 		}
 		for (int i = 0; i < B; ++i) {
-			*(v + i * B + 1) = i+1;
+			*(v + i * v_ld + 1) = i+1;
 		}
-		v_ld = 2;
+		
 		//printMatrix_host(v, B, 2);
 		
 		cout<<"checksum vector on CPU initialized"<<endl;
