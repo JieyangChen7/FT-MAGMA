@@ -39,10 +39,10 @@ void dpotrfFT(double * A, int lda, int n,
 		*/
 		//recalculate checksum1 and checksum2
 		
-		//double * chk1 = new double[n];
-		//double * chk2 = new double[n];
-		//dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
-		//dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
+		double * chk1 = new double[n];
+		double * chk2 = new double[n];
+		dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
+		dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
 		
 		//cout<<"recalcuated checksum on CPU after factorization:"<<endl;
 		//printVector_host(chk1, n);
@@ -50,23 +50,16 @@ void dpotrfFT(double * A, int lda, int n,
 		
 		double negone = -1;
 		//update checksum1 and checksum2
-		for (int i = 0; i < n; i++) {
+		/*for (int i = 0; i < n; i++) {
 			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
 			daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
-			/*for (int j = i + 1; j < n; j++) {
-				chksum1[j] = chksum1[j] - chksum1[i] * get(A, n, n, j, i);
-			}
-			*/
 		}
 	
 		for (int i = 0; i < n; i++) {
 			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
 			daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
-			/*for (int j = i + 1; j < n; j++) {
-				chksum2[j] = chksum2[j] - chksum2[i] * get(A, n, n, j, i);
-			}
-			*/
 		}
+		*/
 		
 		//cout<<"updated checksum on CPU after factorization:"<<endl;
 		//printVector_host(chksum1, n);
