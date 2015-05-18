@@ -41,8 +41,8 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	 */
 
 	double alpha = 1;
-	//cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T,
-	//		CUBLAS_DIAG_NON_UNIT, m, n, &alpha, A, lda, B, ldb);
+	cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T,
+			CUBLAS_DIAG_NON_UNIT, m, n, &alpha, A, lda, B, ldb);
 
 	/*cout<<"matrix A after dtrsm:"<<endl;
 	 printMatrix_gpu(A,lda*sizeof(double),n,n);
@@ -52,13 +52,13 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		
 		//recalculate checksum1 and checksum2
 		double beta = 0;
-		/*for (int i = 0; i < m; i += n) {
+		for (int i = 0; i < m; i += n) {
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, v1d, 1,
 					&beta, chk1 + (i / n), chk1_ld);
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, v2d, 1,
 					&beta, chk2 + (i / n), chk2_ld);
 		}
-		*/
+		
 		
 		/*cout<<"recalculated checksum1 of B after dtrsm:"<<endl;
 		 printMatrix_gpu(chk1,chk1_pitch,m/n,n);
