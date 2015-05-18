@@ -86,7 +86,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	//int checksum2_ld;
 
 	if (FT) {
-		//cout<<"check sum initialization started"<<endl;
+		cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
 		v = new double[B * 2];
 		//v2 = new double[B];
@@ -100,7 +100,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		v_ld = 2;
 		//printMatrix_host(v, B, 2);
 		
-		//cout<<"checksum vector on CPU initialized"<<endl;
+		cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU
 		cudaMallocPitch((void**) &vd, &vd_pitch, 2 * sizeof(double), B);
@@ -109,24 +109,24 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 				B, cudaMemcpyHostToDevice);
 		
 		//printMatrix_gpu(vd, vd_pitch, B, 2);
-		//cout<<"checksum vector on gpu initialized"<<endl;
+		cout<<"checksum vector on gpu initialized"<<endl;
 
 		
 		
 		//allocate space for recalculated checksum on CPU
 		chk = new double[B * 2];
-		//cout<<"allocated space for recalculated checksum on CPU"<<endl;
+		cout<<"allocated space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on CPU
 		cudaMallocPitch((void**) &chkd, &chkd_pitch, (N / B) * 2 * sizeof(double),B);
 		chkd_ld = chkd_pitch / sizeof(double);
-		//cout<<"allocated space for recalculated checksum on GPU"<<endl;
+		cout<<"allocated space for recalculated checksum on GPU"<<endl;
 
 		//initialize checksums
 		checksum = initializeChecksum(handle1, matrix, ld, N, B, vd, vd_ld, checksum_pitch);
 		checksum_ld = checksum_pitch / sizeof(double);
 		//printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
-		//cout<<"checksums initialized"<<endl;
+		cout<<"checksums initialized"<<endl;
 
 	}
 	
