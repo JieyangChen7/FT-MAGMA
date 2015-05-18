@@ -65,7 +65,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, v2d, 1,
 					&beta, chk2 + (i / n), chk2_ld);
 			*/
-		}
+	//	}
 		
 		
 		//cout<<"recalculated checksum of B after dtrsm:"<<endl;
