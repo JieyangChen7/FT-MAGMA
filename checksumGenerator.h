@@ -13,7 +13,7 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 	double one = 1;
 	double zero = 0;
 	for (int i = 0; i < N; i += B) {
-		cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, N, B, &one, vd, vd_ld, matrix + i, ld,
+		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 2, N, B, &one, vd, vd_ld, matrix + i, ld,
 				&zero, chksum + (i / B) * 2, chksum_ld);
 		/*cout<<"i="<<i<<endl;
 		printMatrix_gpu(matrix+i,ld*sizeof(double),B,N);

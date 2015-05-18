@@ -92,21 +92,21 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//v2 = new double[B];
 		//first vector
 		for (int i = 0; i < B; ++i) {
-			*(v + i) = 1;
+			*(v + i * B) = 1;
 		}
 		for (int i = 0; i < B; ++i) {
-			*(v + i + B) = i+1;
+			*(v + i * B + 1) = i+1;
 		}
-		v_ld = B;
+		v_ld = 2;
 		//printMatrix_host(v, B, 2);
 		
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU
-		cudaMallocPitch((void**) &vd, &vd_pitch, B * sizeof(double), 2);
+		cudaMallocPitch((void**) &vd, &vd_pitch, 2 * sizeof(double), B);
 		vd_ld = vd_pitch / sizeof(double);
-		cudaMemcpy2D(vd, vd_pitch, v, B * sizeof(double), B * sizeof(double),
-				2, cudaMemcpyHostToDevice);
+		cudaMemcpy2D(vd, vd_pitch, v, 2 * sizeof(double), 2 * sizeof(double),
+				B, cudaMemcpyHostToDevice);
 		
 		//printMatrix_gpu(vd, vd_pitch, B, 2);
 		//cout<<"checksum vector on gpu initialized"<<endl;
