@@ -43,7 +43,7 @@ void dpotrfFT(double * A, int lda, int n,
 		double * chk = new double[n*2];
 		int chk_ld = 2;
 		//double * chk2 = new double[n];
-		//dgemm('T','N',2, n, n, one, v, v_ld, A, lda, zero, chk, chk_ld);
+		dgemm('T','N',2, n, n, one, v, v_ld, A, lda, zero, chk, chk_ld);
 		//dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
 		//dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
 		
@@ -53,13 +53,13 @@ void dpotrfFT(double * A, int lda, int n,
 		
 		
 		//update checksum1 and checksum2
-		for (int i = 0; i < n; i++) {
-			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
-			*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, n, n, i, i);
-			dgemm('N', 'T', 2, n-i-1, 1, negone, chksum + i*chksum_ld, chksum_ld, A + i*lda + i+1, lda, one, chksum + (i+1)*chksum_ld, chksum_ld);
+		//for (int i = 0; i < n; i++) {
+		//	*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
+		//	*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, n, n, i, i);
+		//	dgemm('N', 'T', 2, n-i-1, 1, negone, chksum + i*chksum_ld, chksum_ld, A + i*lda + i+1, lda, one, chksum + (i+1)*chksum_ld, chksum_ld);
 			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
 
-		}
+		//}
 		/*
 		for (int i = 0; i < n; i++) {
 			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
