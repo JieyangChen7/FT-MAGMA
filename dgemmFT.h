@@ -26,7 +26,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		double * checksumA, int checksumA_ld, 
 		double * checksumC,int checksumC_ld,
 		double * vd, int vd_ld,
-		double * chk, int chk_ld,
+		double * chk1, int chk1_ld, double * chk2, int chk2_ld,
 		bool FT) {
 
 	/*cout<<"checksum1 of A before dgemm:"<<endl;
@@ -46,15 +46,12 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 			ldb, &one, C, ldc);
 
 	if(FT){
-		double * v2 = vd + vd_ld;
 		//recalculate checksum1 and checksum2
 		for (int i = 0; i < m; i += n) {
 			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C + i, ldc, \
 					&zero, chk +(i/n)*2, chk_ld);
-			double * chk1 = chk +(i/n)*2;
-			double * chk2 = chk1 + 1;
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, vd, 1, &zero, chk1, chk_ld);
-			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, v2, 1, &zero, chk2, chk_ld);
+			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, vd + vd_ld, 1, &zero, chk2, chk_ld);
 		}
 		
 		
