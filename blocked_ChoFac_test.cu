@@ -89,14 +89,14 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
 		v = new double[B * 2];
-		v_ld = 2;
+		v_ld = B;
 		//v2 = new double[B];
 		//first vector
 		for (int i = 0; i < B; ++i) {
-			*(v + i * v_ld) = 1;
+			*(v + i) = 1;
 		}
 		for (int i = 0; i < B; ++i) {
-			*(v + i * v_ld + 1) = i+1;
+			*(v + v_ld + i) = i+1;
 		}
 		
 		//printMatrix_host(v, B, 2);
@@ -104,15 +104,15 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU
-		if(cudaMallocPitch((void**) &vd, &vd_pitch, 2 * sizeof(double), B)!=cudaSuccess){
+		if(cudaMallocPitch((void**) &vd, &vd_pitch, B * sizeof(double), 2)!=cudaSuccess){
 			cout<<"checksum vector on gpu allocate ERROR"<<endl;
 			return;
 		}
 		vd_ld = vd_pitch / sizeof(double);
 		
 		cout<<"checksum vector on gpu allocated"<<endl;
-		cudaMemcpy2D(vd, vd_pitch, v, 2 * sizeof(double), 2 * sizeof(double),
-				B, cudaMemcpyHostToDevice);
+		cudaMemcpy2D(vd, vd_pitch, v, B * sizeof(double), B * sizeof(double),
+				2, cudaMemcpyHostToDevice);
 		
 		//printMatrix_gpu(vd, vd_pitch, B, 2);
 		cout<<"checksum vector on gpu initialized"<<endl;
