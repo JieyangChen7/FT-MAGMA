@@ -42,7 +42,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
-	//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B, \
+	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B, \
 			ldb, &one, C, ldc);
 
 	if(FT){
@@ -63,7 +63,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		
 		
 		//update checksum1 and checksum2
-		//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, (m/n)*2, n, k, &negone, \
+		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, (m/n)*2, n, k, &negone, \
 				checksumA, checksumA_ld, B, ldb, &one, checksumC, checksumC_ld);
 		
 		

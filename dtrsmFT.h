@@ -29,7 +29,8 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
-		double * chk, int chk_ld, bool FT) {
+		double * chk1, int chk1_ld, double * chk2, int chk2_ld, 
+		bool FT) {
 	double one = 1;
 	double zero = 0;
 	double negone = -1;
@@ -57,14 +58,14 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		//recalculate checksum1 and checksum2
 		double beta = 0;
 		for (int i = 0; i < m; i += n) {
-			cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, B + i, ldb, &zero, \
+			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, B + i, ldb, &zero, \
 					chk + (i/n)*2, chk_ld);
-			/*
-			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, v1d, 1,
-					&beta, chk1 + (i / n), chk1_ld);
-			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, v2d, 1,
-					&beta, chk2 + (i / n), chk2_ld);
-			*/
+			
+			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, vd, 1,
+					&beta, chk1, chk1_ld);
+			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, vd + vd_ld, 1,
+					&beta, chk2, chk2_ld);
+			
 		}
 		
 		
