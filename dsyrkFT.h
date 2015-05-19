@@ -24,7 +24,9 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
-		double * chk, int chk_ld, bool FT){
+		double * chk1, int chk1_ld,
+		double * chk2, int chk2_ld,
+		bool FT){
 	
 	/*cout<<"checksum1 of A before dsyrk:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), 1,m);
@@ -48,8 +50,8 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		//recalculate checksum1 and checksum2
 		
 		//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C, ldc, &zero, chk, chk_ld);
-	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd, 1, &zero, chk, chk_ld);
-	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd + vd_ld, 1, &zero, chk+1, chk_ld);
+	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd, 1, &zero, chk1, chk1_ld);
+	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
 		
 		
 		//cout<<"recalculated checksum of C after dsyrk:"<<endl;
