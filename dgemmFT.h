@@ -50,8 +50,8 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		for (int i = 0; i < m; i += n) {
 			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C + i, ldc, \
 					&zero, chk +(i/n)*2, chk_ld);
-			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, vd, 1, &zero, chk1, chk_ld);
-			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, vd + vd_ld, 1, &zero, chk2, chk_ld);
+			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, vd, 1, &zero, chk1, chk1_ld);
+			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
 		}
 		
 		
