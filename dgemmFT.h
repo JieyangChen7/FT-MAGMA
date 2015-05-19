@@ -46,7 +46,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 			ldb, &one, C, ldc);
 
 	if(FT){
-		double * v2 = vd + vd_ld
+		double * v2 = vd + vd_ld;
 		//recalculate checksum1 and checksum2
 		for (int i = 0; i < m; i += n) {
 			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C + i, ldc, \
