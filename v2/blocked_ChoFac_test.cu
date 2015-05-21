@@ -71,6 +71,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	int vd_ld;
 	//size_t v2d_pitch;
 	double * chk;
+	double * chkd;
 	size_t chkd_pitch;
 	int chkd_ld;
 	
@@ -115,7 +116,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 
 		//allocate space for reclaculated checksum on CPU
 		cudaMallocPitch((void**) &chkd, &chkd_pitch, (N / B) * 2 * sizeof(double),B);
-		chk1d_ld = chk1d_pitch / sizeof(double);
+		chkd_ld = chkd_pitch / sizeof(double);
 		//cout<<"allocated space for recalculated checksum on GPU"<<endl;
 
 		//initialize checksums
