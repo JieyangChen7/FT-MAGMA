@@ -68,7 +68,7 @@ void matrixGenerator_gpu(char uplo, double * matrix, int matrix_ld,
 }
 
 void matrixGenerator_gpu2(char uplo, double * matrix, int matrix_ld, double * result, int result_ld,
-	 int N, int B) {
+	 int N, int B, bool DEBUG) {
 	double a = 10.0;
 	//initialize cublas
 	cublasStatus_t cublasStatus;
@@ -107,10 +107,12 @@ void matrixGenerator_gpu2(char uplo, double * matrix, int matrix_ld, double * re
 	cudaDeviceSynchronize();
 	cublasDestroy(handle);
 	
-	//print matrix
-	printMatrix_gpu(matrix, matrix_ld * sizeof(double),N, N);
-	//print result
-	printMatrix_gpu(result,result_ld*sizeof(double),N,N);
+	if (DEBUG) {
+		//print matrix
+		printMatrix_gpu(matrix, matrix_ld * sizeof(double),N, N);
+		//print result
+		printMatrix_gpu(result,result_ld*sizeof(double),N,N);
+	}
 	
 }
 

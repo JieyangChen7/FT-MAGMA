@@ -255,7 +255,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	int matrix_ld = matrix_pitch / sizeof(double);
 	int result_ld = result_pitch / sizeof(double);
 
-	matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
+	matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2, DEBUG);
 	//matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 
 	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \

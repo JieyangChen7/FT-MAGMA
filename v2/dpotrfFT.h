@@ -22,8 +22,8 @@ void dpotrfFT(double * A, int lda, int n,
 	double zero = 0;
 	double negone = -1;
 
-	cout<<"matrix A before dpotrf:"<<endl;
-	printMatrix_host(A,n,n);
+	//cout<<"matrix A before dpotrf:"<<endl;
+	//printMatrix_host(A,n,n);
 	
 	//do Choleksy factorization
 	int info;
@@ -31,13 +31,9 @@ void dpotrfFT(double * A, int lda, int n,
 	
 	if (FT) {
 	
-		cout<<"matrix A after dpotrf:"<<endl;
-		printMatrix_host(A,n,n);
+		//cout<<"matrix A after dpotrf:"<<endl;
+		//printMatrix_host(A,n,n);
 		
-		/*cout<<"checksum on CPU before factorization:"<<endl;
-		printVector_host(chksum1, n);
-		printVector_host(chksum2, n);
-		*/
 		//recalculate checksum1 and checksum2
 		
 		double * chk = new double[n*2];
