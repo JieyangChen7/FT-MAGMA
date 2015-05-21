@@ -189,7 +189,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cudaStreamSynchronize(stream0);
 		
 		//int info;
-		dpotrfFT(temp, B, B, chk, 2, v, v_ld, FT);
+		dpotrfFT(temp, B, B, chk, 2, v, v_ld, FT, DEBUG);
 		
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
 				B * sizeof(double), B * sizeof(double), B,
@@ -300,7 +300,7 @@ int main(int argc, char**argv) {
 	//cout<<"flops:"<<flops<<"  ";
 
 	for (int i = 0; i < TEST_NUM; i++) {
-		test_mydpotrf(N, B, &real_time, &proc_time, &flpins, &mflops, FT);
+		test_mydpotrf(N, B, &real_time, &proc_time, &flpins, &mflops, FT, DEBUG);
 		total_real_time += real_time;
 		total_proc_time += proc_time;
 		total_flpins += flpins;
