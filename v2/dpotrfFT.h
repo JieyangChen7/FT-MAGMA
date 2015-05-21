@@ -40,10 +40,11 @@ void dpotrfFT(double * A, int lda, int n,
 		int chk_ld = 2;
 		dgemm('T','N',2, n, n, one, v, v_ld, A, lda, zero, chk, chk_ld);
 	
-		if (DEBUG) {
+		/*if (DEBUG) {
 			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
 			printMatrix_host(chk, 2, n);
 		}
+		*/
 		
 		//update checksum1 and checksum2
 		for (int i = 0; i < n; i++) {
@@ -53,10 +54,11 @@ void dpotrfFT(double * A, int lda, int n,
 
 		}
 		
-		if (DEBUG) {
+		/*if (DEBUG) {
 			cout<<"updated checksum on CPU after factorization:"<<endl;
 			printMatrix_host(chksum, 2, n);
 		}
+		*/
 		
 	
 		//checking error to be finished

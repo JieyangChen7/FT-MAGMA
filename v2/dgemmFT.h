@@ -52,20 +52,21 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 					&zero, chk +(i/n)*2, chk_ld);
 		}
 		
-		if (DEBUG) {
+		/*if (DEBUG) {
 			cout<<"recalculated checksum of C after dgemm:"<<endl;
 			printMatrix_gpu(chk, chk_ld* sizeof(double), (m/n)*2,n);
 		}
-		
+		*/
 		
 		//update checksum1 and checksum2
 		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, (m/n)*2, n, k, &negone, \
 				checksumA, checksumA_ld, B, ldb, &one, checksumC, checksumC_ld);
 		
-		if (DEBUG) {
+		/*if (DEBUG) {
 			cout<<"updated checksum of C after dgemm:"<<endl;
 			printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), (m/n)*2,n);
 		}
+		*/
 		
 		//error detection and error correction
 	//	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,

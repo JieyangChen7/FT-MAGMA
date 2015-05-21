@@ -63,10 +63,11 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 			
 		}
 		
-		if (DEBUG) {
+		/*if (DEBUG) {
 			cout<<"recalculated checksum of B after dtrsm:"<<endl;
 			printMatrix_gpu(chk,chk_ld*sizeof(double),(m/n)*2,n);
 		}
+		*/
 		 
 		
 		//update checksum1 and checksum2
@@ -79,10 +80,11 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		//cublasGetStream(handle, &stream1);
 		//cudaStreamSynchronize(stream1);
 
-		if (DEBUG) {
+		/*if (DEBUG) {
 			cout<<"updated checksum of B after dtrsm:"<<endl;
 			printMatrix_gpu(checksumB, checksumB_ld * sizeof(double), (m / n) * 2, n);
 		}
+		*/
 		 
 		//detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n, \
 			checksumB1, incB1, checksumB2, incB2, \
