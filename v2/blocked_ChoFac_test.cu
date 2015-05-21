@@ -39,7 +39,7 @@ using namespace std;
 
 void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		float * real_time, float * proc_time, long long * flpins,
-		float * mflops, bool FT) {
+		float * mflops, bool FT, bool DEBUG) {
 
 	double * temp;
 	cudaHostAlloc((void**) &temp, B * B * sizeof(double), cudaHostAllocDefault);
@@ -149,7 +149,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum + (i / B)*2 + i * checksum_ld, checksum_ld,
 					vd, vd_ld, 
 					chkd, chkd_ld,
-					FT);
+					FT, DEBUG);
 			
 		}
 		
@@ -180,7 +180,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					ld, matrix + i * ld + (i + B), ld, 
 					checksum + ((i + B) / B)*2, checksum_ld,
 					checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
-					vd, vd_ld, chkd, chkd_ld, FT);
+					vd, vd_ld, chkd, chkd_ld, FT, DEBUG);
 		}
 		
 		
@@ -215,7 +215,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld,
 					matrix + i * ld + i + B, ld,
 					checksum + ((i + B) / B )*2 + i * checksum_ld, checksum_ld,
-					vd, vd_ld, chkd, chkd_ld, FT);
+					vd, vd_ld, chkd, chkd_ld, FT, DEBUG);
 		}
 		
 		
@@ -241,7 +241,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 }
 
 void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
-		long long * flpins, float * mflops, bool FT) {
+		long long * flpins, float * mflops, bool FT, bool DEBUG) {
 
 	char uplo = 'l';
 	double * matrix;
@@ -259,7 +259,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 
 	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \
-			mflops, FT);
+			mflops, FT, DEBUG);
 
 	//Verify result
 	/*if(resultVerify_gpu(result,result_ld,matrix,matrix_ld,N,2)){
@@ -279,6 +279,9 @@ int main(int argc, char**argv) {
 	bool FT = false;
 	if (argv[3][0] == '1')
 		FT = true;
+	bool DEBUG = false;
+	if (argv[4][0] == '1')
+			DEBUG = true;
 	int TEST_NUM = 1;
 	cout << "Input config:N=" << N << ", B=" << B << ", FT=" << FT << endl;
 
