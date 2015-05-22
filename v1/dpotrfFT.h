@@ -17,9 +17,11 @@ double get(double * matrix, int ld, int n, int i, int j) {
  */
 void dpotrfFT(double * A, int lda, int n, 
 		double * chksum1, int inc1, double * chksum2, int inc2, 
-		double * v1, double * v2, bool FT ) {
-	double alpha = 1;
-	double beta = 0;
+		double * v1, double * v2, bool FT , bool DEBUG) {
+	
+	double one = 1;
+	double zero = 0;
+	double negone = -1;
 	
 	//cout<<"matrix A before dpotrf:"<<endl;
 	//printMatrix_host(A,n,n);
@@ -28,7 +30,7 @@ void dpotrfFT(double * A, int lda, int n,
 	int info;
 	//dpotrf('L', n, A, n, &info);
 	
-	if(FT){
+	if (FT) {
 	
 		//cout<<"matrix A after dpotrf:"<<endl;
 		//printMatrix_host(A,n,n);
@@ -37,20 +39,15 @@ void dpotrfFT(double * A, int lda, int n,
 		printVector_host(chksum1, n);
 		printVector_host(chksum2, n);
 		*/
-		//recalculate checksum1 and checksum2
 		
+		//recalculate checksum1 and checksum2
 		double * chk1 = new double[n];
 		double * chk2 = new double[n];
-		dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
-		dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
+		dgemv('T', n, n, one, A, lda, v1, 1, zero, chk1, 1);
+		dgemv('T', n, n, one, A, lda, v2, 1, zero, chk2, 1);
 		
-		//cout<<"recalcuated checksum on CPU after factorization:"<<endl;
-		//printVector_host(chk1, n);
-		//printVector_host(chk2, n);
-		
-		double negone = -1;
 		//update checksum1 and checksum2
-		/*for (int i = 0; i < n; i++) {
+		for (int i = 0; i < n; i++) {
 			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
 			daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
 		}
@@ -59,11 +56,18 @@ void dpotrfFT(double * A, int lda, int n,
 			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
 			daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
 		}
-		*/
 		
-		//cout<<"updated checksum on CPU after factorization:"<<endl;
-		//printVector_host(chksum1, n);
-		//printVector_host(chksum2, n);
+		
+		if (DEBUG) {
+			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
+			printVector_host(chk1, n);
+			printVector_host(chk2, n);
+			
+			cout<<"updated checksum on CPU after factorization:"<<endl;
+			printVector_host(chksum1, n);
+			printVector_host(chksum2, n);
+		}
+		
 	
 		//checking error to be finished
 		/*for(int i=0;i<n;i++){

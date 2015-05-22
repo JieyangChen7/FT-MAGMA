@@ -26,7 +26,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		int incA1, double * checksumA2, int incA2, double * checksumC1,
 		int incC1, double * checksumC2, int incC2,
 		double * v1d, double * v2d,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT) {
+		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT, bool DEBUG) {
 
 	/*cout<<"checksum1 of A before dgemm:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), m/n,k);
@@ -54,26 +54,23 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 					&zero, chk2 + (i / n), chk2_ld);
 		}
 		
-		
-		/*cout<<"recalculated checksum1 of C after dgemm:"<<endl;
-		printMatrix_gpu(chk1, chk1_pitch, m/n,n);
-		cout<<"recalculated checksum2 of C after dgemm:"<<endl;
-		printMatrix_gpu(chk2, chk2_pitch, m/n,n);
-		*/	
-		
-		
 		//update checksum1 and checksum2
 		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m/n, n, k, &negone,
 				checksumA1, incA1, B, ldb, &one, checksumC1, incC1);
 		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m/n, n, k, &negone,
 				checksumA2, incA2, B, ldb, &one, checksumC2, incC2);
 		
-		
-		/*cout<<"updated checksum1 of C after dgemm:"<<endl;
-		printMatrix_gpu(checksumC1, incC1*sizeof(double), m/n,n);
-		cout<<"updated checksum2 of C after dgemm:"<<endl;
-		printMatrix_gpu(checksumC2, incC2*sizeof(double), m/n,n);
-		*/
+		if (DEBUG) {
+			cout<<"recalculated checksum1 of C after dgemm:"<<endl;
+			printMatrix_gpu(chk1, chk1_pitch, m/n,n);
+			cout<<"recalculated checksum2 of C after dgemm:"<<endl;
+			printMatrix_gpu(chk2, chk2_pitch, m/n,n);
+			
+			cout<<"updated checksum1 of C after dgemm:"<<endl;
+			printMatrix_gpu(checksumC1, incC1*sizeof(double), m/n,n);
+			cout<<"updated checksum2 of C after dgemm:"<<endl;
+			printMatrix_gpu(checksumC2, incC2*sizeof(double), m/n,n);
+		}
 		//error detection and error correction
 	//	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
 	//			checksumC1, incC1, checksumC2, incC2,
