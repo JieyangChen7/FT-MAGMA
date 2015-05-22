@@ -62,9 +62,9 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum1 of C after dsyrk:"<<endl;
-			printMatrix_gpu(chk1, chk1_pitch, 1, n);
+			printMatrix_gpu(chk1, chk1_ld * sizeof(double), 1, n);
 			cout<<"recalculated checksum2 of C after dsyrk:"<<endl;
-			printMatrix_gpu(chk2, chk2_pitch, 1, n);
+			printMatrix_gpu(chk2, chk2_ld * sizeof(double), 1, n);
 			
 			cout<<"updated checksum1 of C after dsyrk:"<<endl;
 			printMatrix_gpu(checksumC1, incC1 * sizeof(double), 1, n);

@@ -72,9 +72,9 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 
 		if (DEBUG) {
 			cout<<"recalculated checksum1 of B after dtrsm:"<<endl;
-			printMatrix_gpu(chk1, chk1_pitch, m / n, n);
+			printMatrix_gpu(chk1, chk1_ld * sizeof(double), m / n, n);
 			cout<<"recalculated checksum2 of B after dtrsm:"<<endl;
-			printMatrix_gpu(chk2, chk2_pitch, m / n, n);
+			printMatrix_gpu(chk2, chk2_ld * sizeof(double), m / n, n);
 					 
 			cout<<"updated checksum1 of B after dtrsm:"<<endl;
 			printMatrix_gpu(checksumB1, incB1 * sizeof(double), m / n, n);
