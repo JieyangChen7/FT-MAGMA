@@ -44,8 +44,8 @@ void dpotrfFT(double * A, int lda, int n,
 		double * chk2 = new double[n];
 		
 		//dgemm('T','N',2, n, n, one, v, v_ld, A, lda, zero, chk, chk_ld);
-		dgemv('T', n, n, alpha, A, lda, v, 1, beta, chk1, 1);
-		dgemv('T', n, n, alpha, A, lda, v + v_ld, 1, beta, chk2, 1);
+		dgemv('T', n, n, one, A, lda, v, 1, zero, chk1, 1);
+		dgemv('T', n, n, one, A, lda, v + v_ld, 1, zero, chk2, 1);
 		
 		
 		
