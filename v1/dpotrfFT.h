@@ -28,7 +28,7 @@ void dpotrfFT(double * A, int lda, int n,
 	
 	//do Choleksy factorization
 	int info;
-	dpotrf('L', n, A, n, &info);
+	//dpotrf('L', n, A, n, &info);
 	
 	if (FT) {
 	
@@ -46,6 +46,7 @@ void dpotrfFT(double * A, int lda, int n,
 		dgemv('T', n, n, one, A, lda, v1, 1, zero, chk1, 1);
 		dgemv('T', n, n, one, A, lda, v2, 1, zero, chk2, 1);
 		
+		/*
 		//update checksum1 and checksum2
 		for (int i = 0; i < n; i++) {
 			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
@@ -57,7 +58,7 @@ void dpotrfFT(double * A, int lda, int n,
 			daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
 		}
 		
-		
+		*/
 		if (DEBUG) {
 			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
 			printVector_host(chk1, n);
