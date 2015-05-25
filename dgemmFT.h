@@ -27,7 +27,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		double * checksumC,int checksumC_ld,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, double * chk2, int chk2_ld,
-		bool FT) {
+		bool FT, bool DEBUG) {
 
 	/*cout<<"checksum1 of A before dgemm:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), m/n,k);
@@ -45,7 +45,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B, \
 			ldb, &one, C, ldc);
 
-	if(FT){
+	if (FT) {
 		//recalculate checksum1 and checksum2
 		for (int i = 0; i < m; i += n) {
 			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C + i, ldc, \
@@ -55,23 +55,23 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		}
 		
 		
-		//cout<<"recalculated checksum of C after dgemm:"<<endl;
-		//printMatrix_gpu(chk, chk_ld* sizeof(double), (m/n)*2,n);
-		/*cout<<"recalculated checksum2 of C after dgemm:"<<endl;
-		printMatrix_gpu(chk2, chk2_pitch, m/n,n);
-		*/	
+			
 		
 		
 		//update checksum1 and checksum2
 		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, (m/n)*2, n, k, &negone, \
 				checksumA, checksumA_ld, B, ldb, &one, checksumC, checksumC_ld);
 		
+		if (DEBUG) {
+			cout<<"recalculated checksum of C after dgemm:"<<endl;
+			printMatrix_gpu(chk1, chk1_ld* sizeof(double), (m/n),n);
+			printMatrix_gpu(chk2, chk2_ld* sizeof(double), (m/n),n);
+			
+			cout<<"updated checksum of C after dgemm:"<<endl;
+			printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), (m/n)*2,n);
+		}
 		
-		//cout<<"updated checksum of C after dgemm:"<<endl;
-		//printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), (m/n)*2,n);
-		/*cout<<"updated checksum2 of C after dgemm:"<<endl;
-		printMatrix_gpu(checksumC2, incC2*sizeof(double), m/n,n);
-		*/
+		
 		//error detection and error correction
 	//	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
 	//			checksumC1, incC1, checksumC2, incC2,

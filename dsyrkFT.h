@@ -26,7 +26,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
-		bool FT){
+		bool FT, bool DEBUG){
 	
 	/*cout<<"checksum1 of A before dsyrk:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), 1,m);
@@ -54,24 +54,25 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
 		
 		
-		//cout<<"recalculated checksum of C after dsyrk:"<<endl;
-		//printMatrix_gpu(chk, chk_ld*sizeof(double), n, n);
-		/*cout<<"recalculated checksum2 of C after dsyrk:"<<endl;
-		printMatrix_gpu(chk2, chk2_pitch, 1, n);
-		*/
+		
 		
 		//update checksum1 and checksum2
 		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 2, n, m, &negone, checksumA, checksumA_ld, A, lda, &one, checksumC, checksumC_ld);
 		
-		//cout<<"updated checksum of C after dsyrk:"<<endl;
-		//printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), 2,n);
-		/*cout<<"updated checksum2 of C after dsyrk:"<<endl;
-		printMatrix_gpu(checksumC2, incC2*sizeof(double), 1,n);
-		*/
+		if (DEBUG) {
+			cout<<"recalculated checksum of C after dsyrk:"<<endl;
+			printMatrix_gpu(chk1, chk1_ld*sizeof(double), 1, n);
+			printMatrix_gpu(chk2, chk2_ld*sizeof(double), 1, n);
+			
+			cout<<"updated checksum of C after dsyrk:"<<endl;
+			printMatrix_gpu(checksumC1, checksumC1_ld*sizeof(double), 2,n);
+		}
+		
+		
 		//detect error and correct error
-	//	detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
-	//			checksumC1, incC1, checksumC2, incC2,
-	//			 chk1, chk1_ld, chk2, chk2_ld);
+		//detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
+		//			checksumC1, incC1, checksumC2, incC2,
+		//			 chk1, chk1_ld, chk2, chk2_ld);
 		
 	}
 }

@@ -17,7 +17,7 @@ double get(double * matrix, int ld, int n, int i, int j) {
  */
 void dpotrfFT(double * A, int lda, int n, 
 				double * chksum, int chksum_ld, double * v, int v_ld, 
-				bool FT ) {
+				bool FT, bool DEBUG) {
 	double one = 1;
 	double zero = 0;
 	double negone = -1;
@@ -27,7 +27,7 @@ void dpotrfFT(double * A, int lda, int n,
 	
 	//do Choleksy factorization
 	int info;
-	dpotrf('L', n, A, n, &info);
+	//dpotrf('L', n, A, n, &info);
 	
 	if(FT){
 	
@@ -47,11 +47,9 @@ void dpotrfFT(double * A, int lda, int n,
 		//dgemv('T', n, n, alpha, A, lda, v1, 1, beta, chk1, 1);
 		//dgemv('T', n, n, alpha, A, lda, v2, 1, beta, chk2, 1);
 		
-		//cout<<"recalcuated checksum on CPU after factorization:"<<endl;
-		//printMatrix_host(chk, 2, n);
-		//printVector_host(chk2, n);
 		
 		
+		/*
 		//update checksum1 and checksum2
 		for (int i = 0; i < n; i++) {
 			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
@@ -60,17 +58,20 @@ void dpotrfFT(double * A, int lda, int n,
 			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
 
 		}
-		/*
-		for (int i = 0; i < n; i++) {
-			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
-			daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
-		}
+		
 		*/
 		
-		//cout<<"updated checksum on CPU after factorization:"<<endl;
-		//printMatrix_host(chksum, 2, n);
+		if (DEBUG) {
+			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
+			printMatrix_host(chk, 2, n);
+			//printMatrix_host(chk1, 1, n);
+			
+			cout<<"updated checksum on CPU after factorization:"<<endl;
+			printMatrix_host(chksum, 2, n);		
+			//printVector_host(chksum2, n);
+		}
 		
-		//printVector_host(chksum2, n);
+		
 	
 		//checking error to be finished
 		/*for(int i=0;i<n;i++){

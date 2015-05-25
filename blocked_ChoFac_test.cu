@@ -39,7 +39,7 @@ using namespace std;
 
 void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		float * real_time, float * proc_time, long long * flpins,
-		float * mflops, bool FT) {
+		float * mflops, bool FT, bool DEBUG) {
 
 	double * temp;
 	cudaHostAlloc((void**) &temp, B * B * sizeof(double), cudaHostAllocDefault);
@@ -148,7 +148,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		 //printMatrix_gpu(matrix, ld*sizeof(double), N, N);
 		 //cout<<"checksum:"<<endl;
 		 //printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
-		
+		/*
 		if (i > 0) {
 			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
 					checksum + (i / B)*2, checksum_ld,
@@ -156,7 +156,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					vd, vd_ld, 
 					chk1d, chk1d_ld,
 					chk2d, chk2d_ld,
-					FT);
+					FT, DEBUG);
 			
 		}
 		
@@ -187,17 +187,17 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					ld, matrix + i * ld + (i + B), ld, 
 					checksum + ((i + B) / B)*2, checksum_ld,
 					checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
-					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, FT);
+					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
 		}
 		
 		
 		
 		
 		cudaStreamSynchronize(stream0);
-		
+		*/
 		//int info;
-		dpotrfFT(temp, B, B, chk, 2, v, v_ld, FT);
-		
+		dpotrfFT(temp, B, B, chk, 2, v, v_ld, FT, DEBUG);
+		/*
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
 				B * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
@@ -222,14 +222,14 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld,
 					matrix + i * ld + i + B, ld,
 					checksum + ((i + B) / B )*2 + i * checksum_ld, checksum_ld,
-					vd, vd_ld, chk1d, chk1d_ld,chk2d, chk2d_ld, FT);
+					vd, vd_ld, chk1d, chk1d_ld,chk2d, chk2d_ld, FT, DEBUG);
 		}
 		
 		
-		
+	*/	
 
 	}
-
+	
 	cudaStreamSynchronize(stream0);
 	cudaStreamSynchronize(stream1);
 	//end of profiling
@@ -248,7 +248,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 }
 
 void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
-		long long * flpins, float * mflops, bool FT) {
+		long long * flpins, float * mflops, bool FT, bool DEBUG) {
 
 	char uplo = 'l';
 	double * matrix;
@@ -266,7 +266,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 
 	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \
-			mflops, FT);
+			mflops, FT, DEBUG);
 
 	//Verify result
 	/*if(resultVerify_gpu(result,result_ld,matrix,matrix_ld,N,2)){
@@ -286,6 +286,9 @@ int main(int argc, char**argv) {
 	bool FT = false;
 	if (argv[3][0] == '1')
 		FT = true;
+	bool DEBUG = false;
+	if (argv[4][0] == '1')
+		DEBUG = true;
 	int TEST_NUM = 1;
 	cout << "Input config:N=" << N << ", B=" << B << ", FT=" << FT << endl;
 
@@ -304,7 +307,7 @@ int main(int argc, char**argv) {
 	//cout<<"flops:"<<flops<<"  ";
 
 	for (int i = 0; i < TEST_NUM; i++) {
-		test_mydpotrf(N, B, &real_time, &proc_time, &flpins, &mflops, FT);
+		test_mydpotrf(N, B, &real_time, &proc_time, &flpins, &mflops, FT, DEBUG);
 		total_real_time += real_time;
 		total_proc_time += proc_time;
 		total_flpins += flpins;
