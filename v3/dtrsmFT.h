@@ -46,7 +46,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	 */
 
 	double alpha = 1;
-	//cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, \
+	cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, \
 			CUBLAS_DIAG_NON_UNIT, m, n, &alpha, A, lda, B, ldb);
 
 	/*cout<<"matrix A after dtrsm:"<<endl;
@@ -57,7 +57,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		
 		//recalculate checksum1 and checksum2
 		double beta = 0;
-		/*for (int i = 0; i < m; i += n) {
+		for (int i = 0; i < m; i += n) {
 			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, B + i, ldb, &zero, \
 					chk + (i/n)*2, chk_ld);
 			
@@ -67,23 +67,16 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 					&beta, chk2, chk2_ld);
 			
 		}
-		*/
 		
-		double * B_host = new double[n * m];
-		/*cudaStream_t stream0; 
-		cudaStreamCreate(&stream0);
-		cudaMemcpy2DAsync(B_host, m * sizeof(double), 
-							B, ldb * sizeof(double), 
-							m * sizeof(double), n,
-						cudaMemcpyDeviceToHost, stream0);
-		*/
 		
-		/*
+		
+		
+		
 		//update checksum1 and checksum2
 		cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, \
 				CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, (m / n)*2, n, &alpha, A, lda, \
 				checksumB, checksumB_ld); 
-		*/
+		
 		if (DEBUG) {
 			cout<<"recalculated checksum of B after dtrsm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld * sizeof(double), (m / n), n);
