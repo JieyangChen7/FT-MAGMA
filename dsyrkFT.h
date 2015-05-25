@@ -45,7 +45,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
-	if(FT){
+	if (FT) {
 		
 		//recalculate checksum1 and checksum2
 		
@@ -61,11 +61,11 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of C after dsyrk:"<<endl;
-			printMatrix_gpu(chk1, chk1_ld*sizeof(double), 1, n);
-			printMatrix_gpu(chk2, chk2_ld*sizeof(double), 1, n);
+			printMatrix_gpu(chk1, chk1_ld * sizeof(double), 1, n);
+			printMatrix_gpu(chk2, chk2_ld * sizeof(double), 1, n);
 			
 			cout<<"updated checksum of C after dsyrk:"<<endl;
-			printMatrix_gpu(checksumC1, checksumC1_ld*sizeof(double), 2,n);
+			printMatrix_gpu(checksumC, checksumC_ld * sizeof(double), 2, n);
 		}
 		
 		
