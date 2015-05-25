@@ -116,7 +116,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		//allocate space for recalculated checksum on CPU
 		chk1_recal = new double[B];
-		chk1_recal = new double[B];
+		chk2_recal = new double[B];
 		chk_update = new double[B * 2];
 		//cout<<"allocated space for recalculated checksum on CPU"<<endl;
 
