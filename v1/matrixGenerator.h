@@ -109,9 +109,9 @@ void matrixGenerator_gpu2(char uplo, double * matrix, int matrix_ld, double * re
 	cublasDestroy(handle);
 	
 	//print matrix
-	printMatrix_gpu(matrix, matrix_ld * sizeof(double),N, N);
+	//printMatrix_gpu(matrix, matrix_ld * sizeof(double),N, N);
 	//print result
-	printMatrix_gpu(result,result_ld*sizeof(double),N,N);
+	//printMatrix_gpu(result,result_ld*sizeof(double),N,N);
 	
 }
 
