@@ -16,7 +16,7 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * inc2: stride between elememts in chksum2
  */
 void dpotrfFT(double * A, int lda, int n, 
-				double * chksum, int chksum_ld, double * v, int v_ld, 
+				double * chksum, int chksum_ld, double * v, int v_ld, double * chk1, double * chk2,
 				bool FT, bool DEBUG) {
 	double one = 1;
 	double zero = 0;

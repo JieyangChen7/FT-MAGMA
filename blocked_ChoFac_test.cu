@@ -115,9 +115,9 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		
 		//allocate space for recalculated checksum on CPU
-		chk1_recal = new double[B];
-		chk2_recal = new double[B];
-		chk_update = new double[B * 2];
+		cudaHostAlloc((void**) &chk1_recal, B * 1 * sizeof(double), cudaHostAllocDefault);
+		cudaHostAlloc((void**) &chk2_recal, B * 1 * sizeof(double), cudaHostAllocDefault);
+		cudaHostAlloc((void**) &chk_update, B * 2 * sizeof(double), cudaHostAllocDefault);
 		//cout<<"allocated space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on CPU
@@ -199,7 +199,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cudaStreamSynchronize(stream0);
 		
 		
-		dpotrfFT(temp, B, B, chk_update, 2, v, v_ld, FT, DEBUG);
+		dpotrfFT(temp, B, B, chk_update, 2, v, v_ld, chk1_recal, chk2_recal, FT, DEBUG);
 		
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
 				B * sizeof(double), B * sizeof(double), B,
