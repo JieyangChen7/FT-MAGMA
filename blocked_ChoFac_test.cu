@@ -231,7 +231,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld,
 					matrix + i * ld + i + B, ld,
 					checksum + ((i + B) / B )*2 + i * checksum_ld, checksum_ld,
-					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, B_host, B_host_ld FT, stream0, DEBUG);
+					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, B_host, B_host_ld, stream0, FT, DEBUG);
 		}
 		
 		
