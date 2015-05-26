@@ -64,26 +64,27 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	//variables for FT
 	double * v;
 	int v_ld;
-	//double * v2;
+
 	double * vd;
-	//double * v2d;
 	size_t vd_pitch;
 	int vd_ld;
-	//size_t v2d_pitch;
-	double * chk;
-	//double * chk2;
+	
+	double * chk_update;
+	double * chk1_recal;
+	double * chk2_recal;
+	
+	
 	double * chk1d;
 	double * chk2d;
 	size_t chk1d_pitch;
 	size_t chk2d_pitch;
 	int chk1d_ld;
 	int chk2d_ld;
+	
 	size_t checksum_pitch;
-	//size_t checksum2_pitch;
 	double * checksum;
-	//double * checksum2;
 	int checksum_ld;
-	//int checksum2_ld;
+	
 
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -114,7 +115,9 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		
 		//allocate space for recalculated checksum on CPU
-		chk = new double[B * 2];
+		chk1_recal = new double[B];
+		chk2_recal = new double[B];
+		chk_update = new double[B * 2];
 		//cout<<"allocated space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on CPU
@@ -170,7 +173,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		
 		if (FT) {
-			 cudaMemcpy2DAsync(chk, 2 * sizeof(double), checksum + (i/B) * 2 + i*checksum_ld,
+			 cudaMemcpy2DAsync(chk_update, 2 * sizeof(double), checksum + (i/B) * 2 + i*checksum_ld,
 			 checksum_pitch, 2 * sizeof(double), B,
 			 cudaMemcpyDeviceToHost, stream0);
 			 //cudaMemcpy2DAsync(chk2, 1 * sizeof(double), checksum2 + (i/B) + i*checksum2_ld,
@@ -196,7 +199,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cudaStreamSynchronize(stream0);
 		
 		
-		dpotrfFT(temp, B, B, chk, 2, v, v_ld, FT, DEBUG);
+		dpotrfFT(temp, B, B, chk_update, 2, v, v_ld, FT, DEBUG);
 		
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
 				B * sizeof(double), B * sizeof(double), B,
@@ -204,7 +207,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		
 		if (FT) {
-			 cudaMemcpy2DAsync(checksum + (i/B) * 2 + i*checksum_ld, checksum_pitch, chk, 2 * sizeof(double), 
+			 cudaMemcpy2DAsync(checksum + (i/B) * 2 + i*checksum_ld, checksum_pitch, chk_update, 2 * sizeof(double), 
 			 2 * sizeof(double), B,
 			 cudaMemcpyHostToDevice, stream0);
 			 //cudaMemcpy2DAsync(checksum2 + (i/B) + i*checksum2_ld,checksum2_pitch, chk2, 1 * sizeof(double), 

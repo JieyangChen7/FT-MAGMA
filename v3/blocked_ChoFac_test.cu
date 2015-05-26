@@ -115,9 +115,13 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		
 		//allocate space for recalculated checksum on CPU
-		chk1_recal = new double[B];
-		chk2_recal = new double[B];
-		chk_update = new double[B * 2];
+		//chk1_recal = new double[B];
+		//chk2_recal = new double[B];
+		//chk_update = new double[B * 2];
+		
+		cudaHostAlloc((void**) &chk1_recal, B * 1 * sizeof(double), cudaHostAllocDefault);
+		cudaHostAlloc((void**) &chk2_recal, B * 1 * sizeof(double), cudaHostAllocDefault);
+		cudaHostAlloc((void**) &chk_update, B * 2 * sizeof(double), cudaHostAllocDefault);
 		//cout<<"allocated space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on CPU
