@@ -85,6 +85,9 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	double * checksum;
 	int checksum_ld;
 	
+	
+	double * B_host;
+	int B_host_ld;
 
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -133,7 +136,10 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		checksum_ld = checksum_pitch / sizeof(double);
 		//printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
 		//cout<<"checksums initialized"<<endl;
-
+		
+		
+		cudaHostAlloc((void**) &chk_update, B * N * sizeof(double), cudaHostAllocDefault);
+		B_host_ld = N;
 	}
 	
 	
@@ -225,7 +231,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld,
 					matrix + i * ld + i + B, ld,
 					checksum + ((i + B) / B )*2 + i * checksum_ld, checksum_ld,
-					vd, vd_ld, chk1d, chk1d_ld,chk2d, chk2d_ld, FT, DEBUG);
+					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, B_host, B_host_ld FT, stream0, DEBUG);
 		}
 		
 		
