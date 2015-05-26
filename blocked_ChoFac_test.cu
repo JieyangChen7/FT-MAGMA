@@ -138,7 +138,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//cout<<"checksums initialized"<<endl;
 		
 		
-		cudaHostAlloc((void**) &chk_update, B * N * sizeof(double), cudaHostAllocDefault);
+		cudaHostAlloc((void**) &B_host, B * N * sizeof(double), cudaHostAllocDefault);
 		B_host_ld = N;
 	}
 	
