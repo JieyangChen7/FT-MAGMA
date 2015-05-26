@@ -46,7 +46,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	 */
 
 	double alpha = 1;
-	cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, \
+	//cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, \
 			CUBLAS_DIAG_NON_UNIT, m, n, &alpha, A, lda, B, ldb);
 
 	/*cout<<"matrix A after dtrsm:"<<endl;
@@ -70,12 +70,15 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		*/
 		
 	
-		//cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
+		cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
 							B, ldb * sizeof(double), \
 							m * sizeof(double), n,\
 						cudaMemcpyDeviceToHost, stream0);
 		
-		
+		cudaMemcpy2DAsync(	B, ldb * sizeof(double),
+									B_host, B_host_ld * sizeof(double),\
+									m * sizeof(double), n,\
+								cudaMemcpyHostToDevice, stream0);
 		/*
 		//update checksum1 and checksum2
 		cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, \
