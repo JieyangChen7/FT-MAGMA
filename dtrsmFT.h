@@ -69,16 +69,25 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		}
 		*/
 		
+		cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
+									B, ldb * sizeof(double), \
+									n * sizeof(double), n,\
+								cudaMemcpyDeviceToHost, stream0);
 	
 		cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
 							B, ldb * sizeof(double), \
 							(m/n) * sizeof(double), n,\
 						cudaMemcpyDeviceToHost, stream0);
 		
+		dtrsm('R', 'L', 'T', 'N', (m / n)*2, n, one, B_host, B_host_ld, \
+						B_host, B_host_ld); 
+		
 		cudaMemcpy2DAsync(	B, ldb * sizeof(double),
 									B_host, B_host_ld * sizeof(double),\
 									(m/n) * sizeof(double), n,\
 								cudaMemcpyHostToDevice, stream0);
+		
+		
 		/*
 		//update checksum1 and checksum2
 		cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, \
