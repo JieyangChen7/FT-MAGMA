@@ -72,12 +72,12 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	
 		cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
 							B, ldb * sizeof(double), \
-							m * sizeof(double), n,\
+							(m/n) * sizeof(double), n,\
 						cudaMemcpyDeviceToHost, stream0);
 		
 		cudaMemcpy2DAsync(	B, ldb * sizeof(double),
 									B_host, B_host_ld * sizeof(double),\
-									m * sizeof(double), n,\
+									(m/n) * sizeof(double), n,\
 								cudaMemcpyHostToDevice, stream0);
 		/*
 		//update checksum1 and checksum2
