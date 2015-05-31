@@ -188,7 +188,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			 
 		}
 		
-		
+		*/
 		
 		if (i != 0 && i + B < N) {
 
@@ -196,11 +196,12 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					ld, matrix + i * ld + (i + B), ld, 
 					checksum + ((i + B) / B)*2, checksum_ld,
 					checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
-					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
+					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, B_host, B_host_ld, stream0, 
+					FT, DEBUG);
 		}
 		
 		
-		
+		/*
 		
 		cudaStreamSynchronize(stream0);
 		
@@ -225,7 +226,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		*/
 		//update B    
-		
+		/*
 		if (i + B < N) {
 		//	cudaStreamSynchronize(stream0);
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld,
@@ -233,7 +234,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum + ((i + B) / B )*2 + i * checksum_ld, checksum_ld,
 					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, B_host, B_host_ld, stream0, FT, DEBUG);
 		}
-		
+		*/
 		
 	
 

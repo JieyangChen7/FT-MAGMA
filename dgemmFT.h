@@ -26,7 +26,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		double * checksumA, int checksumA_ld, 
 		double * checksumC,int checksumC_ld,
 		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld,
+		double * chk1, int chk1_ld, double * chk2, int chk2_ld, double * B_host, int B_host_ld, cudaStream_t stream0,
 		bool FT, bool DEBUG) {
 
 	/*cout<<"checksum1 of A before dgemm:"<<endl;
@@ -46,6 +46,13 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 			ldb, &one, C, ldc);
 
 	if (FT) {
+		
+		
+		cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
+											A, lda * sizeof(double), \
+											m * sizeof(double), n,\
+										cudaMemcpyDeviceToHost, stream0);
+		/*
 		//recalculate checksum1 and checksum2
 		for (int i = 0; i < m; i += n) {
 			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C + i, ldc, \
@@ -70,7 +77,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 			cout<<"updated checksum of C after dgemm:"<<endl;
 			printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), (m/n)*2,n);
 		}
-		
+		*/
 		
 		//error detection and error correction
 	//	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
