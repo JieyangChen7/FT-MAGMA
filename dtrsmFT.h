@@ -46,7 +46,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	 */
 
 	double alpha = 1;
-	//cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, \
+	cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, \
 			CUBLAS_DIAG_NON_UNIT, m, n, &alpha, A, lda, B, ldb);
 
 	/*cout<<"matrix A after dtrsm:"<<endl;
@@ -68,7 +68,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 			
 		}
 		*/
-		
+		/*
 		cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
 									B, ldb * sizeof(double), \
 									n * sizeof(double), n,\
@@ -94,6 +94,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 				CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, (m / n)*2, n, &alpha, A, lda, \
 				checksumB, checksumB_ld); 
 		*/
+		/*
 		if (DEBUG) {
 			cout<<"recalculated checksum of B after dtrsm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld * sizeof(double), (m / n), n);
@@ -103,7 +104,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 			printMatrix_gpu(checksumB, checksumB_ld*sizeof(double),(m/n)*2,n);
 			
 		}
-		
+		*/
 		//detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n, \
 			checksumB1, incB1, checksumB2, incB2, \
 			chk1, chk1_ld, chk2, chk2_ld); 
