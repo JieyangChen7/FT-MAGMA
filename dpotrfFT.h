@@ -39,7 +39,7 @@ void dpotrfFT(double * A, int lda, int n,
 		printVector_host(chksum2, n);
 		*/
 		//recalculate checksum1 and checksum2
-		
+		/*
 		double * chk1 = new double[n];
 		double * chk2 = new double[n];
 		
