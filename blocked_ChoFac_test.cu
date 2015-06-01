@@ -81,9 +81,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	int chk1d_ld;
 	int chk2d_ld;
 	
-	size_t checksum_dev_pitch;
-	double * checksum_dev;
-	int checksum_dev_ld;
+	double * checksum;
+	int checksum_ld;
 	
 	
 	double * B_host;
@@ -132,9 +131,9 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 
 		//initialize checksums
 
-		checksum = initializeChecksum(handle1, matrix, ld, N, B, vd, vd_ld, checksum_dev_pitch);
-		checksum_ld = checksum_pitch / sizeof(double);
-		//printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
+		checksum = initializeChecksum(handle1, matrix, ld, N, B, vd, vd_ld);
+		checksum_ld = (N / B) * 2;
+		printMatrix_host(checksum, (N/B)*2, N);
 		//cout<<"checksums initialized"<<endl;
 		
 		
@@ -206,7 +205,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cudaStreamSynchronize(stream0);
 		*/
 		
-		dpotrfFT(temp, B, B, chk_update, 2, v, v_ld, chk1_recal, chk2_recal, FT, DEBUG);
+		//dpotrfFT(temp, B, B, chk_update, 2, v, v_ld, chk1_recal, chk2_recal, FT, DEBUG);
 		/*
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
 				B * sizeof(double), B * sizeof(double), B,
@@ -262,18 +261,18 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 
 	char uplo = 'l';
 	double * matrix;
-	//double * result;
+	double * result;
 	size_t matrix_pitch;
-	//size_t result_pitch;
+	size_t result_pitch;
 	//Memory allocation on RAM and DRAM
 	cudaMallocPitch((void**) &matrix, &matrix_pitch, N * sizeof(double), N);
-	//cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
+	cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
 
 	int matrix_ld = matrix_pitch / sizeof(double);
-	//int result_ld = result_pitch / sizeof(double);
+	int result_ld = result_pitch / sizeof(double);
 
-	//matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
-	matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
+	matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
+	//matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 
 	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \
 			mflops, FT, DEBUG);
@@ -286,7 +285,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	 }
 	 */
 	cudaFree(matrix);
-	//cudaFree(result);
+	cudaFree(result);
 
 }
 
