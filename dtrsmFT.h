@@ -29,7 +29,7 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, double * matrix_host, int matrix_host_ld, cudaStream_t stream0, 
+		double * chk1, int chk1_ld, double * chk2, int chk2_ld, double * A_host, int A_host_ld, 
 		bool FT, bool DEBUG) {
 	double one = 1;
 	double zero = 0;
@@ -68,24 +68,10 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 			
 		}
 		
-		/*
-		cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
-									B, ldb * sizeof(double), \
-									n * sizeof(double), n,\
-								cudaMemcpyDeviceToHost, stream0);
-	
-		cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
-							B, ldb * sizeof(double), \
-							(m/n) * sizeof(double), n,\
-						cudaMemcpyDeviceToHost, stream0);
 		
-		dtrsm('R', 'L', 'T', 'N', (m / n)*2, n, one, B_host, B_host_ld, \
-						B_host, B_host_ld); 
 		
-		cudaMemcpy2DAsync(	B, ldb * sizeof(double),
-									B_host, B_host_ld * sizeof(double),\
-									(m/n) * sizeof(double), n,\
-								cudaMemcpyHostToDevice, stream0);
+		dtrsm('R', 'L', 'T', 'N', (m / n) * 2, n, one, A_host, A_host_ld, checksumB, checksumB_ld); 
+		
 		
 		
 		/*

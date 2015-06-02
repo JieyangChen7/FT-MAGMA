@@ -84,8 +84,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	int checksum_ld;
 	
 	
-	double * matrix_host;
-	int matrix_host_ld;
+	double * B_host;
+	int B_host_ld;
 
 	
 	if (FT) {
@@ -135,8 +135,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//cout<<"checksums initialized"<<endl;
 		
 		
-		cudaHostAlloc((void**) &matrix_host, N * N * sizeof(double), cudaHostAllocDefault);
-		matrix_host_ld = N;
+		cudaHostAlloc((void**) &B_host, B * N * sizeof(double), cudaHostAllocDefault);
+		B_host_ld = N;
 	}
 	
 	
@@ -170,8 +170,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	
 		cudaStreamSynchronize(stream1);
 		*/
-		cudaMemcpy2DAsync(temp, B * sizeof(double), matrix + i * ld + i,
-				ld * sizeof(double), B * sizeof(double), B,
+		//cudaMemcpy2DAsync(temp, B * sizeof(double), matrix + i * ld + i, \
+				ld * sizeof(double), B * sizeof(double), B, \
 				cudaMemcpyDeviceToHost, stream0);
 		
 		
@@ -192,10 +192,10 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cudaStreamSynchronize(stream0);
 		*/
 		
-		dpotrfFT(temp, B, B, checksum + (i/B) * 2 + i*checksum_ld, 2, v, v_ld, chk1_recal, chk2_recal, FT, DEBUG);
+		//dpotrfFT(temp, B, B, checksum + (i/B) * 2 + i*checksum_ld, 2, v, v_ld, chk1_recal, chk2_recal, FT, DEBUG);
 		
-		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
-				B * sizeof(double), B * sizeof(double), B,
+		//cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp, \
+				B * sizeof(double), B * sizeof(double), B, \
 				cudaMemcpyHostToDevice, stream0);
 		
 		/*
@@ -208,7 +208,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld,
 					matrix + i * ld + i + B, ld,
 					checksum + ((i + B) / B )*2 + i * checksum_ld, checksum_ld,
-					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, B_host, B_host_ld, stream0, FT, DEBUG);
+					vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, temp, B, FT, DEBUG);
 		}
 		
 		
