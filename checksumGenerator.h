@@ -24,7 +24,7 @@ double * initializeChecksum(cublasHandle_t handle, double * matrix, int ld, int 
 	cudaHostAlloc((void**) &checksum_host, (N / B) * N * 2 * sizeof(double), cudaHostAllocDefault);
 	cudaMemcpy2D(checksum_host, checksum_host_ld * sizeof(double), 
 			checksum_dev, checksum_dev_pitch, 
-			(N / B) * 2 * sizeof(double), 2, cudaMemcpyDeviceToHost);
+			(N / B) * 2 * sizeof(double), N, cudaMemcpyDeviceToHost);
 	
 	return checksum_host;
 
