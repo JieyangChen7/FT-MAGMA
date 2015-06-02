@@ -39,9 +39,9 @@ void dpotrfFT(double * A, int lda, int n,
 		printVector_host(chksum2, n);
 		*/
 		//recalculate checksum1 and checksum2
-		/*
-		double * chk1 = new double[n];
-		double * chk2 = new double[n];
+		
+		//double * chk1 = new double[n];
+		//double * chk2 = new double[n];
 		
 		//dgemm('T','N',2, n, n, one, v, v_ld, A, lda, zero, chk, chk_ld);
 		dgemv('T', n, n, one, A, lda, v, 1, zero, chk1, 1);
