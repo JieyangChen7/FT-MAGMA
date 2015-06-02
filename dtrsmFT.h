@@ -29,7 +29,7 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, double * B_host, int B_host_ld, cudaStream_t stream0, 
+		double * chk1, int chk1_ld, double * chk2, int chk2_ld, double * matrix_host, int matrix_host_ld, cudaStream_t stream0, 
 		bool FT, bool DEBUG) {
 	double one = 1;
 	double zero = 0;
@@ -57,7 +57,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		
 		//recalculate checksum1 and checksum2
 		double beta = 0;
-		/*for (int i = 0; i < m; i += n) {
+		for (int i = 0; i < m; i += n) {
 			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, B + i, ldb, &zero, \
 					chk + (i/n)*2, chk_ld);
 			
@@ -67,7 +67,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 					&beta, chk2, chk2_ld);
 			
 		}
-		*/
+		
 		/*
 		cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
 									B, ldb * sizeof(double), \
