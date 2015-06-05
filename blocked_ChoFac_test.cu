@@ -132,7 +132,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//initialize checksums
 		checksum = initializeChecksum(handle1, matrix, ld, N, B, vd, vd_ld);
 		checksum_ld = (N / B) * 2;
-		printMatrix_host(checksum, (N / B) * 2, N);
+		//printMatrix_host(checksum, (N / B) * 2, N);
 		//cout<<"checksums initialized"<<endl;
 		
 		
@@ -263,7 +263,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	double * matrix;
 	//double * result;
 	size_t matrix_pitch;
-	size_t result_pitch;
+	//size_t result_pitch;
 	//Memory allocation on RAM and DRAM
 	cudaMallocPitch((void**) &matrix, &matrix_pitch, N * sizeof(double), N);
 	//cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
