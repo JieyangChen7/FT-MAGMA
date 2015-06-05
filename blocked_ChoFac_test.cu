@@ -168,7 +168,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			
 		}
 		
-	/*
+	
 		
 		
 		cudaStreamSynchronize(stream1);
@@ -178,8 +178,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 							B * sizeof(double), B,
 							cudaMemcpyDeviceToHost, stream0);
 		
-		*/
-		/*
+		
+		
 		if (i != 0 && i + B < N) {
 
 			dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
@@ -192,9 +192,9 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					tempB, tempB_ld, stream0, 
 					FT, DEBUG);
 		}
-		*/
 		
-		/*
+		
+		
 		
 		cudaStreamSynchronize(stream0);
 		
@@ -234,7 +234,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			
 			
 		}
-		*/
+		
 		
 	
 
