@@ -43,7 +43,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 
 	double * tempA;
 	cudaHostAlloc((void**) &tempA, B * B * sizeof(double), cudaHostAllocDefault);
-
+	int tempA_ld = B;
 	//intial streams----------------------------
 	cudaStream_t stream0;  //for main loop
 	cudaStream_t stream1;  //for dgemm part
@@ -88,6 +88,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	int matrix_host_ld;
 
 	double * tempB;
+	int tempB_ld;
 	
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -174,7 +175,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	
 		cudaStreamSynchronize(stream1);
 		
-		cudaMemcpy2DAsync(tempA, B * sizeof(double), 
+		cudaMemcpy2DAsync(tempA, tempA_ld * sizeof(double), 
 							matrix + i * ld + i, ld * sizeof(double), 
 							B * sizeof(double), B,
 							cudaMemcpyDeviceToHost, stream0);
@@ -200,7 +201,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cudaStreamSynchronize(stream0);
 		
 		
-		dpotrfFT(tempA, B, B, 
+		dpotrfFT(tempA, tempA_ld, B, 
 					checksum + (i / B) * 2 + i * checksum_ld, 2, 
 					v, v_ld, 
 					chk1_recal, 
@@ -208,7 +209,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					FT, DEBUG);
 		
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), tempA,
-				B * sizeof(double), B * sizeof(double), B,
+				tempA_ld * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
 		
 	

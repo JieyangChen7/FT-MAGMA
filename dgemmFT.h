@@ -28,7 +28,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
-		double * tempB, int tempB, cudaStream_t stream0,
+		double * tempB, int tempB_ld, cudaStream_t stream0,
 		bool FT, bool DEBUG) {
 
 	/*cout<<"checksum1 of A before dgemm:"<<endl;
@@ -74,13 +74,12 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 			cout<<"updated checksum of C after dgemm:"<<endl;
 			printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), (m/n)*2,n);
 		}
-		*/
+		
 		
 		//error detection and error correction
 	//	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
 	//			checksumC1, incC1, checksumC2, incC2,
 	//			chk1, chk1_ld, chk2, chk2_ld);
-				
 		
 	}
 }

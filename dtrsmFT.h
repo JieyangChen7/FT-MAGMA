@@ -29,7 +29,9 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, double * tempA, int tempA_ld, cudaStream_t stream0, 
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		double * tempA, int tempA_ld, cudaStream_t stream0, 
 		bool FT, bool DEBUG) {
 	double one = 1;
 	double zero = 0;

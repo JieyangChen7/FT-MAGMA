@@ -26,7 +26,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
-		double * tempB, double * tempB_ld, cudaStream_t stream0,
+		double * tempB, int tempB_ld, cudaStream_t stream0,
 		bool FT, bool DEBUG){
 	
 	/*cout<<"checksum1 of A before dsyrk:"<<endl;
@@ -74,6 +74,6 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		//detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
 		//			checksumC1, incC1, checksumC2, incC2,
 		//			 chk1, chk1_ld, chk2, chk2_ld);
-		*/
+		
 	}
 }
