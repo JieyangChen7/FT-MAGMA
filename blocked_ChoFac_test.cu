@@ -237,7 +237,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 			
 		}
-		*/
+		
 		
 	
 
