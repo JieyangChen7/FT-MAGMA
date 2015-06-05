@@ -26,7 +26,9 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		double * checksumA, int checksumA_ld, 
 		double * checksumC,int checksumC_ld,
 		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, double * B_host, int B_host_ld, cudaStream_t stream0,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		double * tempB, int tempB, cudaStream_t stream0,
 		bool FT, bool DEBUG) {
 
 	/*cout<<"checksum1 of A before dgemm:"<<endl;
@@ -48,11 +50,6 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	if (FT) {
 		
 		
-	//	cudaMemcpy2DAsync(B_host, B_host_ld * sizeof(double), \
-											A, lda * sizeof(double), \
-											m * sizeof(double), n,\
-										cudaMemcpyDeviceToHost, stream0);
-		/*
 		//recalculate checksum1 and checksum2
 		for (int i = 0; i < m; i += n) {
 			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C + i, ldc, \
@@ -62,11 +59,11 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		}
 		
 		
-			
+		dgemm('N', 'T', (m / n) * 2), n, k, negone, checksumA, checksumA_ld, tempB, tempB_ld, one, checksumC, checksumC_ld);
 		
 		
 		//update checksum1 and checksum2
-		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, (m/n)*2, n, k, &negone, \
+		//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, (m/n)*2, n, k, &negone, \
 				checksumA, checksumA_ld, B, ldb, &one, checksumC, checksumC_ld);
 		
 		if (DEBUG) {

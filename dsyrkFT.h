@@ -26,6 +26,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
+		double * tempB, double * tempB_ld, cudaStream_t stream0,
 		bool FT, bool DEBUG){
 	
 	/*cout<<"checksum1 of A before dsyrk:"<<endl;
@@ -46,7 +47,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
 	if (FT) {
-		/*
+		
 		//recalculate checksum1 and checksum2
 		
 		//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C, ldc, &zero, chk, chk_ld);
@@ -54,10 +55,10 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
 		
 		
-		
+		dgemm('N', 'T', 2, n, m, negone, checksumA, checksumA_ld, tempB, tempB_ld, one, checksumC, checksumC_ld);
 		
 		//update checksum1 and checksum2
-		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 2, n, m, &negone, checksumA, checksumA_ld, A, lda, &one, checksumC, checksumC_ld);
+		//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 2, n, m, &negone, checksumA, checksumA_ld, A, lda, &one, checksumC, checksumC_ld);
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of C after dsyrk:"<<endl;
