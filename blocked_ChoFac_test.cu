@@ -214,7 +214,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//update B    
 		
 		if (i + B < N) {
-			//cudaStreamSynchronize(stream0);
+			cudaStreamSynchronize(stream0);
 			dtrsmFT(handle1, N - i - B, B, matrix + i * ld + i, ld,
 					matrix + i * ld + i + B, ld,
 					checksum + ((i + B) / B ) * 2 + i * checksum_ld, checksum_ld,
