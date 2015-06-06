@@ -58,7 +58,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
 		}
 		
-		
+		cudaStreamSynchronize(stream0);
 		dgemm('N', 'T', (m / n) * 2 + 2, n, k, negone, checksumA, checksumA_ld, tempB, tempB_ld, one, checksumC, checksumC_ld);
 		
 		
