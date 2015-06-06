@@ -72,7 +72,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		
 		
 		
-		//dtrsm('R', 'L', 'T', 'N', (m / n)*2, n, one, tempA, tempA_ld, checksumB, checksumB_ld); 
+		dtrsm('R', 'L', 'T', 'N', (m / n)*2, n, one, tempA, tempA_ld, checksumB, checksumB_ld); 
 
 		
 		
