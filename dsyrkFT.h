@@ -27,7 +27,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
 		double * tempB, int tempB_ld, cudaStream_t stream0,
-		double * checksumA_dev, int checksumC_dev_ld,
+		double * checksumA_dev, int checksumA_dev_ld,
 		double * checksumC_dev, int checksumC_dev_ld,
 		bool FT, bool DEBUG){
 	
