@@ -181,6 +181,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					chk1d, chk1d_ld,
 					chk2d, chk2d_ld,
 					tempB, tempB_ld, stream0,
+					checksumA_dev, checksumC_dev_ld,
+					checksumC_dev, checksumC_dev_ld,
 					FT, DEBUG);
 			
 		}
