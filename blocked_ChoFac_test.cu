@@ -167,10 +167,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					FT, DEBUG);
 			
 		}
-		
-	
-		
-		
+		*/
 		cudaStreamSynchronize(stream1);
 		
 		cudaMemcpy2DAsync(tempA, tempA_ld * sizeof(double), 
@@ -179,7 +176,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 							cudaMemcpyDeviceToHost, stream0);
 		
 		
-		*/
+		
 		
 		if (i != 0 && i + B < N) {
 
@@ -194,7 +191,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					FT, DEBUG);
 		}
 		
-		/*
+		
 		
 		
 		cudaStreamSynchronize(stream0);
@@ -210,7 +207,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), tempA,
 				tempA_ld * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
-		*/
+		
 	
 		//update B    
 		
