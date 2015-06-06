@@ -27,6 +27,8 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
 		double * tempB, int tempB_ld, cudaStream_t stream0,
+		double * checksumA_dev, int checksumC_dev_ld,
+		double * checksumC_dev, int checksumC_dev_ld,
 		bool FT, bool DEBUG){
 	
 	/*cout<<"checksum1 of A before dsyrk:"<<endl;
@@ -43,21 +45,50 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
+	
+	
+	
+	if (FT) {
+			
+			cudaMemcpy2DAsync(checksumA_dev, checksumA_dev_ld * sizeof(double), 
+								checksumA, checksumA_ld * sizeof(double), 
+								2 * sizeof(double), m,
+								cudaMemcpyHostToDevice, stream0);
+			cudaMemcpy2DAsync(checksumC_dev, checksumC_dev_ld * sizeof(double), 
+										checksumC, checksumC_ld * sizeof(double), 
+										2 * sizeof(double), n,
+										cudaMemcpyHostToDevice, stream0);
+			
+	}
+	
+	
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
-	dgemm('N', 'T', n, n, m, negone, tempB, tempB_ld, tempB, tempB_ld, one, tempB, tempB_ld);
+	//dgemm('N', 'T', n, n, m, negone, tempB, tempB_ld, tempB, tempB_ld, one, tempB, tempB_ld);
 	if (FT) {
+		
+		cudaStreamSynchronize(stream0);
+		
+		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 2, n, m, &negone, checksumA_dev, checksumA_dev_ld, A, lda, &one, checksumC_dev, checksumC_dev_ld);
+		
+		cudaMemcpy2DAsync(checksumC, checksumC_ld * sizeof(double), 
+											checksumC_dev, checksumC_dev_ld * sizeof(double), 
+											2 * sizeof(double), n,
+											cudaMemcpyDeviceToHost, stream0);
 		
 		//recalculate checksum1 and checksum2
 		
 		//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C, ldc, &zero, chk, chk_ld);
 	    
 	    //cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd, 1, &zero, chk1, chk1_ld);
-	    //cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
-		dgemv('T', n, n, one, tempB, tempB_ld, tempB, 1, zero, tempB, tempB_ld);
-		dgemv('T', n, n, one, tempB, tempB_ld, tempB, 1, zero, tempB, tempB_ld);
+	   // cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
 		
-		dgemm('N', 'T', 2, n, m, negone, checksumA, checksumA_ld, tempB, tempB_ld, one, checksumC, checksumC_ld);
+		
+		
+		//dgemv('T', n, n, one, tempB, tempB_ld, tempB, 1, zero, tempB, tempB_ld);
+		//dgemv('T', n, n, one, tempB, tempB_ld, tempB, 1, zero, tempB, tempB_ld);
+		
+		//dgemm('N', 'T', 2, n, m, negone, checksumA, checksumA_ld, tempB, tempB_ld, one, checksumC, checksumC_ld);
 		
 		//update checksum1 and checksum2
 		//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 2, n, m, &negone, checksumA, checksumA_ld, A, lda, &one, checksumC, checksumC_ld);

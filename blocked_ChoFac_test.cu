@@ -69,16 +69,26 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 	size_t vd_pitch;
 	int vd_ld;
 	
+	//CPU recal
 	double * chk1_recal;
 	double * chk2_recal;
 	
-	
+	//GPU recal
 	double * chk1d;
 	double * chk2d;
 	size_t chk1d_pitch;
 	size_t chk2d_pitch;
 	int chk1d_ld;
 	int chk2d_ld;
+	
+	//GPU upd
+	double * checksumA_dev;
+	size_t checksumA_dev_pitch;
+	int checksumA_dev_ld;
+	
+	double * checksumC_dev;
+	size_t checksumC_dev_pitch;
+	int checksumC_dev_ld;
 	
 	double * checksum;
 	int checksum_ld;
@@ -128,6 +138,12 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//cout<<"allocated space for recalculated checksum on GPU"<<endl;
 
 		
+		//GPU update SYRK
+		cudaMallocPitch((void**) &checksumA_dev, &checksumA_dev_pitch, 2 * sizeof(double), N);
+		checksumA_dev_ld = checksumA_dev_pitch / sizeof(double);
+		cudaMallocPitch((void**) &checksumC_dev, &checksumC_dev_pitch, 2 * sizeof(double), B);
+		checksumC_dev_ld = checksumC_dev_pitch / sizeof(double);
+		
 		
 		//initialize checksums
 		checksum = initializeChecksum(handle1, matrix, ld, N, B, vd, vd_ld);
@@ -135,11 +151,11 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//printMatrix_host(checksum, (N / B) * 2, N);
 		//cout<<"checksums initialized"<<endl;
 		
-		
+		cudaHostAlloc((void**) &tempB, B * N * sizeof(double), cudaHostAllocDefault);
+		tempB_ld = B;
 		
 	}
-	cudaHostAlloc((void**) &tempB, B * N * sizeof(double), cudaHostAllocDefault);
-			tempB_ld = B;
+	
 	
 	if (PAPI_flops(real_time, proc_time, flpins, mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
@@ -156,18 +172,6 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		 //cout<<"checksum:"<<endl;
 		 //printMatrix_gpu(checksum, checksum_pitch, (N/B)*2, N);
 	
-		if (i != 0 && i + B < N) {
-
-					dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
-							ld, matrix + i * ld + (i + B), ld, 
-							checksum + ((i + B) / B)*2, checksum_ld,
-							checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
-							vd, vd_ld,
-							chk1d, chk1d_ld,
-							chk2d, chk2d_ld,
-							tempB, tempB_ld, stream0, 
-							FT, DEBUG);
-				}
 		
 		if (i > 0) {
 			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
@@ -180,8 +184,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					FT, DEBUG);
 			
 		}
-		
-		//cudaStreamSynchronize(stream1);
+		/*
+		cudaStreamSynchronize(stream1);
 		
 		cudaMemcpy2DAsync(tempA, tempA_ld * sizeof(double), 
 							matrix + i * ld + i, ld * sizeof(double), 
@@ -189,13 +193,18 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 							cudaMemcpyDeviceToHost, stream0);
 		
 		
-		
-		
-		
-		
-		
-		
-		
+		if (i != 0 && i + B < N) {
+
+				dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
+						ld, matrix + i * ld + (i + B), ld, 
+						checksum + ((i + B) / B)*2, checksum_ld,
+						checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
+						vd, vd_ld,
+						chk1d, chk1d_ld,
+						chk2d, chk2d_ld,
+						tempB, tempB_ld, stream0, 
+						FT, DEBUG);
+		}
 		cudaStreamSynchronize(stream0);
 		
 		
@@ -237,7 +246,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 			
 		}
 		
-		
+		*/
 	
 
 	}
