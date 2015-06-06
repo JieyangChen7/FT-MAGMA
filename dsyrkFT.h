@@ -63,7 +63,7 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	
 	
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
-	//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
+	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	//dgemm('N', 'T', n, n, m, negone, tempB, tempB_ld, tempB, tempB_ld, one, tempB, tempB_ld);
 	if (FT) {
 		
@@ -80,8 +80,8 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		
 		//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C, ldc, &zero, chk, chk_ld);
 	    
-	    //cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd, 1, &zero, chk1, chk1_ld);
-	   // cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
+	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd, 1, &zero, chk1, chk1_ld);
+	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
 		
 		
 		
