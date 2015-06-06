@@ -136,10 +136,10 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//cout<<"checksums initialized"<<endl;
 		
 		
-		cudaHostAlloc((void**) &tempB, B * N * sizeof(double), cudaHostAllocDefault);
-		tempB_ld = B;
+		
 	}
-	
+	cudaHostAlloc((void**) &tempB, B * N * sizeof(double), cudaHostAllocDefault);
+			tempB_ld = B;
 	
 	if (PAPI_flops(real_time, proc_time, flpins, mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
