@@ -68,7 +68,7 @@ void dpotrfFT(double * A, int lda, int n,
 			printMatrix_host(chk2, 1, 1, n);
 			
 			cout<<"updated checksum on CPU after factorization:"<<endl;
-			printMatrix_host(chksum, 2, 2, n);		
+			printMatrix_host(chksum, chksum_ld, 2, n);		
 			//printVector_host(chksum2, n);
 		}
 		
