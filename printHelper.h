@@ -25,7 +25,7 @@ void printMatrix_gpu(double * matrix_device, size_t matrix_pitch, int M, int N) 
 	double * matrix_host = new double[M * N]();
 	cudaMemcpy2D(matrix_host, M * sizeof(double), matrix_device, matrix_pitch,
 			M * sizeof(double), N, cudaMemcpyDeviceToHost);
-	printMatrix_host(matrix_host, M, N);
+	printMatrix_host(matrix_host, M, M, N);
 	delete[] matrix_host;
 }
 
