@@ -148,7 +148,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//initialize checksums
 		checksum = initializeChecksum(handle1, matrix, ld, N, B, vd, vd_ld);
 		checksum_ld = (N / B) * 2;
-		printMatrix_host(checksum, (N / B) * 2, N);
+		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		//cout<<"checksums initialized"<<endl;
 		
 		cudaHostAlloc((void**) &tempB, B * N * sizeof(double), cudaHostAllocDefault);
