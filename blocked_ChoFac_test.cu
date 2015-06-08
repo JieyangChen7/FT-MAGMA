@@ -218,7 +218,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		
 		dpotrfFT(tempA, tempA_ld, B, 
-					checksum + (i / B) * 2 + i * checksum_ld, 2, 
+					checksum + (i / B) * 2 + i * checksum_ld, checksum_ld, 
 					v, v_ld, 
 					chk1_recal, 
 					chk2_recal, 
