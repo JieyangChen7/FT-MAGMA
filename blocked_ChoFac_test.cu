@@ -184,7 +184,6 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksumA_dev, checksumA_dev_ld,
 					checksumC_dev, checksumC_dev_ld,
 					FT, DEBUG);
-			
 		}
 		
 		cudaStreamSynchronize(stream1);
@@ -241,12 +240,6 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					chk2d, chk2d_ld,
 					tempA, tempA_ld, stream0,
 					FT, DEBUG);
-			/*
-			
-			
-			*/
-		
-			
 		}
 		
 		
@@ -275,32 +268,41 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 		long long * flpins, float * mflops, bool FT, bool DEBUG) {
 
 	char uplo = 'l';
+	//the matrix to be factorizated
 	double * matrix;
-	//double * result;
 	size_t matrix_pitch;
-	//size_t result_pitch;
-	//Memory allocation on RAM and DRAM
 	cudaMallocPitch((void**) &matrix, &matrix_pitch, N * sizeof(double), N);
-	//cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
-
 	int matrix_ld = matrix_pitch / sizeof(double);
-	//int result_ld = result_pitch / sizeof(double);
+	
+	//the correct result to be validated to
+	double * result;
+	size_t result_pitch;
+	cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
+	int result_ld = result_pitch / sizeof(double);
+	
+	
+	//Generate both matrix and result for correctness validation
+	//max matrix size supported: 15360
+	matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
+	
+	//Generate only the matrix for performance testing
+	//max matrix size supported: 20480
+	//matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 
-	//matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
-	matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
-
+	
 	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \
 			mflops, FT, DEBUG);
 
 	//Verify result
-	/*if(resultVerify_gpu(result,result_ld,matrix,matrix_ld,N,2)){
+	/*
+	 if(resultVerify_gpu(result,result_ld,matrix,matrix_ld,N,2)){
 	 cout<<"Result passed!"<<endl;
 	 }else{
 	 cout<<"Result failed!"<<endl;
 	 }
 	 */
 	cudaFree(matrix);
-	//cudaFree(result);
+	cudaFree(result);
 
 }
 

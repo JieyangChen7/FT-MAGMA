@@ -50,7 +50,7 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	if (FT) {
 		
 		
-		//recalculate checksum1 and checksum2
+		//checksum recalculate on GPU
 		for (int i = 0; i < m; i += n) {
 			//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C + i, ldc, \
 					&zero, chk +(i/n)*2, chk_ld);
@@ -58,7 +58,10 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
 		}
 		
+		//wait for data transfer (tempB/tempA)
 		cudaStreamSynchronize(stream0);
+		
+		//checksum update on CPU
 		dgemm('N', 'T', (m / n) * 2 + 2, n, k, negone, checksumA, checksumA_ld, tempB, tempB_ld, one, checksumC, checksumC_ld);
 		
 		
@@ -72,7 +75,8 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 			printMatrix_gpu(chk2, chk2_ld* sizeof(double), (m/n),n);
 			
 			cout<<"updated checksum of C after dgemm:"<<endl;
-			printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), (m/n)*2,n);
+			//printMatrix_gpu(checksumC, checksumC_ld*sizeof(double), (m/n)*2,n);
+			printMatrix_host(checksumC, checksumC_ld, (m / n) * 2, n);
 		}
 		
 		
