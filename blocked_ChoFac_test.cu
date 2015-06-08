@@ -212,8 +212,9 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 						chk2d, chk2d_ld,
 						tempB, tempB_ld, stream0, 
 						FT, DEBUG);
+		} else {
+			cudaStreamSynchronize(stream0);
 		}
-		//cudaStreamSynchronize(stream0);
 		
 		
 		dpotrfFT(tempA, tempA_ld, B, 
