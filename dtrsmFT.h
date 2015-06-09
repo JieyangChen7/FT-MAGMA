@@ -91,7 +91,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		
 		if (DEBUG) {
 			cudaStream_t stream1;
-			cublasGetStream(handle1, &stream1);
+			cublasGetStream(handle, &stream1);
 			cudaStreamSynchronize(stream1);
 			￼
 			cout<<"recalculated checksum of B after dtrsm:"<<endl;
