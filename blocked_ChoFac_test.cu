@@ -203,15 +203,15 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		
 		if (i != 0 && i + B < N) {
 
-				dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
-						ld, matrix + i * ld + (i + B), ld, 
-						checksum + ((i + B) / B)*2, checksum_ld,
-						checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
-						vd, vd_ld,
-						chk1d, chk1d_ld,
-						chk2d, chk2d_ld,
-						tempB, tempB_ld, stream0, 
-						FT, DEBUG);
+			dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
+					ld, matrix + i * ld + (i + B), ld, 
+					checksum + ((i + B) / B)*2, checksum_ld,
+					checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
+					vd, vd_ld,
+					chk1d, chk1d_ld,
+					chk2d, chk2d_ld,
+					tempB, tempB_ld, stream0, 
+					FT, DEBUG);
 		} else {
 			cudaStreamSynchronize(stream0);
 		}
