@@ -118,7 +118,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		vd_ld = vd_pitch / sizeof(double);
 		cudaMemcpy2D(vd, vd_pitch, v, B * sizeof(double), B * sizeof(double),
 				2, cudaMemcpyHostToDevice);
-		//printMatrix_gpu(vd, vd_pitch, B, 2);
+	    printMatrix_gpu(vd, vd_pitch, B, 2);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		
