@@ -37,12 +37,13 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	double zero = 0;
 	double negone = -1;
 
-	/*
+	
 	 cout<<"matrix A before dtrsm:"<<endl;
 	 printMatrix_gpu(A,lda*sizeof(double),n,n);
 	 
+	 /*
 	 cout<<"checksum1 of B before dtrsm:"<<endl;
-	 printMatrix_gpu(checksumB1,incB1*sizeof(double),m/n,n);
+	 printMatrix_gpu(checksumB,checksumB_ld*sizeof(double),(m/n)*2,n);
 	 cout<<"checksum2 of B before dtrsm:"<<endl;
 	 printMatrix_gpu(checksumB2,incB2*sizeof(double),m/n,n);
 	 */
