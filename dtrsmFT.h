@@ -93,7 +93,6 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 			cudaStream_t stream1;
 			cublasGetStream(handle, &stream1);
 			cudaStreamSynchronize(stream1);
-			￼
 			cout<<"recalculated checksum of B after dtrsm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld * sizeof(double), (m / n), n);
 			printMatrix_gpu(chk2, chk2_ld * sizeof(double), (m / n), n);
