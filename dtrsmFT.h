@@ -48,6 +48,9 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	 printMatrix_gpu(checksumB2,incB2*sizeof(double),m/n,n);
 	 */
 
+	 cout<<"matrix B before dtrsm:"<<endl;
+	 	 printMatrix_gpu(B,ldb*sizeof(double),m,n);
+	 	 
 	double alpha = 1;
 	cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, \
 			CUBLAS_DIAG_NON_UNIT, m, n, &alpha, A, lda, B, ldb);
@@ -56,6 +59,10 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	 printMatrix_gpu(A,lda*sizeof(double),n,n);
 	 */
 
+	cout<<"matrix B before dtrsm:"<<endl;
+		 	 printMatrix_gpu(B,ldb*sizeof(double),m,n);
+		 	 
+		 	 
 	if (FT) {
 		
 		//checksum recalculate on GPU
