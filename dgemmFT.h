@@ -64,6 +64,12 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 		//wait for data transfer (tempB/tempA)
 		cudaStreamSynchronize(stream0);
 		
+		
+		cout<<"B on GPU"<<endl;
+		printMatrix_gpu(B, ldb * sizeof(double), n, k);
+		cout<<"B on CPU"<<endl;
+		printMatrix_host(tempB, tempB_ld, n, k);
+		
 		//checksum update on CPU
 		dgemm('N', 'T', (m / n) * 2, n, k, negone, checksumA, checksumA_ld, tempB, tempB_ld, one, checksumC, checksumC_ld);
 		
