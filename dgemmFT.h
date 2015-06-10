@@ -47,6 +47,9 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B, \
 			ldb, &one, C, ldc);
 
+	
+	cout<<"after dgemm"<<endl;
+	printMatrix_gpu(B, ldb, m, n);
 	if (FT) {
 		
 		
