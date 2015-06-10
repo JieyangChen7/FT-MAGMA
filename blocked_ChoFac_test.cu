@@ -277,20 +277,21 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	cudaMallocPitch((void**) &matrix, &matrix_pitch, N * sizeof(double), N);
 	int matrix_ld = matrix_pitch / sizeof(double);
 	
+	/*
 	//the correct result to be validated to
 	double * result;
 	size_t result_pitch;
 	cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
 	int result_ld = result_pitch / sizeof(double);
-	
+	*/
 	
 	//Generate both matrix and result for correctness validation
 	//max matrix size supported: 15360
-	matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
+	//matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
 	
 	//Generate only the matrix for performance testing
 	//max matrix size supported: 20480
-	//matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
+	matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 
 	
 	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \
@@ -305,7 +306,7 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 	 }
 	 */
 	cudaFree(matrix);
-	cudaFree(result);
+	//cudaFree(result);
 
 }
 

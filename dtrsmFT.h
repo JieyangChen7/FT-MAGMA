@@ -38,8 +38,8 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	double negone = -1;
 
 	
-	 cout<<"matrix A before dtrsm:"<<endl;
-	 printMatrix_gpu(A,lda*sizeof(double),n,n);
+	 //cout<<"matrix A before dtrsm:"<<endl;
+	 //printMatrix_gpu(A,lda*sizeof(double),n,n);
 	 
 	 /*
 	 cout<<"checksum1 of B before dtrsm:"<<endl;
@@ -48,8 +48,8 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	 printMatrix_gpu(checksumB2,incB2*sizeof(double),m/n,n);
 	 */
 
-	 cout<<"matrix B before dtrsm:"<<endl;
-	 	 printMatrix_gpu(B,ldb*sizeof(double),m,n);
+	 //cout<<"matrix B before dtrsm:"<<endl;
+	 //printMatrix_gpu(B,ldb*sizeof(double),m,n);
 	 	 
 	double alpha = 1;
 	cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, \
@@ -59,8 +59,8 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 	 printMatrix_gpu(A,lda*sizeof(double),n,n);
 	 */
 
-	cout<<"matrix B before dtrsm:"<<endl;
-		 	 printMatrix_gpu(B,ldb*sizeof(double),m,n);
+	//cout<<"matrix B before dtrsm:"<<endl;
+	//printMatrix_gpu(B,ldb*sizeof(double),m,n);
 		 	 
 		 	 
 	if (FT) {
