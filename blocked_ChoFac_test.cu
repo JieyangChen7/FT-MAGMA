@@ -118,7 +118,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		vd_ld = vd_pitch / sizeof(double);
 		cudaMemcpy2D(vd, vd_pitch, v, B * sizeof(double), B * sizeof(double),
 				2, cudaMemcpyHostToDevice);
-	    printMatrix_gpu(vd, vd_pitch, B, 2);
+	    //printMatrix_gpu(vd, vd_pitch, B, 2);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		
@@ -148,7 +148,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//initialize checksums
 		checksum = initializeChecksum(handle1, matrix, ld, N, B, vd, vd_ld);
 		checksum_ld = (N / B) * 2;
-		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
+		//printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		//cout<<"checksums initialized"<<endl;
 		
 		cudaHostAlloc((void**) &tempB, B * N * sizeof(double), cudaHostAllocDefault);
