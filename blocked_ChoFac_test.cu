@@ -193,16 +193,18 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 							B * sizeof(double), B,
 							cudaMemcpyDeviceToHost, stream0);
 		
-		if (FT) {
-			cudaMemcpy2DAsync(tempB, tempB_ld * sizeof(double),
-								matrix + i + B, ld * sizeof(double),
-								B * sizeof(double), i + B,
-								cudaMemcpyDeviceToHost, stream0);
-		}
+		
 		
 		
 		if (i != 0 && i + B < N) {
 
+			if (FT) {
+						cudaMemcpy2DAsync(tempB, tempB_ld * sizeof(double),
+											matrix + i, ld * sizeof(double),
+											B * sizeof(double), i,
+											cudaMemcpyDeviceToHost, stream0);
+					}
+			
 			dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
 					ld, matrix + i * ld + (i + B), ld, 
 					checksum + ((i + B) / B)*2, checksum_ld,
