@@ -44,15 +44,13 @@ void dpotrfFT(double * A, int lda, int n,
 		//double * chk2 = new double[n];
 		
 		//dgemm('T','N',2, n, n, one, v, v_ld, A, lda, zero, chk, chk_ld);
-		
-		//checksum recalculate on CPU
 		dgemv('T', n, n, one, A, lda, v, 1, zero, chk1, 1);
 		dgemv('T', n, n, one, A, lda, v + v_ld, 1, zero, chk2, 1);
 		
 		
 		
 		
-		//checksum update on CPU
+		//update checksum1 and checksum2
 		for (int i = 0; i < n; i++) {
 			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
 			*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, n, n, i, i);
@@ -64,11 +62,11 @@ void dpotrfFT(double * A, int lda, int n,
 		
 		if (DEBUG) {
 			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
-			printMatrix_host(chk1, 1, 1, n);
-			printMatrix_host(chk2, 1, 1, n);
+			printMatrix_host(chk1, 1, n);
+			printMatrix_host(chk2, 1, n);
 			
 			cout<<"updated checksum on CPU after factorization:"<<endl;
-			printMatrix_host(chksum, chksum_ld, 2, n);		
+			printMatrix_host(chksum, 2, n);		
 			//printVector_host(chksum2, n);
 		}
 		

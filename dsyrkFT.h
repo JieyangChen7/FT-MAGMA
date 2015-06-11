@@ -50,7 +50,6 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	
 	if (FT) {
 			
-		    // transfer data needed for updating checksum
 			cudaMemcpy2DAsync(checksumA_dev, checksumA_dev_ld * sizeof(double), 
 								checksumA, checksumA_ld * sizeof(double), 
 								2 * sizeof(double), m,
@@ -68,13 +67,10 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	//dgemm('N', 'T', n, n, m, negone, tempB, tempB_ld, tempB, tempB_ld, one, tempB, tempB_ld);
 	if (FT) {
 		
-		// wait for data need for checksum update
 		cudaStreamSynchronize(stream0);
 		
-		// checksum update on GPU
 		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 2, n, m, &negone, checksumA_dev, checksumA_dev_ld, A, lda, &one, checksumC_dev, checksumC_dev_ld);
 		
-		// transfer updated result back to CPU memory
 		cudaMemcpy2DAsync(checksumC, checksumC_ld * sizeof(double), 
 											checksumC_dev, checksumC_dev_ld * sizeof(double), 
 											2 * sizeof(double), n,
@@ -84,7 +80,6 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		
 		//cublasDgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, 2, n, n, &one, vd, vd_ld, C, ldc, &zero, chk, chk_ld);
 	    
-		// checksum recalcuate on GPU
 	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd, 1, &zero, chk1, chk1_ld);
 	    cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, vd + vd_ld, 1, &zero, chk2, chk2_ld);
 		
@@ -103,10 +98,8 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 			printMatrix_gpu(chk1, chk1_ld * sizeof(double), 1, n);
 			printMatrix_gpu(chk2, chk2_ld * sizeof(double), 1, n);
 			
-			cudaStreamSynchronize(stream0);
 			cout<<"updated checksum of C after dsyrk:"<<endl;
-			//printMatrix_gpu(checksumC, checksumC_ld * sizeof(double), 2, n);
-			printMatrix_host(checksumC, checksumC_ld, 2, n);
+			printMatrix_gpu(checksumC, checksumC_ld * sizeof(double), 2, n);
 		}
 		
 		

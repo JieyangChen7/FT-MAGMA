@@ -118,7 +118,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		vd_ld = vd_pitch / sizeof(double);
 		cudaMemcpy2D(vd, vd_pitch, v, B * sizeof(double), B * sizeof(double),
 				2, cudaMemcpyHostToDevice);
-	    //printMatrix_gpu(vd, vd_pitch, B, 2);
+		//printMatrix_gpu(vd, vd_pitch, B, 2);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		
@@ -148,7 +148,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		//initialize checksums
 		checksum = initializeChecksum(handle1, matrix, ld, N, B, vd, vd_ld);
 		checksum_ld = (N / B) * 2;
-		//printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
+		//printMatrix_host(checksum, (N / B) * 2, N);
 		//cout<<"checksums initialized"<<endl;
 		
 		cudaHostAlloc((void**) &tempB, B * N * sizeof(double), cudaHostAllocDefault);
@@ -184,6 +184,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksumA_dev, checksumA_dev_ld,
 					checksumC_dev, checksumC_dev_ld,
 					FT, DEBUG);
+			
 		}
 		
 		cudaStreamSynchronize(stream1);
@@ -193,34 +194,31 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 							B * sizeof(double), B,
 							cudaMemcpyDeviceToHost, stream0);
 		
-		
+		if (FT) {
+			cudaMemcpy2DAsync(tempB, tempB_ld * sizeof(double),
+								matrix + i + B, ld * sizeof(double),
+								B * sizeof(double), i + B,
+								cudaMemcpyDeviceToHost, stream0);
+		}
 		
 		
 		if (i != 0 && i + B < N) {
 
-			if (FT) {
-						cudaMemcpy2DAsync(tempB, tempB_ld * sizeof(double),
-											matrix + i, ld * sizeof(double),
-											B * sizeof(double), i,
-											cudaMemcpyDeviceToHost, stream0);
-					}
-			
-			dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
-					ld, matrix + i * ld + (i + B), ld, 
-					checksum + ((i + B) / B)*2, checksum_ld,
-					checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
-					vd, vd_ld,
-					chk1d, chk1d_ld,
-					chk2d, chk2d_ld,
-					tempB, tempB_ld, stream0, 
-					FT, DEBUG);
-		} else {
-			cudaStreamSynchronize(stream0);
+				dgemmFT(handle1, N - i - B, B, i, matrix + (i + B), ld, matrix + i,
+						ld, matrix + i * ld + (i + B), ld, 
+						checksum + ((i + B) / B)*2, checksum_ld,
+						checksum + i * checksum_ld + ((i + B) / B)*2, checksum_ld,
+						vd, vd_ld,
+						chk1d, chk1d_ld,
+						chk2d, chk2d_ld,
+						tempB, tempB_ld, stream0, 
+						FT, DEBUG);
 		}
+		//cudaStreamSynchronize(stream0);
 		
 		
 		dpotrfFT(tempA, tempA_ld, B, 
-					checksum + (i / B) * 2 + i * checksum_ld, checksum_ld, 
+					checksum + (i / B) * 2 + i * checksum_ld, 2, 
 					v, v_ld, 
 					chk1_recal, 
 					chk2_recal, 
@@ -243,6 +241,12 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					chk2d, chk2d_ld,
 					tempA, tempA_ld, stream0,
 					FT, DEBUG);
+			/*
+			
+			
+			*/
+		
+			
 		}
 		
 		
@@ -271,35 +275,25 @@ void test_mydpotrf(int N, int B, float * real_time, float * proc_time,
 		long long * flpins, float * mflops, bool FT, bool DEBUG) {
 
 	char uplo = 'l';
-	//the matrix to be factorizated
 	double * matrix;
+	//double * result;
 	size_t matrix_pitch;
+	//size_t result_pitch;
+	//Memory allocation on RAM and DRAM
 	cudaMallocPitch((void**) &matrix, &matrix_pitch, N * sizeof(double), N);
+	//cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
+
 	int matrix_ld = matrix_pitch / sizeof(double);
-	
-	/*
-	//the correct result to be validated to
-	double * result;
-	size_t result_pitch;
-	cudaMallocPitch((void**) &result, &result_pitch, N * sizeof(double), N);
-	int result_ld = result_pitch / sizeof(double);
-	*/
-	
-	//Generate both matrix and result for correctness validation
-	//max matrix size supported: 15360
+	//int result_ld = result_pitch / sizeof(double);
+
 	//matrixGenerator_gpu2(uplo, matrix, matrix_ld, result, result_ld, N, 2);
-	
-	//Generate only the matrix for performance testing
-	//max matrix size supported: 20480
 	matrixGenerator_gpu(uplo, matrix, matrix_ld, N, 2);
 
-	
 	my_dpotrf(uplo, matrix, matrix_ld, N, B, real_time, proc_time, flpins, \
 			mflops, FT, DEBUG);
 
 	//Verify result
-	/*
-	 if(resultVerify_gpu(result,result_ld,matrix,matrix_ld,N,2)){
+	/*if(resultVerify_gpu(result,result_ld,matrix,matrix_ld,N,2)){
 	 cout<<"Result passed!"<<endl;
 	 }else{
 	 cout<<"Result failed!"<<endl;
