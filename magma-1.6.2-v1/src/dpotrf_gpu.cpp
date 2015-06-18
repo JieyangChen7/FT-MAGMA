@@ -126,6 +126,82 @@ magma_dpotrf_gpu(
     else {
         stream[1] = orig_stream;
     }
+    
+    
+    /* FT variables */
+    boolean FT;
+    boolean DEBUG;
+    double * v1;
+    double * v2;
+    double * v1d;
+    double * v2d;
+    size_t v1d_pitch;
+    size_t v2d_pitch;
+    double * chk1;
+    double * chk2;
+    double * chk1d;
+    double * chk2d;
+    size_t chk1d_pitch;
+    size_t chk2d_pitch;
+    int chk1d_ld;
+    int chk2d_ld;
+    size_t checksum1_pitch;
+    size_t checksum2_pitch;
+   	double * checksum1;
+    double * checksum2;
+    int checksum1_ld;
+    int checksum2_ld;
+    
+    if (FT) {
+    	//cout<<"check sum initialization started"<<endl;
+    	//intialize checksum vector on CPU
+    	v1 = new double[B];
+    	v2 = new double[B];
+    	for (int i = 0; i < B; i++) {
+    		v1[i] = 1;
+    		v2[i] = i + 1;
+    	}
+    	//cout<<"checksum vector on CPU initialized"<<endl;
+
+    	//intialize checksum vector on GPU
+    	cudaMallocPitch((void**) &v1d, &v1d_pitch, B * sizeof(double), 1);
+    	cudaMemcpy2D(v1d, v1d_pitch, v1, B * sizeof(double), B * sizeof(double),
+    			1, cudaMemcpyHostToDevice);
+    	cudaMallocPitch((void**) &v2d, &v2d_pitch, B * sizeof(double), 1);
+    	cudaMemcpy2D(v2d, v2d_pitch, v2, B * sizeof(double), B * sizeof(double),
+    				1, cudaMemcpyHostToDevice);
+    	//cout<<"checksum vector on gpu initialized"<<endl;
+
+    	//allocate space for recalculated checksum on CPU
+    	chk1 = new double[B];
+    	chk2 = new double[B];
+    	//cout<<"allocate space for recalculated checksum on CPU"<<endl;
+
+    	//allocate space for reclaculated checksum on CPU
+    	cudaMallocPitch((void**) &chk1d, &chk1d_pitch, (N / B) * sizeof(double),
+    				B);
+    	cudaMallocPitch((void**) &chk2d, &chk2d_pitch, (N / B) * sizeof(double),
+    				B);
+    	chk1d_ld = chk1d_pitch / sizeof(double);
+    	chk2d_ld = chk2d_pitch / sizeof(double);
+    	//cout<<"allocate space for recalculated checksum on GPU"<<endl;
+
+    	//initialize checksums
+    	checksum1 = initializeChecksum(handle1, matrix, ld, N, B, v1d,
+    				checksum1_pitch);
+    	checksum2 = initializeChecksum(handle1, matrix, ld, N, B, v2d,
+    				checksum2_pitch);
+    	checksum1_ld = checksum1_pitch / sizeof(double);
+    	checksum2_ld = checksum2_pitch / sizeof(double);
+    	//cout<<"checksums initialized"<<endl;
+    }
+    /* end of FT initialization */
+    
+    
+    
+    
+    
+    
 
 
     
@@ -135,8 +211,7 @@ magma_dpotrf_gpu(
         magma_queue_sync( stream[1] );
         lapackf77_dpotrf(uplo_, &n, work, &n, info);
         magma_dsetmatrix_async( n, n, work, n, dA, ldda, stream[1] );
-    }
-    else {
+    } else {
         /* Use blocked code. */
         if (upper) {
             
@@ -166,7 +241,11 @@ magma_dpotrf_gpu(
                 }
                 
                 magma_queue_sync( stream[0] );
+                
+                
                 lapackf77_dpotrf(MagmaUpperStr, &jb, work, &jb, info);
+                
+                
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
@@ -209,7 +288,11 @@ magma_dpotrf_gpu(
                 }
 
                 magma_queue_sync( stream[0] );
+                
+                
                 lapackf77_dpotrf(MagmaLowerStr, &jb, work, &jb, info);
+                
+                
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );

@@ -146,7 +146,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		 cout<<"checksum2:"<<endl;
 		 printMatrix_gpu(checksum2, checksum2_pitch, N/B, N);
 		 */
-		/*
+		
 		if (i > 0) {
 			dsyrkFT(handle1, B, i, matrix + i, ld, matrix + i * ld + i, ld,
 					checksum1 + i / B, checksum1_ld, checksum2 + i / B,
@@ -187,10 +187,10 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 		}
 
 		cudaStreamSynchronize(stream0);
-		*/
+		
 		//int info;
 		dpotrfFT(temp, B, B, chk1, 1, chk2, 1, v1, v2, FT, DEBUG);
-		/*
+		
 		cudaMemcpy2DAsync(matrix + i * ld + i, ld * sizeof(double), temp,
 				B * sizeof(double), B * sizeof(double), B,
 				cudaMemcpyHostToDevice, stream0);
@@ -217,7 +217,7 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 					checksum2 + (i + B) / B + i * checksum2_ld, checksum2_ld,
 					v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
 		}
-		*/
+		
 
 	}
 
