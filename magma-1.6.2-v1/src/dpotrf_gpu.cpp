@@ -10,6 +10,9 @@
 */
 #include "common_magma.h"
 
+#include"printHelper.h"
+#include"matrixGenerator.h"
+#include"dpotrfFT.h"
 
 
 #define PRECISION_d
