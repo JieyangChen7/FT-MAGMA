@@ -129,8 +129,8 @@ magma_dpotrf_gpu(
     
     
     /* FT variables */
-    boolean FT;
-    boolean DEBUG;
+    boolean FT = true;
+    boolean DEBUG = true;
     double * v1;
     double * v2;
     double * v1d;
@@ -172,7 +172,7 @@ magma_dpotrf_gpu(
     				1, cudaMemcpyHostToDevice);
     	//cout<<"checksum vector on gpu initialized"<<endl;
 
-    	//allocate space for recalculated checksum on CPU
+    	//allocate space for update checksum on CPU
     	chk1 = new double[B];
     	chk2 = new double[B];
     	//cout<<"allocate space for recalculated checksum on CPU"<<endl;
@@ -231,6 +231,7 @@ magma_dpotrf_gpu(
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
                 
+               
                 if ( (j+jb) < n) {
                     /* Compute the current block row. */
                     magma_dgemm(MagmaConjTrans, MagmaNoTrans,
@@ -249,6 +250,7 @@ magma_dpotrf_gpu(
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
+                
                 if (*info != 0) {
                     *info = *info + j;
                     break;
@@ -279,6 +281,17 @@ magma_dpotrf_gpu(
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
                 
+                if (FT) {
+					 cudaMemcpy2DAsync(chk1, 1 * sizeof(double), checksum1 + (i/jb) + i*checksum1_ld,
+					 checksum1_pitch, 1 * sizeof(double), jb,
+					 cudaMemcpyDeviceToHost, stream0);
+					 cudaMemcpy2DAsync(chk2, 1 * sizeof(double), checksum2 + (i/jb) + i*checksum2_ld,
+					 checksum2_pitch, 1 * sizeof(double), jb,
+					 cudaMemcpyDeviceToHost, stream0);
+                			 
+                }
+                
+                
                 if ( (j+jb) < n) {
                     magma_dgemm( MagmaNoTrans, MagmaConjTrans,
                                  (n-j-jb), jb, j,
@@ -290,12 +303,21 @@ magma_dpotrf_gpu(
                 magma_queue_sync( stream[0] );
                 
                 
-                lapackf77_dpotrf(MagmaLowerStr, &jb, work, &jb, info);
-                
+                //lapackf77_dpotrf(MagmaLowerStr, &jb, work, &jb, info);
+                dpotrfFT(MagmaLowerStr, temp, jb, jb, info, chk1, 1, chk2, 1, v1, v2, FT, DEBUG);
                 
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
+                if (FT) {
+					 cudaMemcpy2DAsync(checksum1 + (i/jb) + i*checksum1_ld,checksum1_pitch, chk1, 1 * sizeof(double), 
+					 1 * sizeof(double), jb,
+					 cudaMemcpyHostToDevice, stream0);
+					 cudaMemcpy2DAsync(checksum2 + (i/jb) + i*checksum2_ld,checksum2_pitch, chk2, 1 * sizeof(double), 
+					 1 * sizeof(double), jb,
+					 cudaMemcpyHostToDevice, stream0);			 
+                }
+                
                 if (*info != 0) {
                     *info = *info + j;
                     break;
