@@ -221,8 +221,8 @@ void my_dpotrf(char uplo, double * matrix, int ld, int N, int B,
 
 	}
 
-	cudaStreamSynchronize(stream0);
-	cudaStreamSynchronize(stream1);
+	//cudaStreamSynchronize(stream0);
+	//cudaStreamSynchronize(stream1);
 	//end of profiling
 	//cudaProfilerStop();
 

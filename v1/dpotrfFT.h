@@ -28,7 +28,7 @@ void dpotrfFT(double * A, int lda, int n,
 	
 	//do Choleksy factorization
 	int info;
-	//dpotrf('L', n, A, n, &info);
+	dpotrf('L', n, A, n, &info);
 	
 	if (FT) {
 	
