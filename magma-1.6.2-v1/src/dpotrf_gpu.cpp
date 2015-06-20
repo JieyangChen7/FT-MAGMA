@@ -11,13 +11,15 @@
 #include "common_magma.h"
 #include<iostream>
 #include"printHelper.h"
+#include"cublas_v2.h"
+#include"acml.h"
 #include"dpotrfFT.h"
 #include"dtrsmFT.h"
 #include"dsyrkFT.h"
 #include"dgemmFT.h"
 #include"checksumGenerator.h"
-#include"acml.h"
-#include"cublas_v2.h"
+
+
 
 using namespace std;
 
