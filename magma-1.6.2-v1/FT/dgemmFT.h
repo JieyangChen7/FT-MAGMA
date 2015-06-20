@@ -1,7 +1,7 @@
 #include<iostream>
 using namespace std;
 //dgemm with FT
-
+/*
 __global__ void detectAndCorrectForGemm(double * C, int ldc, int n,
 		double * chksumC1, int incC1, double * chksumC2, int incC2,
 		double * chkC1, int incC1_2, double * chkC2, int incC2_2){
@@ -15,7 +15,7 @@ __global__ void detectAndCorrectForGemm(double * C, int ldc, int n,
 		*(C+n*block+row+col*ldc) += *(chksumC1+block+col*incC1)-*(chkC1+block+col*incC1_2);
 	}
 }
-
+*/
 /**
  * m: number of row of A
  * n: number of col of B

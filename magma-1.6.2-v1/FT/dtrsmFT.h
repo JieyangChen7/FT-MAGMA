@@ -1,7 +1,7 @@
 #include<iostream>
 using namespace std;
 //TRSM with FT on GPU using cuBLAS
-
+/*
 __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 		double * chksumB1, int incB1, double * chksumB2, int incB2,
 		double * chkB1, int incB1_2, double * chkB2, int incB2_2) {
@@ -20,7 +20,7 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 				- *(chkB1 + block + col * incB1_2);
 	}
 }
-
+*/
 /*
  * m: number of row of B
  * n: number of col of B

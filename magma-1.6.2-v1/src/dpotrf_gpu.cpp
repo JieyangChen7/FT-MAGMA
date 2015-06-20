@@ -16,6 +16,7 @@
 #include"dsyrkFT.h"
 #include"dgemmFT.h"
 #include"checksumGenerator.h"
+#include"acml.h"
 
 using namespace std;
 

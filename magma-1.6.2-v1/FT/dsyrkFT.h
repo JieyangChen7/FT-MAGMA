@@ -1,7 +1,7 @@
 #include<iostream>
 using namespace std;
 //dsyrk with FT
-
+/*
 __global__ void detectAndCorrectForSyrk(double * C, int ldc,
 		double * chksumC1, int incC1, double * chksumC2, int incC2,
 		double * chkC1, int incC1_2, double * chkC2, int incC2_2){
@@ -14,7 +14,7 @@ __global__ void detectAndCorrectForSyrk(double * C, int ldc,
 		*(C+row+col*ldc) += *(chksumC1+col*incC1)-*(chkC1+col*incC1_2);
 	}
 }
-
+*/
 
 /**
  * n: number of row of A
