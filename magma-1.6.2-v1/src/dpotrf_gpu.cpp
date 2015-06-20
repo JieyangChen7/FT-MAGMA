@@ -17,6 +17,7 @@
 #include"dgemmFT.h"
 #include"checksumGenerator.h"
 #include"acml.h"
+#include"cublas_v2.h"
 
 using namespace std;
 
