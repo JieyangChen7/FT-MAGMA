@@ -200,9 +200,9 @@ magma_dpotrf_gpu(
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
 
 		//initialize checksums
-		checksum1 = initializeChecksum(matrix, ld, N, B, v1d,
+		checksum1 = initializeChecksum(dA, ldda, N, B, v1d,
 				checksum1_pitch);
-		checksum2 = initializeChecksum(matrix, ld, N, B, v2d,
+		checksum2 = initializeChecksum(dA, ldda, N, B, v2d,
 				checksum2_pitch);
 		checksum1_ld = checksum1_pitch / sizeof(double);
 		checksum2_ld = checksum2_pitch / sizeof(double);
