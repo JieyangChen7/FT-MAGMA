@@ -15,8 +15,8 @@ double * initializeChecksum(double * matrix, int ld, int N, int B, double * vd, 
 	double alpha = 1;
 	double beta = 0;
 	for (int i = 0; i < N; i += B) {
-		magma_dgemv(MagmaTrans, B, N, &alpha, matrix + i, ld, vd, 1, \
-						&beta, chksum + (i / B), chksum_ld);
+		magma_dgemv(MagmaTrans, B, N, alpha, matrix + i, ld, vd, 1, \
+						beta, chksum + (i / B), chksum_ld);
 		//cublasDgemv(handle, CUBLAS_OP_T, B, N, &alpha, matrix + i, ld, vd, 1, \
 				&beta, chksum + (i / B), chksum_ld);
 		//cout<<"i="<<i<<endl;
