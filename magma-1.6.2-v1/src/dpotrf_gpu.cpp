@@ -11,12 +11,11 @@
 #include "common_magma.h"
 #include<iostream>
 #include"printHelper.h"
-#include"cublas_v2.h"
-#include"acml.h"
-#include"dpotrfFT.h"
-#include"dtrsmFT.h"
-#include"dsyrkFT.h"
-#include"dgemmFT.h"
+
+//#include"dpotrfFT.h"
+//#include"dtrsmFT.h"
+//#include"dsyrkFT.h"
+//#include"dgemmFT.h"
 #include"checksumGenerator.h"
 
 
@@ -138,18 +137,6 @@ magma_dpotrf_gpu(
         stream[1] = orig_stream;
     }
     
-    
-    
-    cublasStatus_t cublasStatus;
-	cublasHandle_t handle1;
-	cublasStatus = cublasCreate(&handle1);
-	if (cublasStatus != CUBLAS_STATUS_SUCCESS)
-		cout << "CUBLAS NOT INITIALIZED(handle1) in my_dpotrf " << endl;
-	cublasStatus = cublasSetStream(handle1, stream[1]);
-	if (cublasStatus != CUBLAS_STATUS_SUCCESS)
-		cout << "CUBLAS SET STREAM NOT INITIALIZED(handle1) in my_dpotrf"
-				<< endl;
-    
     //acommdation
     int B = nb;
     int N = n;
@@ -192,6 +179,7 @@ magma_dpotrf_gpu(
 		cudaMallocPitch((void**) &v1d, &v1d_pitch, B * sizeof(double), 1);
 		cudaMemcpy2D(v1d, v1d_pitch, v1, B * sizeof(double), B * sizeof(double),
 				1, cudaMemcpyHostToDevice);
+		
 		cudaMallocPitch((void**) &v2d, &v2d_pitch, B * sizeof(double), 1);
 		cudaMemcpy2D(v2d, v2d_pitch, v2, B * sizeof(double), B * sizeof(double),
 				1, cudaMemcpyHostToDevice);
@@ -212,9 +200,9 @@ magma_dpotrf_gpu(
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
 
 		//initialize checksums
-		checksum1 = initializeChecksum(handle1, matrix, ld, N, B, v1d,
+		checksum1 = initializeChecksum(matrix, ld, N, B, v1d,
 				checksum1_pitch);
-		checksum2 = initializeChecksum(handle1, matrix, ld, N, B, v2d,
+		checksum2 = initializeChecksum(matrix, ld, N, B, v2d,
 				checksum2_pitch);
 		checksum1_ld = checksum1_pitch / sizeof(double);
 		checksum2_ld = checksum2_pitch / sizeof(double);
@@ -306,8 +294,8 @@ magma_dpotrf_gpu(
 
                 magma_queue_sync( stream[0] );
                 
-                //lapackf77_dpotrf(MagmaLowerStr, &jb, work, &jb, info);
-                dpotrfFT(work, B, B, info, chk1, 1, chk2, 1, v1, v2, FT, DEBUG);
+                lapackf77_dpotrf(MagmaLowerStr, &jb, work, &jb, info);
+                //dpotrfFT(work, B, B, info, chk1, 1, chk2, 1, v1, v2, FT, DEBUG);
                 
                 
                 magma_dsetmatrix_async( jb, jb,
