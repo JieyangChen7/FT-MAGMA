@@ -172,7 +172,8 @@ DSRC = \
 	dtrsm_batched.cu \
 	dtrtri_diag_batched.cu \
 	dgeqr2_kernels.cu \
-	dgeqr2_batched.cu
+	dgeqr2_batched.cu \
+	$(MAGMA_DIR)/FT/*.*
 
 SSRC = \
 	sgeadd.cu \
