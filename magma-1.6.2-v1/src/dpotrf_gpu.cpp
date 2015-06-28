@@ -237,8 +237,8 @@ magma_dpotrf_gpu(
 		magma_dmalloc(&checksum1, checksum1_pitch * N);
 		magma_dmalloc(&checksum2, checksum2_pitch * N);
 		
-		initializeChecksum(dA, ldda, N, B, v1d, checksum1);
-		initializeChecksum(dA, ldda, N, B, v2d, checksum2);
+		initializeChecksum(dA, ldda, N, B, v1d, checksum1, checksum1_ld);
+		initializeChecksum(dA, ldda, N, B, v2d, checksum2, checksum2_ld);
 		
 		//cout<<"checksums initialized"<<endl;
 		
