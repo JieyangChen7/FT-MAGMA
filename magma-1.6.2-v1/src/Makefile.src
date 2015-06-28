@@ -327,7 +327,7 @@ DSRC = \
 	dlarfb_gemm_batched.cpp \
 	dgeqrf_panel_batched.cpp \
 	dgeqrf_batched.cpp \
-	../FT/*.*
+	$(MAGMA_DIR)/FT/*.*
 
 SSRC = \
 	cblas_s.cpp \

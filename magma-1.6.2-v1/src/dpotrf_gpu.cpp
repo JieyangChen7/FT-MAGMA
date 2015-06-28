@@ -230,7 +230,7 @@ magma_dpotrf_gpu(
 		magma_dmalloc(&chk1d, chk1d_pitch * B);
 		magma_dmalloc(&chk2d, chk2d_pitch * B);
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
-
+ 
 		//initialize checksums
 		checksum1_pitch = magma_roundup(N / B, 32);
 		checksum2_pitch = magma_roundup(N / B, 32);
