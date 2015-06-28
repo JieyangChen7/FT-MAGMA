@@ -197,8 +197,8 @@ magma_dpotrf_gpu(
 //		cudaMemcpy2D(v2d, v2d_pitch, v2, B * sizeof(double), B * sizeof(double),
 //				1, cudaMemcpyHostToDevice);
 		
-		v1d_pitch = magma_roundup(B, 32);
-		v2d_pitch = magma_roundup(B, 32);
+		v1d_pitch = magma_roundup(B * sizeof(double), 32);
+		v2d_pitch = magma_roundup(B * sizeof(double), 32);
 		v1d_ld = v1d_pitch / sizeof(double);
 		v2d_ld = v2d_pitch / sizeof(double);
 		
@@ -226,8 +226,8 @@ magma_dpotrf_gpu(
 //		cudaMallocPitch((void**) &chk2d, &chk2d_pitch, (N / B) * sizeof(double),
 //				B);
 		
-		chk1d_pitch = magma_roundup(N / B, 32);
-		chk2d_pitch = magma_roundup(N / B, 32);
+		chk1d_pitch = magma_roundup((N / B) * sizeof(double) , 32);
+		chk2d_pitch = magma_roundup((N / B) * sizeof(double) , 32);
 		
 		chk1d_ld = chk1d_pitch / sizeof(double);
 		chk2d_ld = chk2d_pitch / sizeof(double);
@@ -237,8 +237,8 @@ magma_dpotrf_gpu(
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
  
 		//initialize checksums
-		checksum1_pitch = magma_roundup(N / B, 32);
-		checksum2_pitch = magma_roundup(N / B, 32);
+		checksum1_pitch = magma_roundup((N / B) * sizeof(double) , 32);
+		checksum2_pitch = magma_roundup((N / B) * sizeof(double) , 32);
 		
 		checksum1_ld = checksum1_pitch / sizeof(double);
 		checksum2_ld = checksum2_pitch / sizeof(double);
