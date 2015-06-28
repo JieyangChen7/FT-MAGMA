@@ -1,3 +1,4 @@
+#include "magma.h"
 #include"FT.h"
 using namespace std;
 //initialize checksum
