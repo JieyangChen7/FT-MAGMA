@@ -18,8 +18,9 @@ void printMatrix_host(double * matrix_host, int M, int N) {
  */
 void printMatrix_gpu(double * matrix_device, size_t matrix_pitch, int M, int N) {
 	double * matrix_host = new double[M * N]();
-	cudaMemcpy2D(matrix_host, M * sizeof(double), matrix_device, matrix_pitch,
-			M * sizeof(double), N, cudaMemcpyDeviceToHost);
+//	cudaMemcpy2D(matrix_host, M * sizeof(double), matrix_device, matrix_pitch,
+//			M * sizeof(double), N, cudaMemcpyDeviceToHost);
+	magma_dgetmatrix(M, N, matrix_device, matrix_pitch / sizeof(double), matrix_host, M);
 	printMatrix_host(matrix_host, M, N);
 	delete[] matrix_host;
 }
