@@ -10,7 +10,7 @@
 */
 #include "common_magma.h"
 #include<iostream>
-#include"printHelper.h"
+
 
 //#include"dpotrfFT.h"
 //#include"dtrsmFT.h"
