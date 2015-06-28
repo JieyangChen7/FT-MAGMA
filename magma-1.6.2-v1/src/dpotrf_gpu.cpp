@@ -117,6 +117,10 @@ magma_dpotrf_gpu(
 
     nb = magma_get_dpotrf_nb(n);
 
+    //** debug **//
+        nb = 2;
+        
+        
     if (MAGMA_SUCCESS != magma_dmalloc_pinned( &work, nb*nb )) {
         *info = MAGMA_ERR_HOST_ALLOC;
         return *info;
@@ -136,6 +140,7 @@ magma_dpotrf_gpu(
     else {
         stream[1] = orig_stream;
     }
+    
     
     //acommdation
     int B = nb;
@@ -167,8 +172,11 @@ magma_dpotrf_gpu(
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
-		v1 = new double[B];
-		v2 = new double[B];
+//		v1 = new double[B];
+//		v2 = new double[B];
+		magma_dmalloc_pinned(&v1, B * sizeof(double));
+		magma_dmalloc_pinned(&v2, B * sizeof(double));
+		
 		for (int i = 0; i < B; i++) {
 			v1[i] = 1;
 			v2[i] = i + 1;
@@ -176,44 +184,75 @@ magma_dpotrf_gpu(
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU
-		cudaMallocPitch((void**) &v1d, &v1d_pitch, B * sizeof(double), 1);
-		cudaMemcpy2D(v1d, v1d_pitch, v1, B * sizeof(double), B * sizeof(double),
-				1, cudaMemcpyHostToDevice);
+//		cudaMallocPitch((void**) &v1d, &v1d_pitch, B * sizeof(double), 1);
+//		cudaMemcpy2D(v1d, v1d_pitch, v1, B * sizeof(double), B * sizeof(double),
+//				1, cudaMemcpyHostToDevice);
+//		
+//		cudaMallocPitch((void**) &v2d, &v2d_pitch, B * sizeof(double), 1);
+//		cudaMemcpy2D(v2d, v2d_pitch, v2, B * sizeof(double), B * sizeof(double),
+//				1, cudaMemcpyHostToDevice);
 		
-		cudaMallocPitch((void**) &v2d, &v2d_pitch, B * sizeof(double), 1);
-		cudaMemcpy2D(v2d, v2d_pitch, v2, B * sizeof(double), B * sizeof(double),
-				1, cudaMemcpyHostToDevice);
+		v1d_pitch = magma_roundup(B, 32);
+		v2d_pitch = magma_roundup(B, 32);
+		magma_dmalloc(&v1d, v1d_pitch * sizeof(double));
+		magma_dmalloc(&v2d, v2d_pitch * sizeof(double));
+		magma_dsetmatrix(B, 1, v1, B, v1d, v1d_pitch / sizeof(double));
+		magma_dsetmatrix(B, 1, v2, B, v2d, v2d_pitch / sizeof(double));
+		
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		//allocate space for recalculated checksum on CPU
-		chk1 = new double[B];
-		chk2 = new double[B];
+//		chk1 = new double[B];
+//		chk2 = new double[B];
+		magma_dmalloc_pinned(&chk1, B * sizeof(double));
+		magma_dmalloc_pinned(&chk2, B * sizeof(double));
+		
 		//cout<<"allocate space for recalculated checksum on CPU"<<endl;
 
-		//allocate space for reclaculated checksum on CPU
-		cudaMallocPitch((void**) &chk1d, &chk1d_pitch, (N / B) * sizeof(double),
-				B);
-		cudaMallocPitch((void**) &chk2d, &chk2d_pitch, (N / B) * sizeof(double),
-				B);
+		//allocate space for reclaculated checksum on GPU
+//		cudaMallocPitch((void**) &chk1d, &chk1d_pitch, (N / B) * sizeof(double),
+//				B);
+//		cudaMallocPitch((void**) &chk2d, &chk2d_pitch, (N / B) * sizeof(double),
+//				B);
+		
+		
+		chk1d_pitch = magma_roundup(N / B, 32);
+		chk2d_pitch = magma_roundup(N / B, 32);
+		
 		chk1d_ld = chk1d_pitch / sizeof(double);
 		chk2d_ld = chk2d_pitch / sizeof(double);
+		
+		magma_dmalloc(&chk1d, chk1d_pitch * B);
+		magma_dmalloc(&chk2d, chk2d_pitch * B);
+		
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
 
 		//initialize checksums
-		checksum1 = initializeChecksum(dA, ldda, N, B, v1d,
-				checksum1_pitch);
-		checksum2 = initializeChecksum(dA, ldda, N, B, v2d,
-				checksum2_pitch);
+		checksum1_pitch = magma_roundup(N / B, 32);
+		checksum2_pitch = magma_roundup(N / B, 32);
+		
 		checksum1_ld = checksum1_pitch / sizeof(double);
 		checksum2_ld = checksum2_pitch / sizeof(double);
+		
+		magma_dmalloc(&checksum1, checksum1_pitch * N);
+		magma_dmalloc(&checksum2, checksum2_pitch * N);
+		
+		initializeChecksum(dA, ldda, N, B, v1d, checksum1);
+		initializeChecksum(dA, ldda, N, B, v2d, checksum2);
+		
 		//cout<<"checksums initialized"<<endl;
+		
+		printMatrix_gpu(dA, ldda * sizeof(double), N, N);
+		printMatrix_gpu(checksum1, checksum1_pitch, N / B, N);
+		printMatrix_gpu(checksum2, checksum1_pitch, N / B, N);
+		
 
 	}
     
     
     
-    
-    if ((nb <= 1) || (nb >= n)) {
+    if (0) {
+//    if ((nb <= 1) || (nb >= n)) {
         /* Use unblocked code. */
         magma_dgetmatrix_async( n, n, dA, ldda, work, n, stream[1] );
         magma_queue_sync( stream[1] );

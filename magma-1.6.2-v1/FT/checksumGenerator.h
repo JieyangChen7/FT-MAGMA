@@ -1,22 +1,15 @@
 using namespace std;
 //initialize checksum
-double * initializeChecksum(double * matrix, int ld, int N, int B, double * vd, size_t& chksum_pitch) {
+void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, double * chksum) {
 
 	//cout<<"checksum vector on GPU:"<<endl;
 	//printVector_gpu(vd,B);
 	
-	double * chksum;
-	
-	
-	cudaMallocPitch((void**) &chksum, &chksum_pitch, (N / B) * sizeof(double), N);
-	int chksum_ld = chksum_pitch / sizeof(double);
-	//printMatrix_gpu(matrix,ld*sizeof(double),N,N);
-	//printMatrix_gpu(matrix,ld*sizeof(double),B,N);
-	double alpha = 1;
-	double beta = 0;
+//	double alpha = 1;
+//	double beta = 0;
 	for (int i = 0; i < N; i += B) {
-		magma_dgemv(MagmaTrans, B, N, alpha, matrix + i, ld, vd, 1, \
-						beta, chksum + (i / B), chksum_ld);
+		magma_dgemv(MagmaTrans, B, N, MAGMA_D_ONE, matrix + i, ld, vd, 1, \
+				MAGMA_D_ZERO, chksum + (i / B), chksum_ld);
 		//cublasDgemv(handle, CUBLAS_OP_T, B, N, &alpha, matrix + i, ld, vd, 1, \
 				&beta, chksum + (i / B), chksum_ld);
 		//cout<<"i="<<i<<endl;
@@ -24,6 +17,4 @@ double * initializeChecksum(double * matrix, int ld, int N, int B, double * vd, 
 		//printVector_gpu(vd,B);
 		//printMatrix_gpu(chksum + (i / B), chksum_pitch, 1, N);
 	}
-	return chksum;
-
 }
