@@ -16,7 +16,7 @@
 //#include"dtrsmFT.h"
 //#include"dsyrkFT.h"
 //#include"dgemmFT.h"
-#include"checksumGenerator.h"
+#include"FT.h"
 
 
 
