@@ -173,8 +173,13 @@ DSRC = \
 	dtrtri_diag_batched.cu \
 	dgeqr2_kernels.cu \
 	dgeqr2_batched.cu \
-	$(MAGMA_DIR)/FT/*.*
-
+	checksumGenerator.cpp \
+	dgemmFT.cpp \
+	dpotrfFT.cpp \
+	dsyrkFT.cpp \
+	dtrsmFT.cpp \
+	printHelper.cpp
+	
 SSRC = \
 	sgeadd.cu \
 	sgemm_reduce.cu \
