@@ -13,10 +13,10 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, doub
 		//cublasDgemv(handle, CUBLAS_OP_T, B, N, &alpha, matrix + i, ld, vd, 1, \
 				&beta, chksum + (i / B), chksum_ld);
 		//cout<<"i="<<i<<endl;
-		printMatrix_gpu(matrix+i,ld*sizeof(double),B,N);
-		printVector_gpu(vd,B);
-		printMatrix_gpu(chksum + (i / B), chksum_ld * sizeof(double), 1, N);
+//		printMatrix_gpu(matrix+i,ld*sizeof(double),B,N);
+//		printVector_gpu(vd,B);
+//		printMatrix_gpu(chksum + (i / B), chksum_ld * sizeof(double), 1, N);
 	}
-	printMatrix_gpu(chksum, chksum_ld * sizeof(double), N / B, N);
+	printMatrix_gpu(chksum, chksum_ld * sizeof(double), 1, N);
 			
 }
