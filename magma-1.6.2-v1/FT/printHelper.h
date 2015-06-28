@@ -4,7 +4,7 @@ using namespace std;
 void printMatrix_host(double * matrix_host, int M, int N) {
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
-			cout.width(5);
+			cout.width(10);
 			cout.setf(ios::left);
 			cout << matrix_host[j * M + i];
 		}

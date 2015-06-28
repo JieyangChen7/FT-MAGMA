@@ -181,6 +181,9 @@ magma_dpotrf_gpu(
 			v1[i] = 1;
 			v2[i] = i + 1;
 		}
+		
+		printMatrix_host(v1, B, 1);
+		printMatrix_host(v2, B, 1);
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU
@@ -199,6 +202,9 @@ magma_dpotrf_gpu(
 		magma_dsetmatrix(B, 1, v1, B, v1d, v1d_pitch / sizeof(double));
 		magma_dsetmatrix(B, 1, v2, B, v2d, v2d_pitch / sizeof(double));
 		
+		
+		printMatrix_gpu(v1d, v1d_pitch, B, 1);
+		printMatrix_gpu(v2d, v2d_pitch, B, 1);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		//allocate space for recalculated checksum on CPU
@@ -244,7 +250,7 @@ magma_dpotrf_gpu(
 		
 		printMatrix_gpu(dA, ldda * sizeof(double), N, N);
 		printMatrix_gpu(checksum1, checksum1_pitch, N / B, N);
-		printMatrix_gpu(checksum2, checksum1_pitch, N / B, N);
+		printMatrix_gpu(checksum2, checksum2_pitch, N / B, N);
 		
 
 	}
