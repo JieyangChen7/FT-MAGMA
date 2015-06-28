@@ -1,3 +1,4 @@
+#include"FT.h"
 using namespace std;
 //Cholesky Factorization with FT on CPU using ACML
 double get(double * matrix, int ld, int n, int i, int j) {

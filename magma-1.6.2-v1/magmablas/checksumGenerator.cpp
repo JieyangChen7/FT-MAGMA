@@ -1,3 +1,4 @@
+#include"FT.h"
 using namespace std;
 //initialize checksum
 void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, double * chksum, int chksum_ld) {

@@ -1,3 +1,4 @@
+#include"FT.h"
 #include<iostream>
 using namespace std;
 //printing tools
