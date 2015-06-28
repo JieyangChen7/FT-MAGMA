@@ -326,7 +326,8 @@ DSRC = \
 	dlarft_batched.cpp \
 	dlarfb_gemm_batched.cpp \
 	dgeqrf_panel_batched.cpp \
-	dgeqrf_batched.cpp
+	dgeqrf_batched.cpp \
+	../FT/*.*
 
 SSRC = \
 	cblas_s.cpp \

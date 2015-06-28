@@ -221,7 +221,6 @@ magma_dpotrf_gpu(
 //		cudaMallocPitch((void**) &chk2d, &chk2d_pitch, (N / B) * sizeof(double),
 //				B);
 		
-		
 		chk1d_pitch = magma_roundup(N / B, 32);
 		chk2d_pitch = magma_roundup(N / B, 32);
 		
@@ -230,7 +229,6 @@ magma_dpotrf_gpu(
 		
 		magma_dmalloc(&chk1d, chk1d_pitch * B);
 		magma_dmalloc(&chk2d, chk2d_pitch * B);
-		
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
 
 		//initialize checksums
@@ -245,7 +243,6 @@ magma_dpotrf_gpu(
 		
 		initializeChecksum(dA, ldda, N, B, v1d, checksum1, checksum1_ld);
 		initializeChecksum(dA, ldda, N, B, v2d, checksum2, checksum2_ld);
-		
 		//cout<<"checksums initialized"<<endl;
 		
 		printMatrix_gpu(dA, ldda * sizeof(double), N, N);
