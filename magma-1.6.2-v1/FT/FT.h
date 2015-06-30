@@ -9,10 +9,10 @@ void printVector_gpu(double * vector_device, int N) ;
 void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, double * chksum, int chksum_ld);
 
 
-//void dpotrfFT(double * A, int lda, int n, int * info,
-//		double * chksum1, int inc1, double * chksum2, int inc2, 
-//		double * v1, double * v2, bool FT , bool DEBUG);
-//
+void dpotrfFT(double * A, int lda, int n, int * info,
+		double * chksum1, int inc1, double * chksum2, int inc2, 
+		double * v1, double * v2, bool FT , bool DEBUG);
+
 //void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 //		double * B, int ldb, double * checksumB1, int incB1,
 //		double * checksumB2, int incB2, double * v1d, double * v2d,
