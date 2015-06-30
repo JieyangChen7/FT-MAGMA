@@ -1,6 +1,6 @@
 #include"FT.h"
 #include<iostream>
-#include<magma.h>
+
 using namespace std;
 //Cholesky Factorization with FT on CPU using ACML
 double get(double * matrix, int ld, int n, int i, int j) {
@@ -47,8 +47,8 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		//recalculate checksum1 and checksum2
 		double * chk1 = new double[n];
 		double * chk2 = new double[n];
-		dgemv('T', n, n, one, A, lda, v1, 1, zero, chk1, 1);
-		dgemv('T', n, n, one, A, lda, v2, 1, zero, chk2, 1);
+		//dgemv('T', n, n, one, A, lda, v1, 1, zero, chk1, 1);
+		//dgemv('T', n, n, one, A, lda, v2, 1, zero, chk2, 1);
 		
 		int v1_inc = 1;
 		int v2_inc = 1;
