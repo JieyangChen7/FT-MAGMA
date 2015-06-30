@@ -1,5 +1,5 @@
 #include "magma.h"
-#include"FT.h"
+//#include"FT.h"
 using namespace std;
 //initialize checksum
 void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, double * chksum, int chksum_ld) {
@@ -19,6 +19,6 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, doub
 //		printVector_gpu(vd,B);
 //		printMatrix_gpu(chksum + (i / B), chksum_ld * sizeof(double), 1, N);
 	}
-	printMatrix_gpu(chksum, chksum_ld, 6, N);
+	//printMatrix_gpu(chksum, chksum_ld, 6, N);
 			
 }
