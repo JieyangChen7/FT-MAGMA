@@ -53,8 +53,10 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		int v1_inc = 1;
 		int v2_inc = 1;
 		char trans = 'T';
-		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v1, &v1_inc, &zero, chk1, &one );
-		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v2, &v2_inc, &zero, chk2, &one );
+		int chk1_inc = 1;
+		int chk2_inc = 1;
+		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v1, &v1_inc, &zero, chk1, &chk1_inc );
+		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v2, &v2_inc, &zero, chk2, &chk2_inc );
 		
 		
 		//update checksum1 and checksum2
@@ -63,7 +65,9 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
 			int m = n-i-1;
 			int alpha = negone*chksum1[i];
-			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &one, chksum1 + i+1, &one );
+			int incx = 1;
+			int incy = 1;
+			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum1 + i+1, &incy );
 		}
 	
 		for (int i = 0; i < n; i++) {
@@ -71,7 +75,9 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 			//daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
 			int m = n-i-1;
 			int alpha = negone*chksum1[i];
-			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &one, chksum2 + i+1, &one );
+			int incx = 1;
+			int incy = 1;
+			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum2 + i+1, &incy );
 		}
 		
 		
