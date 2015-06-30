@@ -52,8 +52,9 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		
 		int v1_inc = 1;
 		int v2_inc = 1;
-		blasf77_dgemv('T', &n, &n, &one, A, lda, v1, &v1_inc, &zero, chk1, &one );
-		blasf77_dgemv('T', &n, &n, &one, A, lda, v2, &v2_inc, &zero, chk2, &one );
+		char trans = 'T';
+		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v1, &v1_inc, &zero, chk1, &one );
+		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v2, &v2_inc, &zero, chk2, &one );
 		
 		
 		//update checksum1 and checksum2
