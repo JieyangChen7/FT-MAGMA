@@ -322,9 +322,21 @@ magma_dpotrf_gpu(
                 //  for non-positive-definiteness. Computing MIN
                 jb = min(nb, (n-j));
 
-                magma_dsyrk(MagmaLower, MagmaNoTrans, jb, j,
-                            d_neg_one, dA(j, 0), ldda,
-                            d_one,     dA(j, j), ldda);
+                
+                dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+                		checksum1 + j / jb, checksum1_ld, 
+                		checksum2 + j / jb, checksum2_ld, 
+                		checksum1 + (j / jb) + j * checksum1_ld, checksum1_ld,
+                		checksum2 + (j / jb) + j * checksum2_ld, checksum2_ld,
+                		v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld,
+						FT, DEBUG);
+                
+                
+//                magma_dsyrk(MagmaLower, MagmaNoTrans, jb, j,
+//                            d_neg_one, dA(j, 0), ldda,
+//                            d_one,     dA(j, j), ldda);
+                
+                
                 
                 magma_queue_sync( stream[1] );
                 magma_dgetmatrix_async( jb, jb,
@@ -332,19 +344,26 @@ magma_dpotrf_gpu(
                                         work,     jb, stream[0] );
                 if (FT) {
                 	magma_dgetmatrix_async(1, jb,
-                			               checksum1 + (j/B) + j * checksum1_ld, checksum1_ld,
+                			               checksum1 + (j / B) + j * checksum1_ld, checksum1_ld,
                 			               chk1, chk1d_ld, stream[0]);
                 	magma_dgetmatrix_async(1, jb,
-                	                	   checksum2 + (j/B) + j * checksum2_ld, checksum2_ld,
+                	                	   checksum2 + (j / B) + j * checksum2_ld, checksum2_ld,
                 	                	   chk2, chk2d_ld, stream[0]);
                 }
                 
                 if ( (j+jb) < n) {
-                    magma_dgemm( MagmaNoTrans, MagmaConjTrans,
-                                 (n-j-jb), jb, j,
-                                 c_neg_one, dA(j+jb, 0), ldda,
-                                            dA(j,    0), ldda,
-                                 c_one,     dA(j+jb, j), ldda);
+                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
+                			dA(j,    0), ldda, dA(j+jb, j), ldda, 
+                			checksum1 + (i + B) / B, checksum1_ld, 
+                			checksum2 + (i + B) / B, checksum2_ld,
+                			checksum1 + i * checksum1_ld + (i + B) / B, checksum1_ld,
+                			checksum2 + i * checksum2_ld + (i + B) / B, checksum2_ld,
+                			v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
+//                    magma_dgemm( MagmaNoTrans, MagmaConjTrans,
+//                                 (n-j-jb), jb, j,
+//                                 c_neg_one, dA(j+jb, 0), ldda,
+//                                            dA(j,    0), ldda,
+//                                 c_one,     dA(j+jb, j), ldda);
                 }
 
                 magma_queue_sync( stream[0] );
@@ -371,10 +390,15 @@ magma_dpotrf_gpu(
                 }
                 
                 if ( (j+jb) < n) {
-                    magma_dtrsm(MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
-                                (n-j-jb), jb,
-                                c_one, dA(j,    j), ldda,
-                                       dA(j+jb, j), ldda);
+                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
+                			dA(j+jb, j), ldda,
+                			checksum1 + (j + jb) / jb + j * checksum1_ld, checksum1_ld,
+                			checksum2 + (j + jb) / jb + j * checksum2_ld, checksum2_ld,
+                			v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
+//                    magma_dtrsm(MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
+//                                (n-j-jb), jb,
+//                                c_one, dA(j,    j), ldda,
+//                                       dA(j+jb, j), ldda);
                 }
             }
         }

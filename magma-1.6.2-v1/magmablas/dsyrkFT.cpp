@@ -21,7 +21,7 @@ __global__ void detectAndCorrectForSyrk(double * C, int ldc,
  * n: number of row of A
  * m: number of col of A
  */
-void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * C, int ldc,
+void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		double * checksumA1, int incA1, double * checksumA2, int incA2,
 		double * checksumC1, int incC1, double * checksumC2, int incC2,
 		double * v1d, double * v2d,
@@ -42,13 +42,29 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 	double one = 1;
 	double zero = 0;
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
-	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
+	
+	
+	magma_dgemm(
+			MagmaNoTrans, MagmaTrans,
+			n, n, m,
+			MAGMA_D_ONE * (-1),
+			A, lda, A, lda,
+			MAGMA_D_ONE,
+			C, ldc );
+	
+	
+//	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
 	if(FT){
 		
 		//recalculate checksum1 and checksum2
-		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v1d, 1, &zero, chk1, chk1_ld);
-		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v2d, 1, &zero, chk2, chk2_ld);
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, v1d, 1, MAGMA_D_ZERO, chk1, chk1_ld );
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, v2d, 1, MAGMA_D_ZERO, chk2, chk2_ld );
+		
+//		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v1d, 1, &zero, chk1, chk1_ld);
+//		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v2d, 1, &zero, chk2, chk2_ld);
 		
 		
 		/*cout<<"recalculated checksum1 of C after dsyrk:"<<endl;
@@ -58,8 +74,24 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		*/
 		
 		//update checksum1 and checksum2
-		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA1, incA1, A, lda, &one, checksumC1, incC1);
-		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA2, incA2, A, lda, &one, checksumC2, incC2);
+		
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					1, n, m,
+					MAGMA_D_ONE * (-1),
+					checksumA1, incA1, A, lda,
+					MAGMA_D_ONE,
+					checksumC1, incC1 );
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					1, n, m,
+					MAGMA_D_ONE * (-1),
+					checksumA2, incA2, A, lda,
+					MAGMA_D_ONE,
+					checksumC2, incC2);
+		
+//		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA1, incA1, A, lda, &one, checksumC1, incC1);
+//		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA2, incA2, A, lda, &one, checksumC2, incC2);
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum1 of C after dsyrk:"<<endl;

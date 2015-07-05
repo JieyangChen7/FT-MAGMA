@@ -175,7 +175,10 @@ DSRC = \
 	dgeqr2_batched.cu \
 	checksumGenerator.cpp \
 	printHelper.cpp \
-	dpotrfFT.cpp
+	dpotrfFT.cpp \
+	dtrsmFT.cpp \
+	dsyrkFT.cpp \	
+	dgemmFT.cpp
 	
 SSRC = \
 	sgeadd.cu \
