@@ -320,8 +320,8 @@ magma_dpotrf_gpu(
             for (j=0; j < n; j += nb) {
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
-                jb = min(nb, (n-j));
-
+                //jb = min(nb, (n-j));
+            	jb = nb;
                 
                 dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
                 		checksum1 + j / jb, checksum1_ld, 
