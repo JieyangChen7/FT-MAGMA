@@ -27,7 +27,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		double * v1d, double * v2d,
 		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT, bool DEBUG){
 	
-	/*cout<<"checksum1 of A before dsyrk:"<<endl;
+	cout<<"checksum1 of A before dsyrk:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), 1,m);
 	cout<<"checksum2 of A before dsyrk:"<<endl;
 	printMatrix_gpu(checksumA2, incA2*sizeof(double), 1,m);
@@ -36,7 +36,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	printMatrix_gpu(checksumC1, incC1*sizeof(double), 1,n);
 	cout<<"checksum2 of C before dsyrk:"<<endl;
 	printMatrix_gpu(checksumC2, incC2*sizeof(double), 1,n);
-	*/
+	
 	
 	double negone = -1;
 	double one = 1;
