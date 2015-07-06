@@ -95,14 +95,14 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum1 of C after dsyrk:"<<endl;
-			printMatrix_gpu(chk1, chk1_ld * sizeof(double), 1, n);
+			printMatrix_gpu(chk1, chk1_ld, 1, n);
 			cout<<"recalculated checksum2 of C after dsyrk:"<<endl;
-			printMatrix_gpu(chk2, chk2_ld * sizeof(double), 1, n);
+			printMatrix_gpu(chk2, chk2_ld, 1, n);
 			
 			cout<<"updated checksum1 of C after dsyrk:"<<endl;
-			printMatrix_gpu(checksumC1, incC1 * sizeof(double), 1, n);
+			printMatrix_gpu(checksumC1, incC1, 1, n);
 			cout<<"updated checksum2 of C after dsyrk:"<<endl;
-			printMatrix_gpu(checksumC2, incC2 * sizeof(double), 1, n);
+			printMatrix_gpu(checksumC2, incC2, 1, n);
 		}
 		
 		//detect error and correct error
