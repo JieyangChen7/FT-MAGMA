@@ -177,7 +177,7 @@ DSRC = \
 	printHelper.cpp \
 	dpotrfFT.cpp \
 	dtrsmFT.cpp \
-	dsyrkFT.cpp \	
+	dsyrkFT.cpp \
 	dgemmFT.cpp
 	
 SSRC = \
