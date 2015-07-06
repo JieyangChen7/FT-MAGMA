@@ -354,10 +354,10 @@ magma_dpotrf_gpu(
                 if ( (j+jb) < n) {
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
-                			checksum1 + (i + B) / B, checksum1_ld, 
-                			checksum2 + (i + B) / B, checksum2_ld,
-                			checksum1 + i * checksum1_ld + (i + B) / B, checksum1_ld,
-                			checksum2 + i * checksum2_ld + (i + B) / B, checksum2_ld,
+                			checksum1 + (j + jb) / jb, checksum1_ld, 
+                			checksum2 + (j + jb) / jb, checksum2_ld,
+                			checksum1 + j * checksum1_ld + (j + jb) / jb, checksum1_ld,
+                			checksum2 + j * checksum2_ld + (j + jb) / jb, checksum2_ld,
                 			v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
 //                    magma_dgemm( MagmaNoTrans, MagmaConjTrans,
 //                                 (n-j-jb), jb, j,
