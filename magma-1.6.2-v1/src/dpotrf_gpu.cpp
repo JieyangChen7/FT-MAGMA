@@ -321,6 +321,10 @@ magma_dpotrf_gpu(
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
+            	
+            	printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
+            	printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
+            	
             	jb = nb;
                 if (j > 0) {
                 	
