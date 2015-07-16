@@ -43,7 +43,6 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	double zero = 0;
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	
-	printMatrix_gpu(C, ldc, n, n);
 	magma_dgemm(
 			MagmaNoTrans, MagmaTrans,
 			n, n, m,
@@ -51,7 +50,6 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			A, lda, A, lda,
 			MAGMA_D_ONE,
 			C, ldc );
-	printMatrix_gpu(C, ldc, n, n);
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
