@@ -31,7 +31,10 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //	printMatrix_gpu(checksumA1, incA1, 1,m);
 //	cout<<"checksum2 of A before dsyrk:"<<endl;
 //	printMatrix_gpu(checksumA2, incA2, 1,m);
-	
+//	cout<<"checksum1 of C before dsyrk:"<<endl;
+//	printMatrix_gpu(checksum1 + (j / jb) + j * checksum1_ld, checksum1_ld, 1,jb);
+//	cout<<"checksum2 of C before dsyrk:"<<endl;
+//	printMatrix_gpu(checksum2 + (j / jb) + j * checksum2_ld, checksum2_ld, 1,jb);
 	
 	
 	

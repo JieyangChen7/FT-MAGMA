@@ -250,9 +250,9 @@ magma_dpotrf_gpu(
 		initializeChecksum(dA, ldda, N, B, v2d, checksum2, checksum2_ld);
 		//cout<<"checksums initialized"<<endl;
 		 
-		printMatrix_gpu(dA, ldda, N, N);
-		printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
-		printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
+//		printMatrix_gpu(dA, ldda, N, N);
+//		printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
+//		printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
 		
 
 	}
@@ -327,12 +327,6 @@ magma_dpotrf_gpu(
             	
             	jb = nb;
                 if (j > 0) {
-                	
-                	cout<<"checksum1 of C before dsyrk:"<<endl;
-					printMatrix_gpu(checksum1 + (j / jb) + j * checksum1_ld, checksum1_ld, 1,jb);
-					cout<<"checksum2 of C before dsyrk:"<<endl;
-					printMatrix_gpu(checksum2 + (j / jb) + j * checksum2_ld, checksum2_ld, 1,jb);
-                	
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum1 + j / jb, checksum1_ld, 
 							checksum2 + j / jb, checksum2_ld, 
