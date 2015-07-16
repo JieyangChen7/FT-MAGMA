@@ -148,41 +148,37 @@ magma_dpotrf_gpu(
     //variables for FT
     bool FT = false;
     bool DEBUG = false;
-	double * v1;
-	double * v2;
-	double * v1d;
-	double * v2d;
-	size_t v1d_pitch;
-	size_t v2d_pitch;
-	size_t v1d_ld;
-	size_t v2d_ld;
-	double * chk1;
-	double * chk2;
-	double * chk1d;
-	double * chk2d;
-	size_t chk1d_pitch;
-	size_t chk2d_pitch;
-	int chk1d_ld;
-	int chk2d_ld;
-	size_t checksum1_pitch;
-	size_t checksum2_pitch;
-	double * checksum1;
-	double * checksum2;
-	int checksum1_ld;
-	int checksum2_ld;
+	double * v;
+	int v_ld;
+	
+	double * vd;
+	size_t vd_pitch;
+	size_t vd_ld;
+	
+	double * chk;
+	
+	double * chkd;
+	size_t chkd_pitch;
+	int chkd_ld;
+
+	size_t checksum_pitch;
+	double * checksum;
+	int checksum_ld;
+
 
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
-//		v1 = new double[B];
-//		v2 = new double[B];
-		magma_dmalloc_pinned(&v1, B * sizeof(double));
-		magma_dmalloc_pinned(&v2, B * sizeof(double));
-		
-		for (int i = 0; i < B; i++) {
-			v1[i] = 1;
-			v2[i] = i + 1;
+
+		magma_dmalloc_pinned(&v, B * 2 * sizeof(double));
+
+		for (int i = 0; i < B; ++i) {
+			*(v + i) = 1;
 		}
+		for (int i = 0; i < B; ++i) {
+			*(v + v_ld + i) = i+1;
+		}
+		
 		
 //		printMatrix_host(v1, B, 1);
 //		printMatrix_host(v2, B, 1);
