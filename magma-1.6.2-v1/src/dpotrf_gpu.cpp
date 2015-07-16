@@ -322,8 +322,8 @@ magma_dpotrf_gpu(
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
             	
-            	printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
-            	printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
+//            	printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
+//            	printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
             	
             	jb = nb;
                 if (j > 0) {
@@ -395,8 +395,8 @@ magma_dpotrf_gpu(
 										   checksum2 + (j/B) + j * checksum2_ld, checksum2_ld, stream[0]);
 				}
                 
-                printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
-                printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
+//                printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
+//                printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
                 
                 if (*info != 0) {
                     *info = *info + j;
