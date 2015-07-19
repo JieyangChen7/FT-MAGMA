@@ -183,7 +183,7 @@ magma_dpotrf_gpu(
 
 		//intialize checksum vector on GPU		
 		vd_pitch = magma_roundup(B * sizeof(double), 32);
-		vd_ld = v1d_pitch / sizeof(double);	
+		vd_ld = vd_pitch / sizeof(double);	
 		magma_dmalloc(&vd, vd_pitch * 2 * sizeof(double));
 		magma_dsetmatrix(B, 2, v, B, vd, vd_ld);
 		printMatrix_gpu(vd, vd_ld, B, 2);
