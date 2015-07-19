@@ -6,7 +6,7 @@ void printMatrix_gpu(double * matrix_device, int matrix_ld, int M, int N);
 void printVector_host(double * vector_host, int N);
 void printVector_gpu(double * vector_device, int N) ;
 
-void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, double * chksum, int chksum_ld);
+void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int vd_ld, double * chksum, int chksum_ld);
 
 
 void dpotrfFT(double * A, int lda, int n, int * info,
