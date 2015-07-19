@@ -2,7 +2,7 @@
 //#include"FT.h"
 using namespace std;
 //initialize checksum
-void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, double * chksum, int chksum_ld) {
+void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int vd_ld, double * chksum, int chksum_ld) {
 
 	//cout<<"checksum vector on GPU:"<<endl;
 	//printVector_gpu(vd,B);
