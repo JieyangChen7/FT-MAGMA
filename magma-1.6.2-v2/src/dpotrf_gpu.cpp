@@ -153,7 +153,7 @@ magma_dpotrf_gpu(
 	
 	double * vd;
 	size_t vd_pitch;
-	size_t vd_ld;
+	int vd_ld;
 	
 	double * chk;
 	
