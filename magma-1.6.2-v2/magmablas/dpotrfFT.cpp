@@ -19,8 +19,9 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * inc2: stride between elememts in chksum2
  */
 void dpotrfFT(double * A, int lda, int n, int * info,
-		double * chksum1, int inc1, double * chksum2, int inc2, 
-		double * v1, double * v2, bool FT , bool DEBUG) {
+				double * chksum, int chksum_ld,
+				double * v, double * v_ld, 
+				bool FT , bool DEBUG) {
 	
 	double one = 1;
 	double zero = 0;
@@ -45,50 +46,44 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		*/
 		
 		//recalculate checksum1 and checksum2
-		double * chk1 = new double[n];
-		double * chk2 = new double[n];
-		//dgemv('T', n, n, one, A, lda, v1, 1, zero, chk1, 1);
-		//dgemv('T', n, n, one, A, lda, v2, 1, zero, chk2, 1);
-		
-		int v1_inc = 1;
-		int v2_inc = 1;
+		double * chk = new double[n * 2];
+		int chk_ld = 2;
 		char trans = 'T';
-		int chk1_inc = 1;
-		int chk2_inc = 1;
-		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v1, &v1_inc, &zero, chk1, &chk1_inc );
-		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v2, &v2_inc, &zero, chk2, &chk2_inc );
+		char Ntrans = 'N';
+		int nOfChecksum = 2;
+		blasf77_dgemm(  &trans, &Ntrans,
+						 &nOfChecksum, &n, &n,
+						 &MAGMA_D_ONE,
+						 v, &v_ld,
+						 A, &lda,
+						 &MAGMA_D_ZERO,
+						 chk, &chk_ld );
 		
 		
 		//update checksum1 and checksum2
 		for (int i = 0; i < n; i++) {
-			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
+			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
+			*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, n, n, i, i);
+			
 			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
 			int m = n-i-1;
-			double alpha = negone*chksum1[i];
-			int incx = 1;
-			int incy = 1;
-			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum1 + i+1, &incy );
+			int one = 1;
+			double neg = -1;
+			blasf77_dgemm(  &trans, &Ntrans,
+							 &nOfChecksum, &m, &one,
+							 &neg,
+							 chksum + i*chksum_ld, &chksum_ld,
+							 A + i*lda + i+1, &lda,
+							 &MAGMA_D_ONE,
+							 chksum + (i+1)*chksum_ld, &chksum_ld );
 		}
 	
-		for (int i = 0; i < n; i++) {
-			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
-			//daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
-			int m = n-i-1;
-			double alpha = negone*chksum1[i];
-			int incx = 1;
-			int incy = 1;
-			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum2 + i+1, &incy );
-		}
-		
-		
 		if (DEBUG) {
 			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
-			printVector_host(chk1, n);
-			printVector_host(chk2, n);
+			printMatrix_host(chk, 2, n);
 			
 			cout<<"updated checksum on CPU after factorization:"<<endl;
-			printVector_host(chksum1, n);
-			printVector_host(chksum2, n);
+			printMatrix_host(chksum, 2, n);
 		}
 		
 	

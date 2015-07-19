@@ -10,8 +10,9 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 
 
 void dpotrfFT(double * A, int lda, int n, int * info,
-		double * chksum1, int inc1, double * chksum2, int inc2, 
-		double * v1, double * v2, bool FT , bool DEBUG);
+				double * chksum, int chksum_ld,
+				double * v, double * v_ld, 
+				bool FT , bool DEBUG);
 
 void dtrsmFT(int m, int n, double * A, int lda,
 		double * B, int ldb, double * checksumB1, int incB1,
