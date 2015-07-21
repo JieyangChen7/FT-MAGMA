@@ -15,19 +15,19 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 				bool FT , bool DEBUG);
 
 void dtrsmFT(int m, int n, double * A, int lda,
-		double * B, int ldb, double * checksumB1, int incB1,
-		double * checksumB2, int incB2, double * v1d, double * v2d,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT, bool DEBUG);
+		double * B, int ldb, double * checksumB, int checksumB_ld,
+		double * vd, int vd_ld,
+		double * chk, int chk_ld, bool FT, bool DEBUG);
 
 void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
-		double * checksumA1, int incA1, double * checksumA2, int incA2,
-		double * checksumC1, int incC1, double * checksumC2, int incC2,
-		double * v1d, double * v2d,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT, bool DEBUG);
+		double * checksumA, int checksumA_ld,
+		double * checksumC, int checksumC_ld,
+		double * vd, int vd_ld,
+		double * chk, int chk_ld, bool FT, bool DEBUG);
 
 void dgemmFT(int m, int n, int k, double * A, int lda,
-		double * B, int ldb, double * C, int ldc, double * checksumA1,
-		int incA1, double * checksumA2, int incA2, double * checksumC1,
-		int incC1, double * checksumC2, int incC2,
-		double * v1d, double * v2d,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT, bool DEBUG);
+		double * B, int ldb, double * C, int ldc, 
+		double * checksumA, int checksumA_ld,
+		double * checksumC, int checksumC_ld,
+		double * vd, int vd_ld,
+		double * chk, int chk_ld, bool FT, bool DEBUG);
