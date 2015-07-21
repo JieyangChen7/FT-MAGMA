@@ -28,9 +28,9 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
  */
 
 void dtrsmFT(int m, int n, double * A, int lda,
-		double * B, int ldb, double * checksumB1, int incB1,
-		double * checksumB2, int incB2, double * v1d, double * v2d,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT, bool DEBUG) {
+		double * B, int ldb, double * checksumB, int incB,
+		double * vd, int vd_ld,
+		double * chk, int chk_ld, bool FT, bool DEBUG) {
 
 	/*cout<<"matrix A before dtrsm:"<<endl;
 	 printMatrix_gpu(A,lda*sizeof(double),n,n);
