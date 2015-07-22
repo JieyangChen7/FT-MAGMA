@@ -142,6 +142,14 @@ magma_dpotrf_gpu(
     }
     
     
+    cublasHandle_t handle1;
+    cublasStatus = cublasCreate(&handle1);
+    if (cublasStatus != CUBLAS_STATUS_SUCCESS)
+		cout << "CUBLAS NOT INITIALIZED(handle1) in my_dpotrf " << endl;
+	cublasStatus = cublasSetStream(handle1, stream[1]);
+	if (cublasStatus != CUBLAS_STATUS_SUCCESS)
+		cout << "CUBLAS SET STREAM NOT INITIALIZED(handle1) in my_dpotrf"
+				<< endl;
     //acommdation
     int B = nb;
     int N = n;
