@@ -322,7 +322,7 @@ magma_dpotrf_gpu(
         	//timing start***************
         	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 				cout << "PAPI ERROR" << endl;
-				return;
+				return -1;
 			}
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
@@ -420,7 +420,7 @@ magma_dpotrf_gpu(
             }
             if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 				cout << "PAPI ERROR" << endl;
-				return;
+				return -1;
 			}
             if (FT)
             		cout << "FT enabled" << endl;
