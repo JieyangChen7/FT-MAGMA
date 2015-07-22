@@ -43,13 +43,13 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	double one = 1;
 	double zero = 0;
 	
-	magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
-				m, n, k,
-				MAGMA_D_ONE * (-1),
-				A, lda, B, ldb,
-				MAGMA_D_ONE,
-				C, ldc );
+//	magma_dgemm(
+//				MagmaNoTrans, MagmaTrans,
+//				m, n, k,
+//				MAGMA_D_ONE * (-1),
+//				A, lda, B, ldb,
+//				MAGMA_D_ONE,
+//				C, ldc );
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B,
 //			ldb, &one, C, ldc);
@@ -57,17 +57,17 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	if(FT){
 		
 		//recalculate checksum1 and checksum2
-		for (int i = 0; i < m; i += n) {
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					C + i, ldc, v1d, 1, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					C + i, ldc, v2d, 1, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-			
-//			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, v1d, 1,
-//					&zero, chk1 + (i / n), chk1_ld);
-//			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldb, v2d, 1,
-//					&zero, chk2 + (i / n), chk2_ld);
-		}
+//		for (int i = 0; i < m; i += n) {
+//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//					C + i, ldc, v1d, 1, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//					C + i, ldc, v2d, 1, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
+//			
+////			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldc, v1d, 1,
+////					&zero, chk1 + (i / n), chk1_ld);
+////			cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C + i, ldb, v2d, 1,
+////					&zero, chk2 + (i / n), chk2_ld);
+//		}
 		
 		//update checksum1 and checksum2
 		magma_dgemm(
