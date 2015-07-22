@@ -427,6 +427,7 @@ magma_dpotrf_gpu(
 			cout << "Size:" << N << "(" << B << ")---Real_time:"
 					<< real_time << "---" << "Proc_time:"
 					<< proc_time << "---" << "Total GFlops:" << endl;            
+			PAPI_shutdown();
         }
     }
 
