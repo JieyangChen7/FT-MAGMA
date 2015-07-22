@@ -56,10 +56,10 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	if(FT){
 		
 		//recalculate checksum1 and checksum2
-//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//				C, ldc, v1d, 1, MAGMA_D_ZERO, chk1, chk1_ld );
-//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//				C, ldc, v2d, 1, MAGMA_D_ZERO, chk2, chk2_ld );
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, v1d, 1, MAGMA_D_ZERO, chk1, chk1_ld );
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, v2d, 1, MAGMA_D_ZERO, chk2, chk2_ld );
 		
 //		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v1d, 1, &zero, chk1, chk1_ld);
 //		cublasDgemv(handle, CUBLAS_OP_T, n, n, &one, C, ldc, v2d, 1, &zero, chk2, chk2_ld);
@@ -73,20 +73,20 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		
 		//update checksum1 and checksum2
 		
-		magma_dgemm(
-					MagmaNoTrans, MagmaTrans,
-					1, n, m,
-					MAGMA_D_ONE * (-1),
-					checksumA1, incA1, A, lda,
-					MAGMA_D_ONE,
-					checksumC1, incC1 );
-		magma_dgemm(
-					MagmaNoTrans, MagmaTrans,
-					1, n, m,
-					MAGMA_D_ONE * (-1),
-					checksumA2, incA2, A, lda,
-					MAGMA_D_ONE,
-					checksumC2, incC2);
+//		magma_dgemm(
+//					MagmaNoTrans, MagmaTrans,
+//					1, n, m,
+//					MAGMA_D_ONE * (-1),
+//					checksumA1, incA1, A, lda,
+//					MAGMA_D_ONE,
+//					checksumC1, incC1 );
+//		magma_dgemm(
+//					MagmaNoTrans, MagmaTrans,
+//					1, n, m,
+//					MAGMA_D_ONE * (-1),
+//					checksumA2, incA2, A, lda,
+//					MAGMA_D_ONE,
+//					checksumC2, incC2);
 		
 //		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA1, incA1, A, lda, &one, checksumC1, incC1);
 //		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA2, incA2, A, lda, &one, checksumC2, incC2);
