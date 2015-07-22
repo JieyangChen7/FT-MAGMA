@@ -373,12 +373,12 @@ magma_dpotrf_gpu(
                 			checksum1 + j * checksum1_ld + (j + jb) / jb, checksum1_ld,
                 			checksum2 + j * checksum2_ld + (j + jb) / jb, checksum2_ld,
                 			v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
-////                    magma_dgemm( MagmaNoTrans, MagmaConjTrans,
-////                                 (n-j-jb), jb, j,
-////                                 c_neg_one, dA(j+jb, 0), ldda,
-////                                            dA(j,    0), ldda,
-////                                 c_one,     dA(j+jb, j), ldda);
-//                }
+//                    magma_dgemm( MagmaNoTrans, MagmaConjTrans,
+//                                 (n-j-jb), jb, j,
+//                                 c_neg_one, dA(j+jb, 0), ldda,
+//                                            dA(j,    0), ldda,
+//                                 c_one,     dA(j+jb, j), ldda);
+                }
 //
 //                magma_queue_sync( stream[0] );
 //                
