@@ -40,7 +40,7 @@ LDFLAGS   =     $(FPIC)              -fopenmp
 
 # for ACML >= 5
 # requires gcc & gfortran >= 4.6
-LIB       = -lacml_mp -lcblas -lcublas -lcudart -lstdc++ -lm -lgfortran
+LIB       = -lacml_mp -lcblas -lcublas -lcudart -lstdc++ -lm -lgfortran -lpapi
 
 # define library directories preferably in your environment, or here.
 #ACMLDIR  ?= /opt/acml

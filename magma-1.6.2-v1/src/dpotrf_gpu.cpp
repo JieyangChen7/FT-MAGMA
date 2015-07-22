@@ -17,7 +17,7 @@
 //#include"dsyrkFT.h"
 //#include"dgemmFT.h"
 #include"FT.h"
-
+#include"papi.h"
 
 
 using namespace std;
@@ -315,6 +315,15 @@ magma_dpotrf_gpu(
             }
         }
         else {
+        	float real_time = 0.0;
+			float proc_time = 0.0;
+			long long flpins = 0.0;
+			float mflops = 0.0;
+        	//timing start***************
+        	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+				cout << "PAPI ERROR" << endl;
+				return;
+			}
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
             for (j=0; j < n; j += nb) {
@@ -409,6 +418,15 @@ magma_dpotrf_gpu(
 //                                       dA(j+jb, j), ldda);
                 }
             }
+            if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+				cout << "PAPI ERROR" << endl;
+				return;
+			}
+            if (FT)
+            		cout << "FT enabled" << endl;
+			cout << "Size:" << N << "(" << B << ")---Real_time:"
+					<< real_time << "---" << "Proc_time:"
+					<< proc_time << "---" << "Total GFlops:" << endl;            
         }
     }
 
