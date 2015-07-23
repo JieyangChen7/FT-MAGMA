@@ -344,7 +344,7 @@ magma_dpotrf_gpu(
             	
             	jb = nb;
                 if (j > 0) {
-					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+					dsyrkFT(handle1, jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum1 + j / jb, checksum1_ld, 
 							checksum2 + j / jb, checksum2_ld, 
 							checksum1 + (j / jb) + j * checksum1_ld, checksum1_ld,
@@ -374,7 +374,7 @@ magma_dpotrf_gpu(
 //                }
                 
                 if ( (j+jb) < n && j > 0) {
-                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
+                	dgemmFT(handle1, (n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum1 + (j + jb) / jb, checksum1_ld, 
                 			checksum2 + (j + jb) / jb, checksum2_ld,
