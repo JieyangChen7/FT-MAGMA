@@ -73,24 +73,24 @@ void dsyrkFT(cublasHandle_t handle, int n, int m, double * A, int lda, double * 
 		
 		//update checksum1 and checksum2
 		
-//		magma_dgemm(
-//					MagmaNoTrans, MagmaTrans,
-//					1, n, m,
-//					MAGMA_D_ONE * (-1),
-//					checksumA1, incA1, A, lda,
-//					MAGMA_D_ONE,
-//					checksumC1, incC1 );
-//		magma_dgemm(
-//					MagmaNoTrans, MagmaTrans,
-//					1, n, m,
-//					MAGMA_D_ONE * (-1),
-//					checksumA2, incA2, A, lda,
-//					MAGMA_D_ONE,
-//					checksumC2, incC2);
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					1, n, m,
+					MAGMA_D_ONE * (-1),
+					checksumA1, incA1, A, lda,
+					MAGMA_D_ONE,
+					checksumC1, incC1 );
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					1, n, m,
+					MAGMA_D_ONE * (-1),
+					checksumA2, incA2, A, lda,
+					MAGMA_D_ONE,
+					checksumC2, incC2);
 		
-		cublasDgemm('N', 'T', 1, n, m, negone, checksumA1, incA1, A, lda, one, checksumC1, incC1);
-		cublasDgemm('N', 'T', 1, n, m, negone, checksumA2, incA2, A, lda, one, checksumC2, incC2);
-		
+//		cublasDgemm('N', 'T', 1, n, m, negone, checksumA1, incA1, A, lda, one, checksumC1, incC1);
+//		cublasDgemm('N', 'T', 1, n, m, negone, checksumA2, incA2, A, lda, one, checksumC2, incC2);
+//		
 		if (DEBUG) {
 			cout<<"recalculated checksum1 of C after dsyrk:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, 1, n);
