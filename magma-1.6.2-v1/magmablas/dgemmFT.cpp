@@ -1,5 +1,6 @@
 #include"FT.h"
 #include<iostream>
+#include "cublas_v2.h"
 using namespace std;
 //dgemm with FT
 /*
