@@ -32,7 +32,7 @@ RANLIB    = ranlib
 CFLAGS    = -O3 $(FPIC) -DADD_ -Wall -fopenmp -DMAGMA_SETAFFINITY -DMAGMA_WITH_ACML
 FFLAGS    = -O3 $(FPIC) -DADD_ -Wall -Wno-unused-dummy-argument
 F90FLAGS  = -O3 $(FPIC) -DADD_ -Wall -Wno-unused-dummy-argument -x f95-cpp-input
-NVCCFLAGS = -O3         -DADD_       -Xcompiler "-fno-strict-aliasing $(FPIC)"
+NVCCFLAGS = -O0         -DADD_       -Xcompiler "-fno-strict-aliasing $(FPIC)"
 LDFLAGS   =     $(FPIC)              -fopenmp
 
 # for ACML 4
