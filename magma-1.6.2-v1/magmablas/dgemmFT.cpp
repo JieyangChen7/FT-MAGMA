@@ -86,9 +86,9 @@ void dgemmFT(cublasHandle_t handle, int m, int n, int k, double * A, int lda,
 //					checksumC2, incC2);
 				
 				
-		cublasDgemm(CUBLAS_OP_N, CUBLAS_OP_T, m/n, n, k, negone,
+		cublasDgemm('N', 'T', m/n, n, k, negone,
 				checksumA1, incA1, B, ldb, one, checksumC1, incC1);
-		cublasDgemm(CUBLAS_OP_N, CUBLAS_OP_T, m/n, n, k, negone,
+		cublasDgemm('N', 'T', m/n, n, k, negone,
 				checksumA2, incA2, B, ldb, one, checksumC2, incC2);
 		
 		if (DEBUG) {
