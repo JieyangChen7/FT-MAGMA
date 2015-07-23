@@ -142,7 +142,7 @@ magma_dpotrf_gpu(
         stream[1] = orig_stream;
     }
     
-    
+    cublasStatus_t cublasStatus;
     cublasHandle_t handle1;
     cublasStatus = cublasCreate(&handle1);
     if (cublasStatus != CUBLAS_STATUS_SUCCESS)
