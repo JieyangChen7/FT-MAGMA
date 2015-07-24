@@ -47,8 +47,8 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		//recalculate checksum1 and checksum2
 		double * chk1 = new double[n];
 		double * chk2 = new double[n];
-		//dgemv('T', n, n, one, A, lda, v1, 1, zero, chk1, 1);
-		//dgemv('T', n, n, one, A, lda, v2, 1, zero, chk2, 1);
+		dgemv('T', n, n, one, A, lda, v1, 1, zero, chk1, 1);
+		dgemv('T', n, n, one, A, lda, v2, 1, zero, chk2, 1);
 		
 		int v1_inc = 1;
 		int v2_inc = 1;
@@ -56,30 +56,30 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		char trans2 = 'T';
 		int chk1_inc = 1;
 		int chk2_inc = 1;
-		blasf77_dgemv(&trans1, &n, &n, &one, A, &lda, v1, &v1_inc, &zero, chk1, &chk1_inc );
-		blasf77_dgemv(&trans2, &n, &n, &one, A, &lda, v2, &v2_inc, &zero, chk2, &chk2_inc );
+//		blasf77_dgemv(&trans1, &n, &n, &one, A, &lda, v1, &v1_inc, &zero, chk1, &chk1_inc );
+//		blasf77_dgemv(&trans2, &n, &n, &one, A, &lda, v2, &v2_inc, &zero, chk2, &chk2_inc );
 		
 		
 		//update checksum1 and checksum2
-		for (int i = 0; i < n; i++) {
-			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
-			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
-			int m = n-i-1;
-			double alpha = negone*chksum1[i];
-			int incx = 1;
-			int incy = 1;
-			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum1 + i+1, &incy );
-		}
-	
-		for (int i = 0; i < n; i++) {
-			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
-			//daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
-			int m = n-i-1;
-			double alpha = negone*chksum1[i];
-			int incx = 1;
-			int incy = 1;
-			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum2 + i+1, &incy );
-		}
+//		for (int i = 0; i < n; i++) {
+//			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
+//			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
+//			int m = n-i-1;
+//			double alpha = negone*chksum1[i];
+//			int incx = 1;
+//			int incy = 1;
+//			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum1 + i+1, &incy );
+//		}
+//	
+//		for (int i = 0; i < n; i++) {
+//			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
+//			//daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
+//			int m = n-i-1;
+//			double alpha = negone*chksum1[i];
+//			int incx = 1;
+//			int incy = 1;
+//			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum2 + i+1, &incy );
+//		}
 		
 		
 		if (DEBUG) {
