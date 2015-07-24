@@ -74,7 +74,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 					MAGMA_D_ONE * (-1),
 					checksumA, checksumA_ld, B, ldb,
 					MAGMA_D_ONE,
-					checksumC, incC );
+					checksumC, checksumC_ld );
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of C after dgemm:"<<endl;

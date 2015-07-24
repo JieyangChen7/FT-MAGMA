@@ -53,10 +53,10 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		int nOfChecksum = 2;
 		blasf77_dgemm(  &trans, &Ntrans,
 						 &nOfChecksum, &n, &n,
-						 &MAGMA_D_ONE,
+						 &one,
 						 v, &v_ld,
 						 A, &lda,
-						 &MAGMA_D_ZERO,
+						 &zero,
 						 chk, &chk_ld );
 		
 		
@@ -74,7 +74,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 							 &neg,
 							 chksum + i*chksum_ld, &chksum_ld,
 							 A + i*lda + i+1, &lda,
-							 &MAGMA_D_ONE,
+							 &one,
 							 chksum + (i+1)*chksum_ld, &chksum_ld );
 		}
 	
