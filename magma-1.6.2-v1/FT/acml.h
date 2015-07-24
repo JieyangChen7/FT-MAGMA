@@ -2187,6 +2187,7 @@ extern double acml_dmin3(double a, double b, double c);
 /* ------------------------------------------------------------------ */
 /* Below are prototypes for the FORTRAN interfaces to ACML routines */
 /* BLAS routines */
+/*
 extern void caxpy_(int *n, complex *alpha, complex *x, int *incx, complex *y, int *incy);
 extern void ccopy_(int *n, complex *x, int *incx, complex *y, int *incy);
 extern complex cdotc_(complex *ret_val, int *n, complex *x, int *incx, complex *y, int *incy);
@@ -2345,8 +2346,9 @@ extern void ztrmm_(char *side, char *uplo, char *transa, char *diag, int *m, int
 extern void ztrmv_(char *uplo, char *trans, char *diag, int *n, doublecomplex *a, int *lda, doublecomplex *x, int *incx, int uplo_len, int trans_len, int diag_len);
 extern void ztrsm_(char *side, char *uplo, char *transa, char *diag, int *m, int *n, doublecomplex *alpha, doublecomplex *a, int *lda, doublecomplex *b, int *ldb, int side_len, int uplo_len, int transa_len, int diag_len);
 extern void ztrsv_(char *uplo, char *trans, char *diag, int *n, doublecomplex *a, int *lda, doublecomplex *x, int *incx, int uplo_len, int trans_len, int diag_len);
-
+*/
 /* LAPACK routines */
+/*
 extern void cbbcsd_(char *jobu1, char *jobu2, char *jobv1t, char *jobv2t, char *trans, int *m, int *p, int *q, float *theta, float *phi, complex *u1, int *ldu1, complex *u2, int *ldu2, complex *v1t, int *ldv1t, complex *v2t, int *ldv2t, float *b11d, float *b11e, float *b12d, float *b12e, float *b21d, float *b21e, float *b22d, float *b22e, float *rwork, int *lrwork, int *info, int jobu1_len, int jobu2_len, int jobv1t_len, int jobv2t_len, int trans_len);
 extern void cbdsqr_(char *uplo, int *n, int *ncvt, int *nru, int *ncc, float *d, float *e, complex *vt, int *ldvt, complex *u, int *ldu, complex *c, int *ldc, float *rwork, int *info, int uplo_len);
 extern void cgbbrd_(char *vect, int *m, int *n, int *ncc, int *kl, int *ku, complex *ab, int *ldab, float *d, float *e, complex *q, int *ldq, complex *pt, int *ldpt, complex *c, int *ldc, complex *work, float *rwork, int *info, int vect_len);
@@ -3447,8 +3449,9 @@ extern void zunmrz_(char *side, char *trans, int *m, int *n, int *k, int *l, dou
 extern void zunmtr_(char *side, char *uplo, char *trans, int *m, int *n, doublecomplex *a, int *lda, doublecomplex *tau, doublecomplex *c, int *ldc, doublecomplex *work, int *lwork, int *info, int side_len, int uplo_len, int trans_len);
 extern void zupgtr_(char *uplo, int *n, doublecomplex *ap, doublecomplex *tau, doublecomplex *q, int *ldq, doublecomplex *work, int *info, int uplo_len);
 extern void zupmtr_(char *side, char *uplo, char *trans, int *m, int *n, doublecomplex *ap, doublecomplex *tau, doublecomplex *c, int *ldc, doublecomplex *work, int *info, int side_len, int uplo_len, int trans_len);
-
+*/
 /* LAPACK auxiliaries */
+/*
 extern void cgbtf2_(int *m, int *n, int *kl, int *ku, complex *ab, int *ldab, int *ipiv, int *info);
 extern void cgebd2_(int *m, int *n, complex *a, int *lda, float *d, float *e, complex *tauq, complex *taup, complex *work, int *info);
 extern void cgehd2_(int *n, int *ilo, int *ihi, complex *a, int *lda, complex *tau, complex *work, int *info);
@@ -4023,6 +4026,7 @@ extern void zunmr2_(char *side, char *trans, int *m, int *n, int *k, doublecompl
 extern void zunmr3_(char *side, char *trans, int *m, int *n, int *k, int *l, doublecomplex *a, int *lda, doublecomplex *tau, doublecomplex *c, int *ldc, doublecomplex *work, int *info, int side_len, int trans_len);
 
 /* FFT routines */
+/*
 extern void cfft1d_(int *mode, int *n, complex *x, complex *comm, int *info);
 extern void cfft1dx_(int *mode, float *scale, int *inpl, int *n, complex *x, int *incx, complex *y, int *incy, complex *comm, int *info);
 extern void cfft1m_(int *mode, int *nseq, int *n, complex *x, complex *comm, int *info);
@@ -4065,8 +4069,9 @@ extern void zfft2dx_(int *mode, double *scale, int *ltrans, int *inpl, int *m, i
 extern void zfft3d_(int *mode, int *l, int *m, int *n, doublecomplex *x, doublecomplex *comm, int *info);
 extern void zfft3dx_(int *mode, double *scale, int *ltrans, int *inpl, int *l, int *m, int *n, doublecomplex *x, doublecomplex *y, doublecomplex *comm, int *info);
 extern void zfft3dy_(int *mode, double *scale, int *inpl, int *l, int *m, int *n, doublecomplex *x, int *incx1, int *incx2, int *incx3, doublecomplex *y, int *incy1, int *incy2, int *incy3, doublecomplex *comm, int *lcomm, int *info);
-
+*/
 /* Sparse BLAS routines */
+    /*
 extern void caxpyi_(int *nz, complex *a, complex *x, int *indx, complex *y);
 extern complex cdotci_(complex *ret_val, int *nz, complex *x, int *indx, complex *y);
 extern void cdotcisub_(complex *ret_val, int *nz, complex *x, int *indx, complex *y);
@@ -4095,8 +4100,9 @@ extern void zdotuisub_(doublecomplex *ret_val, int *nz, doublecomplex *x, int *i
 extern void zgthr_(int *nz, doublecomplex *y, doublecomplex *x, int *indx);
 extern void zgthrz_(int *nz, doublecomplex *y, doublecomplex *x, int *indx);
 extern void zsctr_(int *nz, doublecomplex *x, int *indx, doublecomplex *y);
-
+*/
 /* Random number generators */
+    /*
 extern void drandbeta_(int *n, double *a, double *b, int *state, double *x, int *info);
 extern void drandbinomial_(int *n, int *m, double *p, int *state, int *x, int *info);
 extern void drandbinomialreference_(int *m, double *p, double *ref, int *lref, int *info);
@@ -4177,16 +4183,19 @@ extern void srandmultinormal_(int *n, int *m, float *xmu, float *c, int *ldc, in
 extern void srandmultistudentst_(int *n, int *m, int *df, float *xmu, float *c, int *ldc, int *state, float *x, int *ldx, int *info);
 
 /* ACML version information */
+    /*
 extern void acmlversion_(int *major, int *minor, int *patch, int *build);
 extern void acmlinfo_(void);
 
 /* OMP interfaces */
+    /*
 extern int acmlgetmaxthreads_(void);
 extern int acmlgetnumthreads_(void);
 extern void acmlsetnumthreads_(int *numthreads);
 extern int acmlgetnumprocs_(void);
 
 /* Putenv and getenv utilities */
+    /*
 extern void acmlputenv_(char *name, char *value, int name_len, int value_len);
 extern void acmlgetenv_(char *name, char *value, int name_len, int value_len);
 extern void acmllocation_(char *message, void *arg, int message_len);
