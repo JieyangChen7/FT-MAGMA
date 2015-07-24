@@ -383,7 +383,7 @@ magma_dpotrf_gpu(
 //                magma_queue_sync( stream[0] );
 //                
         
-                dpotrfFT(work, B, B, info, chk1, 1, chk2, 1, v1, v2, FT, DEBUG);
+//                dpotrfFT(work, B, B, info, chk1, 1, chk2, 1, v1, v2, FT, DEBUG);
                 
                 
                 magma_dsetmatrix_async( jb, jb,
