@@ -340,9 +340,6 @@ magma_dpotrf_gpu(
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
             	
-//            	printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
-//            	printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
-            	
             	jb = nb;
                 if (j > 0) {
 					dsyrkFT(handle1, jb, j, dA(j, 0), ldda, dA(j, j), ldda,
@@ -355,9 +352,7 @@ magma_dpotrf_gpu(
                 }
                 
                 
-//                magma_dsyrk(MagmaLower, MagmaNoTrans, jb, j,
-//                            d_neg_one, dA(j, 0), ldda,
-//                            d_one,     dA(j, j), ldda);
+
                 
                 
                 
@@ -382,16 +377,12 @@ magma_dpotrf_gpu(
                 			checksum1 + j * checksum1_ld + (j + jb) / jb, checksum1_ld,
                 			checksum2 + j * checksum2_ld + (j + jb) / jb, checksum2_ld,
                 			v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
-//                    magma_dgemm( MagmaNoTrans, MagmaConjTrans,
-//                                 (n-j-jb), jb, j,
-//                                 c_neg_one, dA(j+jb, 0), ldda,
-//                                            dA(j,    0), ldda,
-//                                 c_one,     dA(j+jb, j), ldda);
+
                 }
 
                 magma_queue_sync( stream[0] );
                 
-                //lapackf77_dpotrf(MagmaLowerStr, &jb, work, &jb, info);
+        
                 dpotrfFT(work, B, B, info, chk1, 1, chk2, 1, v1, v2, FT, DEBUG);
                 
                 
@@ -407,8 +398,7 @@ magma_dpotrf_gpu(
 										   checksum2 + (j / jb) + j * checksum2_ld, checksum2_ld, stream[1]);
 				}
                 
-//                printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
-//                printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
+
                 
                 if (*info != 0) {
                     *info = *info + j;
@@ -421,10 +411,7 @@ magma_dpotrf_gpu(
                 			checksum1 + (j + jb) / jb + j * checksum1_ld, checksum1_ld,
                 			checksum2 + (j + jb) / jb + j * checksum2_ld, checksum2_ld,
                 			v1d, v2d, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
-//                    magma_dtrsm(MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
-//                                (n-j-jb), jb,
-//                                c_one, dA(j,    j), ldda,
-//                                       dA(j+jb, j), ldda);
+
                 }
             }
             
