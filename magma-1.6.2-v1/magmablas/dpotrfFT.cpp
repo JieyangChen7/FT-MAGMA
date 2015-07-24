@@ -60,25 +60,25 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		
 		
 		//update checksum1 and checksum2
-//		for (int i = 0; i < n; i++) {
-//			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
-//			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
-//			int m = n-i-1;
-//			double alpha = negone*chksum1[i];
-//			int incx = 1;
-//			int incy = 1;
-//			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum1 + i+1, &incy );
-//		}
-//	
-//		for (int i = 0; i < n; i++) {
-//			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
-//			//daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
-//			int m = n-i-1;
-//			double alpha = negone*chksum1[i];
-//			int incx = 1;
-//			int incy = 1;
-//			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum2 + i+1, &incy );
-//		}
+		for (int i = 0; i < n; i++) {
+			chksum1[i] = chksum1[i] / get(A, n, n, i, i);
+			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
+			int m = n-i-1;
+			double alpha = negone*chksum1[i];
+			int incx = 1;
+			int incy = 1;
+			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum1 + i+1, &incy );
+		}
+	
+		for (int i = 0; i < n; i++) {
+			chksum2[i] = chksum2[i] / get(A, n, n, i, i);
+			//daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
+			int m = n-i-1;
+			double alpha = negone*chksum1[i];
+			int incx = 1;
+			int incy = 1;
+			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum2 + i+1, &incy );
+		}
 		
 		
 		if (DEBUG) {
