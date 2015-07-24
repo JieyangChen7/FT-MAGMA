@@ -57,7 +57,8 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 						 v, &v_ld,
 						 A, &lda,
 						 &zero,
-						 chk, &chk_ld );
+						 chk, 
+						 &chk_ld );
 		
 		
 		//update checksum1 and checksum2
@@ -75,7 +76,8 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 							 chksum + i*chksum_ld, &chksum_ld,
 							 A + i*lda + i+1, &lda,
 							 &one,
-							 chksum + (i+1)*chksum_ld, &chksum_ld );
+							 chksum + (i+1)*chksum_ld, 
+							 &chksum_ld );
 		}
 	
 		if (DEBUG) {
