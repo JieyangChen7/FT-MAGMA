@@ -32,14 +32,14 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		double * vd, int vd_ld,
 		double * chk, int chk_ld, bool FT, bool DEBUG) {
 
-	/*cout<<"matrix A before dtrsm:"<<endl;
-	 printMatrix_gpu(A,lda*sizeof(double),n,n);
-	 
-	 cout<<"checksum1 of B before dtrsm:"<<endl;
-	 printMatrix_gpu(checksumB1,incB1*sizeof(double),m/n,n);
-	 cout<<"checksum2 of B before dtrsm:"<<endl;
-	 printMatrix_gpu(checksumB2,incB2*sizeof(double),m/n,n);
-	 */
+//	cout<<"matrix A before dtrsm:"<<endl;
+//	 printMatrix_gpu(A,lda*sizeof(double),n,n);
+//	 
+//	 cout<<"checksum1 of B before dtrsm:"<<endl;
+//	 printMatrix_gpu(checksumB1,incB1*sizeof(double),m/n,n);
+//	 cout<<"checksum2 of B before dtrsm:"<<endl;
+//	 printMatrix_gpu(checksumB2,incB2*sizeof(double),m/n,n);
+//	 
 
 	double alpha = 1;
 	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
@@ -77,10 +77,10 @@ void dtrsmFT(int m, int n, double * A, int lda,
 
 		if (DEBUG) {
 			cout<<"recalculated checksum of B after dtrsm:"<<endl;
-			printMatrix_gpu(chk,chk_ld*sizeof(double),(m/n)*2,n);
+			printMatrix_gpu(chk,chk_ld,(m/n)*2,n);
 
 			cout<<"updated checksum of B after dtrsm:"<<endl;
-			printMatrix_gpu(checksumB, checksumB_ld * sizeof(double), (m / n) * 2, n);
+			printMatrix_gpu(checksumB, checksumB_ld, (m / n) * 2, n);
 		}
 		/*detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n,
 			checksumB1, incB1, checksumB2, incB2,

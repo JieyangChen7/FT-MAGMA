@@ -78,10 +78,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of C after dgemm:"<<endl;
-			printMatrix_gpu(chk, chk_ld * sizeof(double), (m / n) * 2, n);
+			printMatrix_gpu(chk, chk_ld, (m / n) * 2, n);
 		
 			cout<<"updated checksum of C after dgemm:"<<endl;
-			printMatrix_gpu(checksumC, checksumC_ld * sizeof(double), (m / n) * 2, n);
+			printMatrix_gpu(checksumC, checksumC_ld, (m / n) * 2, n);
 		}
 		
 		//error detection and error correction
