@@ -11,7 +11,7 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 
 void dpotrfFT(double * A, int lda, int n, int * info,
 				double * chksum, int chksum_ld,
-				double * v, double * v_ld, 
+				double * v, int v_ld, 
 				bool FT , bool DEBUG);
 
 void dtrsmFT(int m, int n, double * A, int lda,

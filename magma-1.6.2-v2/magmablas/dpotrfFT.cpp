@@ -20,7 +20,7 @@ double get(double * matrix, int ld, int n, int i, int j) {
  */
 void dpotrfFT(double * A, int lda, int n, int * info,
 				double * chksum, int chksum_ld,
-				double * v, double * v_ld, 
+				double * v, int v_ld, 
 				bool FT , bool DEBUG) {
 	
 	double one = 1;
