@@ -68,7 +68,6 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 			
 			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
 			int m = n-i-1;
-			int one = 1;
 			double neg = -1;
 			blasf77_dgemm(  &trans, &Ntrans,
 							 &nOfChecksum, &m, &one,
