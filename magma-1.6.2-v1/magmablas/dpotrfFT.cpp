@@ -31,7 +31,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	
 	//do Choleksy factorization
 	//int info;
-	dpotrf('L', n, A, n, info);
+	//dpotrf('L', n, A, n, info);
 	char uplo = 'L';
 	//lapackf77_dpotrf(&uplo, &n, A, &n, info);
 	if (FT) {
