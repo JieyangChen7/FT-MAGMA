@@ -2,7 +2,7 @@
 #include "magma_lapack.h"
 #include "magmablas.h"
 #include "cublas_v2.h"
-#include "acml.h"
+//#include "acml.h"
 void printMatrix_host(double * matrix_host, int M, int N);
 void printMatrix_gpu(double * matrix_device, int matrix_ld, int M, int N);
 void printVector_host(double * vector_host, int N);
