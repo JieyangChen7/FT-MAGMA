@@ -57,19 +57,19 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	if (FT) {
 		//recalculate checksum1 and checksum2
 		double beta = 0;
-//		for (int i = 0; i < m; i += n) {
-//			magma_dgemm( MagmaTrans, MagmaNoTrans,
-//						 2, n, n,
-//						 MAGMA_D_ONE, vd, vd_ld,
-//									B + i, ldb,
-//						 MAGMA_D_ZERO, chk + (i/n)*2, chk_ld);
-//		}
+		for (int i = 0; i < m; i += n) {
+			magma_dgemm( MagmaTrans, MagmaNoTrans,
+						 2, n, n,
+						 MAGMA_D_ONE, vd, vd_ld,
+									B + i, ldb,
+						 MAGMA_D_ZERO, chk + (i/n)*2, chk_ld);
+		}
 		
 		//update checksum1 and checksum2
-		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
-			                                (m / n) * 2, n,
-			                                MAGMA_D_ONE, A, lda,
-			                                checksumB, checksumB_ld);
+//		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+//			                                (m / n) * 2, n,
+//			                                MAGMA_D_ONE, A, lda,
+//			                                checksumB, checksumB_ld);
 
 		//cudaStream_t stream1;
 		//cublasGetStream(handle, &stream1);
