@@ -30,7 +30,7 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 void dtrsmFT(int m, int n, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
-		double * chk, int chk_ld, bool FT, bool DEBUG) {
+		double * chk1, int chk1_ld,double * chk2, int chk2_ld, bool FT, bool DEBUG) {
 
 //	cout<<"matrix A before dtrsm:"<<endl;
 //	 printMatrix_gpu(A,lda*sizeof(double),n,n);
@@ -58,11 +58,17 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		//recalculate checksum1 and checksum2
 		double beta = 0;
 		for (int i = 0; i < m; i += n) {
-			magma_dgemm( MagmaTrans, MagmaNoTrans,
-						 2, n, n,
-						 MAGMA_D_ONE, vd, vd_ld,
-									B + i, ldb,
-						 MAGMA_D_ZERO, chk + (i/n)*2, chk_ld);
+			
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					B + i, ldb, vd, 1, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					B + i, ldb, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
+						
+//			magma_dgemm( MagmaTrans, MagmaNoTrans,
+//						 2, n, n,
+//						 MAGMA_D_ONE, vd, vd_ld,
+//									B + i, ldb,
+//						 MAGMA_D_ZERO, chk + (i/n)*2, chk_ld);
 		}
 		
 		//update checksum1 and checksum2

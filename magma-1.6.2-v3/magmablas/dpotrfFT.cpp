@@ -46,20 +46,29 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		*/
 		
 		//recalculate checksum1 and checksum2
-		double * chk = new double[n * 2];
-		int chk_ld = 2;
+		double * chk1 = new double[n];
+		double * chk2 = new double[n];
+		int v1_inc = 1;
+		int v2_inc = 1;
+		int chk1_inc = 1;
+		int chk2_inc = 1;
 		char trans = 'T';
 		char Ntrans = 'N';
 		int nOfChecksum = 2;
-		blasf77_dgemm(  &trans, &Ntrans,
-						 &nOfChecksum, &n, &n,
-						 &one,
-						 v, &v_ld,
-						 A, &lda,
-						 &zero,
-						 chk, 
-						 &chk_ld );
 		
+		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v, &v1_inc, &zero, chk1, &chk1_inc );
+		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v + v_ld, &v2_inc, &zero, chk2, &chk2_inc );
+		
+		
+//		blasf77_dgemm(  &trans, &Ntrans,
+//						 &nOfChecksum, &n, &n,
+//						 &one,
+//						 v, &v_ld,
+//						 A, &lda,
+//						 &zero,
+//						 chk, 
+//						 &chk_ld );
+//		
 		
 		//update checksum1 and checksum2
 		for (int i = 0; i < n; i++) {
@@ -81,8 +90,8 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	
 		if (DEBUG) {
 			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
-			printMatrix_host(chk, 2, n);
-			
+			printMatrix_host(chk1, 1, n);
+			printMatrix_host(chk2, 1, n);
 			cout<<"updated checksum on CPU after factorization:"<<endl;
 			printMatrix_host(chksum, 2, n);
 		}

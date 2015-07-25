@@ -25,7 +25,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
-		double * chk, int chk_ld, bool FT, bool DEBUG){
+		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT, bool DEBUG){
 	
 //	cout<<"checksum1 of A before dsyrk:"<<endl;
 //	printMatrix_gpu(checksumA1, incA1, 1,m);
@@ -56,14 +56,17 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	if(FT){
 		
 		//recalculate checksum1 and checksum2
-		magma_dgemm(
-					MagmaTrans, MagmaNoTrans,
-					2, n, n,
-					MAGMA_D_ONE,
-					vd, vd_ld, C, ldc,
-					MAGMA_D_ZERO,
-					chk, chk_ld );
-		
+//		magma_dgemm(
+//					MagmaTrans, MagmaNoTrans,
+//					2, n, n,
+//					MAGMA_D_ONE,
+//					vd, vd_ld, C, ldc,
+//					MAGMA_D_ZERO,
+//					chk, chk_ld );
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, vd, 1, MAGMA_D_ZERO, chk1, chk1_ld );
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
 		
 		//update checksum1 and checksum2
 		
