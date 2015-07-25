@@ -27,7 +27,7 @@ RANLIB    = ranlib
 
 # Use -fPIC to make shared (.so) and static (.a) library;
 # can be commented out if making only static library.
-FPIC      = -fPIC
+#FPIC      = -fPIC
 
 CFLAGS    = -O3 $(FPIC) -DADD_ -Wall -fopenmp -DMAGMA_SETAFFINITY -DMAGMA_WITH_ACML
 FFLAGS    = -O3 $(FPIC) -DADD_ -Wall -Wno-unused-dummy-argument
@@ -40,7 +40,7 @@ LDFLAGS   =     $(FPIC)              -fopenmp
 
 # for ACML >= 5
 # requires gcc & gfortran >= 4.6
-LIB       = -lacml_mp -lcblas -lcublas -lcudart -lstdc++ -lm -lgfortran
+LIB       = -lacml_mp -lcblas -lcublas -lcudart -lstdc++ -lm -lgfortran -lpapi
 
 # define library directories preferably in your environment, or here.
 #ACMLDIR  ?= /opt/acml
