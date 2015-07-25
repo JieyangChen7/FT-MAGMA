@@ -62,9 +62,9 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 					chk + (i/n)*2, chk_ld);
 			
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, vd, 1,
-					&beta, chk1, chk1_ld);
+				    &beta, chk1 + (i / n), chk1_ld);
 			cublasDgemv(handle, CUBLAS_OP_T, n, n, &alpha, B + i, ldb, vd + vd_ld, 1,
-					&beta, chk2, chk2_ld);
+				    &beta, chk2 + (i / n), chk2_ld);
 			
 		}
 		
@@ -74,7 +74,7 @@ void dtrsmFT(cublasHandle_t handle, int m, int n, double * A, int lda,
 		
 		//update checksum1 and checksum2
 		cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, \
-				CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, (m / n)*2, n, &alpha, A, lda, \
+				CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, (m / n) * 2, n, &alpha, A, lda, \
 				checksumB, checksumB_ld); 
 		
 		if (DEBUG) {
