@@ -83,7 +83,8 @@ void dtrsmFT(int m, int n, double * A, int lda,
 
 		if (DEBUG) {
 			cout<<"recalculated checksum of B after dtrsm:"<<endl;
-			printMatrix_gpu(chk,chk_ld,(m/n)*2,n);
+			printMatrix_gpu(chk1,chk1_ld, (m / n), n);
+			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
 
 			cout<<"updated checksum of B after dtrsm:"<<endl;
 			printMatrix_gpu(checksumB, checksumB_ld, (m / n) * 2, n);
