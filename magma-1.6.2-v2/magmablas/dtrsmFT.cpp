@@ -42,11 +42,11 @@ void dtrsmFT(int m, int n, double * A, int lda,
 //	 
 
 	double alpha = 1;
-	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
-	                                m, n,
-	                                MAGMA_D_ONE, A, lda,
-	                                       B, ldb);
-	
+//	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+//	                                m, n,
+//	                                MAGMA_D_ONE, A, lda,
+//	                                       B, ldb);
+
 //	cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T,
 //			CUBLAS_DIAG_NON_UNIT, m, n, &alpha, A, lda, B, ldb);
 
@@ -57,13 +57,13 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	if (FT) {
 		//recalculate checksum1 and checksum2
 		double beta = 0;
-		for (int i = 0; i < m; i += n) {
-			magma_dgemm( MagmaTrans, MagmaNoTrans,
-						 2, n, n,
-						 MAGMA_D_ONE, vd, vd_ld,
-									B + i, ldb,
-						 MAGMA_D_ZERO, chk + (i/n)*2, chk_ld);
-		}
+//		for (int i = 0; i < m; i += n) {
+//			magma_dgemm( MagmaTrans, MagmaNoTrans,
+//						 2, n, n,
+//						 MAGMA_D_ONE, vd, vd_ld,
+//									B + i, ldb,
+//						 MAGMA_D_ZERO, chk + (i/n)*2, chk_ld);
+//		}
 		
 		//update checksum1 and checksum2
 		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
