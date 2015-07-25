@@ -208,8 +208,8 @@ magma_dpotrf_gpu(
 		initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksum, checksum_ld);
 		//cout<<"checksums initialized"<<endl;
 		 
-		printMatrix_gpu(dA, ldda, N, N);
-		printMatrix_gpu(checksum, checksum_ld, N / B * 2, N);
+//		printMatrix_gpu(dA, ldda, N, N);
+//		printMatrix_gpu(checksum, checksum_ld, N / B * 2, N);
 	}
     
     
