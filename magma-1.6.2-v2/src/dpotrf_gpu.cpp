@@ -179,7 +179,7 @@ magma_dpotrf_gpu(
 		for (int i = 0; i < B; ++i) {
 			*(v + v_ld + i) = i+1;
 		}
-		printMatrix_host(v, B, 2);
+		//printMatrix_host(v, B, 2);
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU		
@@ -187,7 +187,7 @@ magma_dpotrf_gpu(
 		vd_ld = vd_pitch / sizeof(double);	
 		magma_dmalloc(&vd, vd_pitch * 2 * sizeof(double));
 		magma_dsetmatrix(B, 2, v, B, vd, vd_ld);
-		printMatrix_gpu(vd, vd_ld, B, 2);
+		//printMatrix_gpu(vd, vd_ld, B, 2);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		//allocate space for recalculated checksum on CPU
