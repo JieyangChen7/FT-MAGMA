@@ -9,6 +9,8 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 	
 //	double alpha = 1;
 //	double beta = 0;
+	
+	
 	for (int i = 0; i < N; i += B) {
 //		magma_dgemv(MagmaTrans, B, N, MAGMA_D_ONE, matrix + i, ld, vd, 1, \
 //				MAGMA_D_ZERO, chksum + (i / B), chksum_ld);
@@ -25,6 +27,9 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 //		printVector_gpu(vd,B);
 //		printMatrix_gpu(chksum + (i / B), chksum_ld * sizeof(double), 1, N);
 	}
+	
+	
+	
 	//printMatrix_gpu(chksum, chksum_ld, 6, N);
 			
 }

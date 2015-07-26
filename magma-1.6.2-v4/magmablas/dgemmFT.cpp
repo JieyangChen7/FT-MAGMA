@@ -27,7 +27,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT, bool DEBUG) {
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		double * temp, int temp_ld,
+		bool FT, bool DEBUG) {
 
 	/*cout<<"checksum1 of A before dgemm:"<<endl;
 	printMatrix_gpu(checksumA1, incA1*sizeof(double), m/n,k);
@@ -72,13 +75,29 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		}
 		
 		//update checksum1 and checksum2
-		magma_dgemm(
-					MagmaNoTrans, MagmaTrans,
-					(m / n) * 2, n, k,
-					MAGMA_D_ONE * (-1),
-					checksumA, checksumA_ld, B, ldb,
-					MAGMA_D_ONE,
-					checksumC, checksumC_ld );
+		
+		char N = 'N';
+		char T = 'T';
+		int m2 = (m / n) * 2;
+		int n2 = n;
+		int k2 = k;
+		
+		
+		blasf77_dgemm(  &N, &T,
+						&m2, &n2, &k2,
+						&negone,
+						checksumA, &checksumA_ld,
+						temp, &temp_ld,
+						&MAGMA_D_ONE,
+						checksumC, &checksumC_ld );
+				
+//		magma_dgemm(
+//					MagmaNoTrans, MagmaTrans,
+//					(m / n) * 2, n, k,
+//					MAGMA_D_ONE * (-1),
+//					checksumA, checksumA_ld, B, ldb,
+//					MAGMA_D_ONE,
+//					checksumC, checksumC_ld );
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of C after dgemm:"<<endl;
@@ -86,7 +105,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			printMatrix_gpu(chk2, chk2_ld, (m / n), n);
 		
 			cout<<"updated checksum of C after dgemm:"<<endl;
-			printMatrix_gpu(checksumC, checksumC_ld, (m / n) * 2, n);
+			printMatrix_host(checksumC, (m / n) * 2, n);
 		}
 		
 		//error detection and error correction

@@ -30,7 +30,10 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
 void dtrsmFT(int m, int n, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
-		double * chk1, int chk1_ld,double * chk2, int chk2_ld, bool FT, bool DEBUG) {
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		double * work, int work_ld, 
+		bool FT, bool DEBUG) {
 
 //	cout<<"matrix A before dtrsm:"<<endl;
 //	 printMatrix_gpu(A,lda*sizeof(double),n,n);
@@ -72,10 +75,23 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		}
 		
 		//update checksum1 and checksum2
-		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
-			                                (m / n) * 2, n,
-			                                MAGMA_D_ONE, A, lda,
-			                                checksumB, checksumB_ld);
+		char R = 'R';
+		char L = 'L';
+		char T = 'T';
+		char N = 'N';
+		int m2 = (m / n) * 2;
+		int n2 = n;
+		
+		blasf77_dtrsm(&R, &L, &T, &N,
+					 &m2, &n2,
+					 &MAGMA_D_ONE,
+					 work, &work_ld,
+					 checksumB, &checksumB_ld);
+		
+//		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+//			                                (m / n) * 2, n,
+//			                                MAGMA_D_ONE, A, lda,
+//			                                checksumB, checksumB_ld);
 
 		//cudaStream_t stream1;
 		//cublasGetStream(handle, &stream1);
@@ -87,7 +103,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
 
 			cout<<"updated checksum of B after dtrsm:"<<endl;
-			printMatrix_gpu(checksumB, checksumB_ld, (m / n) * 2, n);
+			printMatrix_host(checksumB, (m / n) * 2, n);
 		}
 		/*detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n,
 			checksumB1, incB1, checksumB2, incB2,

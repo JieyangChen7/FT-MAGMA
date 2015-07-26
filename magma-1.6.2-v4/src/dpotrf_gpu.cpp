@@ -155,9 +155,6 @@ magma_dpotrf_gpu(
 	size_t vd_pitch;
 	int vd_ld;
 	
-	double * chk;
-	int chk_ld;
-	
 	double * chk1d;
 	double * chk2d;
 	size_t chk1d_pitch;
@@ -165,10 +162,16 @@ magma_dpotrf_gpu(
 	int chk1d_ld;
 	int chk2d_ld;
 
+	size_t checksumd_pitch;
+	double * checksumd;
+	int checksumd_ld;
+
 	size_t checksum_pitch;
 	double * checksum;
 	int checksum_ld;
-
+	
+	double * temp;
+	int temp_ld;
 
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -209,14 +212,27 @@ magma_dpotrf_gpu(
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
  
 		//initialize checksums
-		checksum_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
-		checksum_ld = checksum_pitch / sizeof(double);
-		magma_dmalloc(&checksum, checksum_pitch * N);
-		initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksum, checksum_ld);
+		size_t checksumd_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
+		checksumd_ld = checksumd_pitch / sizeof(double);
+		magma_dmalloc(&checksumd, checksumd_pitch * N);
+		
+		magma_dmalloc_pinned(&checksum, (N / B) * 2 * N * sizeof(double));
+		checksum_ld = (N / B) * 2;
+		
+		initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksumd, checksumd_ld);
+		
+		magma_dgetmatrix_async( (N / B) * 2, N,
+								checksum, checksum_ld,
+								checksumd,     checksumd_ld, stream[0] );
+		
 		//cout<<"checksums initialized"<<endl;
 		 
 		printMatrix_gpu(dA, ldda, N, N);
-		printMatrix_gpu(checksum, checksum_ld, N / B * 2, N);
+		printMatrix_host(checksum, N / B * 2, N);
+		
+		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
+		temp_ld = B;
+
 	}
     
     
@@ -307,11 +323,7 @@ magma_dpotrf_gpu(
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
-                if (FT) {
-                	magma_dgetmatrix_async(2, jb,
-                			               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-                			               chk, chk_ld, stream[0]);
-                }
+           
                 
                 if ( (j+jb) < n && j > 0) {
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
@@ -329,17 +341,16 @@ magma_dpotrf_gpu(
                 magma_queue_sync( stream[0] );
                 
                 //lapackf77_dpotrf(MagmaLowerStr, &jb, work, &jb, info);
-                dpotrfFT(work, B, B, info, chk, chk_ld, v, v_ld, FT, DEBUG);
+                dpotrfFT(work, B, B, info, 
+                		checksum + (i / B) * 2 + i * checksum_ld, checksum_ld, 
+                		v, v_ld, 
+                		FT, DEBUG);
                 
                 
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
-                if (FT) {
-					magma_dgetmatrix_async(2, jb,
-							               chk, chk_ld,
-							               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld, stream[0]);
-				}
+            
                 
 //                printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
 //                printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
@@ -353,12 +364,24 @@ magma_dpotrf_gpu(
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
-                			vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
+                			vd, vd_ld, 
+                			chk1d, chk1d_ld,
+                			chk2d, chk2d_ld,
+                			work, jb, 
+                			FT, DEBUG);
 //                    magma_dtrsm(MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
 //                                (n-j-jb), jb,
 //                                c_one, dA(j,    j), ldda,
 //                                       dA(j+jb, j), ldda);
                 }
+                
+                if (FT) {
+                	magma_dsetmatrix_async( jb, j + jb,
+											temp, temp_ld,
+											dA(j, 0), ldda, stream[1] );
+                }
+                
+                
             }
         }
     }

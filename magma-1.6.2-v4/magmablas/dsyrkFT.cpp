@@ -25,7 +25,10 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, double * chk2, int chk2_ld, bool FT, bool DEBUG){
+		double * chk1, int chk1_ld,
+		double * chk2, int chk2_ld,
+		double * temp, int temp_ld, 
+		bool FT, bool DEBUG){
 	
 //	cout<<"checksum1 of A before dsyrk:"<<endl;
 //	printMatrix_gpu(checksumA1, incA1, 1,m);
@@ -69,14 +72,28 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
 		
 		//update checksum1 and checksum2
+		char N = 'N';
+		char T = 'T';
+		int m2 = 2;
+		int n2 = n;
+		int k2 = m;
 		
-		magma_dgemm(
-					MagmaNoTrans, MagmaTrans,
-					2, n, m,
-					MAGMA_D_ONE * (-1),
-					checksumA, checksumA_ld, A, lda,
-					MAGMA_D_ONE,
-					checksumC, checksumC_ld );
+		
+		blasf77_dgemm(  &N, &T,
+		                &m2, &n2, &k2,
+		                &negone,
+		                checksumA, &checksumA_ld,
+		                temp, &temp_ld,
+		                &MAGMA_D_ONE,
+		                checksumC, &checksumC_ld );
+		
+//		magma_dgemm(
+//					MagmaNoTrans, MagmaTrans,
+//					2, n, m,
+//					MAGMA_D_ONE * (-1),
+//					checksumA, checksumA_ld, A, lda,
+//					MAGMA_D_ONE,
+//					checksumC, checksumC_ld );
 		
 //		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA1, incA1, A, lda, &one, checksumC1, incC1);
 //		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA2, incA2, A, lda, &one, checksumC2, incC2);
@@ -87,7 +104,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			printMatrix_gpu(chk2, chk2_ld, 1, n);
 		
 			cout<<"updated checksum of C after dsyrk:"<<endl;
-			printMatrix_gpu(checksumC, checksumC_ld, 2, n);
+			printMatrix_host(checksumC, 2, n);
 		}
 		
 		//detect error and correct error
