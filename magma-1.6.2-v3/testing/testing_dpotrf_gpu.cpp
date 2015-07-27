@@ -107,10 +107,10 @@ int main( int argc, char** argv)
 //                printf("%5d     ---   (  ---  )   %7.2f (%7.2f)     ---  \n",
 //                       (int) N, gpu_perf, gpu_time );
 //            }
-//            TESTING_FREE_CPU( h_A );
-//            TESTING_FREE_PIN( h_R );
-//            TESTING_FREE_DEV( d_A );
-//            fflush( stdout );
+            TESTING_FREE_CPU( h_A );
+            TESTING_FREE_PIN( h_R );
+            TESTING_FREE_DEV( d_A );
+            fflush( stdout );
 //        }
 //        if ( opts.niter > 1 ) {
 //            printf( "\n" );
