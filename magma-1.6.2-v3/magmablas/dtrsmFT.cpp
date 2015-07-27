@@ -42,10 +42,10 @@ void dtrsmFT(int m, int n, double * A, int lda,
 //	 
 
 	double alpha = 1;
-//	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
-//	                                m, n,
-//	                                MAGMA_D_ONE, A, lda,
-//	                                       B, ldb);
+	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+	                                m, n,
+	                                MAGMA_D_ONE, A, lda,
+	                                       B, ldb);
 	
 //	cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T,
 //			CUBLAS_DIAG_NON_UNIT, m, n, &alpha, A, lda, B, ldb);
@@ -72,10 +72,10 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		}
 		
 		//update checksum1 and checksum2
-//		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
-//			                                (m / n) * 2, n,
-//			                                MAGMA_D_ONE, A, lda,
-//			                                checksumB, checksumB_ld);
+		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+			                                (m / n) * 2, n,
+			                                MAGMA_D_ONE, A, lda,
+			                                checksumB, checksumB_ld);
 
 		//cudaStream_t stream1;
 		//cublasGetStream(handle, &stream1);
