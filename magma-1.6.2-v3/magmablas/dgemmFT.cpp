@@ -43,13 +43,13 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	double one = 1;
 	double zero = 0;
 	
-//	magma_dgemm(
-//				MagmaNoTrans, MagmaTrans,
-//				m, n, k,
-//				MAGMA_D_ONE * (-1),
-//				A, lda, B, ldb,
-//				MAGMA_D_ONE,
-//				C, ldc );
+	magma_dgemm(
+				MagmaNoTrans, MagmaTrans,
+				m, n, k,
+				MAGMA_D_ONE * (-1),
+				A, lda, B, ldb,
+				MAGMA_D_ONE,
+				C, ldc );
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B,
 //			ldb, &one, C, ldc);
@@ -72,13 +72,13 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		}
 		
 		//update checksum1 and checksum2
-//		magma_dgemm(
-//					MagmaNoTrans, MagmaTrans,
-//					(m / n) * 2, n, k,
-//					MAGMA_D_ONE * (-1),
-//					checksumA, checksumA_ld, B, ldb,
-//					MAGMA_D_ONE,
-//					checksumC, checksumC_ld );
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					(m / n) * 2, n, k,
+					MAGMA_D_ONE * (-1),
+					checksumA, checksumA_ld, B, ldb,
+					MAGMA_D_ONE,
+					checksumC, checksumC_ld );
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of C after dgemm:"<<endl;
