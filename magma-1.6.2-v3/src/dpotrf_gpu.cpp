@@ -118,7 +118,7 @@ magma_dpotrf_gpu(
     nb = magma_get_dpotrf_nb(n);
 
     //** debug **//
-     //   nb = 2;
+    //    nb = 2;
         
         
     if (MAGMA_SUCCESS != magma_dmalloc_pinned( &work, nb*nb )) {
@@ -146,7 +146,7 @@ magma_dpotrf_gpu(
     int B = nb;
     int N = n;
     //variables for FT
-    bool FT = false;
+    bool FT = true;
     bool DEBUG = false;
 	double * v;
 	int v_ld;
@@ -311,10 +311,18 @@ magma_dpotrf_gpu(
                 			               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
                 			               chk, chk_ld, stream[0]);
                 }
+                
+                if ( (j+jb) < n && j > 0) {
+                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
+                			dA(j,    0), ldda, dA(j+jb, j), ldda, 
+                			checksum + ((j + jb) / jb) * 2, checksum_ld, 
+                			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
+                			vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
+                }
 
                 magma_queue_sync( stream[0] );
                            
-            	dpotrfFT(work, B, B, info, chk, chk_ld, v, v_ld, FT, DEBUG);
+                dpotrfFT(work, B, B, info, chk, chk_ld, v, v_ld, FT, DEBUG);
                 
                 
                 magma_dsetmatrix_async( jb, jb,
