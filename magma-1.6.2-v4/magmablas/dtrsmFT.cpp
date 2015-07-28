@@ -44,7 +44,9 @@ void dtrsmFT(int m, int n, double * A, int lda,
 //	 printMatrix_gpu(checksumB2,incB2*sizeof(double),m/n,n);
 //	 
 
-	double alpha = 1;
+	double negone = -1;
+	double one = 1;
+	double zero = 0;
 	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 	                                m, n,
 	                                MAGMA_D_ONE, A, lda,
@@ -84,7 +86,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		
 		blasf77_dtrsm(&R, &L, &T, &N,
 					 &m2, &n2,
-					 &MAGMA_D_ONE,
+					 &one,
 					 work, &work_ld,
 					 checksumB, &checksumB_ld);
 		

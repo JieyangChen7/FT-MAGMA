@@ -88,7 +88,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 						&negone,
 						checksumA, &checksumA_ld,
 						temp, &temp_ld,
-						&MAGMA_D_ONE,
+						&one,
 						checksumC, &checksumC_ld );
 				
 //		magma_dgemm(
