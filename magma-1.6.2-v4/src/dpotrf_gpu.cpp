@@ -294,6 +294,8 @@ magma_dpotrf_gpu(
             }
         }
         else {
+        	double * t1 = new double[N * B];
+        	
         	float real_time = 0.0;
 			float proc_time = 0.0;
 			long long flpins = 0.0;
@@ -362,14 +364,20 @@ magma_dpotrf_gpu(
 //                }
                 
                 if ( (j+jb) < n) {
-                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
-                			dA(j+jb, j), ldda,
-                			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
-                			vd, vd_ld, 
-                			chk1d, chk1d_ld,
-                			chk2d, chk2d_ld,
-                			work, jb, 
-                			FT, DEBUG);
+                	
+                	
+                			magma_dgetmatrix_async( (n-j-jb), jb,
+                					dA(j+jb, j), ldda,
+                					t1,     N, stream[0] );
+                	
+//                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
+//                			dA(j+jb, j), ldda,
+//                			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
+//                			vd, vd_ld, 
+//                			chk1d, chk1d_ld,
+//                			chk2d, chk2d_ld,
+//                			work, jb, 
+//                			FT, DEBUG);
                 }
                 
 //                if (FT) {

@@ -58,6 +58,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	/*cout<<"matrix A after dtrsm:"<<endl;
 	 printMatrix_gpu(A,lda*sizeof(double),n,n);
 	 */
+	
 
 	if (FT) {
 		//recalculate checksum1 and checksum2
@@ -87,12 +88,13 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		
 		
 		
-		blasf77_dtrsm(&R, &L, &T, &N,
-					 &m2, &n2,
-					 &one,
-					 work, &work_ld,
-					 checksumB, &checksumB_ld);
-//		double * t1 = new double[(m / n) * n];
+//		blasf77_dtrsm(&R, &L, &T, &N,
+//					 &m2, &n2,
+//					 &one,
+//					 work, &work_ld,
+//					 checksumB, &checksumB_ld);
+		double * t1 = new double[m * n];
+	
 //		double * t2 = new double[(m / n) * n];
 //		int l1 = m / n;
 //		int l2 = m / n;
