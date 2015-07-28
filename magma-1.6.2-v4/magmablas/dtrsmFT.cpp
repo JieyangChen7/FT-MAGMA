@@ -92,16 +92,20 @@ void dtrsmFT(int m, int n, double * A, int lda,
 //					 &one,
 //					 work, &work_ld,
 //					 checksumB, &checksumB_ld);
+		double * t1 = new int[(m / n) * n];
+		double * t2 = new int[(m / n) * n];
+		int l1 = m / n;
+		int l2 = m / n;
 		blasf77_dtrsm(&R, &L, &T, &N,
 							 &m2, &n2,
 							 &one,
-							 checksumB, &checksumB_ld,
-							 checksumB, &checksumB_ld);
+							 work, &work_ld,
+							 t1, &l1);
 		blasf77_dtrsm(&R, &L, &T, &N,
 							 &m2, &n2,
 							 &one,
-							 work, &checksumB_ld,
-							 work, &checksumB_ld);
+							 work, &work_ld,
+							 t2, &l2);
 		
 //		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 //			                                (m / n) * 2, n,
