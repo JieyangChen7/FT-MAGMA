@@ -385,8 +385,9 @@ magma_dpotrf_gpu(
                 
                 if (FT) {
                 	magma_dsetmatrix_async( jb, j + jb,
+                							dA(j, 0), ldda,
 											temp, temp_ld,
-											dA(j, 0), ldda, stream[1] );
+											stream[1] );
                 }
                 
                 
