@@ -312,21 +312,16 @@ magma_dpotrf_gpu(
                 //jb = min(nb, (n-j));
             	
             	jb = nb;
-//                if (j > 0) {
-//                	cout<<"A is syrk(gpu)"<<endl;
-//					printMatrix_gpu(dA(j, 0), ldda, jb, j);
-//					cout<<"A is syrk(host)"<<endl;
-//					printMatrix_host(temp, B, N);
-//                	
-//					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
-//							checksum + (j / jb) * 2, checksum_ld, 
-//							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-//							vd, vd_ld, 
-//							chk1d, chk1d_ld, 
-//							chk2d, chk2d_ld, 
-//							temp, temp_ld,
-//							FT, DEBUG);
-//                }
+                if (j > 0) {
+					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+							checksum + (j / jb) * 2, checksum_ld, 
+							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+							vd, vd_ld, 
+							chk1d, chk1d_ld, 
+							chk2d, chk2d_ld, 
+							temp, temp_ld,
+							FT, DEBUG);
+                }
 //                              
 //                magma_queue_sync( stream[1] );
 //                magma_dgetmatrix_async( jb, jb,
@@ -373,12 +368,12 @@ magma_dpotrf_gpu(
 //                			FT, DEBUG);
 //                }
                 
-                if (FT) {
-                	magma_dgetmatrix_async( jb, j + jb,
-                							dA(j + jb, 0), ldda,
-											temp, temp_ld,
-											stream[1] );
-                }
+//                if (FT) {
+//                	magma_dgetmatrix_async( jb, j + jb,
+//                							dA(j + jb, 0), ldda,
+//											temp, temp_ld,
+//											stream[1] );
+//                }
                 
                 
             }

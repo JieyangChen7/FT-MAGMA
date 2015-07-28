@@ -67,10 +67,10 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //					vd, vd_ld, C, ldc,
 //					MAGMA_D_ZERO,
 //					chk, chk_ld );
-		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-				C, ldc, vd, 1, MAGMA_D_ZERO, chk1, chk1_ld );
-		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
+//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//				C, ldc, vd, 1, MAGMA_D_ZERO, chk1, chk1_ld );
+//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
 		
 		//update checksum1 and checksum2
 		char N = 'N';
@@ -80,13 +80,13 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		int k2 = m;
 		
 		
-		blasf77_dgemm(  &N, &T,
-		                &m2, &n2, &k2,
-		                &negone,
-		                checksumA, &checksumA_ld,
-		                temp, &temp_ld,
-		                &one,
-		                checksumC, &checksumC_ld );
+//		blasf77_dgemm(  &N, &T,
+//		                &m2, &n2, &k2,
+//		                &negone,
+//		                checksumA, &checksumA_ld,
+//		                temp, &temp_ld,
+//		                &one,
+//		                checksumC, &checksumC_ld );
 		
 //		magma_dgemm(
 //					MagmaNoTrans, MagmaTrans,
