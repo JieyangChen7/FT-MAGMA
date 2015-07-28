@@ -100,8 +100,8 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		blasf77_dtrsm(&R, &L, &T, &N,
 							 &m2, &n2,
 							 &one,
-							 work, &work_ld,
-							 work, &work_ld);
+							 work, &checksumB_ld,
+							 work, &checksumB_ld);
 		
 //		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 //			                                (m / n) * 2, n,
