@@ -47,10 +47,10 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
-	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
-	                                m, n,
-	                                MAGMA_D_ONE, A, lda,
-	                                       B, ldb);
+//	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+//	                                m, n,
+//	                                MAGMA_D_ONE, A, lda,
+//	                                       B, ldb);
 	
 //	cublasDtrsm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T,
 //			CUBLAS_DIAG_NON_UNIT, m, n, &alpha, A, lda, B, ldb);
@@ -63,51 +63,37 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	if (FT) {
 		//recalculate checksum1 and checksum2
 		double beta = 0;
-		for (int i = 0; i < m; i += n) {
-			
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					B + i, ldb, vd, 1, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					B + i, ldb, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-						
-//			magma_dgemm( MagmaTrans, MagmaNoTrans,
-//						 2, n, n,
-//						 MAGMA_D_ONE, vd, vd_ld,
-//									B + i, ldb,
-//						 MAGMA_D_ZERO, chk + (i/n)*2, chk_ld);
-		}
+//		for (int i = 0; i < m; i += n) {
+//			
+//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//					B + i, ldb, vd, 1, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//					B + i, ldb, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
+//						
+////			magma_dgemm( MagmaTrans, MagmaNoTrans,
+////						 2, n, n,
+////						 MAGMA_D_ONE, vd, vd_ld,
+////									B + i, ldb,
+////						 MAGMA_D_ZERO, chk + (i/n)*2, chk_ld);
+//		}
 		
 		//update checksum1 and checksum2
 		char R = 'R';
 		char L = 'L';
 		char T = 'T';
 		char N = 'N';
-//		int m2 = (m / n) * 2;
-		int m2 = (m / n);
+		int m2 = (m / n) * 2;
+		//int m2 = (m / n);
 		int n2 = n;
 		
 		
 		
-//		blasf77_dtrsm(&R, &L, &T, &N,
-//					 &m2, &n2,
-//					 &one,
-//					 work, &work_ld,
-//					 checksumB, &checksumB_ld);
-		double * t1 = new double[m * n];
-	
-//		double * t2 = new double[(m / n) * n];
-//		int l1 = m / n;
-//		int l2 = m / n;
-//		blasf77_dtrsm(&R, &L, &T, &N,
-//							 &m2, &n2,
-//							 &one,
-//							 work, &work_ld,
-//							 t1, &l1);
-//		blasf77_dtrsm(&R, &L, &T, &N,
-//							 &m2, &n2,
-//							 &one,
-//							 work, &work_ld,
-//							 t2, &l2);
+		blasf77_dtrsm(&R, &L, &T, &N,
+					 &m2, &n2,
+					 &one,
+					 work, &work_ld,
+					 checksumB, &checksumB_ld);
+
 //		
 //		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 //			                                (m / n) * 2, n,
