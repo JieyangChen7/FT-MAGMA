@@ -306,6 +306,12 @@ magma_dpotrf_gpu(
             	
             	jb = nb;
                 if (j > 0) {
+                	cout<<"A is syrk(gpu)"<<endl;
+					printMatrix_gpu(dA(j, 0), ldda, jb, j);
+					cout<<"A is syrk(host)"<<endl;
+					printMatrix_host(temp, B, N);
+                	
+                	
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
