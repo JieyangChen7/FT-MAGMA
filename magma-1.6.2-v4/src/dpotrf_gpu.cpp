@@ -197,8 +197,8 @@ magma_dpotrf_gpu(
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		//allocate space for update checksum on CPU
-		magma_dmalloc_pinned(&chk, B * 2 * sizeof(double));
-		chk_ld = 2;
+//		magma_dmalloc_pinned(&chk, B * 2 * sizeof(double));
+//		chk_ld = 2;
 		//cout<<"allocate space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on GPU
@@ -308,7 +308,10 @@ magma_dpotrf_gpu(
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-							vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld,
+							vd, vd_ld, 
+							chk1d, chk1d_ld, 
+							chk2d, chk2d_ld, 
+							temp, temp_ld
 							FT, DEBUG);
                 }
                 
@@ -330,7 +333,11 @@ magma_dpotrf_gpu(
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
                 			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
-                			vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
+                			vd, vd_ld,
+                			chk1d, chk1d_ld,
+                			chk2d, chk2d_ld,
+                			temp, temp_ld,
+                			FT, DEBUG);
 //                    magma_dgemm( MagmaNoTrans, MagmaConjTrans,
 //                                 (n-j-jb), jb, j,
 //                                 c_neg_one, dA(j+jb, 0), ldda,
@@ -342,7 +349,7 @@ magma_dpotrf_gpu(
                 
                 //lapackf77_dpotrf(MagmaLowerStr, &jb, work, &jb, info);
                 dpotrfFT(work, B, B, info, 
-                		checksum + (i / B) * 2 + i * checksum_ld, checksum_ld, 
+                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
                 		v, v_ld, 
                 		FT, DEBUG);
                 
