@@ -223,8 +223,8 @@ magma_dpotrf_gpu(
 		
 		printMatrix_gpu(checksumd, checksumd_ld, (N / B) * 2, N);
 		magma_dgetmatrix_async( (N / B) * 2, N,
-								checksum, checksum_ld,
-								checksumd,     checksumd_ld, stream[0] );
+								checksumd, checksumd_ld,
+								checksum,     checksum_ld, stream[0] );
 		
 		//cout<<"checksums initialized"<<endl;
 		magma_queue_sync( stream[0] );
