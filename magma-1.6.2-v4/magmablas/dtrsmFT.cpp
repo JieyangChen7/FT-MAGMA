@@ -81,20 +81,27 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		char L = 'L';
 		char T = 'T';
 		char N = 'N';
-		int m2 = (m / n) * 2;
-		//int m2 = (m / n);
+//		int m2 = (m / n) * 2;
+		int m2 = (m / n);
 		int n2 = n;
 		
+		
+		
+//		blasf77_dtrsm(&R, &L, &T, &N,
+//					 &m2, &n2,
+//					 &one,
+//					 work, &work_ld,
+//					 checksumB, &checksumB_ld);
 		blasf77_dtrsm(&R, &L, &T, &N,
-					 &m2, &n2,
-					 &one,
-					 work, &work_ld,
-					 checksumB, &checksumB_ld);
+							 &m2, &n2,
+							 &one,
+							 checksumB, &checksumB_ld,
+							 checksumB, &checksumB_ld);
 		blasf77_dtrsm(&R, &L, &T, &N,
 							 &m2, &n2,
 							 &one,
 							 work, &work_ld,
-							 checksumB, &checksumB_ld);
+							 work, &work_ld);
 		
 //		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 //			                                (m / n) * 2, n,
