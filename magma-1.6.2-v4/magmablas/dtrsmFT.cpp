@@ -92,8 +92,8 @@ void dtrsmFT(int m, int n, double * A, int lda,
 //					 &one,
 //					 work, &work_ld,
 //					 checksumB, &checksumB_ld);
-		double * t1 = new int[(m / n) * n];
-		double * t2 = new int[(m / n) * n];
+		double * t1 = new double[(m / n) * n];
+		double * t2 = new double[(m / n) * n];
 		int l1 = m / n;
 		int l2 = m / n;
 		blasf77_dtrsm(&R, &L, &T, &N,
