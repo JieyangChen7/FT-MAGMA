@@ -87,11 +87,11 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		
 		
 		
-		blasf77_dtrsm(&R, &L, &T, &N,
-					 &m2, &n2,
-					 &one,
-					 work, &work_ld,
-					 checksumB, &checksumB_ld);
+//		blasf77_dtrsm(&R, &L, &T, &N,
+//					 &m2, &n2,
+//					 &one,
+//					 work, &work_ld,
+//					 checksumB, &checksumB_ld);
 //		double * t1 = new double[(m / n) * n];
 //		double * t2 = new double[(m / n) * n];
 //		int l1 = m / n;
