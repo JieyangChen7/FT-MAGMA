@@ -17,7 +17,7 @@
 //#include"dsyrkFT.h"
 //#include"dgemmFT.h"
 #include"FT.h"
-
+#include"papi.h"
 
 
 using namespace std;
@@ -294,6 +294,15 @@ magma_dpotrf_gpu(
             }
         }
         else {
+        	float real_time = 0.0;
+			float proc_time = 0.0;
+			long long flpins = 0.0;
+			float mflops = 0.0;
+			//timing start***************
+			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+				cout << "PAPI ERROR" << endl;
+				return -1;
+			}
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
             for (j=0; j < n; j += nb) {
@@ -301,78 +310,56 @@ magma_dpotrf_gpu(
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
             	
-//            	printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
-//            	printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
-            	
             	jb = nb;
-                if (j > 0) {
-                	cout<<"A is syrk(gpu)"<<endl;
-					printMatrix_gpu(dA(j, 0), ldda, jb, j);
-					cout<<"A is syrk(host)"<<endl;
-					printMatrix_host(temp, B, N);
-                	
-                	
-					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
-							checksum + (j / jb) * 2, checksum_ld, 
-							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-							vd, vd_ld, 
-							chk1d, chk1d_ld, 
-							chk2d, chk2d_ld, 
-							temp, temp_ld,
-							FT, DEBUG);
-                }
-                
-                
-//                magma_dsyrk(MagmaLower, MagmaNoTrans, jb, j,
-//                            d_neg_one, dA(j, 0), ldda,
-//                            d_one,     dA(j, j), ldda);
-                
-                
-                
-                magma_queue_sync( stream[1] );
-                magma_dgetmatrix_async( jb, jb,
-                                        dA(j, j), ldda,
-                                        work,     jb, stream[0] );
-           
-                
-                if ( (j+jb) < n && j > 0) {
-                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
-                			dA(j,    0), ldda, dA(j+jb, j), ldda, 
-                			checksum + ((j + jb) / jb) * 2, checksum_ld, 
-                			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
-                			vd, vd_ld,
-                			chk1d, chk1d_ld,
-                			chk2d, chk2d_ld,
-                			temp, temp_ld,
-                			FT, DEBUG);
-//                    magma_dgemm( MagmaNoTrans, MagmaConjTrans,
-//                                 (n-j-jb), jb, j,
-//                                 c_neg_one, dA(j+jb, 0), ldda,
-//                                            dA(j,    0), ldda,
-//                                 c_one,     dA(j+jb, j), ldda);
-                }
-
-                magma_queue_sync( stream[0] );
-                
-                //lapackf77_dpotrf(MagmaLowerStr, &jb, work, &jb, info);
-                dpotrfFT(work, B, B, info, 
-                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
-                		v, v_ld, 
-                		FT, DEBUG);
-                
-                
-                magma_dsetmatrix_async( jb, jb,
-                                        work,     jb,
-                                        dA(j, j), ldda, stream[1] );
-            
-                
-//                printMatrix_gpu(checksum1, checksum1_ld, N / B, N);
-//                printMatrix_gpu(checksum2, checksum2_ld, N / B, N);
-                
-                if (*info != 0) {
-                    *info = *info + j;
-                    break;
-                }
+//                if (j > 0) {
+//                	cout<<"A is syrk(gpu)"<<endl;
+//					printMatrix_gpu(dA(j, 0), ldda, jb, j);
+//					cout<<"A is syrk(host)"<<endl;
+//					printMatrix_host(temp, B, N);
+//                	
+//					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+//							checksum + (j / jb) * 2, checksum_ld, 
+//							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+//							vd, vd_ld, 
+//							chk1d, chk1d_ld, 
+//							chk2d, chk2d_ld, 
+//							temp, temp_ld,
+//							FT, DEBUG);
+//                }
+//                              
+//                magma_queue_sync( stream[1] );
+//                magma_dgetmatrix_async( jb, jb,
+//                                        dA(j, j), ldda,
+//                                        work,     jb, stream[0] );
+//                           
+//                if ( (j+jb) < n && j > 0) {
+//                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
+//                			dA(j,    0), ldda, dA(j+jb, j), ldda, 
+//                			checksum + ((j + jb) / jb) * 2, checksum_ld, 
+//                			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
+//                			vd, vd_ld,
+//                			chk1d, chk1d_ld,
+//                			chk2d, chk2d_ld,
+//                			temp, temp_ld,
+//                			FT, DEBUG);
+//                }
+//
+//                magma_queue_sync( stream[0] );
+//                
+//                dpotrfFT(work, B, B, info, 
+//                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
+//                		v, v_ld, 
+//                		FT, DEBUG);
+//                
+//                
+//                magma_dsetmatrix_async( jb, jb,
+//                                        work,     jb,
+//                                        dA(j, j), ldda, stream[1] );
+//                
+//                if (*info != 0) {
+//                    *info = *info + j;
+//                    break;
+//                }
                 
                 if ( (j+jb) < n) {
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
@@ -383,21 +370,29 @@ magma_dpotrf_gpu(
                 			chk2d, chk2d_ld,
                 			work, jb, 
                 			FT, DEBUG);
-//                    magma_dtrsm(MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
-//                                (n-j-jb), jb,
-//                                c_one, dA(j,    j), ldda,
-//                                       dA(j+jb, j), ldda);
                 }
                 
-                if (FT) {
-                	magma_dgetmatrix_async( jb, j + jb,
-                							dA(j + jb, 0), ldda,
-											temp, temp_ld,
-											stream[1] );
-                }
+//                if (FT) {
+//                	magma_dgetmatrix_async( jb, j + jb,
+//                							dA(j + jb, 0), ldda,
+//											temp, temp_ld,
+//											stream[1] );
+//                }
                 
                 
             }
+            magma_queue_sync( stream[0] );
+            magma_queue_sync( stream[1] );
+			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+				cout << "PAPI ERROR" << endl;
+				return -1;
+			}
+			if (FT)
+					cout << "FT enabled" << endl;
+			cout << "Size:" << N << "(" << B << ")---Real_time:"
+					<< real_time << "---" << "Proc_time:"
+					<< proc_time << "---" << "Total GFlops:" << endl;            
+			PAPI_shutdown();
         }
     }
 
