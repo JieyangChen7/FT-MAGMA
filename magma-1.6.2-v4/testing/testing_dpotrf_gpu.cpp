@@ -48,8 +48,8 @@ int main( int argc, char** argv)
     printf("  N     CPU GFlop/s (sec)   GPU GFlop/s (sec)   ||R_magma - R_lapack||_F / ||R_lapack||_F\n");
     printf("========================================================\n");
     //for( int itest = 0; itest < opts.ntest; ++itest ) {
-    for( int itest = 4; itest <= 4; ++itest ) {
-        for( int iter = 0; iter < opts.niter; ++iter ) {
+    for( int itest = 0; itest < 4; ++itest ) {
+      //  for( int iter = 0; iter < opts.niter; ++iter ) {
             //N   = opts.nsize[itest];
             N   = Nsize[itest];
             lda = N;
@@ -70,51 +70,51 @@ int main( int argc, char** argv)
             /* ====================================================================
                Performs operation using MAGMA
                =================================================================== */
-            gpu_time = magma_wtime();
+            //gpu_time = magma_wtime();
             magma_dpotrf_gpu( opts.uplo, N, d_A, ldda, &info );
-            gpu_time = magma_wtime() - gpu_time;
-            gpu_perf = gflops / gpu_time;
-            if (info != 0)
-                printf("magma_dpotrf_gpu returned error %d: %s.\n",
-                       (int) info, magma_strerror( info ));
-            
-            if ( opts.lapack ) {
-                /* =====================================================================
-                   Performs operation using LAPACK
-                   =================================================================== */
-                cpu_time = magma_wtime();
-                lapackf77_dpotrf( lapack_uplo_const(opts.uplo), &N, h_A, &lda, &info );
-                cpu_time = magma_wtime() - cpu_time;
-                cpu_perf = gflops / cpu_time;
-                if (info != 0)
-                    printf("lapackf77_dpotrf returned error %d: %s.\n",
-                           (int) info, magma_strerror( info ));
-                
-                /* =====================================================================
-                   Check the result compared to LAPACK
-                   =================================================================== */
-                magma_dgetmatrix( N, N, d_A, ldda, h_R, lda );
-                error = lapackf77_dlange("f", &N, &N, h_A, &lda, work);
-                blasf77_daxpy(&n2, &c_neg_one, h_A, &ione, h_R, &ione);
-                error = lapackf77_dlange("f", &N, &N, h_R, &lda, work) / error;
-                
-                printf("%5d   %7.2f (%7.2f)   %7.2f (%7.2f)   %8.2e   %s\n",
-                       (int) N, cpu_perf, cpu_time, gpu_perf, gpu_time,
-                       error, (error < tol ? "ok" : "failed") );
-                status += ! (error < tol);
-            }
-            else {
-                printf("%5d     ---   (  ---  )   %7.2f (%7.2f)     ---  \n",
-                       (int) N, gpu_perf, gpu_time );
-            }
+//            gpu_time = magma_wtime() - gpu_time;
+//            gpu_perf = gflops / gpu_time;
+//            if (info != 0)
+//                printf("magma_dpotrf_gpu returned error %d: %s.\n",
+//                       (int) info, magma_strerror( info ));
+//            
+//            if ( opts.lapack ) {
+//                /* =====================================================================
+//                   Performs operation using LAPACK
+//                   =================================================================== */
+//                cpu_time = magma_wtime();
+//                lapackf77_dpotrf( lapack_uplo_const(opts.uplo), &N, h_A, &lda, &info );
+//                cpu_time = magma_wtime() - cpu_time;
+//                cpu_perf = gflops / cpu_time;
+//                if (info != 0)
+//                    printf("lapackf77_dpotrf returned error %d: %s.\n",
+//                           (int) info, magma_strerror( info ));
+//                
+//                /* =====================================================================
+//                   Check the result compared to LAPACK
+//                   =================================================================== */
+//                magma_dgetmatrix( N, N, d_A, ldda, h_R, lda );
+//                error = lapackf77_dlange("f", &N, &N, h_A, &lda, work);
+//                blasf77_daxpy(&n2, &c_neg_one, h_A, &ione, h_R, &ione);
+//                error = lapackf77_dlange("f", &N, &N, h_R, &lda, work) / error;
+//                
+//                printf("%5d   %7.2f (%7.2f)   %7.2f (%7.2f)   %8.2e   %s\n",
+//                       (int) N, cpu_perf, cpu_time, gpu_perf, gpu_time,
+//                       error, (error < tol ? "ok" : "failed") );
+//                status += ! (error < tol);
+//            }
+//            else {
+//                printf("%5d     ---   (  ---  )   %7.2f (%7.2f)     ---  \n",
+//                       (int) N, gpu_perf, gpu_time );
+//            }
             TESTING_FREE_CPU( h_A );
             TESTING_FREE_PIN( h_R );
             TESTING_FREE_DEV( d_A );
             fflush( stdout );
-        }
-        if ( opts.niter > 1 ) {
-            printf( "\n" );
-        }
+//        }
+//        if ( opts.niter > 1 ) {
+//            printf( "\n" );
+//        }
     }
 
     TESTING_FINALIZE();

@@ -118,7 +118,7 @@ magma_dpotrf_gpu(
     nb = magma_get_dpotrf_nb(n);
 
     //** debug **//
-        nb = 2;
+    //    nb = 2;
         
         
     if (MAGMA_SUCCESS != magma_dmalloc_pinned( &work, nb*nb )) {
@@ -147,7 +147,7 @@ magma_dpotrf_gpu(
     int N = n;
     //variables for FT
     bool FT = true;
-    bool DEBUG = true;
+    bool DEBUG = false;
 	double * v;
 	int v_ld;
 	
@@ -185,7 +185,7 @@ magma_dpotrf_gpu(
 		for (int i = 0; i < B; ++i) {
 			*(v + v_ld + i) = i+1;
 		}
-		printMatrix_host(v, B, 2);
+		//printMatrix_host(v, B, 2);
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU		
@@ -193,7 +193,7 @@ magma_dpotrf_gpu(
 		vd_ld = vd_pitch / sizeof(double);	
 		magma_dmalloc(&vd, vd_pitch * 2 * sizeof(double));
 		magma_dsetmatrix(B, 2, v, B, vd, vd_ld);
-		printMatrix_gpu(vd, vd_ld, B, 2);
+		//printMatrix_gpu(vd, vd_ld, B, 2);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		//allocate space for update checksum on CPU
@@ -221,15 +221,15 @@ magma_dpotrf_gpu(
 		
 		initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksumd, checksumd_ld);
 		
-		printMatrix_gpu(checksumd, checksumd_ld, (N / B) * 2, N);
+		//printMatrix_gpu(checksumd, checksumd_ld, (N / B) * 2, N);
 		magma_dgetmatrix_async( (N / B) * 2, N,
 								checksumd, checksumd_ld,
 								checksum,     checksum_ld, stream[0] );
 		
 		//cout<<"checksums initialized"<<endl;
 		magma_queue_sync( stream[0] );
-		printMatrix_gpu(dA, ldda, N, N);
-		printMatrix_host(checksum, (N / B) * 2, N);
+		//printMatrix_gpu(dA, ldda, N, N);
+		//printMatrix_host(checksum, (N / B) * 2, N);
 		
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
