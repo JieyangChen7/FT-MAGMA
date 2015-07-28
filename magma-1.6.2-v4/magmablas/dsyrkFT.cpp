@@ -87,7 +87,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		                temp, &temp_ld,
 		                &one,
 		                checksumC, &checksumC_ld );
-		
+		 
 //		magma_dgemm(
 //					MagmaNoTrans, MagmaTrans,
 //					2, n, m,
