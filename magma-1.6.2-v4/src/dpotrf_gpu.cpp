@@ -173,11 +173,18 @@ magma_dpotrf_gpu(
 	double * temp;
 	int temp_ld;
 	
-	double * chkd_updateA;
-	int chkd_updateA_ld;
+	double * chkd_updateA1;
+	int chkd_updateA1_ld;
 	
-	double * chkd_updateC;
-	int chkd_updateC_ld;
+	double * chkd_updateA2;
+	int chkd_updateA2_ld;
+		
+	
+	double * chkd_updateC1;
+	int chkd_updateC1_ld;
+	
+	double * chkd_updateC2;
+	int chkd_updateC2_ld;
 
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -240,13 +247,21 @@ magma_dpotrf_gpu(
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
 		
-		size_t chkd_updateA_pitch = magma_roundup(2 * sizeof(double), 32);
-		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);
-		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * B);
+		size_t chkd_updateA1_pitch = magma_roundup(1 * sizeof(double), 32);
+		chkd_updateA1_ld = chkd_updateA1_pitch / sizeof(double);
+		magma_dmalloc(&chkd_updateA1, chkd_updateA1_pitch * B);
 		
-		size_t chkd_updateC_pitch = magma_roundup(2 * sizeof(double), 32);
-		chkd_updateC_ld = chkd_updateC_pitch / sizeof(double);
-		magma_dmalloc(&chkd_updateC, chkd_updateC_pitch * B);
+		size_t chkd_updateA2_pitch = magma_roundup(1 * sizeof(double), 32);
+		chkd_updateA2_ld = chkd_updateA2_pitch / sizeof(double);
+		magma_dmalloc(&chkd_updateA2, chkd_updateA2_pitch * B);
+		
+		size_t chkd_updateC1_pitch = magma_roundup(1 * sizeof(double), 32);
+		chkd_updateC1_ld = chkd_updateC1_pitch / sizeof(double);
+		magma_dmalloc(&chkd_updateC1, chkd_updateC1_pitch * B);
+		
+		size_t chkd_updateC2_pitch = magma_roundup(1 * sizeof(double), 32);
+		chkd_updateC2_ld = chkd_updateC2_pitch / sizeof(double);
+		magma_dmalloc(&chkd_updateC2, chkd_updateC2_pitch * B);
 		
 
 	}
@@ -334,8 +349,11 @@ magma_dpotrf_gpu(
 							vd, vd_ld, 
 							chk1d, chk1d_ld, 
 							chk2d, chk2d_ld, 
-							chkd_updateA, chkd_updateA_ld,
-							chkd_updateC, chkd_updateC_ld, stream[0],
+							chkd_updateA1, chkd_updateA1_ld,
+							chkd_updateA2, chkd_updateA2_ld,
+							chkd_updateC1, chkd_updateC1_ld,
+							chkd_updateC2, chkd_updateC2_ld,
+							stream[0],
 							FT, DEBUG);
                 }
 //                              
