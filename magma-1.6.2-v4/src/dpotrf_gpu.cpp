@@ -172,6 +172,12 @@ magma_dpotrf_gpu(
 	
 	double * temp;
 	int temp_ld;
+	
+	double * chkd_updateA;
+	int chkd_updateA_ld;
+	
+	double * chkd_updateC;
+	int chkd_updateC_ld;
 
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -233,6 +239,15 @@ magma_dpotrf_gpu(
 		
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
+		
+		size_t chkd_updateA_pitch = magma_roundup(2 * sizeof(double), 32);
+		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);
+		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * B);
+		
+		size_t chkd_updateC_pitch = magma_roundup(2 * sizeof(double), 32);
+		chkd_updateC_ld = chkd_updateC_pitch / sizeof(double);
+		magma_dmalloc(&chkd_updateC, chkd_updateC_pitch * B);
+		
 
 	}
     
@@ -319,7 +334,7 @@ magma_dpotrf_gpu(
 							vd, vd_ld, 
 							chk1d, chk1d_ld, 
 							chk2d, chk2d_ld, 
-							temp, temp_ld,
+							chkd_update, chkd_update_ld,
 							FT, DEBUG);
                 }
 //                              

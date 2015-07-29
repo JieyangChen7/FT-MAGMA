@@ -27,7 +27,9 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
-		double * temp, int temp_ld, 
+		double * chkd_updateA, int chkd_updateA_ld, 
+		double * chkd_updateC, int chkd_updateC_ld, 
+		magma_queue_t stream,
 		bool FT, bool DEBUG){
 	
 //	cout<<"checksum1 of A before dsyrk:"<<endl;
@@ -39,8 +41,14 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //	cout<<"checksum2 of C before dsyrk:"<<endl;
 //	printMatrix_gpu(checksum2 + (j / jb) + j * checksum2_ld, checksum2_ld, 1,jb);
 	
-	
-	
+	if (FT) {
+		magma_dsetmatrix_async( 2, n,
+								chkd_updateA, chkd_updateA_ld,
+								checksumA, checksumA_ld, stream);
+		magma_dsetmatrix_async( 2, n,
+								chkd_updateC, chkd_updateC_ld,
+								checksumC, checksumC_ld, stream);
+	}
 	
 	double negone = -1;
 	double one = 1;
@@ -58,6 +66,21 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
 	if(FT){
+//		magma_queue_sync( stream );
+//		
+//		magma_dgemm(
+//					MagmaNoTrans, MagmaTrans,
+//					2, n, m,
+//					MAGMA_D_ONE * (-1),
+//					chkd_updateA, chkd_updateA_ld, A, lda,
+//					MAGMA_D_ONE,
+//					chkd_updateC, chkd_updateC_ld );
+//		magma_dgetmatrix_async( 2, n,
+//								chkd_updateA, chkd_updateA_ld,
+//								checksumA, checksumA_ld, stream);
+//		magma_dgetmatrix_async( 2, n,
+//								chkd_updateC, chkd_updateC_ld,
+//								checksumC, checksumC_ld, stream);
 		
 		//recalculate checksum1 and checksum2
 //		magma_dgemm(
@@ -80,21 +103,15 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		int k2 = m;
 		
 		
-		blasf77_dgemm(  &N, &T,
-		                &m2, &n2, &k2,
-		                &negone,
-		                checksumA, &checksumA_ld,
-		                temp, &temp_ld,
-		                &one,
-		                checksumC, &checksumC_ld );
+//		blasf77_dgemm(  &N, &T,
+//		                &m2, &n2, &k2,
+//		                &negone,
+//		                checksumA, &checksumA_ld,
+//		                temp, &temp_ld,
+//		                &one,
+//		                checksumC, &checksumC_ld );
 		 
-//		magma_dgemm(
-//					MagmaNoTrans, MagmaTrans,
-//					2, n, m,
-//					MAGMA_D_ONE * (-1),
-//					checksumA, checksumA_ld, A, lda,
-//					MAGMA_D_ONE,
-//					checksumC, checksumC_ld );
+		
 		
 //		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA1, incA1, A, lda, &one, checksumC1, incC1);
 //		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA2, incA2, A, lda, &one, checksumC2, incC2);
