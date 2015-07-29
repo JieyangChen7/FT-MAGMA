@@ -75,9 +75,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //					chkd_updateA, chkd_updateA_ld, A, lda,
 //					MAGMA_D_ONE,
 //					chkd_updateC, chkd_updateC_ld );
-//		magma_dgetmatrix_async( 2, n,
-//								chkd_updateA, chkd_updateA_ld,
-//								checksumA, checksumA_ld, stream);
+
 //		magma_dgetmatrix_async( 2, n,
 //								chkd_updateC, chkd_updateC_ld,
 //								checksumC, checksumC_ld, stream);
