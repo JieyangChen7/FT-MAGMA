@@ -327,17 +327,17 @@ magma_dpotrf_gpu(
                 //jb = min(nb, (n-j));
             	
             	jb = nb;
-                if (j > 0) {
-					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
-							checksum + (j / jb) * 2, checksum_ld, 
-							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-							vd, vd_ld, 
-							chk1d, chk1d_ld, 
-							chk2d, chk2d_ld, 
-							chkd_updateA, chkd_updateA_ld,
-							chkd_updateC, chkd_updateC_ld, stream[0],
-							FT, DEBUG);
-                }
+//                if (j > 0) {
+//					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+//							checksum + (j / jb) * 2, checksum_ld, 
+//							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+//							vd, vd_ld, 
+//							chk1d, chk1d_ld, 
+//							chk2d, chk2d_ld, 
+//							chkd_updateA, chkd_updateA_ld,
+//							chkd_updateC, chkd_updateC_ld, stream[0],
+//							FT, DEBUG);
+//                }
 //                              
 //                magma_queue_sync( stream[1] );
 //                magma_dgetmatrix_async( jb, jb,
@@ -345,6 +345,12 @@ magma_dpotrf_gpu(
 //                                        work,     jb, stream[0] );
 //                           
 //                if ( (j+jb) < n && j > 0) {
+					if (FT) {
+						magma_dgetmatrix_async( jb, j + jb,
+												dA(j + jb, 0), ldda,
+												temp, temp_ld,
+												stream[0] );
+					}
 //                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
 //                			dA(j,    0), ldda, dA(j+jb, j), ldda, 
 //                			checksum + ((j + jb) / jb) * 2, checksum_ld, 
@@ -353,8 +359,9 @@ magma_dpotrf_gpu(
 //                			chk1d, chk1d_ld,
 //                			chk2d, chk2d_ld,
 //                			temp, temp_ld,
+//                			stream[0],
 //                			FT, DEBUG);
-//                }
+                }
 //
 //                magma_queue_sync( stream[0] );
 //                
@@ -384,12 +391,7 @@ magma_dpotrf_gpu(
 //                			FT, DEBUG);
 //                }
                 
-//                if (FT) {
-//                	magma_dgetmatrix_async( jb, j + jb,
-//                							dA(j + jb, 0), ldda,
-//											temp, temp_ld,
-//											stream[1] );
-//                }
+
                 
                 
             }
