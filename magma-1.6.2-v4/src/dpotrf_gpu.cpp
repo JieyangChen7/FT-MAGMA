@@ -310,6 +310,7 @@ magma_dpotrf_gpu(
         }
         else {
         	//cudaSetDevice(1);
+        	magma_setdevice(0);
         	float real_time = 0.0;
 			float proc_time = 0.0;
 			long long flpins = 0.0;
