@@ -92,7 +92,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 ////						vd, vd_ld, C + i, ldc,
 ////						MAGMA_D_ZERO,
 ////						chk + (i / n) * 2, chk_ld );
-		}
+//		}
 		
 		
 				
