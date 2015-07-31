@@ -47,37 +47,37 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	double one = 1;
 	double zero = 0;
 	
-	magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
-				m, n, k,
-				MAGMA_D_ONE * (-1),
-				A, lda, B, ldb,
-				MAGMA_D_ONE,
-				C, ldc );
+//	magma_dgemm(
+//				MagmaNoTrans, MagmaTrans,
+//				m, n, k,
+//				MAGMA_D_ONE * (-1),
+//				A, lda, B, ldb,
+//				MAGMA_D_ONE,
+//				C, ldc );
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B,
 //			ldb, &one, C, ldc);
 
 	if(FT){
-//		magma_queue_sync( stream );
-//		//update checksum1 and checksum2
-//				
-//				char N = 'N';
-//				char T = 'T';
-//				int m2 = (m / n) * 2;
-//				int n2 = n;
-//				int k2 = k;
-//				
-//				
-//				blasf77_dgemm(  &N, &T,
-//								&m2, &n2, &k2,
-//								&negone,
-//								checksumA, &checksumA_ld,
-//								temp, &temp_ld,
-//								&one,
-//								checksumC, &checksumC_ld );
-//				
-//		
+	//	magma_queue_sync( stream );
+		//update checksum1 and checksum2
+				
+				char N = 'N';
+				char T = 'T';
+				int m2 = (m / n) * 2;
+				int n2 = n;
+				int k2 = k;
+				
+				
+				blasf77_dgemm(  &N, &T,
+								&m2, &n2, &k2,
+								&negone,
+								checksumA, &checksumA_ld,
+								temp, &temp_ld,
+								&one,
+								checksumC, &checksumC_ld );
+				
+		
 //		
 //		//recalculate checksum1 and checksum2
 //		for (int i = 0; i < m; i += n) {
