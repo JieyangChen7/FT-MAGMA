@@ -41,47 +41,47 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //	cout<<"checksum2 of C before dsyrk:"<<endl;
 //	printMatrix_gpu(checksum2 + (j / jb) + j * checksum2_ld, checksum2_ld, 1,jb);
 	
-//	if (FT) {
-//		magma_dsetmatrix_async( 2, n,
-//								chkd_updateA, chkd_updateA_ld,
-//								checksumA, checksumA_ld, stream);
-//		magma_dsetmatrix_async( 2, n,
-//								chkd_updateC, chkd_updateC_ld,
-//								checksumC, checksumC_ld, stream);
-//	}
+	if (FT) {
+		magma_dsetmatrix_async( 2, n,
+								chkd_updateA, chkd_updateA_ld,
+								checksumA, checksumA_ld, stream);
+		magma_dsetmatrix_async( 2, n,
+								chkd_updateC, chkd_updateC_ld,
+								checksumC, checksumC_ld, stream);
+	}
 	
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	
-//	magma_dgemm(
-//			MagmaNoTrans, MagmaTrans,
-//			n, n, m,
-//			MAGMA_D_ONE * (-1),
-//			A, lda, A, lda,
-//			MAGMA_D_ONE,
-//			C, ldc );
+	magma_dgemm(
+			MagmaNoTrans, MagmaTrans,
+			n, n, m,
+			MAGMA_D_ONE * (-1),
+			A, lda, A, lda,
+			MAGMA_D_ONE,
+			C, ldc );
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
 	if(FT){
-//		magma_queue_sync( stream );
-//		
-//		//update checksums on GPU
-//		magma_dgemm(
-//					MagmaNoTrans, MagmaTrans,
-//					2, n, m,
-//					MAGMA_D_ONE * (-1),
-//					chkd_updateA, chkd_updateA_ld, A, lda,
-//					MAGMA_D_ONE,
-//					chkd_updateC, chkd_updateC_ld );
-//		
-//		//transfer updated checksum back to CPU
-//		magma_dgetmatrix_async( 2, n,
-//								chkd_updateC, chkd_updateC_ld,
-//								checksumC, checksumC_ld, stream);
-//		
+		magma_queue_sync( stream );
+		
+		//update checksums on GPU
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					2, n, m,
+					MAGMA_D_ONE * (-1),
+					chkd_updateA, chkd_updateA_ld, A, lda,
+					MAGMA_D_ONE,
+					chkd_updateC, chkd_updateC_ld );
+		
+		//transfer updated checksum back to CPU
+		magma_dgetmatrix_async( 2, n,
+								chkd_updateC, chkd_updateC_ld,
+								checksumC, checksumC_ld, stream);
+		
 		//recalculate checksum1 and checksum2
 //		magma_dgemm(
 //					MagmaTrans, MagmaNoTrans,
