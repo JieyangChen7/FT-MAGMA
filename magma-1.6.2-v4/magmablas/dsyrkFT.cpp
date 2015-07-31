@@ -66,34 +66,34 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
 	if(FT){
-//		magma_queue_sync( stream );
-//		
+		magma_queue_sync( stream );
+		
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					2, n, m,
+					MAGMA_D_ONE * (-1),
+					chkd_updateA, chkd_updateA_ld, A, lda,
+					MAGMA_D_ONE,
+					chkd_updateC, chkd_updateC_ld );
+		
+
+		magma_dgetmatrix_async( 2, n,
+								chkd_updateC, chkd_updateC_ld,
+								checksumC, checksumC_ld, stream);
+		
+		//recalculate checksum1 and checksum2
 //		magma_dgemm(
-//					MagmaNoTrans, MagmaTrans,
-//					2, n, m,
-//					MAGMA_D_ONE * (-1),
-//					chkd_updateA, chkd_updateA_ld, A, lda,
+//					MagmaTrans, MagmaNoTrans,
+//					2, n, n,
 //					MAGMA_D_ONE,
-//					chkd_updateC, chkd_updateC_ld );
-//		
-//
-//		magma_dgetmatrix_async( 2, n,
-//								chkd_updateC, chkd_updateC_ld,
-//								checksumC, checksumC_ld, stream);
-//		
-//		//recalculate checksum1 and checksum2
-////		magma_dgemm(
-////					MagmaTrans, MagmaNoTrans,
-////					2, n, n,
-////					MAGMA_D_ONE,
-////					vd, vd_ld, C, ldc,
-////					MAGMA_D_ZERO,
-////					chk, chk_ld );
-//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//				C, ldc, vd, 1, MAGMA_D_ZERO, chk1, chk1_ld );
-//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
-//		
+//					vd, vd_ld, C, ldc,
+//					MAGMA_D_ZERO,
+//					chk, chk_ld );
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, vd, 1, MAGMA_D_ZERO, chk1, chk1_ld );
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
+		
 //		//update checksum1 and checksum2
 //		char N = 'N';
 //		char T = 'T';
@@ -101,7 +101,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //		int n2 = n;
 //		int k2 = m;
 //		
-		
+//		
 //		blasf77_dgemm(  &N, &T,
 //		                &m2, &n2, &k2,
 //		                &negone,
@@ -109,7 +109,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //		                temp, &temp_ld,
 //		                &one,
 //		                checksumC, &checksumC_ld );
-		 
+//		 
 		
 		
 //		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA1, incA1, A, lda, &one, checksumC1, incC1);
