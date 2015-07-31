@@ -46,18 +46,18 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		*/
 		
 		//recalculate checksum1 and checksum2
-		double * chk1 = new double[n];
-		double * chk2 = new double[n];
-		int v1_inc = 1;
-		int v2_inc = 1;
-		int chk1_inc = 1;
-		int chk2_inc = 1;
-		char trans = 'T';
-		char Ntrans = 'N';
-		int nOfChecksum = 2;
-		
-		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v, &v1_inc, &zero, chk1, &chk1_inc );
-		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v + v_ld, &v2_inc, &zero, chk2, &chk2_inc );
+//		double * chk1 = new double[n];
+//		double * chk2 = new double[n];
+//		int v1_inc = 1;
+//		int v2_inc = 1;
+//		int chk1_inc = 1;
+//		int chk2_inc = 1;
+//		char trans = 'T';
+//		char Ntrans = 'N';
+//		int nOfChecksum = 2;
+//		
+//		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v, &v1_inc, &zero, chk1, &chk1_inc );
+//		blasf77_dgemv(&trans, &n, &n, &one, A, &lda, v + v_ld, &v2_inc, &zero, chk2, &chk2_inc );
 		
 		
 //		blasf77_dgemm(  &trans, &Ntrans,
@@ -71,22 +71,22 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 //		
 		
 		//update checksum1 and checksum2
-		for (int i = 0; i < n; i++) {
-			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
-			*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, n, n, i, i);
-			
-			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
-			int m = n-i-1;
-			int ONE = 1;
-			blasf77_dgemm(  &trans, &Ntrans,
-							 &nOfChecksum, &m, &ONE,
-							 &negone,
-							 chksum + i*chksum_ld, &chksum_ld,
-							 A + i*lda + i+1, &lda,
-							 &one,
-							 chksum + (i+1)*chksum_ld, 
-							 &chksum_ld );
-		}
+//		for (int i = 0; i < n; i++) {
+//			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
+//			*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, n, n, i, i);
+//			
+//			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
+//			int m = n-i-1;
+//			int ONE = 1;
+//			blasf77_dgemm(  &trans, &Ntrans,
+//							 &nOfChecksum, &m, &ONE,
+//							 &negone,
+//							 chksum + i*chksum_ld, &chksum_ld,
+//							 A + i*lda + i+1, &lda,
+//							 &one,
+//							 chksum + (i+1)*chksum_ld, 
+//							 &chksum_ld );
+//		}
 	
 		if (DEBUG) {
 			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
