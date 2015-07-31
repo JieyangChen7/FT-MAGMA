@@ -60,7 +60,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 
 	if(FT){
 		magma_queue_sync( stream );
-		update checksum1 and checksum2
+		//update checksum1 and checksum2
 				
 				char N = 'N';
 				char T = 'T';
