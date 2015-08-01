@@ -48,8 +48,8 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	
 	magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
-	                            d_neg_one, A, lda,
-	                            d_one,     C, ldc);
+				MAGMA_D_ONE * (-1), A, lda,
+				MAGMA_D_ONE,     C, ldc);
 	
 //	magma_dgemm(
 //			MagmaNoTrans, MagmaTrans,
