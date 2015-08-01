@@ -264,7 +264,19 @@ magma_dpotrf_gpu(
     else {
         /* Use blocked code. */
         if (upper) {
-            
+        	magma_set_lapack_numthreads(16);
+			int numOfCore = magma_get_lapack_numthreads();
+			cout<<"number of core=" << numOfCore<<endl;
+
+			float real_time = 0.0;
+			float proc_time = 0.0;
+			long long flpins = 0.0;
+			float mflops = 0.0;
+			//timing start***************
+			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+				cout << "PAPI ERROR" << endl;
+				return -1;
+			}
             /* Compute the Cholesky factorization A = U'*U. */
             for (j=0; j < n; j += nb) {
                 
@@ -307,6 +319,16 @@ magma_dpotrf_gpu(
                                         dA(j, j+jb), ldda);
                 }
             }
+            magma_queue_sync( stream[0] );
+			magma_queue_sync( stream[1] );
+			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+				cout << "PAPI ERROR" << endl;
+				return -1;
+			}
+			cout << "Size:" << N << "(" << B << ")---Real_time:"
+					<< real_time << "---" << "Proc_time:"
+					<< proc_time << "---" << "Total GFlops:" << endl;            
+			PAPI_shutdown();
         }
         else {
         	magma_set_lapack_numthreads(16);
