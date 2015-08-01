@@ -309,8 +309,8 @@ magma_dpotrf_gpu(
             }
         }
         else {
-        	magma_set_parallel_numthreads(16);
-        	int numOfCore = magma_get_parallel_numthreads();
+        	
+        	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
         	float real_time = 0.0;
