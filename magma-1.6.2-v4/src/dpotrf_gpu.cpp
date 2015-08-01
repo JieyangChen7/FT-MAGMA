@@ -226,7 +226,7 @@ magma_dpotrf_gpu(
 		magma_dmalloc_pinned(&checksum, (N / B) * 2 * N * sizeof(double));
 		checksum_ld = (N / B) * 2;
 		
-		initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksumd, checksumd_ld);
+		//initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksumd, checksumd_ld);
 		
 		printMatrix_gpu(checksumd, checksumd_ld, (N / B) * 2, N);
 //		magma_dgetmatrix_async( (N / B) * 2, N,
