@@ -33,6 +33,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_queue_t stream,
 		bool FT, bool DEBUG){
 	
+	
 
 	if (FT) {
 		magma_dsetmatrix_async( 2, n,
@@ -132,6 +133,10 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //		cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, 1, n, m, &negone, checksumA2, incA2, A, lda, &one, checksumC2, incC2);
 		
 		if (DEBUG) {
+			cout<<"C in syrk"<<endl;
+			printMatrix_gpu(A, lda, n, n);
+			
+			
 			cout<<"recalculated checksum of C after dsyrk:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, 1, n);
 			printMatrix_gpu(chk2, chk2_ld, 1, n);
