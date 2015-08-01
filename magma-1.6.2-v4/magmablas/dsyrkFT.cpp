@@ -91,7 +91,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 //				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
 		
-		magmablas_dsymm(
+		magma_dsymm(
 					MagmaRight, MagmaLower,
 				    1, n,
 				    MAGMA_D_ONE,
@@ -99,7 +99,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 				    vd, vd_ld,
 				    MAGMA_D_ZERO,
 				    chk1, chk1_ld );
-		magmablas_dsymm(
+		magma_dsymm(
 					MagmaRight, MagmaLower,
 				    1, n,
 				    MAGMA_D_ONE,
