@@ -134,7 +134,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		
 		if (DEBUG) {
 			cout<<"C in syrk"<<endl;
-			printMatrix_gpu(A, lda, n, n);
+			printMatrix_gpu(C, ldc, n, n);
 			
 			
 			cout<<"recalculated checksum of C after dsyrk:"<<endl;
