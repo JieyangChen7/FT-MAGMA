@@ -363,7 +363,7 @@ magma_dpotrf_gpu(
                 			FT, DEBUG);
                 }
 
-                //magma_queue_sync( stream[0] );
+                magma_queue_sync( stream[0] );
                 
                 dpotrfFT(work, B, B, info, 
                 		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
