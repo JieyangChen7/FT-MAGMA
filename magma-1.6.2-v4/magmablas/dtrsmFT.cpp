@@ -36,7 +36,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		bool FT, bool DEBUG) {
 
 
-	
+//	
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
