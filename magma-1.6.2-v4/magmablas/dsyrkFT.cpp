@@ -86,10 +86,28 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //					vd, vd_ld, C, ldc,
 //					MAGMA_D_ZERO,
 //					chk, chk_ld );
-		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-				C, ldc, vd, 1, MAGMA_D_ZERO, chk1, chk1_ld );
-		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
+//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//				C, ldc, vd, 1, MAGMA_D_ZERO, chk1, chk1_ld );
+//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
+		
+		magmablas_dsymm(
+				    'R', 'L',
+				    1, n,
+				    MAGMA_D_ONE,
+				    C, ldc,
+				    vd, vd_ld,
+				    MAGMA_D_ZERO,
+				    chk1, chk1_ld );
+		magmablas_dsymm(
+				    'R', 'L',
+				    1, n,
+				    MAGMA_D_ONE,
+				    C, ldc,
+				    vd + vd_ld, vd_ld,
+				    MAGMA_D_ZERO,
+				    chk2, chk2_ld );
+		
 		
 //		//update checksum1 and checksum2
 //		char N = 'N';
