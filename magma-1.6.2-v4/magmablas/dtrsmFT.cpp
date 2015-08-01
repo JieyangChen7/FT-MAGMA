@@ -36,7 +36,6 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		bool FT, bool DEBUG) {
 
 
-//	
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
@@ -58,8 +57,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					B + i, ldb, vd, 1, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					B + i, ldb, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-						
+					B + i, ldb, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );						
 //			magma_dgemm( MagmaTrans, MagmaNoTrans,
 //						 2, n, n,
 //						 MAGMA_D_ONE, vd, vd_ld,
@@ -80,12 +78,6 @@ void dtrsmFT(int m, int n, double * A, int lda,
 					 work, &work_ld,
 					 checksumB, &checksumB_ld);
 		
-
-
-		//cudaStream_t stream1;
-		//cublasGetStream(handle, &stream1);
-		//cudaStreamSynchronize(stream1);
-
 		if (DEBUG) {
 			cout<<"recalculated checksum of B after dtrsm:"<<endl;
 			printMatrix_gpu(chk1,chk1_ld, (m / n), n);

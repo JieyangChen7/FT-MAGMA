@@ -32,15 +32,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_queue_t stream,
 		bool FT, bool DEBUG){
 	
-//	cout<<"checksum1 of A before dsyrk:"<<endl;
-//	printMatrix_gpu(checksumA1, incA1, 1,m);
-//	cout<<"checksum2 of A before dsyrk:"<<endl;
-//	printMatrix_gpu(checksumA2, incA2, 1,m);
-//	cout<<"checksum1 of C before dsyrk:"<<endl;
-//	printMatrix_gpu(checksum1 + (j / jb) + j * checksum1_ld, checksum1_ld, 1,jb);
-//	cout<<"checksum2 of C before dsyrk:"<<endl;
-//	printMatrix_gpu(checksum2 + (j / jb) + j * checksum2_ld, checksum2_ld, 1,jb);
-	
+
 	if (FT) {
 		magma_dsetmatrix_async( 2, n,
 								chkd_updateA, chkd_updateA_ld,
@@ -55,13 +47,17 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	double zero = 0;
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	
-	magma_dgemm(
-			MagmaNoTrans, MagmaTrans,
-			n, n, m,
-			MAGMA_D_ONE * (-1),
-			A, lda, A, lda,
-			MAGMA_D_ONE,
-			C, ldc );
+	magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
+	                            d_neg_one, A, lda,
+	                            d_one,     C, ldc);
+	
+//	magma_dgemm(
+//			MagmaNoTrans, MagmaTrans,
+//			n, n, m,
+//			MAGMA_D_ONE * (-1),
+//			A, lda, A, lda,
+//			MAGMA_D_ONE,
+//			C, ldc );
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
