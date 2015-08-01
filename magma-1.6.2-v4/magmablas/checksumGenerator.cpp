@@ -27,7 +27,7 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 		    matrix + i * ld + i, ld,
 		    vd, vd_ld,
 		    MAGMA_D_ZERO,
-		    chksum + (i / B) * 2 + i * ld, chksum_ld );
+		    chksum + (i / B) * 2 + i * chksum_ld, chksum_ld );
 		
 		//cublasDgemv(handle, CUBLAS_OP_T, B, N, &alpha, matrix + i, ld, vd, 1, \
 				&beta, chksum + (i / B), chksum_ld);
