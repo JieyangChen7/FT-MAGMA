@@ -222,10 +222,11 @@ magma_dpotrf_gpu(
 		size_t checksumd_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
 		checksumd_ld = checksumd_pitch / sizeof(double);
 		magma_dmalloc(&checksumd, checksumd_pitch * N);
+		cudaMemset2D(checksumd_ld, checksumd_pitch, 0, (N / B) * 2 * sizeof(double), N);
 		
 		magma_dmalloc_pinned(&checksum, (N / B) * 2 * N * sizeof(double));
 		checksum_ld = (N / B) * 2;
-		
+	
 		//initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksumd, checksumd_ld);
 		
 		printMatrix_gpu(checksumd, checksumd_ld, (N / B) * 2, N);
