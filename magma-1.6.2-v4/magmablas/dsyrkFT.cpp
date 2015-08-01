@@ -25,6 +25,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
+		double * v, int v_ld,
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
 		double * chkd_updateA, int chkd_updateA_ld, 
@@ -40,6 +41,12 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_dsetmatrix_async( 2, n,
 								chkd_updateC, chkd_updateC_ld,
 								checksumC, checksumC_ld, stream);
+		magma_dsetmatrix_async( 1, n,
+								chk1, chk1_ld,
+								v, v_ld, stream);
+		magma_dsetmatrix_async( 1, n,
+								chk2, chk2_ld,
+								v + v_ld, v_ld, stream);
 	}
 	
 	double negone = -1;
@@ -91,22 +98,16 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 //				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
 		
-		magma_dsymm(
-					MagmaRight, MagmaLower,
-				    1, n,
-				    MAGMA_D_ONE,
+		magma_dtrmv(
+					MagmaLower, MagmaTrans, MagmaNonUnit,
+				    n,
 				    C, ldc,
-				    vd, vd_ld,
-				    MAGMA_D_ZERO,
-				    chk1, chk1_ld );
-		magma_dsymm(
-					MagmaRight, MagmaLower,
-				    1, n,
-				    MAGMA_D_ONE,
+				    chk1, 1 );
+		magma_dtrmv(
+					MagmaLower, MagmaTrans, MagmaNonUnit,
+				    n,
 				    C, ldc,
-				    vd + vd_ld, vd_ld,
-				    MAGMA_D_ZERO,
-				    chk2, chk2_ld );
+				    chk2, 1 );
 		
 		
 //		//update checksum1 and checksum2
