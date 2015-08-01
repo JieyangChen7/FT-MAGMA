@@ -21,7 +21,7 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 					matrix + i, ld,
 					MAGMA_D_ZERO,chksum + (i / B) * 2, chksum_ld);
 		magma_dsymm(
-		    'R', 'L',
+			MagmaRight, MagmaLower,
 		    2, B,
 		    MAGMA_D_ONE,
 		    matrix + i * ld + i, ld,
