@@ -27,18 +27,18 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 //					MAGMA_D_ONE, vd, vd_ld,
 //					matrix + i, ld,
 //					MAGMA_D_ZERO, chksum + (i / B) * 2, chksum_ld);
-		magma_dsetmatrix_async( 2, B,
-								chksum + (i / B) * 2 + i * chksum_ld,     chksum_ld,
-								v, v_ld, stream);
-		magma_queue_sync( stream );
-		
-		magma_dtrmm(
-			MagmaRight, MagmaLower, MagmaNoTrans, MagmaNonUnit,
-		    2, B,
-		    MAGMA_D_ONE,
-		    matrix + i * ld + i, ld,
-		    chksum + (i / B) * 2 + i * chksum_ld, chksum_ld );
-		
+//		magma_dsetmatrix_async( 2, B,
+//								chksum + (i / B) * 2 + i * chksum_ld,     chksum_ld,
+//								v, v_ld, stream);
+//		magma_queue_sync( stream );
+//		
+//		magma_dtrmm(
+//			MagmaRight, MagmaLower, MagmaNoTrans, MagmaNonUnit,
+//		    2, B,
+//		    MAGMA_D_ONE,
+//		    matrix + i * ld + i, ld,
+//		    chksum + (i / B) * 2 + i * chksum_ld, chksum_ld );
+//		
 		//cublasDgemv(handle, CUBLAS_OP_T, B, N, &alpha, matrix + i, ld, vd, 1, \
 				&beta, chksum + (i / B), chksum_ld);
 		//cout<<"i="<<i<<endl;
