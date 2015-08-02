@@ -242,8 +242,7 @@ magma_dpotrf_gpu(
 		checksum_ld = (N / B) * 2;
 	
 		initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, checksumd, checksumd_ld, stream[0]);
-		
-		printMatrix_gpu(checksumd, checksumd_ld, (N / B) * 2, N);
+
 		magma_dgetmatrix_async( (N / B) * 2, N,
 								checksumd, checksumd_ld,
 								checksum,     checksum_ld, stream[0] );
@@ -260,7 +259,7 @@ magma_dpotrf_gpu(
 		
 		size_t chkd_updateA_pitch = magma_roundup(2 * sizeof(double), 32);
 		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);
-		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * B);
+		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * N);
 		
 		size_t chkd_updateC_pitch = magma_roundup(2 * sizeof(double), 32);
 		chkd_updateC_ld = chkd_updateC_pitch / sizeof(double);
