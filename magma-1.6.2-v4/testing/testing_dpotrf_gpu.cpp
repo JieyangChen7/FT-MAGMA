@@ -32,7 +32,7 @@ int main( int argc, char** argv)
     magma_int_t N, n2, lda, ldda, info;
     double c_neg_one = MAGMA_D_NEG_ONE;
     magma_int_t ione     = 1;
-    magma_int_t ISEED[4] = {0,0,0,1};
+    magma_int_t ISEED[4] = {0,0,0,2};
     double      work[1], error;
     magma_int_t     status = 0;
 
