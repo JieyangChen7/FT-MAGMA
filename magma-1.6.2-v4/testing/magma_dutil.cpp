@@ -45,7 +45,7 @@ void magma_dmake_hpd( magma_int_t N, double* A, magma_int_t lda )
         A(i,i) = (int)(MAGMA_D_MAKE( MAGMA_D_REAL( A(i,i) ) + N, 0. ) * 100.0);
         for( j=0; j<i; ++j ) {
             A(i,j) = (int)(A(i,j) * 100.0);
-            A(j,i) = (int)(MAGMA_D_CNJG( A(i,j) ) * 100.0);
+            A(j,i) = (int)MAGMA_D_CNJG( A(i,j) ) ;
         }
     }
 }
