@@ -42,12 +42,6 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_dsetmatrix_async( 2, n,
 								checksumC, checksumC_ld, 
 								chkd_updateC, chkd_updateC_ld, stream);
-		magma_dsetmatrix_async( 1, n,
-								v, v_ld, 
-								chk1, chk1_ld, stream);
-		magma_dsetmatrix_async( 1, n,
-								v + 1, v_ld, 
-								chk2, chk2_ld, stream);
 	}
 	
 	double negone = -1;
@@ -55,17 +49,20 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	double zero = 0;
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	
-	magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
-				MAGMA_D_ONE * (-1), A, lda,
-				MAGMA_D_ONE,     C, ldc);
 	
-//	magma_dgemm(
-//			MagmaNoTrans, MagmaTrans,
-//			n, n, m,
-//			MAGMA_D_ONE * (-1),
-//			A, lda, A, lda,
-//			MAGMA_D_ONE,
-//			C, ldc );
+	if (FT) {
+		magma_dgemm(
+				MagmaNoTrans, MagmaTrans,
+				n, n, m,
+				MAGMA_D_ONE * (-1),
+				A, lda, A, lda,
+				MAGMA_D_ONE,
+				C, ldc );
+	} else {
+		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
+						MAGMA_D_ONE * (-1), A, lda,
+						MAGMA_D_ONE,     C, ldc);
+	}
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
@@ -98,21 +95,11 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //					vd, vd_ld, C, ldc,
 //					MAGMA_D_ZERO,
 //					chk, chk_ld );
-//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//				C, ldc, vd, 1, MAGMA_D_ZERO, chk1, chk1_ld );
-//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
+		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+				C, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
 		
-		magma_dtrmv(
-					MagmaLower, MagmaTrans, MagmaNonUnit,
-				    n,
-				    C, ldc,
-				    chk1, chk1_ld );
-		magma_dtrmv(
-					MagmaLower, MagmaTrans, MagmaNonUnit,
-				    n,
-				    C, ldc,
-				    chk2, chk2_ld );
 		
 		
 //		//update checksum1 and checksum2
