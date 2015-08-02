@@ -296,7 +296,7 @@ magma_dpotrf_gpu(
 			}
             /* Compute the Cholesky factorization A = U'*U. */
             for (j=0; j < n; j += nb) {
-                cout << "***************************** j = " << j <<"******************************"<<endl;
+                
                 /* Update and factorize the current diagonal block and test
                    for non-positive-definiteness. Computing MIN */
                 jb = min(nb, (n-j));
@@ -364,6 +364,7 @@ magma_dpotrf_gpu(
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
             for (j=0; j < n; j += nb) {
+            	cout << "***************************** j = " << j <<"******************************"<<endl;
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
