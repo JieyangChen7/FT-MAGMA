@@ -70,7 +70,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		                chk1, &chk1_inc );
 		blasf77_dtrmv(  &L, &T, &N,
 						&n,
-						A, *lda,
+						A, &lda,
 						chk2, &chk2_inc );
 		
 		
