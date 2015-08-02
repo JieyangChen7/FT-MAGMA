@@ -191,23 +191,30 @@ magma_dpotrf_gpu(
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
 
+		/* v =
+		 * 1 1 1 1
+		 * 1 2 3 4 
+		 */
 		magma_dmalloc_pinned(&v, B * 2 * sizeof(double));
-		v_ld = B;
+		v_ld = 2;
 		for (int i = 0; i < B; ++i) {
-			*(v + i) = 1;
+			*(v + i * v_ld) = 1;
 		}
 		for (int i = 0; i < B; ++i) {
-			*(v + v_ld + i) = i+1;
+			*(v + i * v_ld + 1) = i+1;
 		}
-		//printMatrix_host(v, B, 2);
+		cout<<"vector on CPU"<<endl;
+		printMatrix_host(v, 2, B);
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU		
-		vd_pitch = magma_roundup(B * sizeof(double), 32);
+		vd_pitch = magma_roundup(2 * sizeof(double), 32);
 		vd_ld = vd_pitch / sizeof(double);	
-		magma_dmalloc(&vd, vd_pitch * 2 * sizeof(double));
-		magma_dsetmatrix(B, 2, v, B, vd, vd_ld);
-		//printMatrix_gpu(vd, vd_ld, B, 2);
+		magma_dmalloc(&vd, vd_pitch * B * sizeof(double));
+		magma_dsetmatrix(2, B, v, v_ld, vd, vd_ld);
+		
+		cout<<"vector on GPU"<<endl;
+		printMatrix_gpu(vd, vd_ld, 2, B);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		//allocate space for update checksum on CPU
@@ -243,7 +250,9 @@ magma_dpotrf_gpu(
 		
 		//cout<<"checksums initialized"<<endl;
 		magma_queue_sync( stream[0] );
+		cout<<"input matrix"<<endl;
 		printMatrix_gpu(dA, ldda, N, N);
+		cout<<"checksum"<<endl;
 		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
