@@ -23,7 +23,7 @@ void printMatrix_gpu(double * matrix_device, int matrix_ld, int M, int N) {
 //	cudaMemcpy2D(matrix_host, M * sizeof(double), matrix_device, matrix_pitch,
 //			M * sizeof(double), N, cudaMemcpyDeviceToHost);
 	magma_dgetmatrix(M, N, matrix_device, matrix_ld, matrix_host, M);
-	printMatrix_host(matrix_host, M, N);
+	printMatrix_host(matrix_host, M, M, N);
 	delete[] matrix_host;
 }
 
