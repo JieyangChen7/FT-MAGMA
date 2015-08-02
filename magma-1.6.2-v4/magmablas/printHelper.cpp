@@ -3,12 +3,12 @@
 #include<iostream>
 using namespace std;
 //printing tools
-void printMatrix_host(double * matrix_host, int M, int N) {
+void printMatrix_host(double * matrix_host, int ld,  int M, int N) {
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
 			cout.width(10);
 			cout.setf(ios::left);
-			cout << matrix_host[j * M + i];
+			cout << matrix_host[j * ld + i];
 		}
 		cout << endl;
 	}

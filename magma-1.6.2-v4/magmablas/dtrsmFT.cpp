@@ -84,7 +84,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
 
 			cout<<"updated checksum of B after dtrsm:"<<endl;
-			printMatrix_host(checksumB, (m / n) * 2, n);
+			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
 		}
 		/*detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n,
 			checksumB1, incB1, checksumB2, incB2,

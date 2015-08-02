@@ -237,7 +237,7 @@ magma_dpotrf_gpu(
 		//cout<<"checksums initialized"<<endl;
 		magma_queue_sync( stream[0] );
 		printMatrix_gpu(dA, ldda, N, N);
-		printMatrix_host(checksum, (N / B) * 2, N);
+		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
@@ -404,7 +404,7 @@ magma_dpotrf_gpu(
                 
                 magma_queue_sync( stream[1] );
 				printMatrix_gpu(dA, ldda, N, N);
-				printMatrix_host(checksum, (N / B) * 2, N);
+				printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
                 
                 if (*info != 0) {
                     *info = *info + j;
@@ -422,7 +422,7 @@ magma_dpotrf_gpu(
                 			FT, DEBUG);
                 	magma_queue_sync( stream[1] );
 					printMatrix_gpu(dA, ldda, N, N);
-					printMatrix_host(checksum, (N / B) * 2, N);
+					printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
                 }
                 
 
