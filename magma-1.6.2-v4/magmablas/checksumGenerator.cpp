@@ -23,6 +23,9 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 								v, v_ld,
 								chksum + (i / B) * 2 + i * chksum_ld,     chksum_ld,
 								stream);
+		if (i == 0) {
+			printMatrix_gpu(chksum + (i / B) * 2 + i * chksum_ld, chksum_ld, 2, B);
+		}
 		magma_queue_sync( stream );
 		
 		magma_dtrmm(

@@ -162,6 +162,13 @@ magma_dpotrf_gpu(
 	size_t chk2d_pitch;
 	int chk1d_ld;
 	int chk2d_ld;
+	
+//	double * chk1d;
+//	double * chk2d;
+//	size_t chk1d_pitch;
+//	size_t chk2d_pitch;
+//	int chk1d_ld;
+//	int chk2d_ld;
 
 	size_t checksumd_pitch;
 	double * checksumd;
