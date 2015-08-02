@@ -1,5 +1,5 @@
 #include "magma.h"
-//#include"FT.h"
+#include"FT.h"
 using namespace std;
 //initialize checksum
 void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int vd_ld, double * v, int v_ld, double * chksum, int chksum_ld, magma_queue_t stream) {
