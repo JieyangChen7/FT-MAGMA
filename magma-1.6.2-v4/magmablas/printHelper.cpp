@@ -3,14 +3,21 @@
 #include<iostream>
 using namespace std;
 //printing tools
+int n = 4;
 void printMatrix_host(double * matrix_host, int ld,  int M, int N) {
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
 			cout.width(10);
 			cout.setf(ios::left);
 			cout << matrix_host[j * ld + i];
+			if ((j + 1) % n == 0) {
+				cout << "	";
+			}
 		}
 		cout << endl;
+		if ((i + 1) % n == 0) {
+			cout << endl;
+		}
 	}
 	cout << endl;
 }
