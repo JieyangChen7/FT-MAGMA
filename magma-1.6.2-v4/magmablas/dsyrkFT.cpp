@@ -103,12 +103,12 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 					MagmaLower, MagmaTrans, MagmaNonUnit,
 				    n,
 				    C, ldc,
-				    chk1, 1 );
+				    chk1, chk1_ld );
 		magma_dtrmv(
 					MagmaLower, MagmaTrans, MagmaNonUnit,
 				    n,
 				    C, ldc,
-				    chk2, 1 );
+				    chk2, chk2_ld );
 		
 		
 //		//update checksum1 and checksum2
