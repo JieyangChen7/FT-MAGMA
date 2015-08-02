@@ -72,6 +72,10 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	if(FT){
 		magma_queue_sync( stream );
 		
+		cout<<"recalculated checksum of C before dsyrk:"<<endl;
+					printMatrix_gpu(chk1, chk1_ld, 1, n);
+					printMatrix_gpu(chk2, chk2_ld, 1, n);
+		
 		//update checksums on GPU
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
