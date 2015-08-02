@@ -118,7 +118,7 @@ magma_dpotrf_gpu(
     nb = magma_get_dpotrf_nb(n);
 
     //** debug **//
-        nb = 4;
+     //   nb = 4;
         
         
     if (MAGMA_SUCCESS != magma_dmalloc_pinned( &work, nb*nb )) {
@@ -148,7 +148,7 @@ magma_dpotrf_gpu(
     int N = n;
     //variables for FT
     bool FT = true;
-    bool DEBUG = true;
+    bool DEBUG = false;
 	double * v;
 	int v_ld;
 	
@@ -203,8 +203,8 @@ magma_dpotrf_gpu(
 		for (int i = 0; i < B; ++i) {
 			*(v + i * v_ld + 1) = i+1;
 		}
-		cout<<"vector on CPU"<<endl;
-		printMatrix_host(v, v_ld, 2, B);
+//		cout<<"vector on CPU"<<endl;
+//		printMatrix_host(v, v_ld, 2, B);
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU		
@@ -213,8 +213,8 @@ magma_dpotrf_gpu(
 		magma_dmalloc(&vd, vd_pitch * B * sizeof(double));
 		magma_dsetmatrix(2, B, v, v_ld, vd, vd_ld);
 		
-		cout<<"vector on GPU"<<endl;
-		printMatrix_gpu(vd, vd_ld, 2, B);
+//		cout<<"vector on GPU"<<endl;
+//		printMatrix_gpu(vd, vd_ld, 2, B);
 		//cout<<"checksum vector on gpu initialized"<<endl;
 
 		//allocate space for update checksum on CPU
@@ -249,11 +249,11 @@ magma_dpotrf_gpu(
 								checksum,     checksum_ld, stream[0] );
 		
 		//cout<<"checksums initialized"<<endl;
-		magma_queue_sync( stream[0] );
-		cout<<"input matrix"<<endl;
-		printMatrix_gpu(dA, ldda, N, N);
-		cout<<"checksum"<<endl;
-		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
+//		magma_queue_sync( stream[0] );
+//		cout<<"input matrix"<<endl;
+//		printMatrix_gpu(dA, ldda, N, N);
+//		cout<<"checksum"<<endl;
+//		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
@@ -281,19 +281,6 @@ magma_dpotrf_gpu(
     else {
         /* Use blocked code. */
         if (upper) {
-        	magma_set_lapack_numthreads(16);
-			int numOfCore = magma_get_lapack_numthreads();
-			cout<<"number of core=" << numOfCore<<endl;
-
-			float real_time = 0.0;
-			float proc_time = 0.0;
-			long long flpins = 0.0;
-			float mflops = 0.0;
-			//timing start***************
-			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-				cout << "PAPI ERROR" << endl;
-				return -1;
-			}
             /* Compute the Cholesky factorization A = U'*U. */
             for (j=0; j < n; j += nb) {
                 
@@ -336,16 +323,6 @@ magma_dpotrf_gpu(
                                         dA(j, j+jb), ldda);
                 }
             }
-            magma_queue_sync( stream[0] );
-			magma_queue_sync( stream[1] );
-			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-				cout << "PAPI ERROR" << endl;
-				return -1;
-			}
-			cout << "Size:" << N << "(" << B << ")---Real_time:"
-					<< real_time << "---" << "Proc_time:"
-					<< proc_time << "---" << "Total GFlops:" << endl;            
-			PAPI_shutdown();
         }
         else {
         	magma_set_lapack_numthreads(16);
@@ -364,7 +341,6 @@ magma_dpotrf_gpu(
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
             for (j=0; j < n; j += nb) {
-            	cout << "***************************** j = " << j <<"******************************"<<endl;
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
@@ -381,9 +357,6 @@ magma_dpotrf_gpu(
 							chkd_updateA, chkd_updateA_ld,
 							chkd_updateC, chkd_updateC_ld, stream[0],
 							FT, DEBUG);
-	                magma_queue_sync( stream[1] );
-					printMatrix_gpu(dA, ldda, N, N);
-					printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
                 }
                               
                 magma_queue_sync( stream[1] );
@@ -421,12 +394,6 @@ magma_dpotrf_gpu(
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
                 
-                
-                magma_queue_sync( stream[1] );
-                
-				printMatrix_gpu(dA, ldda, N, N);
-				printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
-                
                 if (*info != 0) {
                     *info = *info + j;
                     break;
@@ -441,14 +408,7 @@ magma_dpotrf_gpu(
                 			chk2d, chk2d_ld,
                 			work, jb, 
                 			FT, DEBUG);
-                	magma_queue_sync( stream[1] );
-					printMatrix_gpu(dA, ldda, N, N);
-					printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
                 }
-                
-
-                
-                
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );

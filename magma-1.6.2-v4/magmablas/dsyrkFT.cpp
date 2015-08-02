@@ -130,7 +130,6 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			magma_queue_sync( stream );
 			cout<<"updated checksum of C after dsyrk:"<<endl;
 			printMatrix_host(checksumC, checksumC_ld, 2, n);
-			printMatrix_gpu(chkd_updateC, chkd_updateC_ld, 2, n);
 		}
 		
 		//detect error and correct error
