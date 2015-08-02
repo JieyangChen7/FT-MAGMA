@@ -42,11 +42,11 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_dsetmatrix_async( 2, n,
 								checksumC, checksumC_ld, 
 								chkd_updateC, chkd_updateC_ld, stream);
-		magma_dsetmatrix_async( n, 1,
+		magma_dsetmatrix_async( 1, n,
 								v, v_ld, 
 								chk1, chk1_ld, stream);
-		magma_dsetmatrix_async( n, 1,
-								v + v_ld, v_ld, 
+		magma_dsetmatrix_async( 1, n,
+								v + 1, v_ld, 
 								chk2, chk2_ld, stream);
 	}
 	
@@ -107,12 +107,12 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 					MagmaLower, MagmaTrans, MagmaNonUnit,
 				    n,
 				    C, ldc,
-				    chk1, 1 );
+				    chk1, chk1_ld );
 		magma_dtrmv(
 					MagmaLower, MagmaTrans, MagmaNonUnit,
 				    n,
 				    C, ldc,
-				    chk2, 1 );
+				    chk2, chk2_ld );
 		
 		
 //		//update checksum1 and checksum2
@@ -142,7 +142,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			
 			
 			cout<<"recalculated checksum of C after dsyrk:"<<endl;
-			printMatrix_gpu(chk1, chk1_ld, n, n);
+			printMatrix_gpu(chk1, chk1_ld, 1, n);
 			printMatrix_gpu(chk2, chk2_ld, 1, n);
 		
 			magma_queue_sync( stream );
