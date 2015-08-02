@@ -204,7 +204,7 @@ magma_dpotrf_gpu(
 			*(v + i * v_ld + 1) = i+1;
 		}
 		cout<<"vector on CPU"<<endl;
-		printMatrix_host(v, 2, B);
+		printMatrix_host(v, v_ld, 2, B);
 		//cout<<"checksum vector on CPU initialized"<<endl;
 
 		//intialize checksum vector on GPU		
