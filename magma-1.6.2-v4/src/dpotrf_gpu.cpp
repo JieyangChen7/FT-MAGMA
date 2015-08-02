@@ -364,6 +364,9 @@ magma_dpotrf_gpu(
 							chkd_updateA, chkd_updateA_ld,
 							chkd_updateC, chkd_updateC_ld, stream[0],
 							FT, DEBUG);
+	                magma_queue_sync( stream[1] );
+					printMatrix_gpu(dA, ldda, N, N);
+					printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
                 }
                               
                 magma_queue_sync( stream[1] );
