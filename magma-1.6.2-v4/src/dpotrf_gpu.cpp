@@ -308,6 +308,11 @@ magma_dpotrf_gpu(
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
+                
+                magma_queue_sync( stream[1] );
+                printMatrix_gpu(dA, ldda, N, N);
+                printMatrix_host(checksum, (N / B) * 2, N);
+                
                 if (*info != 0) {
                     *info = *info + j;
                     break;
@@ -318,6 +323,10 @@ magma_dpotrf_gpu(
                                  jb, (n-j-jb),
                                  c_one, dA(j, j   ), ldda,
                                         dA(j, j+jb), ldda);
+                    
+                    magma_queue_sync( stream[1] );
+					printMatrix_gpu(dA, ldda, N, N);
+					printMatrix_host(checksum, (N / B) * 2, N);
                 }
             }
             magma_queue_sync( stream[0] );
