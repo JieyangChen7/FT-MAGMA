@@ -42,10 +42,10 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_dsetmatrix_async( 2, n,
 								checksumC, checksumC_ld, 
 								chkd_updateC, chkd_updateC_ld, stream);
-		magma_dsetmatrix_async( 1, n,
+		magma_dsetmatrix_async( n, 1,
 								v, v_ld, 
 								chk1, chk1_ld, stream);
-		magma_dsetmatrix_async( 1, n,
+		magma_dsetmatrix_async( n, 1,
 								v + v_ld, v_ld, 
 								chk2, chk2_ld, stream);
 	}
