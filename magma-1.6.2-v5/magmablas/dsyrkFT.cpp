@@ -66,7 +66,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
-//	if(FT){
+	if(FT){
 //		magma_queue_sync( stream0 );
 //		
 //		
