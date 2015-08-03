@@ -407,7 +407,7 @@ magma_dpotrf_gpu(
                 			chk1d, chk1d_ld,
                 			chk2d, chk2d_ld,
                 			work, jb, 
-                			FT, DEBUG, stream[1], stream[2], stram[3]);
+                			FT, DEBUG, stream[1], stream[2], stream[3]);
                 }
             }
             magma_queue_sync( stream[0] );
