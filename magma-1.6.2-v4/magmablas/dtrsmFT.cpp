@@ -52,7 +52,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 //					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
 //			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 //					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );						
-			magma_dgemm( MagmaTrans, MagmaNoTrans,
+			magma_dgemm( MagmaNoTrans, MagmaNoTrans,
 						 2, n, n,
 						 MAGMA_D_ONE, vd, vd_ld,
 									B + i, ldb,
