@@ -33,7 +33,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
 		double * work, int work_ld, 
-		bool FT, bool DEBUG, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3) {
+		bool FT, bool DEBUG) {
 
 
 	double negone = -1;
@@ -47,20 +47,18 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		//recalculate checksums on GPU
 		double beta = 0;
 		for (int i = 0; i < m; i += n) {
-			magmablasSetKernelStream(stream2);
-//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-//			magmablasSetKernelStream(stream3);
-//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
 			
-			magma_dgemm( MagmaNoTrans, MagmaNoTrans,
-						 2, n, n,
-						 MAGMA_D_ONE, vd, vd_ld,
-									B + i, ldb,
-						 MAGMA_D_ZERO, chk1 + (i/n)*2, chk1_ld);
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
+			
+//			magma_dgemm( MagmaNoTrans, MagmaNoTrans,
+//						 2, n, n,
+//						 MAGMA_D_ONE, vd, vd_ld,
+//									B + i, ldb,
+//						 MAGMA_D_ZERO, chk1 + (i/n)*2, chk1_ld);
 		}
-		magmablasSetKernelStream(stream1);
 		
 		//update checksums on CPU
 		char R = 'R';
