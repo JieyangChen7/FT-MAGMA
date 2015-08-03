@@ -39,47 +39,48 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
-//	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
-//	                                m, n,
-//	                                MAGMA_D_ONE, A, lda,
-//	                                       B, ldb);
+	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+	                                m, n,
+	                                MAGMA_D_ONE, A, lda,
+	                                       B, ldb);
 	if (FT) {
 		//recalculate checksums on GPU
 		double beta = 0;
 		for (int i = 0; i < m; i += n) {
 			
-//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );						
-			magma_dgemm( MagmaNoTrans, MagmaNoTrans,
-						 2, n, n,
-						 MAGMA_D_ONE, vd, vd_ld,
-									B + i, ldb,
-						 MAGMA_D_ZERO, chk1 + (i/n)*2, chk1_ld);
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
+			
+//			magma_dgemm( MagmaNoTrans, MagmaNoTrans,
+//						 2, n, n,
+//						 MAGMA_D_ONE, vd, vd_ld,
+//									B + i, ldb,
+//						 MAGMA_D_ZERO, chk1 + (i/n)*2, chk1_ld);
 		}
-//		
-//		//update checksums on CPU
-//		char R = 'R';
-//		char L = 'L';
-//		char T = 'T';
-//		char N = 'N';
-//		int m2 = (m / n) * 2;
-//		int n2 = n;
-//		blasf77_dtrsm(&R, &L, &T, &N,
-//					 &m2, &n2,
-//					 &one,
-//					 work, &work_ld,
-//					 checksumB, &checksumB_ld);
-//		
-//		if (DEBUG) {
-//			cout<<"recalculated checksum of B after dtrsm:"<<endl;
-//			printMatrix_gpu(chk1,chk1_ld, (m / n), n);
-//			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
-//
-//			cout<<"updated checksum of B after dtrsm:"<<endl;
-//			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
-//		}
+		
+		//update checksums on CPU
+		char R = 'R';
+		char L = 'L';
+		char T = 'T';
+		char N = 'N';
+		int m2 = (m / n) * 2;
+		int n2 = n;
+		blasf77_dtrsm(&R, &L, &T, &N,
+					 &m2, &n2,
+					 &one,
+					 work, &work_ld,
+					 checksumB, &checksumB_ld);
+		
+		if (DEBUG) {
+			cout<<"recalculated checksum of B after dtrsm:"<<endl;
+			printMatrix_gpu(chk1,chk1_ld, (m / n), n);
+			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
+
+			cout<<"updated checksum of B after dtrsm:"<<endl;
+			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
+		}
 		/*detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n,
 			checksumB1, incB1, checksumB2, incB2,
 			chk1, chk1_ld, chk2, chk2_ld);
