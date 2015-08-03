@@ -58,7 +58,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B,
 //			ldb, &one, C, ldc);
 
-//	if(FT){	
+	if(FT){	
 //		//recalculate checksum1 and checksum2
 //		for (int i = 0; i < m; i += n) {
 //			magmablasSetKernelStream(stream2);
