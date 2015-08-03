@@ -30,7 +30,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
 		double * temp, int temp_ld,
-		magma_queue_t stream,
+		magma_queue_t stream0, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3,
 		bool FT, bool DEBUG) {
 
 	/*cout<<"checksum1 of A before dgemm:"<<endl;
@@ -61,8 +61,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	if(FT){	
 		//recalculate checksum1 and checksum2
 		for (int i = 0; i < m; i += n) {
+			magmablasSetKernelStream(stream2);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					C + i, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+			magmablasSetKernelStream(stream3);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 //			magma_dgemm(
@@ -74,7 +76,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //						chk + (i / n) * 2, chk_ld );
 		}
 		
-		magma_queue_sync( stream );
+		magma_queue_sync( stream0 );
 		//update checksum1 and checksum2
 				
 		char N = 'N';
