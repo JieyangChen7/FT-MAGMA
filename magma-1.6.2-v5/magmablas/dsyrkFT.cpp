@@ -49,20 +49,20 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	double zero = 0;
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	
-	
-	if (FT) {
-		magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
-				n, n, m,
-				MAGMA_D_ONE * (-1),
-				A, lda, A, lda,
-				MAGMA_D_ONE,
-				C, ldc );
-	} else {
-		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
-						MAGMA_D_ONE * (-1), A, lda,
-						MAGMA_D_ONE,     C, ldc);
-	}
+//	
+//	if (FT) {
+//		magma_dgemm(
+//				MagmaNoTrans, MagmaTrans,
+//				n, n, m,
+//				MAGMA_D_ONE * (-1),
+//				A, lda, A, lda,
+//				MAGMA_D_ONE,
+//				C, ldc );
+//	} else {
+//		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
+//						MAGMA_D_ONE * (-1), A, lda,
+//						MAGMA_D_ONE,     C, ldc);
+//	}
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, n, n, m, &negone, A, lda, A, lda, &one, C, ldc);
 	
@@ -71,14 +71,14 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //		
 //		
 //		//update checksums on GPU
-//		magmablasSetKernelStream(stream0);
-//		magma_dgemm(
-//					MagmaNoTrans, MagmaTrans,
-//					2, n, m,
-//					MAGMA_D_ONE * (-1),
-//					chkd_updateA, chkd_updateA_ld, A, lda,
-//					MAGMA_D_ONE,
-//					chkd_updateC, chkd_updateC_ld );
+		magmablasSetKernelStream(stream0);
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					2, n, m,
+					MAGMA_D_ONE * (-1),
+					chkd_updateA, chkd_updateA_ld, A, lda,
+					MAGMA_D_ONE,
+					chkd_updateC, chkd_updateC_ld );
 //		
 //		//transfer updated checksum back to CPU
 //		magma_dgetmatrix_async( 2, n,
