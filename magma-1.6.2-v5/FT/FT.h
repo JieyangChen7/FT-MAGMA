@@ -30,8 +30,8 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
 		double * chkd_updateA, int chkd_updateA_ld, 
-		double * chkd_updateC, int chkd_updateC_ld,
-		magma_queue_t stream,
+		double * chkd_updateC, int chkd_updateC_ld, 
+		magma_queue_t stream0,magma_queue_t stream1,magma_queue_t stream2,magma_queue_t stream3,
 		bool FT, bool DEBUG);
 
 void dgemmFT(int m, int n, int k, double * A, int lda,
