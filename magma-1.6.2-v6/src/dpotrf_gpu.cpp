@@ -157,19 +157,12 @@ magma_dpotrf_gpu(
 	size_t vd_pitch;
 	int vd_ld;
 	
-	double * chk1dv;
-	double * chk2dv;
-	size_t chk1dv_pitch;
-	size_t chk2dv_pitch;
-	int chk1dv_ld;
-	int chk2dv_ld;
-	
-	double * chk1dh;
-	double * chk2dh;
-	size_t chk1dh_pitch;
-	size_t chk2dh_pitch;
-	int chk1dh_ld;
-	int chk2dh_ld;
+	double * chk1d;
+	double * chk2d;
+	size_t chk1d_pitch;
+	size_t chk2d_pitch;
+	int chk1d_ld;
+	int chk2d_ld;
 
 	size_t checksumd_pitch;
 	double * checksumd;
@@ -224,22 +217,13 @@ magma_dpotrf_gpu(
 		//cout<<"allocate space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on GPU (vertical)
-		chk1dv_pitch = magma_roundup((N / B) * sizeof(double), 32);
-		chk1dv_ld = chk1dv_pitch / sizeof(double);
-		magma_dmalloc(&chk1dv, chk1dv_pitch * B);
+		chk1d_pitch = magma_roundup((N / B) * sizeof(double), 32);
+		chk1d_ld = chk1d_pitch / sizeof(double);
+		magma_dmalloc(&chk1d, chk1d_pitch * N);
 		
-		chk2dv_pitch = magma_roundup((N / B) * sizeof(double), 32);
-		chk2dv_ld = chk2dv_pitch / sizeof(double);
-		magma_dmalloc(&chk2dv, chk2dv_pitch * B);
-		
-		//allocate space for reclaculated checksum on GPU (horizontal)
-		chk1dh_pitch = magma_roundup((N / B) * sizeof(double), 32);
-		chk1dh_ld = chk1dh_pitch / sizeof(double);
-		magma_dmalloc(&chk1dh, chk1dh_pitch * B);
-		
-		chk2dh_pitch = magma_roundup((N / B) * sizeof(double), 32);
-		chk2dh_ld = chk2dh_pitch / sizeof(double);
-		magma_dmalloc(&chk2dh, chk2dh_pitch * B);
+		chk2d_pitch = magma_roundup((N / B) * sizeof(double), 32);
+		chk2d_ld = chk2d_pitch / sizeof(double);
+		magma_dmalloc(&chk2d, chk2d_pitch * N);
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
  
 		//initialize checksums
@@ -361,8 +345,8 @@ magma_dpotrf_gpu(
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
 							vd, vd_ld, 
 							v, v_ld,
-							chk1dh, chk1dh_ld, 
-							chk2dh, chk2dh_ld, 
+							chk1d, chk1d_ld, 
+							chk2d, chk2d_ld, 
 							chkd_updateA, chkd_updateA_ld,
 							chkd_updateC, chkd_updateC_ld, stream[0], stream[1], stream[2], stream[3],
 							FT, DEBUG);
@@ -373,13 +357,7 @@ magma_dpotrf_gpu(
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
                            
-                if ( (j+jb) < n && j > 0) {
-					if (FT) {
-						magma_dgetmatrix_async( jb, j,
-												dA(j, 0), ldda,
-												temp, temp_ld,
-												stream[0] );
-					}
+                if ( (j+jb) < n && j > 0) {					
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
@@ -413,8 +391,8 @@ magma_dpotrf_gpu(
                 			dA(j+jb, j), ldda,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
                 			vd, vd_ld, 
-                			chk1dv, chk1dv_ld,
-                			chk2dv, chk2dv_ld,
+                			chk1d, chk1d_ld,
+                			chk2d, chk2d_ld,
                 			work, jb, 
                 			FT, DEBUG, stream[1], stream[2], stream[3]);
                 }
