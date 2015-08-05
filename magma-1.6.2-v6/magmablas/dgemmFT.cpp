@@ -78,18 +78,18 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of A before dgemm:"<<endl;
-			printMatrix_gpu(chk1h, chk1h_ld, 1, k);
-			printMatrix_gpu(chk2h, chk2h_ld, 1, k);
+			printMatrix_gpu(chk1, chk1_ld, 1, k);
+			printMatrix_gpu(chk2, chk2_ld, 1, k);
 		
 			cout<<"updated checksum of A before dgemm:"<<endl;
 			printMatrix_host(checksumA, checksumA_ld, 2, k);
 			
 			cout<<"recalculated checksum of B before dgemm:"<<endl;
-			printMatrix_gpu(chk1v, chk1h_ld, m / n, k);
-			printMatrix_gpu(chk2v, chk2h_ld, m / n, k);
+			printMatrix_gpu(chk1, chk1_ld, m / n, k);
+			printMatrix_gpu(chk2, chk2_ld, m / n, k);
 		
 			cout<<"updated checksum of B before dgemm:"<<endl;
-			printMatrix_host(checksumA, checksumA_ld, (m / n) * 2, k);
+			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, k);
 		}
 		
 	}
