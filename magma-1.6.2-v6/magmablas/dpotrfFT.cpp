@@ -75,10 +75,10 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 //		int v2_inc = 1;
 //		int chk1_inc = 1;
 //		int chk2_inc = 1;
-//		char T = 'T';
-//		char N = 'N';
-//		char L = 'L';
-//		int nOfChecksum = 2;
+		char T = 'T';
+		char N = 'N';
+		char L = 'L';
+		int nOfChecksum = 2;
 //		
 //		blasf77_dtrmv(  &L, &T, &N,
 //		                &n,
