@@ -39,14 +39,14 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		                &n, &n,
 		                &one,
 		                A, &lda,
-		                v, v_ld,
+		                v, &v_ld,
 		                &zero,
 		                chk1, &chk1_inc );
 		blasf77_dgemv(  &T,
 						&n, &n,
 						&one,
 						A, &lda,
-						v + 1, v_ld,
+						v + 1, &v_ld,
 						&zero,
 						chk2, &chk2_inc );
 		//handle error - to be finished
