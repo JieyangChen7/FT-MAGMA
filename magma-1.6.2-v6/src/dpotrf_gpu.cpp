@@ -344,6 +344,10 @@ magma_dpotrf_gpu(
             	}
             	jb = nb;
                 if (j > 0) {
+                	if (DEBUG) {
+						cout<<"input matrix"<<endl;
+						printMatrix_gpu(dA, ldda, N, N);
+					}
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
@@ -354,6 +358,7 @@ magma_dpotrf_gpu(
 							chkd_updateA, chkd_updateA_ld,
 							chkd_updateC, chkd_updateC_ld, stream[0], stream[1], stream[2], stream[3],
 							FT, DEBUG);
+					
                 }
                               
                 magma_queue_sync( stream[1] );
@@ -361,7 +366,11 @@ magma_dpotrf_gpu(
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
                            
-                if ( (j+jb) < n && j > 0) {					
+                if ( (j+jb) < n && j > 0) {	
+                	if (DEBUG) {
+						cout<<"input matrix"<<endl;
+						printMatrix_gpu(dA, ldda, N, N);
+					}
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
@@ -373,10 +382,15 @@ magma_dpotrf_gpu(
                 			temp, temp_ld,
                 			stream[0], stream[1], stream[2], stream[3],
                 			FT, DEBUG);
+                	
                 }
 
                 magma_queue_sync( stream[0] );
                 
+                if (DEBUG) {
+					cout<<"input matrix"<<endl;
+					printMatrix_gpu(dA, ldda, N, N);
+				}
                 dpotrfFT(work, B, B, info, 
                 		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
                 		v, v_ld, 
@@ -392,6 +406,10 @@ magma_dpotrf_gpu(
                 }
                 
                 if ( (j+jb) < n) {          	
+                	if (DEBUG) {
+						cout<<"input matrix"<<endl;
+						printMatrix_gpu(dA, ldda, N, N);
+					}
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
