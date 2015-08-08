@@ -337,7 +337,11 @@ magma_dpotrf_gpu(
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
-            	
+            	if (DEBUG) {
+            		cout << "********************************************";
+            		cout << j;
+            		cout << "********************************************"<<endl;
+            	}
             	jb = nb;
                 if (j > 0) {
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
