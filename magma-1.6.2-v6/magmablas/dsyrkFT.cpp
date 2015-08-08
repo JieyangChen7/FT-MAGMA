@@ -66,7 +66,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			printMatrix_gpu(chk1, chk1_ld, 1, m);
 			printMatrix_gpu(chk2, chk2_ld, 1, m);
 		
-			cout<<"updated checksum of C after dsyrk:"<<endl;
+			cout<<"updated checksum of A before dsyrk:"<<endl;
 			printMatrix_host(checksumA, checksumA_ld, 2, m);
 		}
 		
