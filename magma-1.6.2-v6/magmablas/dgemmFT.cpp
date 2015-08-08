@@ -51,7 +51,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	if (FT) {
 		
 		magma_dgetmatrix_async( n, k,
-								A, lda,
+								B, ldb,
 								temp, temp_ld,
 								stream0 );							
 		//verify A before use
@@ -115,6 +115,11 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		magma_queue_sync( stream0 );
 		//update checksums on CPU
 				
+//		if (DEBUG) {
+//			printMatrix_host(temp, temp_ld, n, k);
+//		}
+		
+		
 		char N = 'N';
 		char T = 'T';
 		int m2 = (m / n) * 2;
