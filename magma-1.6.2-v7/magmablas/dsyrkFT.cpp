@@ -33,11 +33,11 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_queue_t stream0, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3,
 		bool FT, bool DEBUG){
 	
-	/*		   m				n
-	 * ******************   *********
-	 * *		A		* =>*	C	* n
-	 * *				* 	*		*
-	 * ******************	*********
+	/*		   m						n
+	 * ******************   		*********
+	 * *		A		* 	update	*	C	* n
+	 * *				* 	=====>	*		*
+	 * ******************			*********
 	 */
 	
 	

@@ -348,7 +348,7 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
-					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+					dsyrkFT(jb, jb, dA(j, j - jb), ldda, dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
 							vd, vd_ld, 
