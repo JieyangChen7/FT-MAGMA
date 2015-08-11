@@ -106,10 +106,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			blasf77_dgemm(  &N, &T,
 							&m2, &n2, &k2,
 							&negone,
-							checksumA + i, &checksumA_ld,
+							checksumA + (i/k)*2, &checksumA_ld,
 							temp, &temp_ld,
 							&one,
-							checksumC + i, &checksumC_ld );
+							checksumC + (i/k)*2, &checksumC_ld );
 		}
 	}
 }
