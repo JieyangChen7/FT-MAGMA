@@ -58,10 +58,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		for (int i = 0; i < n; i += k) {
 			magmablasSetKernelStream(stream2);
 			magma_dgemv(MagmaTrans, k, k, MAGMA_D_ONE,
-					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / k), chk1_ld );
 			magmablasSetKernelStream(stream3);
 			magma_dgemv(MagmaTrans, k, k, MAGMA_D_ONE,
-					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
+					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / k), chk2_ld );
 		}
 		//handle error - to be finished
 		magmablasSetKernelStream(stream1);
@@ -80,13 +80,15 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	}
 	
 	
-	magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
-				m, n, k,
-				MAGMA_D_ONE * (-1),
-				A, lda, B, ldb,
-				MAGMA_D_ONE,
-				C, ldc );
+	for (int i = 0; i < n; i += k) {
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					k, i+2*k, k,
+					MAGMA_D_ONE * (-1),
+					A + i, lda, B, ldb,
+					MAGMA_D_ONE,
+					C + i, ldc );
+	}
 	
 //	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B,
 //			ldb, &one, C, ldc);
@@ -96,16 +98,18 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		//update checksums on CPU
 		char N = 'N';
 		char T = 'T';
-		int m2 = (m / n) * 2;
-		int n2 = n;
+		int m2 = 2;
+		
 		int k2 = k;
-				
-		blasf77_dgemm(  &N, &T,
-						&m2, &n2, &k2,
-						&negone,
-						checksumA, &checksumA_ld,
-						temp, &temp_ld,
-						&one,
-						checksumC, &checksumC_ld );
+		for (int i = 0; i < n; i += k) {
+			int n2 = i+2*k;
+			blasf77_dgemm(  &N, &T,
+							&m2, &n2, &k2,
+							&negone,
+							checksumA + i, &checksumA_ld,
+							temp, &temp_ld,
+							&one,
+							checksumC + i, &checksumC_ld );
+		}
 	}
 }
