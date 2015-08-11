@@ -372,10 +372,12 @@ magma_dpotrf_gpu(
 						printMatrix_gpu(dA, ldda, N, N);
 					}
                 	
-                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
-                			dA(j,    0), ldda, dA(j+jb, j), ldda, 
-                			checksum + ((j + jb) / jb) * 2, checksum_ld, 
-                			checksum + (j / jb) * 2, checksum_ld, 
+                	dgemmFT((n-j-jb), jb, j, 
+                			dA(j+jb, j-jb), ldda,
+                			dA(j,    j-jb), ldda, 
+                			dA(j+jb, j), ldda, 
+                			checksum + ((j + jb) / jb) * 2 + (j - jb) * checksum_ld, checksum_ld, 
+                			checksum + (j / jb) * 2 + (j - jb) * checksum_ld, checksum_ld, 
                 			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
                 			vd, vd_ld,
                 			chk1d, chk1d_ld,
