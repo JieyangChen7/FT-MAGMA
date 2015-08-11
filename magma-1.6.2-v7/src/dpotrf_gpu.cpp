@@ -372,7 +372,7 @@ magma_dpotrf_gpu(
 						printMatrix_gpu(dA, ldda, N, N);
 					}
                 	
-                	dgemmFT((n-j-jb), jb, j, 
+                	dgemmFT((n-j-jb), n-j, jb, 
                 			dA(j+jb, j-jb), ldda,
                 			dA(j,    j-jb), ldda, 
                 			dA(j+jb, j), ldda, 
