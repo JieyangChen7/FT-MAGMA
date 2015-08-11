@@ -80,7 +80,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	}
 	
 	
-	for (int i = 0; i < n; i += k) {
+	for (int i = 0; i < m; i += k) {
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
 					k, i+2*k, k,
@@ -101,7 +101,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		int m2 = 2;
 		
 		int k2 = k;
-		for (int i = 0; i < n; i += k) {
+		for (int i = 0; i < m; i += k) {
 			int n2 = i+2*k;
 			blasf77_dgemm(  &N, &T,
 							&m2, &n2, &k2,
