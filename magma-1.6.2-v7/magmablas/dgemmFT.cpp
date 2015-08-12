@@ -80,34 +80,34 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	}
 	
 	
-	for (int i = 0; i < m; i += k) {
-		magma_dgemm(
-					MagmaNoTrans, MagmaTrans,
-					k, i+2*k, k,
-					MAGMA_D_ONE * (-1),
-					A + i, lda, B, ldb,
-					MAGMA_D_ONE,
-					C + i, ldc );
-	}
-
-
-//	if(FT){	
-//		magma_queue_sync( stream0 );
-//		//update checksums on CPU
-//		char N = 'N';
-//		char T = 'T';
-//		int m2 = 2;
-//		
-//		int k2 = k;
-//		for (int i = 0; i < m; i += k) {
-//			int n2 = i+2*k;
-//			blasf77_dgemm(  &N, &T,
-//							&m2, &n2, &k2,
-//							&negone,
-//							checksumA + (i/k)*2, &checksumA_ld,
-//							temp, &temp_ld,
-//							&one,
-//							checksumC + (i/k)*2, &checksumC_ld );
-//		}
+//	for (int i = 0; i < m; i += k) {
+//		magma_dgemm(
+//					MagmaNoTrans, MagmaTrans,
+//					k, i+2*k, k,
+//					MAGMA_D_ONE * (-1),
+//					A + i, lda, B, ldb,
+//					MAGMA_D_ONE,
+//					C + i, ldc );
 //	}
+
+
+	if(FT){	
+		magma_queue_sync( stream0 );
+		//update checksums on CPU
+		char N = 'N';
+		char T = 'T';
+		int m2 = 2;
+		
+		int k2 = k;
+		for (int i = 0; i < m; i += k) {
+			int n2 = i+2*k;
+			blasf77_dgemm(  &N, &T,
+							&m2, &n2, &k2,
+							&negone,
+							checksumA + (i/k)*2, &checksumA_ld,
+							temp, &temp_ld,
+							&one,
+							checksumC + (i/k)*2, &checksumC_ld );
+		}
+	}
 }
