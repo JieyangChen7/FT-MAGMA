@@ -50,10 +50,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	
 	if (FT) {
 		
-//		magma_dgetmatrix_async( n, k,
-//								B, ldb,
-//								temp, temp_ld,
-//								stream0 );							
+		magma_dgetmatrix_async( m * 2, n,
+								checksumA, checksumA_ld,
+								temp, temp_ld,
+								stream0 );							
 //		//verify B before use
 //		for (int i = 0; i < n; i += k) {
 //			magmablasSetKernelStream(stream2);
@@ -104,10 +104,16 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			blasf77_dgemm(  &N, &T,
 							&m2, &n2, &k2,
 							&negone,
-							checksumA + (i/k)*2, &checksumA_ld,
-							temp, &temp_ld,
+							temp + (i/k)*2, &temp_ld,
+							B, &ldb,
 							&one,
 							checksumC + (i/k)*2, &checksumC_ld );
 		}
+		
+		magma_dsetmatrix_async( m * 2, n,
+								temp, temp_ld,
+								checksumA, checksumA_ld,
+								stream0 );		
+		
 	}
 }
