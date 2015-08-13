@@ -248,8 +248,15 @@ magma_dpotrf_gpu(
 //		cout<<"checksum"<<endl;
 //		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		
-		magma_dmalloc_pinned(&temp, (N / B) * 2 * N * sizeof(double));
-		temp_ld = (N / B) * 2;
+		
+		size_t temp_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
+		temp_ld = temp_pitch / sizeof(double);
+		magma_dmalloc(&temp, temp_pitch * N);
+		cudaMemset2D(temp, temp_pitch, 0, (N / B) * 2 * sizeof(double), N);
+		
+		
+//		magma_dmalloc_pinned(&temp, (N / B) * 2 * N * sizeof(double));
+//		temp_ld = (N / B) * 2;
 		
 		size_t chkd_updateA_pitch = magma_roundup(2 * sizeof(double), 32);
 		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);

@@ -50,7 +50,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	
 	if (FT) {
 		
-		magma_dgetmatrix_async( m * 2, n,
+		magma_dsetmatrix_async( m * 2, n,
 								checksumA, checksumA_ld,
 								temp, temp_ld,
 								stream0 );							
@@ -76,7 +76,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //			cout<<"updated checksum of B before dgemm:"<<endl;
 //			printMatrix_host(checksumB, checksumB_ld, (n / k) * 2, k);
 //		}
-		
+//		
 	}
 	
 	
@@ -101,16 +101,24 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		int k2 = k;
 		for (int i = 0; i < m; i += k) {
 			int n2 = i+2*k;
-			blasf77_dgemm(  &N, &T,
-							&m2, &n2, &k2,
-							&negone,
-							temp + (i/k)*2, &temp_ld,
-							B, &ldb,
-							&one,
-							checksumC + (i/k)*2, &checksumC_ld );
+//			blasf77_dgemm(  &N, &T,
+//							&m2, &n2, &k2,
+//							&negone,
+//							temp + (i/k)*2, &temp_ld,
+//							B, &ldb,
+//							&one,
+//							checksumC + (i/k)*2, &checksumC_ld );
+			magma_dgemm(
+						MagmaNoTrans, MagmaTrans,
+						m2, n2, k2,
+						MAGMA_D_ONE * (-1),
+						temp + (i/k)*2, temp_ld,
+						B, ldb,
+						MAGMA_D_ONE,
+						checksumC + (i/k)*2, checksumC_ld );
 		}
 		
-		magma_dsetmatrix_async( m * 2, n,
+		magma_dgetmatrix_async( m * 2, n,
 								temp, temp_ld,
 								checksumA, checksumA_ld,
 								stream0 );		
