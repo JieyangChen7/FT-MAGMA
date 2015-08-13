@@ -73,6 +73,14 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			cout<<"updated checksum of A before dgemm:"<<endl;
 			printMatrix_host(checksumA, checksumA_ld, 2, k);
 		}
+		//						  cpu_start_index	
+		//                          |
+		//							v
+		//|****|****|****|****|****|****|
+		
+		
+		double r = 0.8;
+		int cpu_start_index = (int)((m / n) * r) * n;
 		
 		//verify B before use
 		for (int i = 0; i < m; i += n) {
