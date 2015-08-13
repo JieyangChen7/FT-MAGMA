@@ -355,23 +355,23 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
-//					dsyrkFT(jb, jb, dA(j, j - jb), ldda, dA(j, j), ldda,
-//							checksum + (j / jb) * 2 + (j - jb) * checksum_ld, checksum_ld, 
-//							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-//							vd, vd_ld, 
-//							v, v_ld,
-//							chk1d, chk1d_ld, 
-//							chk2d, chk2d_ld, 
-//							chkd_updateA, chkd_updateA_ld,
-//							chkd_updateC, chkd_updateC_ld, stream[0], stream[1], stream[2], stream[3],
-//							FT, DEBUG);
+					dsyrkFT(jb, jb, dA(j, j - jb), ldda, dA(j, j), ldda,
+							checksum + (j / jb) * 2 + (j - jb) * checksum_ld, checksum_ld, 
+							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+							vd, vd_ld, 
+							v, v_ld,
+							chk1d, chk1d_ld, 
+							chk2d, chk2d_ld, 
+							chkd_updateA, chkd_updateA_ld,
+							chkd_updateC, chkd_updateC_ld, stream[0], stream[1], stream[2], stream[3],
+							FT, DEBUG);
 					
                 }
                               
-//                magma_queue_sync( stream[1] );
-//                magma_dgetmatrix_async( jb, jb,
-//                                        dA(j, j), ldda,
-//                                        work,     jb, stream[0] );
+                magma_queue_sync( stream[1] );
+                magma_dgetmatrix_async( jb, jb,
+                                        dA(j, j), ldda,
+                                        work,     jb, stream[0] );
                            
                 if ( (j+jb) < n && j > 0) {	
                 	if (DEBUG) {
@@ -395,20 +395,20 @@ magma_dpotrf_gpu(
                 	
                 }
 
-//                magma_queue_sync( stream[0] );
+                magma_queue_sync( stream[0] );
                 
                 if (DEBUG) {
 					cout<<"input matrix"<<endl;
 					printMatrix_gpu(dA, ldda, N, N);
 				}
-//                dpotrfFT(work, B, B, info, 
-//                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
-//                		v, v_ld, 
-//                		FT, DEBUG);
+                dpotrfFT(work, B, B, info, 
+                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
+                		v, v_ld, 
+                		FT, DEBUG);
                                 
-//                magma_dsetmatrix_async( jb, jb,
-//                                        work,     jb,
-//                                        dA(j, j), ldda, stream[1] );
+                magma_dsetmatrix_async( jb, jb,
+                                        work,     jb,
+                                        dA(j, j), ldda, stream[1] );
                 
                 if (*info != 0) {
                     *info = *info + j;
@@ -420,14 +420,14 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
-//                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
-//                			dA(j+jb, j), ldda,
-//                			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
-//                			vd, vd_ld, 
-//                			chk1d, chk1d_ld,
-//                			chk2d, chk2d_ld,
-//                			work, jb, 
-//                			FT, DEBUG, stream[1], stream[2], stream[3]);
+                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
+                			dA(j+jb, j), ldda,
+                			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
+                			vd, vd_ld, 
+                			chk1d, chk1d_ld,
+                			chk2d, chk2d_ld,
+                			work, jb, 
+                			FT, DEBUG, stream[1], stream[2], stream[3]);
                 }
             }
             magma_queue_sync( stream[0] );
