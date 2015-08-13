@@ -394,8 +394,9 @@ magma_dpotrf_gpu(
                 			FT, DEBUG);
                 	
                 }
-
-                magma_queue_sync( stream[0] );
+                if (!FT) {
+                	magma_queue_sync( stream[0] );
+                }
                 
                 if (DEBUG) {
 					cout<<"input matrix"<<endl;
