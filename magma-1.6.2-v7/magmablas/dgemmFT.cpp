@@ -115,7 +115,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 						temp + (i/k)*2, temp_ld,
 						B, ldb,
 						MAGMA_D_ONE,
-						temp + (i/k)*2 + k * temp, temp_ld );
+						temp + (i/k)*2 + k * temp_ld, temp_ld );
 		}
 		
 		magma_dgetmatrix_async( m * 2, n,
