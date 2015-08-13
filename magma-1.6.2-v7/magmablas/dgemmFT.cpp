@@ -108,6 +108,11 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //							B, &ldb,
 //							&one,
 //							checksumC + (i/k)*2, &checksumC_ld );
+			if (i % 2 == 0) {
+				magmablasSetKernelStream(stream2);
+			} else {
+				magmablasSetKernelStream(stream3);
+			}
 			magma_dgemm(
 						MagmaNoTrans, MagmaTrans,
 						m2, n2, k2,
@@ -117,7 +122,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 						MAGMA_D_ONE,
 						temp + (i/k)*2 + k * temp_ld, temp_ld );
 		}
-		
+		magmablasSetKernelStream(stream1);
 		magma_dgetmatrix_async( (m / k) * 2, n,
 								temp, temp_ld,
 								checksumA, checksumA_ld,
