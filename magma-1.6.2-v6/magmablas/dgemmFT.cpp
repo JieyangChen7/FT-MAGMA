@@ -28,6 +28,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
+		double * v, int v_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
 		double * temp, int temp_ld,
@@ -56,12 +57,12 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //								stream0 );							
 		//verify B before use
 		//reclaculate checksums of B on GPU
-		magmablasSetKernelStream(stream2);
-		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-				B, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
-		magmablasSetKernelStream(stream3);
-		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-				B, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
+//		magmablasSetKernelStream(stream2);
+//		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
+//				B, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
+//		magmablasSetKernelStream(stream3);
+//		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
+//				B, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
 		//handle error - to be finished
 		
 		
@@ -75,39 +76,54 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		}
 		
 		
-//		//do part of A verify on CPU
-//		double r = 0.8;
-//		double * temp_cpu;
-//		int temp_cpu_ld;
-//		int cpu_start_index = (int)((m / n) * r) * n;
-//		if (cpu_start_index < m) {
-//			magma_dmalloc_pinned(&temp_cpu, (m - cpu_start_index) * k * sizeof(double));
-//			temp_cpu_ld = m - cpu_start_index;
-//			magma_dgetmatrix_async(m - cpu_start_index, k,
-//									A + cpu_start_index, lda,
-//									temp_cpu, temp_cpu_ld);
-//		}
-		//verify A before use
-		for (int i = 0; i < m; i += n) {
-			magmablasSetKernelStream(stream2);
+		//do part of A verify on CPU
+		double r = 0.8;
+		double * temp_cpu;
+		int temp_cpu_ld;
+		int cpu_start_index = (int)((m / n) * r) * n;
+		if (cpu_start_index < m) {
+			magma_dmalloc_pinned(&temp_cpu, (m - cpu_start_index) * k * sizeof(double));
+			temp_cpu_ld = m - cpu_start_index;
+			magma_dgetmatrix_async(m - cpu_start_index, k,
+									A + cpu_start_index, lda,
+									temp_cpu, temp_cpu_ld);
+		}
+//		//verify A before use
+//		for (int i = 0; i < m; i += n) {
+//			magmablasSetKernelStream(stream2);
 //			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 //					A + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
 //			magmablasSetKernelStream(stream3);
 //			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 //					A + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-			magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-						2, k, n,
-						MAGMA_D_ONE, vd, vd_ld,
-						A + i, lda,
-						MAGMA_D_ZERO, 
-						chk1 + (i / n) * 2, chk1_ld);
-		}
-		//handle error - to be finished
-		magmablasSetKernelStream(stream1);
-		
-//		if (cpu_start_index < m) {
-//			
 //		}
+//		//handle error - to be finished
+//		magmablasSetKernelStream(stream1);
+		
+		if (cpu_start_index < m) {
+			double * chk1 = new double[((m - cpu_start_index) / n) * k];
+			double * chk2 = new double[((m - cpu_start_index) / n) * k];
+			char T = 'T';		
+			
+			int chk1_inc = (m - cpu_start_index) / n;
+			int chk2_inc = (m - cpu_start_index) / n;
+			for (int i = 0; i < m - cpu_start_index; i += n) {
+				blasf77_dgemv(  &T,
+								&n, &k,
+								&one,
+								temp_cpu, &temp_cpu_ld,
+								v, &v_ld,
+								&zero,
+								chk1 + (i / n), &chk1_inc );
+				blasf77_dgemv(  &T,
+								&n, &k,
+								&one,
+								A, &lda,
+								v + 1, &v_ld,
+								&zero,
+								chk2 + (i / n) , &chk2_inc );
+			}
+		}
 		
 		
 		
