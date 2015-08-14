@@ -77,7 +77,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 		
 		//do part of A verify on CPU
-		double r = 0.8;
+		double r = 0.9;
 		double * temp_cpu;
 		int temp_cpu_ld;
 		int cpu_start_index = (int)((m / n) * r) * n;
