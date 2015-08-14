@@ -51,10 +51,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	
 	if (FT) {
 		
-		magma_dgetmatrix_async( n, k,
-								B, ldb,
-								temp, temp_ld,
-								stream0 );							
+//		magma_dgetmatrix_async( n, k,
+//								B, ldb,
+//								temp, temp_ld,
+//								stream0 );							
 //		verify B before use
 //		reclaculate checksums of B on GPU
 //		magmablasSetKernelStream(stream2);
@@ -109,22 +109,22 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			
 			int chk1_inc = (m - cpu_start_index) / n;
 			int chk2_inc = (m - cpu_start_index) / n;
-			for (int i = 0; i < m - cpu_start_index; i += n) {
-				blasf77_dgemv(  &T,
-								&n, &k,
-								&one,
-								temp_cpu + i, &temp_cpu_ld,
-								v, &v_ld,
-								&zero,
-								chk1 + (i / n), &chk1_inc );
-				blasf77_dgemv(  &T,
-								&n, &k,
-								&one,
-								temp_cpu + i, &temp_cpu_ld,
-								v + 1, &v_ld,
-								&zero,
-								chk2 + (i / n) , &chk2_inc );
-			}
+//			for (int i = 0; i < m - cpu_start_index; i += n) {
+//				blasf77_dgemv(  &T,
+//								&n, &k,
+//								&one,
+//								temp_cpu + i, &temp_cpu_ld,
+//								v, &v_ld,
+//								&zero,
+//								chk1 + (i / n), &chk1_inc );
+//				blasf77_dgemv(  &T,
+//								&n, &k,
+//								&one,
+//								temp_cpu + i, &temp_cpu_ld,
+//								v + 1, &v_ld,
+//								&zero,
+//								chk2 + (i / n) , &chk2_inc );
+//			}
 			delete[] chk1;
 			delete[] chk2;
 			magma_free_pinned(temp_cpu);
