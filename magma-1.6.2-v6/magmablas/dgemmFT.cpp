@@ -82,7 +82,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		int temp_cpu_ld;
 		int cpu_start_index = (int)((m / n) * r) * n;
 		if (cpu_start_index < m) {
-			cout << cpu_start_index<<endl;
+//			cout << cpu_start_index<<endl;
 			magma_dmalloc_pinned(&temp_cpu, (m - cpu_start_index) * k * sizeof(double));
 			temp_cpu_ld = m - cpu_start_index;
 			magma_dgetmatrix_async(m - cpu_start_index, k,
@@ -102,30 +102,33 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		//handle error - to be finished
 //		magmablasSetKernelStream(stream1);
 		
-//		if (cpu_start_index < m) {
-//			double * chk1 = new double[((m - cpu_start_index) / n) * k];
-//			double * chk2 = new double[((m - cpu_start_index) / n) * k];
-//			char T = 'T';		
-//			
-//			int chk1_inc = (m - cpu_start_index) / n;
-//			int chk2_inc = (m - cpu_start_index) / n;
-//			for (int i = 0; i < m - cpu_start_index; i += n) {
-//				blasf77_dgemv(  &T,
-//								&n, &k,
-//								&one,
-//								temp_cpu + i, &temp_cpu_ld,
-//								v, &v_ld,
-//								&zero,
-//								chk1 + (i / n), &chk1_inc );
-//				blasf77_dgemv(  &T,
-//								&n, &k,
-//								&one,
-//								temp_cpu + i, &temp_cpu_ld,
-//								v + 1, &v_ld,
-//								&zero,
-//								chk2 + (i / n) , &chk2_inc );
-//			}
-//		}
+		if (cpu_start_index < m) {
+			double * chk1 = new double[((m - cpu_start_index) / n) * k];
+			double * chk2 = new double[((m - cpu_start_index) / n) * k];
+			char T = 'T';		
+			
+			int chk1_inc = (m - cpu_start_index) / n;
+			int chk2_inc = (m - cpu_start_index) / n;
+			for (int i = 0; i < m - cpu_start_index; i += n) {
+				blasf77_dgemv(  &T,
+								&n, &k,
+								&one,
+								temp_cpu + i, &temp_cpu_ld,
+								v, &v_ld,
+								&zero,
+								chk1 + (i / n), &chk1_inc );
+				blasf77_dgemv(  &T,
+								&n, &k,
+								&one,
+								temp_cpu + i, &temp_cpu_ld,
+								v + 1, &v_ld,
+								&zero,
+								chk2 + (i / n) , &chk2_inc );
+			}
+			delete[] chk1;
+			delete[] chk2;
+			delete[] temp_cpu;
+		}
 		
 		
 		
