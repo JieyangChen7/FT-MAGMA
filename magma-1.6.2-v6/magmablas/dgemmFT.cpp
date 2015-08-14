@@ -54,42 +54,46 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 								B, ldb,
 								temp, temp_ld,
 								stream0 );							
-		//verify A before use
-		//reclaculate checksums of A on GPU
+		//verify B before use
+		//reclaculate checksums of B on GPU
 		magmablasSetKernelStream(stream2);
 		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-				A, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
+				B, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
 		magmablasSetKernelStream(stream3);
 		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-				A, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
+				B, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
 		//handle error - to be finished
 		
 		
 		if (DEBUG) {
-			cout<<"recalculated checksum of A before dgemm:"<<endl;
+			cout<<"recalculated checksum of B before dgemm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, 1, k);
 			printMatrix_gpu(chk2, chk2_ld, 1, k);
 		
-			cout<<"updated checksum of A before dgemm:"<<endl;
-			printMatrix_host(checksumA, checksumA_ld, 2, k);
+			cout<<"updated checksum of B before dgemm:"<<endl;
+			printMatrix_host(checksumB, checksumB_ld, 2, k);
 		}
-		//						  cpu_start_index	
-		//                          |
-		//							v
-		//|****|****|****|****|****|****|
 		
 		
-		double r = 0.8;
-		int cpu_start_index = (int)((m / n) * r) * n;
-		
-		//verify B before use
+//		//do part of A verify on CPU
+//		double r = 0.8;
+//		double * temp_cpu;
+//		int temp_cpu_ld;
+//		int cpu_start_index = (int)((m / n) * r) * n;
+//		if (cpu_start_index < m) {
+//			magma_dmalloc_pinned(&temp_cpu, (m - cpu_start_index) * k * sizeof(double));
+//			temp_cpu_ld = m - cpu_start_index;
+//			magma_dgetmatrix_async(m - cpu_start_index, k,
+//									)
+//		}
+		//verify A before use
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(stream2);
 			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+					A + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
 			magmablasSetKernelStream(stream3);
 			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
+					A + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 		}
 		//handle error - to be finished
 		magmablasSetKernelStream(stream1);
@@ -97,12 +101,12 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 		
 		if (DEBUG) {	
-			cout<<"recalculated checksum of B before dgemm:"<<endl;
+			cout<<"recalculated checksum of A before dgemm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, m / n, k);
 			printMatrix_gpu(chk2, chk2_ld, m / n, k);
 		
-			cout<<"updated checksum of B before dgemm:"<<endl;
-			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, k);
+			cout<<"updated checksum of A before dgemm:"<<endl;
+			printMatrix_host(checksumA, checksumA_ld, (m / n) * 2, k);
 		}
 		
 	}
@@ -116,9 +120,6 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				MAGMA_D_ONE,
 				C, ldc );
 	
-//	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B,
-//			ldb, &one, C, ldc);
-
 	if(FT){	
 		magma_queue_sync( stream0 );
 		//update checksums on CPU
