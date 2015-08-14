@@ -55,7 +55,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 								B, ldb,
 								temp, temp_ld,
 								stream0 );							
-		verify B before use
+//		verify B before use
 		reclaculate checksums of B on GPU
 		magmablasSetKernelStream(stream2);
 		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
