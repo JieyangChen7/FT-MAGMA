@@ -86,7 +86,8 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			temp_cpu_ld = m - cpu_start_index;
 			magma_dgetmatrix_async(m - cpu_start_index, k,
 									A + cpu_start_index, lda,
-									temp_cpu, temp_cpu_ld);
+									temp_cpu, temp_cpu_ld,
+									stream0);
 		}
 //		//verify A before use
 //		for (int i = 0; i < m; i += n) {
