@@ -83,11 +83,11 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		int cpu_start_index = (int)((m / n) * r) * n;
 		if (cpu_start_index < m) {
 			magma_dmalloc_pinned(&temp_cpu, (m - cpu_start_index) * k * sizeof(double));
-			temp_cpu_ld = m - cpu_start_index;
-			magma_dgetmatrix_async(m - cpu_start_index, k,
-									A + cpu_start_index, lda,
-									temp_cpu, temp_cpu_ld,
-									stream0);
+//			temp_cpu_ld = m - cpu_start_index;
+//			magma_dgetmatrix_async(m - cpu_start_index, k,
+//									A + cpu_start_index, lda,
+//									temp_cpu, temp_cpu_ld,
+//									stream0);
 		}
 //		//verify A before use
 //		for (int i = 0; i < m; i += n) {
