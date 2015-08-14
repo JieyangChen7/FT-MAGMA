@@ -77,18 +77,18 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 		
 		//do part of A verify on CPU
-		double r = 0.8;
-		double * temp_cpu;
-		int temp_cpu_ld;
-		int cpu_start_index = (int)((m / n) * r) * n;
-		if (cpu_start_index < m) {
-			magma_dmalloc_pinned(&temp_cpu, (m - cpu_start_index) * k * sizeof(double));
-			temp_cpu_ld = m - cpu_start_index;
-			magma_dgetmatrix_async(m - cpu_start_index, k,
-									A + cpu_start_index, lda,
-									temp_cpu, temp_cpu_ld,
-									stream0);
-		}
+//		double r = 0.8;
+//		double * temp_cpu;
+//		int temp_cpu_ld;
+//		int cpu_start_index = (int)((m / n) * r) * n;
+//		if (cpu_start_index < m) {
+//			magma_dmalloc_pinned(&temp_cpu, (m - cpu_start_index) * k * sizeof(double));
+//			temp_cpu_ld = m - cpu_start_index;
+//			magma_dgetmatrix_async(m - cpu_start_index, k,
+//									A + cpu_start_index, lda,
+//									temp_cpu, temp_cpu_ld,
+//									stream0);
+//		}
 //		//verify A before use
 //		for (int i = 0; i < m; i += n) {
 //			magmablasSetKernelStream(stream2);
@@ -101,30 +101,30 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //		//handle error - to be finished
 //		magmablasSetKernelStream(stream1);
 		
-		if (cpu_start_index < m) {
-			double * chk1 = new double[((m - cpu_start_index) / n) * k];
-			double * chk2 = new double[((m - cpu_start_index) / n) * k];
-			char T = 'T';		
-			
-			int chk1_inc = (m - cpu_start_index) / n;
-			int chk2_inc = (m - cpu_start_index) / n;
-			for (int i = 0; i < m - cpu_start_index; i += n) {
-				blasf77_dgemv(  &T,
-								&n, &k,
-								&one,
-								temp_cpu + i, &temp_cpu_ld,
-								v, &v_ld,
-								&zero,
-								chk1 + (i / n), &chk1_inc );
-				blasf77_dgemv(  &T,
-								&n, &k,
-								&one,
-								temp_cpu + i, &temp_cpu_ld,
-								v + 1, &v_ld,
-								&zero,
-								chk2 + (i / n) , &chk2_inc );
-			}
-		}
+//		if (cpu_start_index < m) {
+//			double * chk1 = new double[((m - cpu_start_index) / n) * k];
+//			double * chk2 = new double[((m - cpu_start_index) / n) * k];
+//			char T = 'T';		
+//			
+//			int chk1_inc = (m - cpu_start_index) / n;
+//			int chk2_inc = (m - cpu_start_index) / n;
+//			for (int i = 0; i < m - cpu_start_index; i += n) {
+//				blasf77_dgemv(  &T,
+//								&n, &k,
+//								&one,
+//								temp_cpu + i, &temp_cpu_ld,
+//								v, &v_ld,
+//								&zero,
+//								chk1 + (i / n), &chk1_inc );
+//				blasf77_dgemv(  &T,
+//								&n, &k,
+//								&one,
+//								temp_cpu + i, &temp_cpu_ld,
+//								v + 1, &v_ld,
+//								&zero,
+//								chk2 + (i / n) , &chk2_inc );
+//			}
+//		}
 		
 		
 		
