@@ -142,5 +142,5 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //						temp, &temp_ld,
 //						&one,
 //						checksumC, &checksumC_ld );
-//	}
+	}
 }
