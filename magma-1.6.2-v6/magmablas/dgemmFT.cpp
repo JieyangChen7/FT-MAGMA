@@ -89,7 +89,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //									A + cpu_start_index, lda,
 //									temp_cpu, temp_cpu_ld,
 //									stream0);
-		}
+//		}
 		//verify A before use
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(stream2);
