@@ -127,7 +127,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			}
 			delete[] chk1;
 			delete[] chk2;
-			delete[] temp_cpu;
+			magma_free_pinned(temp_cpu);
 		}
 		
 		
