@@ -14,11 +14,16 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 //		magma_dgemv(MagmaTrans, B, N, MAGMA_D_ONE, matrix + i, ld, vd, 1, \
 //				MAGMA_D_ZERO, chksum + (i / B), chksum_ld);
 		
+//		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+//					2, i + B, B,
+//					MAGMA_D_ONE, vd, vd_ld,
+//					matrix + i, ld,
+//					MAGMA_D_ZERO, chksum + (i / B) * 2, chksum_ld);
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-					2, i + B, B,
-					MAGMA_D_ONE, vd, vd_ld,
-					matrix + i, ld,
-					MAGMA_D_ZERO, chksum + (i / B) * 2, chksum_ld);
+							2, N, B,
+							MAGMA_D_ONE, vd, vd_ld,
+							matrix + i, ld,
+							MAGMA_D_ZERO, chksum + (i / B) * 2, chksum_ld);
 		
 //		magma_dsetmatrix_async( 2, B,
 //								v, v_ld,
