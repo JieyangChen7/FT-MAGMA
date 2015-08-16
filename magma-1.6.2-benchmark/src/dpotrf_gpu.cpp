@@ -234,8 +234,29 @@ magma_dpotrf_gpu(
 		
 		magma_dmalloc_pinned(&checksum, (N / B) * 2 * N * sizeof(double));
 		checksum_ld = (N / B) * 2;
+		
+		float real_time = 0.0;
+		float proc_time = 0.0;
+		long long flpins = 0.0;
+		float mflops = 0.0;
+		//timing start***************
+		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+			cout << "PAPI ERROR" << endl;
+			return -1;
+		}
+		
 	
 		initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, checksumd, checksumd_ld, stream[0]);
+		
+		magma_queue_sync( stream[1] );
+		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+			cout << "PAPI ERROR" << endl;
+			return -1;
+		}
+		cout << "Size:" << N << "(" << B << ")---Real_time:"
+				<< real_time << "---" << "Proc_time:"
+				<< proc_time << "---" << "Total GFlops:" << endl;            
+		PAPI_shutdown();
 
 		magma_dgetmatrix_async( (N / B) * 2, N,
 								checksumd, checksumd_ld,
