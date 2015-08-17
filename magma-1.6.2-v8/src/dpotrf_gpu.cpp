@@ -10,7 +10,7 @@
 */
 #include "common_magma.h"
 #include<iostream>
-
+#include<cmath>
 
 //#include"dpotrfFT.h"
 //#include"dtrsmFT.h"
@@ -188,6 +188,8 @@ magma_dpotrf_gpu(
 	double * chkd_updateC;
 	int chkd_updateC_ld;
 
+	int k = 2;
+	
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
@@ -196,27 +198,24 @@ magma_dpotrf_gpu(
 		 * 1 1 1 1
 		 * 1 2 3 4 
 		 */
-		magma_dmalloc_pinned(&v, B * 2 * sizeof(double));
-		v_ld = 2;
-		for (int i = 0; i < B; ++i) {
-			*(v + i * v_ld) = 1;
+		magma_dmalloc_pinned(&v, B * k * sizeof(double));
+		v_ld = k;
+		for (int i = 0; i < k; i++) {
+			for (int j = 0; j < B; j++) {
+				*(v + j * v_ld + i) = (int)pow(j + 1, i);
+			}
 		}
-		for (int i = 0; i < B; ++i) {
-			*(v + i * v_ld + 1) = i+1;
-		}
-//		cout<<"vector on CPU"<<endl;
-//		printMatrix_host(v, v_ld, 2, B);
-		//cout<<"checksum vector on CPU initialized"<<endl;
+		cout<<"vector on CPU"<<endl;
+		printMatrix_host(v, v_ld, k, B);
 
 		//intialize checksum vector on GPU		
-		vd_pitch = magma_roundup(2 * sizeof(double), 32);
+		vd_pitch = magma_roundup(k * sizeof(double), 32);
 		vd_ld = vd_pitch / sizeof(double);	
 		magma_dmalloc(&vd, vd_pitch * B * sizeof(double));
-		magma_dsetmatrix(2, B, v, v_ld, vd, vd_ld);
+		magma_dsetmatrix(k, B, v, v_ld, vd, vd_ld);
 		
-//		cout<<"vector on GPU"<<endl;
-//		printMatrix_gpu(vd, vd_ld, 2, B);
-		//cout<<"checksum vector on gpu initialized"<<endl;
+		cout<<"vector on GPU"<<endl;
+		printMatrix_gpu(vd, vd_ld, k, B);
 
 		//allocate space for update checksum on CPU
 //		magma_dmalloc_pinned(&chk, B * 2 * sizeof(double));
