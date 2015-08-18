@@ -238,7 +238,7 @@ magma_dpotrf_gpu(
 		cout<<"input matrix"<<endl;
 		printMatrix_gpu(dA, ldda, N, N);
 		cout<<"checksum"<<endl;
-		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
+		printMatrix_host(checksum, checksum_ld, (N / B) * k, N);
 		
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
