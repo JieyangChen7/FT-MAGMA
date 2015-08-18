@@ -211,11 +211,11 @@ magma_dpotrf_gpu(
 		//allocate space for reclaculated checksum on GPU
 		chkd = new double*[k];
 		chkd_pitch = new size_t[k];
-		chk1d_ld = new int[k];
+		chkd_ld = new int[k];
 		for (int i = 0; i < k; i++) {
 			chkd_pitch[i] = magma_roundup((N / B) * sizeof(double), 32);
-			chkd_ld[i] = chkd_pitch / sizeof(double);
-			magma_dmalloc(&chkd, chkd_pitch * B);
+			chkd_ld[i] = chkd_pitch[i] / sizeof(double);
+			magma_dmalloc(&chkd[i], chkd_pitch[i] * B);
 		}
 
 		//initialize checksums
