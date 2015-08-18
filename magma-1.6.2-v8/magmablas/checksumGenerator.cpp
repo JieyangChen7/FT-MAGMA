@@ -2,7 +2,7 @@
 #include"FT.h"
 using namespace std;
 //initialize checksum
-void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int vd_ld, double * v, int v_ld, double * chksum, int chksum_ld, magma_queue_t stream) {
+void initializeChecksum(double * matrix, int ld, int N, int B, int k, double * vd, int vd_ld, double * v, int v_ld, double * chksum, int chksum_ld) {
 
 	//cout<<"checksum vector on GPU:"<<endl;
 	//printVector_gpu(vd,B);
@@ -15,10 +15,10 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 //				MAGMA_D_ZERO, chksum + (i / B), chksum_ld);
 		
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-					2, i + B, B,
+					k, i + B, B,
 					MAGMA_D_ONE, vd, vd_ld,
 					matrix + i, ld,
-					MAGMA_D_ZERO, chksum + (i / B) * 2, chksum_ld);
+					MAGMA_D_ZERO, chksum + (i / B) * k, chksum_ld);
 		
 //		magma_dsetmatrix_async( 2, B,
 //								v, v_ld,

@@ -210,45 +210,44 @@ magma_dpotrf_gpu(
 
 		//allocate space for reclaculated checksum on GPU
 		chkd = new double*[k];
-//		chk1d_pitch = magma_roundup((N / B) * sizeof(double), 32);
-//		chk1d_ld = chk1d_pitch / sizeof(double);
-//		magma_dmalloc(&chk1d, chk1d_pitch * B);
-//		
-//		chk2d_pitch = magma_roundup((N / B) * sizeof(double), 32);
-//		chk2d_ld = chk2d_pitch / sizeof(double);
-//		magma_dmalloc(&chk2d, chk2d_pitch * B);
-		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
- 
+		chkd_pitch = new size_t[k];
+		chk1d_ld = new int[k];
+		for (int i = 0; i < k; i++) {
+			chkd_pitch[i] = magma_roundup((N / B) * sizeof(double), 32);
+			chkd_ld[i] = chkd_pitch / sizeof(double);
+			magma_dmalloc(&chkd, chkd_pitch * B);
+		}
+
 		//initialize checksums
-		size_t checksumd_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
+		size_t checksumd_pitch = magma_roundup((N / B) * k * sizeof(double), 32);
 		checksumd_ld = checksumd_pitch / sizeof(double);
 		magma_dmalloc(&checksumd, checksumd_pitch * N);
-		cudaMemset2D(checksumd, checksumd_pitch, 0, (N / B) * 2 * sizeof(double), N);
+		cudaMemset2D(checksumd, checksumd_pitch, 0, (N / B) * k * sizeof(double), N);
 		
-		magma_dmalloc_pinned(&checksum, (N / B) * 2 * N * sizeof(double));
-		checksum_ld = (N / B) * 2;
+		magma_dmalloc_pinned(&checksum, (N / B) * k * N * sizeof(double));
+		checksum_ld = (N / B) * k;
 	
-		initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, checksumd, checksumd_ld, stream[0]);
+		initializeChecksum(dA, ldda, N, B, k, vd, vd_ld, v, v_ld, checksumd, checksumd_ld);
 
-		magma_dgetmatrix_async( (N / B) * 2, N,
+		magma_dgetmatrix_async( (N / B) * k, N,
 								checksumd, checksumd_ld,
 								checksum,     checksum_ld, stream[0] );
 		
 		//cout<<"checksums initialized"<<endl;
-//		magma_queue_sync( stream[0] );
-//		cout<<"input matrix"<<endl;
-//		printMatrix_gpu(dA, ldda, N, N);
-//		cout<<"checksum"<<endl;
-//		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
+		magma_queue_sync( stream[0] );
+		cout<<"input matrix"<<endl;
+		printMatrix_gpu(dA, ldda, N, N);
+		cout<<"checksum"<<endl;
+		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
 		
-		size_t chkd_updateA_pitch = magma_roundup(2 * sizeof(double), 32);
+		size_t chkd_updateA_pitch = magma_roundup(k * sizeof(double), 32);
 		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);
 		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * N);
 		
-		size_t chkd_updateC_pitch = magma_roundup(2 * sizeof(double), 32);
+		size_t chkd_updateC_pitch = magma_roundup(k * sizeof(double), 32);
 		chkd_updateC_ld = chkd_updateC_pitch / sizeof(double);
 		magma_dmalloc(&chkd_updateC, chkd_updateC_pitch * B);
 		
