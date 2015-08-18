@@ -157,19 +157,9 @@ magma_dpotrf_gpu(
 	size_t vd_pitch;
 	int vd_ld;
 	
-	double * chk1d;
-	double * chk2d;
-	size_t chk1d_pitch;
-	size_t chk2d_pitch;
-	int chk1d_ld;
-	int chk2d_ld;
-	
-//	double * chk1d;
-//	double * chk2d;
-//	size_t chk1d_pitch;
-//	size_t chk2d_pitch;
-//	int chk1d_ld;
-//	int chk2d_ld;
+	double ** chkd;
+	size_t * chkd_pitch;
+	int * chkd_ld;
 
 	size_t checksumd_pitch;
 	double * checksumd;
@@ -195,8 +185,9 @@ magma_dpotrf_gpu(
 		//intialize checksum vector on CPU
 
 		/* v =
-		 * 1 1 1 1
-		 * 1 2 3 4 
+		 * 1	1	1	1
+		 * 1	2	3	4 
+		 * 1 	2^2	3^2	4^2
 		 */
 		magma_dmalloc_pinned(&v, B * k * sizeof(double));
 		v_ld = k;
@@ -217,19 +208,15 @@ magma_dpotrf_gpu(
 		cout<<"vector on GPU"<<endl;
 		printMatrix_gpu(vd, vd_ld, k, B);
 
-		//allocate space for update checksum on CPU
-//		magma_dmalloc_pinned(&chk, B * 2 * sizeof(double));
-//		chk_ld = 2;
-		//cout<<"allocate space for recalculated checksum on CPU"<<endl;
-
 		//allocate space for reclaculated checksum on GPU
-		chk1d_pitch = magma_roundup((N / B) * sizeof(double), 32);
-		chk1d_ld = chk1d_pitch / sizeof(double);
-		magma_dmalloc(&chk1d, chk1d_pitch * B);
-		
-		chk2d_pitch = magma_roundup((N / B) * sizeof(double), 32);
-		chk2d_ld = chk2d_pitch / sizeof(double);
-		magma_dmalloc(&chk2d, chk2d_pitch * B);
+		chkd = new double*[k];
+//		chk1d_pitch = magma_roundup((N / B) * sizeof(double), 32);
+//		chk1d_ld = chk1d_pitch / sizeof(double);
+//		magma_dmalloc(&chk1d, chk1d_pitch * B);
+//		
+//		chk2d_pitch = magma_roundup((N / B) * sizeof(double), 32);
+//		chk2d_ld = chk2d_pitch / sizeof(double);
+//		magma_dmalloc(&chk2d, chk2d_pitch * B);
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
  
 		//initialize checksums
