@@ -178,7 +178,7 @@ magma_dpotrf_gpu(
 	double * chkd_updateC;
 	int chkd_updateC_ld;
 	
-	int k = 2;
+	int k = 4;
 
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
