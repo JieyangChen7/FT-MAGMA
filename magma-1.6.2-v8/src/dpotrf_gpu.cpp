@@ -149,7 +149,7 @@ magma_dpotrf_gpu(
     int N = n;
     //variables for FT
     bool FT = true;
-    bool DEBUG = false;
+    bool DEBUG = true;
 	double * v;
 	int v_ld;
 	
@@ -312,7 +312,7 @@ magma_dpotrf_gpu(
             }
         }
         else {
-     /*   	magma_set_lapack_numthreads(16);
+        	magma_set_lapack_numthreads(16);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
@@ -343,8 +343,8 @@ magma_dpotrf_gpu(
 						printMatrix_gpu(dA, ldda, N, N);
 					}
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
-							checksum + (j / jb) * 2, checksum_ld, 
-							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+							checksum + (j / jb) * k, checksum_ld, 
+							checksum + (j / jb) * k + j * checksum_ld, checksum_ld,
 							vd, vd_ld, 
 							v, v_ld,
 							chk1d, chk1d_ld, 
@@ -367,9 +367,9 @@ magma_dpotrf_gpu(
 					}
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
-                			checksum + ((j + jb) / jb) * 2, checksum_ld, 
-                			checksum + (j / jb) * 2, checksum_ld, 
-                			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
+                			checksum + ((j + jb) / jb) * k, checksum_ld, 
+                			checksum + (j / jb) * k, checksum_ld, 
+                			checksum + j * checksum_ld + ((j + jb) / jb) * k, checksum_ld,
                 			vd, vd_ld,
                 			v, v_ld,
                 			chk1d, chk1d_ld,
@@ -429,7 +429,7 @@ magma_dpotrf_gpu(
 					<< real_time << "---" << "Proc_time:"
 					<< proc_time << "---" << "Total GFlops:" << endl;            
 			PAPI_shutdown();
-			*/
+			
         }
     }
 

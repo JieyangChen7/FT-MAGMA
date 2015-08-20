@@ -22,12 +22,12 @@ __global__ void detectAndCorrectForSyrk(double * C, int ldc,
  * m: number of col of A
  */
 void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
+		int k, 
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
 		double * v, int v_ld,
-		double * chk1, int chk1_ld,
-		double * chk2, int chk2_ld,
+		double ** chk, int * chk_ld,
 		double * chkd_updateA, int chkd_updateA_ld, 
 		double * chkd_updateC, int chkd_updateC_ld, 
 		magma_queue_t stream0, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3,
@@ -44,14 +44,21 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 	
 	if (FT) {
-		magma_dsetmatrix_async( 2, m,
+		magma_dsetmatrix_async( k, m,
 								checksumA, checksumA_ld,
 								chkd_updateA, chkd_updateA_ld, stream0);
-		magma_dsetmatrix_async( 2, n,
+		magma_dsetmatrix_async( k, n,
 								checksumC, checksumC_ld, 
 								chkd_updateC, chkd_updateC_ld, stream0);
 		//verify A before use
 		//reclaculate checksums of A on GPU
+		for (int i = 0; i < k; i++) {
+			if (i % 2 == 0) {
+				
+			} else {
+				
+			}
+		}
 		magmablasSetKernelStream(stream2);
 		magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
 				A, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
