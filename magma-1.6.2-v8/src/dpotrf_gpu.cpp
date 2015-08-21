@@ -214,7 +214,6 @@ magma_dpotrf_gpu(
 		chkd_pitch = magma_roundup((N / B) * K * sizeof(double), 32);
 		chkd_ld = chkd_pitch / sizeof(double);
 		magma_dmalloc(&chkd, chkd_pitch * N);
-		}
  
 		//initialize checksums
 		checksumd_pitch = magma_roundup((N / B) * K * sizeof(double), 32);
