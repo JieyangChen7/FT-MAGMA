@@ -211,13 +211,13 @@ magma_dpotrf_gpu(
 		printMatrix_gpu(vd, vd_ld, K, B);
 
 		//allocate space for reclaculated checksum on GPU (vertical)
-		chkd_pitch = magma_roundup((N / B) * K sizeof(double), 32);
+		chkd_pitch = magma_roundup((N / B) * K * sizeof(double), 32);
 		chkd_ld = chkd_pitch / sizeof(double);
 		magma_dmalloc(&chkd, chkd_pitch * N);
 		}
  
 		//initialize checksums
-		size_t checksumd_pitch = magma_roundup((N / B) * K * sizeof(double), 32);
+		checksumd_pitch = magma_roundup((N / B) * K * sizeof(double), 32);
 		checksumd_ld = checksumd_pitch / sizeof(double);
 		magma_dmalloc(&checksumd, checksumd_pitch * N);
 		cudaMemset2D(checksumd, checksumd_pitch, 0, (N / B) * K * sizeof(double), N);
