@@ -49,11 +49,11 @@ void dtrsmFT(int m, int n, double * A, int lda,
 				if (j % 2 == 0) {
 					magmablasSetKernelStream(stream2);
 					magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j], chk_ld[j] );
+							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j] + i, chk_ld[j] );
 				} else {
 					magmablasSetKernelStream(stream3);
 					magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j], chk_ld[j] );			
+							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j] + i, chk_ld[j] );			
 				}
 			}
 		}
