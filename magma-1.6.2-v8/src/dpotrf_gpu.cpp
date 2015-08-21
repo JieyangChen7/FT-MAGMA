@@ -348,8 +348,7 @@ magma_dpotrf_gpu(
 							checksum + (j / jb) * k + j * checksum_ld, checksum_ld,
 							vd, vd_ld, 
 							v, v_ld,
-							chk1d, chk1d_ld, 
-							chk2d, chk2d_ld, 
+							chkd, chkd_ld, 
 							chkd_updateA, chkd_updateA_ld,
 							chkd_updateC, chkd_updateC_ld, stream[0], stream[1], stream[2], stream[3],
 							FT, DEBUG);
@@ -374,8 +373,7 @@ magma_dpotrf_gpu(
                 			checksum + j * checksum_ld + ((j + jb) / jb) * k, checksum_ld,
                 			vd, vd_ld,
                 			v, v_ld,
-                			chk1d, chk1d_ld,
-                			chk2d, chk2d_ld,
+                			chkd, chkd_ld,
                 			temp, temp_ld,
                 			stream[0], stream[1], stream[2], stream[3],
                 			FT, DEBUG);
@@ -413,8 +411,7 @@ magma_dpotrf_gpu(
                 			k,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
                 			vd, vd_ld, 
-                			chk1d, chk1d_ld,
-                			chk2d, chk2d_ld,
+                			chkd, chkd_ld,
                 			work, jb, 
                 			FT, DEBUG, stream[1], stream[2], stream[3]);
                 }
