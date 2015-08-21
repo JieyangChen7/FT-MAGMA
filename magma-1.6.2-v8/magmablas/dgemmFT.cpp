@@ -30,7 +30,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
 		double * v, int v_ld,
-		double ** chk1, int * chk_ld,
+		double ** chk, int * chk_ld,
 		double * temp, int temp_ld,
 		magma_queue_t stream0, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3,
 		bool FT, bool DEBUG) {
