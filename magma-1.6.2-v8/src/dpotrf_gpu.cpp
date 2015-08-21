@@ -307,7 +307,7 @@ magma_dpotrf_gpu(
             }
         }
         else {
-       /* 	magma_set_lapack_numthreads(16);
+        	magma_set_lapack_numthreads(16);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
@@ -354,7 +354,7 @@ magma_dpotrf_gpu(
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
-                           
+               /*            
                 if ( (j+jb) < n && j > 0) {	
                 	if (DEBUG) {
 						cout<<"input matrix"<<endl;
@@ -410,6 +410,7 @@ magma_dpotrf_gpu(
                 			work, jb, 
                 			FT, DEBUG, stream[1], stream[2], stream[3]);
                 }
+                */
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
@@ -426,7 +427,7 @@ magma_dpotrf_gpu(
 					<< real_time << "---" << "Proc_time:"
 					<< proc_time << "---" << "Total GFlops:" << endl;            
 			PAPI_shutdown();
-			*/
+			
         }
     }
 
