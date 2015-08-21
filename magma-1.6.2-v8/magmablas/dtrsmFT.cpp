@@ -32,7 +32,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		int K, 
 		double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
-		double ** chk, int * chk_ld, 
+		double * chk, int chk_ld, 
 		double * work, int work_ld, 
 		bool FT, bool DEBUG, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3) {
 
@@ -49,11 +49,11 @@ void dtrsmFT(int m, int n, double * A, int lda,
 				if (j % 2 == 0) {
 					magmablasSetKernelStream(stream2);
 					magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j] + i, chk_ld[j] );
+							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk + (i / n) * K + j, chk_ld );
 				} else {
 					magmablasSetKernelStream(stream3);
 					magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j] + i, chk_ld[j] );			
+							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk + (i / n) * K + j, chk_ld );			
 				}
 			}
 		}
@@ -62,9 +62,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of B before dtrsm:"<<endl;
-			for (int i = 0; i < K; i++) {
-				printMatrix_gpu(chk[i],chk_ld[i], (m / n), n);
-			}
+			printMatrix_gpu(chk,chk_ld, (m / n) * K, n);
 			cout<<"updated checksum of B before dtrsm:"<<endl;
 			printMatrix_host(checksumB, checksumB_ld, (m / n) * K, n);
 		}		

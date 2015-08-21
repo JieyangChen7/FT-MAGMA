@@ -30,7 +30,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
 		double * v, int v_ld,
-		double ** chk, int * chk_ld,
+		double * chk, int chk_ld,
 		double * temp, int temp_ld,
 		magma_queue_t stream0, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3,
 		bool FT, bool DEBUG) {
@@ -52,11 +52,11 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			if (i % 2 == 0) {
 				magmablasSetKernelStream(stream2);
 				magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-						B, ldb, vd + i, vd_ld, MAGMA_D_ZERO, chk[i], chk_ld[i] );
+						B, ldb, vd + i, vd_ld, MAGMA_D_ZERO, chk + i, chk_ld );
 			} else {
 				magmablasSetKernelStream(stream3);
 				magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-						B, ldb, vd + i, vd_ld, MAGMA_D_ZERO, chk[i], chk_ld[i] );
+						B, ldb, vd + i, vd_ld, MAGMA_D_ZERO, chk + i, chk_ld );
 			}
 		}
 		//handle error - to be finished
@@ -64,9 +64,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of B before dgemm:"<<endl;
-			for (int i = 0; i < K; i++) {
-				printMatrix_gpu(chk[i], chk_ld[i], 1, k);
-			}
+			printMatrix_gpu(chk, chk_ld, K, k);
 			cout<<"updated checksum of B before dgemm:"<<endl;
 			printMatrix_host(checksumB, checksumB_ld, K, k);
 		}
@@ -79,11 +77,11 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 					if (j % 2 == 0) {
 						magmablasSetKernelStream(stream2);
 						magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-								A + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j] + i, chk_ld[j] );
+								A + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk + (i / n) * K + j, chk_ld );
 					} else {
 						magmablasSetKernelStream(stream3);
 						magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-								A + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j] + i, chk_ld[j] );
+								A + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk + (i / n) * K + j, chk_ld );
 					}
 			}
 		}
@@ -92,9 +90,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 
 		if (DEBUG) {	
 			cout<<"recalculated checksum of A before dgemm:"<<endl;
-			for (int i = 0; i < K; i++) {
-				printMatrix_gpu(chk[i], chk_ld[i], m / n, k);
-			}
+			printMatrix_gpu(chk, chk_ld, (m / n) * K, k);
 			cout<<"updated checksum of A before dgemm:"<<endl;
 			printMatrix_host(checksumA, checksumA_ld, (m / n) * K, k);
 		}

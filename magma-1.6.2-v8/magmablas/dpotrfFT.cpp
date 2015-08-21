@@ -34,25 +34,23 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	
 	if (FT) {
 		//verify A before use
-		int chk_inc = 1;
-		double ** chk = new double*[n];
+		
+		double * chk = new double[K * n];
+		int chk_inc = n;
 		for (int i = 0; i < K; i++) {
-			chk[i] = new double[n];
 			blasf77_dgemv(  &T,
 							&n, &n,
 							&one,
 							A, &lda,
 							v + i, &v_ld,
 							&zero,
-							chk[i], &chk_inc );	
+							chk + i, &chk_inc );	
 		}
 		//handle error - to be finished
 		
 		if (DEBUG) {
 			cout<<"recalcuated checksum on CPU before factorization:"<<endl;
-			for (int i = 0; i < K; i++) {
-				printMatrix_host(chk[i], 1, 1, n);
-			}
+			printMatrix_host(chk, chk_inc, K, n);
 			cout<<"updated checksum on CPU before factorization:"<<endl;
 			printMatrix_host(chksum, chksum_ld, K, n);
 		}
