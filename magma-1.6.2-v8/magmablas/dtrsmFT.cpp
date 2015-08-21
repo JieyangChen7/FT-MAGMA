@@ -28,10 +28,11 @@ __global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
  */
 
 void dtrsmFT(int m, int n, double * A, int lda,
-		double * B, int ldb, double * checksumB, int checksumB_ld,
+		double * B, int ldb, 
+		int K, 
+		double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
+		double ** chk, int * chk_ld, 
 		double * work, int work_ld, 
 		bool FT, bool DEBUG, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3) {
 
@@ -44,23 +45,28 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		//recalculate checksums on GPU
 		double beta = 0;
 		for (int i = 0; i < m; i += n) {
-			magmablasSetKernelStream(stream2);
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-			magmablasSetKernelStream(stream3);
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
+			for (int j = 0; j < K; j++) {
+				if (j % 2 == 0) {
+					magmablasSetKernelStream(stream2);
+					magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j], chk_ld[j] );
+				} else {
+					magmablasSetKernelStream(stream3);
+					magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+							B + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk[j], chk_ld[j] );			
+				}
+			}
 		}
 		magmablasSetKernelStream(stream1);	
 		//handle error - to be finished
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of B before dtrsm:"<<endl;
-			printMatrix_gpu(chk1,chk1_ld, (m / n), n);
-			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
-
+			for (int i = 0; i < K; i++) {
+				printMatrix_gpu(chk[i],chk_ld[i], (m / n), n);
+			}
 			cout<<"updated checksum of B before dtrsm:"<<endl;
-			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
+			printMatrix_host(checksumB, checksumB_ld, (m / n) * K, n);
 		}		
 	}
 
@@ -74,7 +80,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		char L = 'L';
 		char T = 'T';
 		char N = 'N';
-		int m2 = (m / n) * 2;
+		int m2 = (m / n) * K;
 		int n2 = n;
 		blasf77_dtrsm(&R, &L, &T, &N,
 					 &m2, &n2,

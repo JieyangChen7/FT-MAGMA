@@ -178,7 +178,7 @@ magma_dpotrf_gpu(
 	double * chkd_updateC;
 	int chkd_updateC_ld;
 	
-	int k = 4;
+	int k = 2;
 
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -343,6 +343,7 @@ magma_dpotrf_gpu(
 						printMatrix_gpu(dA, ldda, N, N);
 					}
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+							k,
 							checksum + (j / jb) * k, checksum_ld, 
 							checksum + (j / jb) * k + j * checksum_ld, checksum_ld,
 							vd, vd_ld, 
@@ -367,6 +368,7 @@ magma_dpotrf_gpu(
 					}
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
+                			k,
                 			checksum + ((j + jb) / jb) * k, checksum_ld, 
                 			checksum + (j / jb) * k, checksum_ld, 
                 			checksum + j * checksum_ld + ((j + jb) / jb) * k, checksum_ld,
@@ -387,7 +389,8 @@ magma_dpotrf_gpu(
 					printMatrix_gpu(dA, ldda, N, N);
 				}
                 dpotrfFT(work, B, B, info, 
-                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
+                		k,
+                		checksum + (j / B) * k + j * checksum_ld, checksum_ld, 
                 		v, v_ld, 
                 		FT, DEBUG);
                                 
@@ -407,6 +410,7 @@ magma_dpotrf_gpu(
 					}
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
+                			k,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
                 			vd, vd_ld, 
                 			chk1d, chk1d_ld,

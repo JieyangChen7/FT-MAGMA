@@ -13,6 +13,7 @@ void initializeChecksum(double * matrix, int ld, int N, int B, int k,
 
 
 void dpotrfFT(double * A, int lda, int n, int * info,
+				int K,
 				double * chksum, int chksum_ld,
 				double * v, int v_ld, 
 				bool FT , bool DEBUG);
@@ -26,6 +27,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		bool FT, bool DEBUG, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3);
 
 void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
+		int K,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
@@ -39,6 +41,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 
 void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * B, int ldb, double * C, int ldc, 
+		int K,
 		double * checksumA, int checksumA_ld,
 		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,
