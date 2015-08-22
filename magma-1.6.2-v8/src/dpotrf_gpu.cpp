@@ -354,7 +354,7 @@ magma_dpotrf_gpu(
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
-               /*            
+                          
                 if ( (j+jb) < n && j > 0) {	
                 	if (DEBUG) {
 						cout<<"input matrix"<<endl;
@@ -410,7 +410,7 @@ magma_dpotrf_gpu(
                 			work, jb, 
                 			FT, DEBUG, stream[1], stream[2], stream[3]);
                 }
-                */
+                
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
