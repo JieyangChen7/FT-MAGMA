@@ -187,7 +187,7 @@ magma_dpotrf_gpu(
 	int chkd_updateC_ld;
 	
 	int K1 = 4;
-	int K2 = 1
+	int K2 = 1;
 	if (FT) {
 		//INITIZALIZE CHECKSUM VECTORS***************************************************************
 		/* v =
