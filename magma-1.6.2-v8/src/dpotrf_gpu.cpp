@@ -224,7 +224,7 @@ magma_dpotrf_gpu(
 		//INITIZALIZE COLUMN CHECKSUM*********************************************************************
 		column_checksumd_pitch = magma_roundup((N / B) * K1 * sizeof(double), 32);
 		column_checksumd_ld = column_checksumd_pitch / sizeof(double);
-		magma_dmalloc(&column_checksumd, ccolumn_hecksumd_pitch * N);
+		magma_dmalloc(&column_checksumd, column_checksumd_pitch * N);
 		cudaMemset2D(column_checksumd, column_checksumd_pitch, 0, (N / B) * K1 * sizeof(double), N);
 		
 		magma_dmalloc_pinned(&column_checksum, (N / B) * K1 * N * sizeof(double));
