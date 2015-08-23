@@ -24,7 +24,6 @@ void initializeChecksum(char ColumnOrRow, double * matrix, int ld, int N, int B,
 						MAGMA_D_ZERO, chksum + (i / B) * k * chksum_ld, chksum_ld);	
 		}
 	} else {
-		cout<< "Error parameter in initializeChecksum!" <<endl;
 		return;
 	}
 }
