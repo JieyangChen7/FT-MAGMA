@@ -186,8 +186,8 @@ magma_dpotrf_gpu(
 	double * chkd_updateC;
 	int chkd_updateC_ld;
 	
-	int K = 4;
-
+	int K1 = 4;
+	int K2 = 1
 	if (FT) {
 		//INITIZALIZE CHECKSUM VECTORS***************************************************************
 		/* v =
@@ -195,44 +195,44 @@ magma_dpotrf_gpu(
 		 * 1	2	3	4 
 		 * 1 	2^2	3^2	4^2
 		 */
-		magma_dmalloc_pinned(&v, B * K * sizeof(double));
-		v_ld = K;
+		magma_dmalloc_pinned(&v, B * K1 * sizeof(double));
+		v_ld = K1;
 		
-		for (int i = 0; i < K; i++) {
+		for (int i = 0; i < K1; i++) {
 			for (int j = 0; j < B; j++) {
 				*(v + j * v_ld + i) = (int)pow(j + 1, i);
 			}
 		}
 		
 		cout<<"vector on CPU"<<endl;
-		printMatrix_host(v, v_ld, K, B);
+		printMatrix_host(v, v_ld, K1, B);
 
 		//intialize checksum vector on GPU		
-		vd_pitch = magma_roundup(K * sizeof(double), 32);
+		vd_pitch = magma_roundup(K1 * sizeof(double), 32);
 		vd_ld = vd_pitch / sizeof(double);	
 		magma_dmalloc(&vd, vd_pitch * B * sizeof(double));
-		magma_dsetmatrix(K, B, v, v_ld, vd, vd_ld);
+		magma_dsetmatrix(K1, B, v, v_ld, vd, vd_ld);
 		
 		cout<<"vector on GPU"<<endl;
-		printMatrix_gpu(vd, vd_ld, K, B);
+		printMatrix_gpu(vd, vd_ld, K1, B);
 
 		//ALLOCATE SPACE FOR RECALCULATING***************************************************************
-		chkd_pitch = magma_roundup((N / B) * K * sizeof(double), 32);
+		chkd_pitch = magma_roundup((N / B) * K1 * sizeof(double), 32);
 		chkd_ld = chkd_pitch / sizeof(double);
 		magma_dmalloc(&chkd, chkd_pitch * N);
  
 		//INITIZALIZE COLUMN CHECKSUM*********************************************************************
-		column_checksumd_pitch = magma_roundup((N / B) * K * sizeof(double), 32);
+		column_checksumd_pitch = magma_roundup((N / B) * K1 * sizeof(double), 32);
 		column_checksumd_ld = column_checksumd_pitch / sizeof(double);
 		magma_dmalloc(&column_checksumd, ccolumn_hecksumd_pitch * N);
-		cudaMemset2D(column_checksumd, column_checksumd_pitch, 0, (N / B) * K * sizeof(double), N);
+		cudaMemset2D(column_checksumd, column_checksumd_pitch, 0, (N / B) * K1 * sizeof(double), N);
 		
-		magma_dmalloc_pinned(&column_checksum, (N / B) * K * N * sizeof(double));
-		column_checksum_ld = (N / B) * K;
+		magma_dmalloc_pinned(&column_checksum, (N / B) * K1 * N * sizeof(double));
+		column_checksum_ld = (N / B) * K1;
 	
-		initializeChecksum('C', dA, ldda, N, B, K, vd, vd_ld, v, v_ld, column_checksumd, column_checksumd_ld);
+		initializeChecksum('C', dA, ldda, N, B, K1, vd, vd_ld, v, v_ld, column_checksumd, column_checksumd_ld);
 
-		magma_dgetmatrix_async( (N / B) * K, N,
+		magma_dgetmatrix_async( (N / B) * K1, N,
 				column_checksumd, column_checksumd_ld,
 				column_checksum,  column_checksum_ld, stream[0] );
 		
@@ -241,20 +241,20 @@ magma_dpotrf_gpu(
 		cout<<"input matrix"<<endl;
 		printMatrix_gpu(dA, ldda, N, N);
 		cout<<"column checksum"<<endl;
-		printMatrix_host(column_checksum, column_checksum_ld, (N / B) * K, N);
+		printMatrix_host(column_checksum, column_checksum_ld, (N / B) * K1, N);
 		
 		//INITIZALIZE ROW CHECKSUM*********************************************************************
 		row_checksumd_pitch = magma_roundup(N * sizeof(double), 32);
 		row_checksumd_ld = row_checksumd_pitch / sizeof(double);
-		magma_dmalloc(&row_checksumd, row_checksumd_pitch * (N / B) * K);
-		cudaMemset2D(row_checksumd, row_checksumd_pitch, 0, N * sizeof(double), (N / B) * K);
+		magma_dmalloc(&row_checksumd, row_checksumd_pitch * (N / B) * K2);
+		cudaMemset2D(row_checksumd, row_checksumd_pitch, 0, N * sizeof(double), (N / B) * K2);
 		
-		magma_dmalloc_pinned(&row_checksum, N * (N / B) * K * sizeof(double));
+		magma_dmalloc_pinned(&row_checksum, N * (N / B) * K2 * sizeof(double));
 		row_checksum_ld = N;
 	
-		initializeChecksum('R', dA, ldda, N, B, K, vd, vd_ld, v, v_ld, row_checksumd, row_checksumd_ld);
+		initializeChecksum('R', dA, ldda, N, B, K2, vd, vd_ld, v, v_ld, row_checksumd, row_checksumd_ld);
 
-		magma_dgetmatrix_async(  N, (N / B) * K,
+		magma_dgetmatrix_async(  N, (N / B) * K2,
 				row_checksumd, row_checksumd_ld,
 				row_checksum,  row_checksum_ld, stream[0] );
 		
@@ -263,16 +263,16 @@ magma_dpotrf_gpu(
 		cout<<"input matrix"<<endl;
 		printMatrix_gpu(dA, ldda, N, N);
 		cout<<"row checksum"<<endl;
-		printMatrix_host(row_checksum, row_checksum_ld, N, (N / B) * K);
+		printMatrix_host(row_checksum, row_checksum_ld, N, (N / B) * K2);
 		
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
 		
-		size_t chkd_updateA_pitch = magma_roundup(K * sizeof(double), 32);
+		size_t chkd_updateA_pitch = magma_roundup(K1 * sizeof(double), 32);
 		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);
 		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * N);
 		
-		size_t chkd_updateC_pitch = magma_roundup(K * sizeof(double), 32);
+		size_t chkd_updateC_pitch = magma_roundup(K1 * sizeof(double), 32);
 		chkd_updateC_ld = chkd_updateC_pitch / sizeof(double);
 		magma_dmalloc(&chkd_updateC, chkd_updateC_pitch * B);
 		
@@ -335,6 +335,7 @@ magma_dpotrf_gpu(
             }
         }
         else {
+        /*
         	magma_set_lapack_numthreads(16);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
@@ -382,7 +383,7 @@ magma_dpotrf_gpu(
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
-               /*            
+                         
                 if ( (j+jb) < n && j > 0) {	
                 	if (DEBUG) {
 						cout<<"input matrix"<<endl;
@@ -438,7 +439,7 @@ magma_dpotrf_gpu(
                 			work, jb, 
                 			FT, DEBUG, stream[1], stream[2], stream[3]);
                 }
-                */
+                
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
@@ -455,7 +456,7 @@ magma_dpotrf_gpu(
 					<< real_time << "---" << "Proc_time:"
 					<< proc_time << "---" << "Total GFlops:" << endl;            
 			PAPI_shutdown();
-			
+			*/
         }
     }
 
