@@ -180,12 +180,21 @@ magma_dpotrf_gpu(
 	double * temp;
 	int temp_ld;
 	
-	double * chkd_updateA;
-	int chkd_updateA_ld;
+	double * column_chkd_updateA;
+	int column_chkd_updateA_ld;
 	
-	double * chkd_updateC;
-	int chkd_updateC_ld;
+	double * column_chkd_updateC;
+	int column_chkd_updateC_ld;
 	
+	double * row_chkd_updateA;
+	int row_chkd_updateA_ld;
+	
+	double * row_chkd_updateC;
+	int row_chkd_updateC_ld;
+	
+	
+	
+		
 	int K1 = 4;
 	int K2 = 1;
 	if (FT) {
@@ -268,13 +277,23 @@ magma_dpotrf_gpu(
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
 		
-		size_t chkd_updateA_pitch = magma_roundup(K1 * sizeof(double), 32);
-		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);
-		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * N);
+		// column update for SYRK on GPU
+		size_t column_chkd_updateA_pitch = magma_roundup(K1 * sizeof(double), 32);
+		column_chkd_updateA_ld = column_chkd_updateA_pitch / sizeof(double);
+		magma_dmalloc(&column_chkd_updateA, column_chkd_updateA_pitch * N);
 		
-		size_t chkd_updateC_pitch = magma_roundup(K1 * sizeof(double), 32);
-		chkd_updateC_ld = chkd_updateC_pitch / sizeof(double);
-		magma_dmalloc(&chkd_updateC, chkd_updateC_pitch * B);
+		size_t column_chkd_updateC_pitch = magma_roundup(K1 * sizeof(double), 32);
+		column_chkd_updateC_ld = column_chkd_updateC_pitch / sizeof(double);
+		magma_dmalloc(&column_chkd_updateC, column_chkd_updateC_pitch * B);
+		
+		// row update for SYRK on GPU
+		size_t row_chkd_updateA_pitch = magma_roundup(K1 * sizeof(double), 32);
+		column_chkd_updateA_ld = column_chkd_updateA_pitch / sizeof(double);
+		magma_dmalloc(&column_chkd_updateA, column_chkd_updateA_pitch * N);
+		
+		size_t column_chkd_updateC_pitch = magma_roundup(K1 * sizeof(double), 32);
+		column_chkd_updateC_ld = column_chkd_updateC_pitch / sizeof(double);
+		magma_dmalloc(&column_chkd_updateC, column_chkd_updateC_pitch * B);
 		
 	}
     
