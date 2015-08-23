@@ -19,8 +19,9 @@ void initializeChecksum(char ColumnOrRow, double * matrix, int ld, int N, int B,
 		for (int i = 0; i < N; i += B) {
 			magma_dgemm(MagmaNoTrans, MagmaTrans,
 						N - i, k, B,
-						MAGMA_D_ONE, vd, vd_ld,
+						MAGMA_D_ONE,
 						matrix + i * ld, ld,
+						vd, vd_ld,
 						MAGMA_D_ZERO, chksum + (i / B) * k * chksum_ld, chksum_ld);	
 		}
 	} else {
