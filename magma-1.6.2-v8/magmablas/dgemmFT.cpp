@@ -23,76 +23,83 @@ __global__ void detectAndCorrectForGemm(double * C, int ldc, int n,
  * k: number of col of A / col of B (i)
  */
 void dgemmFT(int m, int n, int k, double * A, int lda,
-		double * B, int ldb, double * C, int ldc,
-		int K,
+		double * B, int ldb, double * C, int ldc, 
 		double * checksumA, int checksumA_ld,
 		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
 		double * v, int v_ld,
-		double * chk, int chk_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
 		double * temp, int temp_ld,
 		magma_queue_t stream0, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3,
-		bool FT, bool DEBUG) {
+		bool FT, bool DEBUG, bool VERIFY) {
 
+	/*cout<<"checksum1 of A before dgemm:"<<endl;
+	printMatrix_gpu(checksumA1, incA1*sizeof(double), m/n,k);
+	cout<<"checksum2 of A before dgemm:"<<endl;
+	printMatrix_gpu(checksumA2, incA2*sizeof(double), m/n,k);
+	
+	cout<<"checksum1 of C before dgemm:"<<endl;
+	printMatrix_gpu(checksumC1, incC1*sizeof(double), m/n,n);
+	cout<<"checksum2 of C before dgemm:"<<endl;
+	printMatrix_gpu(checksumC2, incC2*sizeof(double), m/n,n);
+	*/
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
 	
-	if (FT) {
+	if (VERIFY) {
 		
 		magma_dgetmatrix_async( n, k,
 								B, ldb,
 								temp, temp_ld,
 								stream0 );							
-		//verify B before use
-		//reclaculate checksums of B on GPU
-		
-		for (int i = 0; i < K; i++) {
-			if (i % 2 == 0) {
-				magmablasSetKernelStream(stream2);
-				magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-						B, ldb, vd + i, vd_ld, MAGMA_D_ZERO, chk + i, chk_ld );
-			} else {
-				magmablasSetKernelStream(stream3);
-				magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-						B, ldb, vd + i, vd_ld, MAGMA_D_ZERO, chk + i, chk_ld );
-			}
-		}
-		//handle error - to be finished
+		verify B before use
+		reclaculate checksums of B on GPU
+		magmablasSetKernelStream(stream2);
+		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
+				B, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
+		magmablasSetKernelStream(stream3);
+		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
+				B, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
+		handle error - to be finished
 		
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of B before dgemm:"<<endl;
-			printMatrix_gpu(chk, chk_ld, K, k);
+			printMatrix_gpu(chk1, chk1_ld, 1, k);
+			printMatrix_gpu(chk2, chk2_ld, 1, k);
+		
 			cout<<"updated checksum of B before dgemm:"<<endl;
-			printMatrix_host(checksumB, checksumB_ld, K, k);
+			printMatrix_host(checksumB, checksumB_ld, 2, k);
 		}
 		
 		
 	
 		//verify A before use
 		for (int i = 0; i < m; i += n) {
-			for (int j = 0; j < K; j++) {
-					if (j % 2 == 0) {
-						magmablasSetKernelStream(stream2);
-						magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-								A + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk + (i / n) * K + j, chk_ld );
-					} else {
-						magmablasSetKernelStream(stream3);
-						magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-								A + i, ldb, vd + j, vd_ld, MAGMA_D_ZERO, chk + (i / n) * K + j, chk_ld );
-					}
-			}
+			magmablasSetKernelStream(stream2);
+			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
+					A + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+			magmablasSetKernelStream(stream3);
+			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
+					A + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 		}
-		//handle error - to be finished
+		handle error - to be finished
 		magmablasSetKernelStream(stream1);
 
+		
+		
+		
+		
 		if (DEBUG) {	
 			cout<<"recalculated checksum of A before dgemm:"<<endl;
-			printMatrix_gpu(chk, chk_ld, (m / n) * K, k);
+			printMatrix_gpu(chk1, chk1_ld, m / n, k);
+			printMatrix_gpu(chk2, chk2_ld, m / n, k);
+		
 			cout<<"updated checksum of A before dgemm:"<<endl;
-			printMatrix_host(checksumA, checksumA_ld, (m / n) * K, k);
+			printMatrix_host(checksumA, checksumA_ld, (m / n) * 2, k);
 		}
 		
 	}
@@ -111,7 +118,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		//update checksums on CPU
 		char N = 'N';
 		char T = 'T';
-		int m2 = (m / n) * K;
+		int m2 = (m / n) * 2;
 		int n2 = n;
 		int k2 = k;
 				
