@@ -371,7 +371,7 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
-                	bool VERIFY = false;
+                	bool VERIFY = true;
                 	if ((j / B) % 3 == 0) {
                 		VERIFY = true;
                 	}
