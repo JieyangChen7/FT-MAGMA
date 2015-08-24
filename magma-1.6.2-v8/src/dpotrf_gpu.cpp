@@ -372,7 +372,7 @@ magma_dpotrf_gpu(
 						printMatrix_gpu(dA, ldda, N, N);
 					}
                 	bool VERIFY = false;
-                	if (i % 3 == 0) {
+                	if ((j / B) % 3 == 0) {
                 		VERIFY = true;
                 	}
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
@@ -422,7 +422,7 @@ magma_dpotrf_gpu(
                 			chk1d, chk1d_ld,
                 			chk2d, chk2d_ld,
                 			work, jb, 
-                			stream[1], stream[2], stream[3]
+                			stream[1], stream[2], stream[3],
                 			FT, DEBUG, true);
                 }
             }
