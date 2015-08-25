@@ -104,7 +104,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 	}
 	
-	
+	/*
 	magma_dgemm(
 				MagmaNoTrans, MagmaTrans,
 				m, n, k,
@@ -130,4 +130,5 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 						&one,
 						checksumC, &checksumC_ld );
 	}
+	*/
 }
