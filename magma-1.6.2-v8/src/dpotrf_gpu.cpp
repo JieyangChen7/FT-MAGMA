@@ -390,7 +390,7 @@ magma_dpotrf_gpu(
                 			FT, DEBUG, VERIFY);
                 	
                 }
-                
+                /*
                 magma_queue_sync( stream[0] );
                 
                 if (DEBUG) {
@@ -426,7 +426,7 @@ magma_dpotrf_gpu(
                 			stream[1], stream[2], stream[3],
                 			FT, DEBUG, true);
                 }
-                
+                */
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
