@@ -52,6 +52,9 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
 		}
+		
+		magma_queue_sync( stream2 );
+		magma_queue_sync( stream3 );
 		magmablasSetKernelStream(stream1);	
 		//handle error - to be finished
 		
