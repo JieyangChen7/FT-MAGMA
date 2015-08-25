@@ -371,8 +371,8 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
-                	bool VERIFY = true;
-                	if ((j / B) % 3 == 0) {
+                	bool VERIFY = false;
+                	if ((j / B) % 10 == 0) {
                 		VERIFY = true;
                 	}
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
