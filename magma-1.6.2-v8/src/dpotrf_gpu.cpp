@@ -373,11 +373,11 @@ magma_dpotrf_gpu(
 						printMatrix_gpu(dA, ldda, N, N);
 					}
                 	bool VERIFY = true;
-//                	if ((j / B) % 3 == 0) {
-//                		VERIFY = true;
-//                	} else {
-//                		VERIFY = false;
-//                	}
+                	if ((j / B) % 3 == 0) {
+                		VERIFY = true;
+                	} else {
+                		VERIFY = false;
+                	}
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
