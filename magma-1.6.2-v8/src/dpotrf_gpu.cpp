@@ -372,12 +372,12 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
-                	bool VERIFY = false;
-                	if ((j / B) % 3 == 0) {
-                		VERIFY = true;
-                	} else {
-                		VERIFY = false;
-                	}
+                	bool VERIFY = true;
+//                	if ((j / B) % 3 == 0) {
+//                		VERIFY = true;
+//                	} else {
+//                		VERIFY = false;
+//                	}
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
@@ -411,7 +411,7 @@ magma_dpotrf_gpu(
                     *info = *info + j;
                     break;
                 }
-                
+                */
                 if ( (j+jb) < n) {          	
                 	if (DEBUG) {
 						cout<<"input matrix"<<endl;
@@ -427,7 +427,7 @@ magma_dpotrf_gpu(
                 			stream[1], stream[2], stream[3],
                 			FT, DEBUG, true);
                 }
-                */
+                
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
