@@ -91,14 +91,6 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		//handle error - to be finished
 		magma_queue_sync( stream2 );
 		magma_queue_sync( stream3 );
-		
-		
-		magmablasSetKernelStream(stream1);
-
-		
-		
-		
-		
 		if (DEBUG) {	
 			cout<<"recalculated checksum of A before dgemm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, m / n, k);
@@ -110,6 +102,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 	}
 	
+	magmablasSetKernelStream(stream1);
 	magma_dgemm(
 				MagmaNoTrans, MagmaTrans,
 				m, n, k,
