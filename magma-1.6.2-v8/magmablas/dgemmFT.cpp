@@ -49,12 +49,14 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	double one = 1;
 	double zero = 0;
 	
-	if (VERIFY) {
-		
+	if (FT) {
 		magma_dgetmatrix_async( n, k,
 								B, ldb,
 								temp, temp_ld,
-								stream0 );							
+								stream0 );	
+	}
+	
+	if (VERIFY) {
 		//verify B before use
 		//reclaculate checksums of B on GPU
 		magmablasSetKernelStream(stream2);
