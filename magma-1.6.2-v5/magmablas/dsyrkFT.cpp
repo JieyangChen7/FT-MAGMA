@@ -35,14 +35,14 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 	
 
-	if (FT) {
-		magma_dsetmatrix_async( 2, m,
-								checksumA, checksumA_ld,
-								chkd_updateA, chkd_updateA_ld, stream0);
-		magma_dsetmatrix_async( 2, n,
-								checksumC, checksumC_ld, 
-								chkd_updateC, chkd_updateC_ld, stream0);
-	}
+//	if (FT) {
+//		magma_dsetmatrix_async( 2, m,
+//								checksumA, checksumA_ld,
+//								chkd_updateA, chkd_updateA_ld, stream0);
+//		magma_dsetmatrix_async( 2, n,
+//								checksumC, checksumC_ld, 
+//								chkd_updateC, chkd_updateC_ld, stream0);
+//	}
 	
 	double negone = -1;
 	double one = 1;
@@ -51,20 +51,20 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 	
 	if (FT) {
-//		magma_dgemm(
-//				MagmaNoTrans, MagmaTrans,
-//				n, n, m,
-//				MAGMA_D_ONE * (-1),
-//				A, lda, A, lda,
-//				MAGMA_D_ONE,
-//				C, ldc );
-//	} else {
-//		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
-//						MAGMA_D_ONE * (-1), A, lda,
-//						MAGMA_D_ONE,     C, ldc);
-//	}
-//
-//	
+		magma_dgemm(
+				MagmaNoTrans, MagmaTrans,
+				n, n, m,
+				MAGMA_D_ONE * (-1),
+				A, lda, A, lda,
+				MAGMA_D_ONE,
+				C, ldc );
+	} else {
+		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
+						MAGMA_D_ONE * (-1), A, lda,
+						MAGMA_D_ONE,     C, ldc);
+	}
+
+	
 //	if(FT){
 //		magma_queue_sync( stream0 );
 //		
