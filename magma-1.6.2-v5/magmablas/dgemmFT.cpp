@@ -62,7 +62,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //				MAGMA_D_ONE,
 //				C, ldc );
 //
-//	if(FT){	
+	if(FT){	
 //		//recalculate checksum1 and checksum2
 ////		magma_queue_sync( stream1 );
 //		for (int i = 0; i < m; i += n) {
