@@ -86,12 +86,12 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		
 //		//recalculate checksum1 and checksum2
 //		magma_queue_sync( stream1 );
-		magmablasSetKernelStream(stream2);
-		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-				C, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
-		magmablasSetKernelStream(stream3);
-		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-				C, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
+//		magmablasSetKernelStream(stream2);
+//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//				C, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
+//		magmablasSetKernelStream(stream3);
+//		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//				C, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
 //		magmablasSetKernelStream(stream1);
 //		
 //		
