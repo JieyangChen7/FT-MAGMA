@@ -46,38 +46,38 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	if (FT) {
 		//recalculate checksums on GPU
 //		magma_queue_sync( stream1 );
-		double beta = 0;
-		for (int i = 0; i < m; i += n) {
-			magmablasSetKernelStream(stream2);
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-			magmablasSetKernelStream(stream3);
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
-		}
-		magmablasSetKernelStream(stream1);
-		
-		//update checksums on CPU
-		char R = 'R';
-		char L = 'L';
-		char T = 'T';
-		char N = 'N';
-		int m2 = (m / n) * 2;
-		int n2 = n;
-		blasf77_dtrsm(&R, &L, &T, &N,
-					 &m2, &n2,
-					 &one,
-					 work, &work_ld,
-					 checksumB, &checksumB_ld);
-		
-		if (DEBUG) {
-			cout<<"recalculated checksum of B after dtrsm:"<<endl;
-			printMatrix_gpu(chk1,chk1_ld, (m / n), n);
-			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
-
-			cout<<"updated checksum of B after dtrsm:"<<endl;
-			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
-		}
+//		double beta = 0;
+//		for (int i = 0; i < m; i += n) {
+//			magmablasSetKernelStream(stream2);
+//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+//			magmablasSetKernelStream(stream3);
+//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
+//		}
+//		magmablasSetKernelStream(stream1);
+//		
+//		//update checksums on CPU
+//		char R = 'R';
+//		char L = 'L';
+//		char T = 'T';
+//		char N = 'N';
+//		int m2 = (m / n) * 2;
+//		int n2 = n;
+//		blasf77_dtrsm(&R, &L, &T, &N,
+//					 &m2, &n2,
+//					 &one,
+//					 work, &work_ld,
+//					 checksumB, &checksumB_ld);
+//		
+//		if (DEBUG) {
+//			cout<<"recalculated checksum of B after dtrsm:"<<endl;
+//			printMatrix_gpu(chk1,chk1_ld, (m / n), n);
+//			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
+//
+//			cout<<"updated checksum of B after dtrsm:"<<endl;
+//			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
+//		}
 		/*detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n,
 			checksumB1, incB1, checksumB2, incB2,
 			chk1, chk1_ld, chk2, chk2_ld);
