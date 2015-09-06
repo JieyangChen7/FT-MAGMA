@@ -59,7 +59,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 									 2, n, n,
 									 MAGMA_D_ONE, vd, vd_ld,
 												B + i, ldb,
-									 MAGMA_D_ZERO, chk1 + (i/n)*2, chk_ld);
+									 MAGMA_D_ZERO, chk1 + (i/n)*2, chk1_ld);
 		}
 //		magmablasSetKernelStream(streams[1]);
 //		
