@@ -47,21 +47,21 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	double one = 1;
 	double zero = 0;
 	
-	if (FT) {
-		magma_dgetmatrix_async( n, k,
-								B, ldb,
-								temp, temp_ld,
-								stream0 );	
-	}
+//	if (FT) {
+//		magma_dgetmatrix_async( n, k,
+//								B, ldb,
+//								temp, temp_ld,
+//								stream0 );	
+//	}
 	
-//	magma_dgemm(
-//				MagmaNoTrans, MagmaTrans,
-//				m, n, k,
-//				MAGMA_D_ONE * (-1),
-//				A, lda, B, ldb,
-//				MAGMA_D_ONE,
-//				C, ldc );
-//
+	magma_dgemm(
+				MagmaNoTrans, MagmaTrans,
+				m, n, k,
+				MAGMA_D_ONE * (-1),
+				A, lda, B, ldb,
+				MAGMA_D_ONE,
+				C, ldc );
+
 	if(FT){	
 //		//recalculate checksum1 and checksum2
 ////		magma_queue_sync( stream1 );
