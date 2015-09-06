@@ -47,6 +47,13 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	double one = 1;
 	double zero = 0;
 	
+	if (FT) {
+		magma_dgetmatrix_async( n, k,
+								B, ldb,
+								temp, temp_ld,
+								stream0 );	
+	}
+	
 	magma_dgemm(
 				MagmaNoTrans, MagmaTrans,
 				m, n, k,
@@ -54,12 +61,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				A, lda, B, ldb,
 				MAGMA_D_ONE,
 				C, ldc );
-	
-//	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, m, n, k, &negone, A, lda, B,
-//			ldb, &one, C, ldc);
 
 	if(FT){	
 		//recalculate checksum1 and checksum2
+		magma_queue_sync( stream1 );
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(stream2);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
@@ -67,13 +72,6 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			magmablasSetKernelStream(stream3);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-//			magma_dgemm(
-//						MagmaTrans, MagmaNoTrans,
-//						2, n, n,
-//						MAGMA_D_ONE,
-//						vd, vd_ld, C + i, ldc,
-//						MAGMA_D_ZERO,
-//						chk + (i / n) * 2, chk_ld );
 		}
 		magmablasSetKernelStream(stream1);
 		
@@ -95,13 +93,6 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 						&one,
 						checksumC, &checksumC_ld );
 				
-//		magma_dgemm(
-//					MagmaNoTrans, MagmaTrans,
-//					(m / n) * 2, n, k,
-//					MAGMA_D_ONE * (-1),
-//					checksumA, checksumA_ld, B, ldb,
-//					MAGMA_D_ONE,
-//					checksumC, checksumC_ld );
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of C after dgemm:"<<endl;

@@ -45,6 +45,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	                                       B, ldb);
 	if (FT) {
 		//recalculate checksums on GPU
+		magma_queue_sync( stream1 );
 		double beta = 0;
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(stream2);
@@ -53,12 +54,6 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			magmablasSetKernelStream(stream3);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
-			
-//			magma_dgemm( MagmaNoTrans, MagmaNoTrans,
-//						 2, n, n,
-//						 MAGMA_D_ONE, vd, vd_ld,
-//									B + i, ldb,
-//						 MAGMA_D_ZERO, chk1 + (i/n)*2, chk1_ld);
 		}
 		magmablasSetKernelStream(stream1);
 		
