@@ -64,7 +64,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 
 	if(FT){	
 		//recalculate checksum1 and checksum2
-		magma_queue_sync( stream1 );
+//		magma_queue_sync( stream1 );
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(stream2);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
