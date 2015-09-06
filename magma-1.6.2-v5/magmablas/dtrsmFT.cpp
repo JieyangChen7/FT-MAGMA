@@ -43,8 +43,8 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	                                m, n,
 	                                MAGMA_D_ONE, A, lda,
 	                                       B, ldb);
-	if (FT) {
-		//recalculate checksums on GPU
+//	if (FT) {
+//		//recalculate checksums on GPU
 //		magma_queue_sync( stream1 );
 //		double beta = 0;
 //		for (int i = 0; i < m; i += n) {
