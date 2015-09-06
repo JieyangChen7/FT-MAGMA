@@ -50,7 +50,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 
 	
 	
-//	if (FT) {
+	if (FT) {
 //		magma_dgemm(
 //				MagmaNoTrans, MagmaTrans,
 //				n, n, m,
