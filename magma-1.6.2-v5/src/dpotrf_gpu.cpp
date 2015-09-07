@@ -326,7 +326,7 @@ magma_dpotrf_gpu(
         }
         else {
         	
-        	for (int P = 8; P >=1; P /= 2) {
+        	for (int P = 64; P >=1; P /= 2) {
         	magma_set_lapack_numthreads(P);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
