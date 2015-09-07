@@ -346,18 +346,18 @@ magma_dpotrf_gpu(
                 //jb = min(nb, (n-j));
             	magma_set_lapack_numthreads(64);
             	jb = nb;
-                if (j > 0) {
-					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
-							checksum + (j / jb) * 2, checksum_ld, 
-							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-							vd, vd_ld, 
-							v, v_ld,
-							chk1d, chk1d_ld, 
-							chk2d, chk2d_ld, 
-							chkd_updateA, chkd_updateA_ld,
-							chkd_updateC, chkd_updateC_ld, stream[0], stream[1], stream[2], stream[3],
-							FT, DEBUG);
-                }
+//                if (j > 0) {
+//					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+//							checksum + (j / jb) * 2, checksum_ld, 
+//							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+//							vd, vd_ld, 
+//							v, v_ld,
+//							chk1d, chk1d_ld, 
+//							chk2d, chk2d_ld, 
+//							chkd_updateA, chkd_updateA_ld,
+//							chkd_updateC, chkd_updateC_ld, stream[0], stream[1], stream[2], stream[3],
+//							FT, DEBUG);
+//                }
 //                              
 //                magma_queue_sync( stream[1] );
 //                magma_dgetmatrix_async( jb, jb,
@@ -394,17 +394,17 @@ magma_dpotrf_gpu(
 //                    break;
 //                }
 //                
-//                if ( (j+jb) < n) {     
-//                	magma_set_lapack_numthreads(2);
-//                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
-//                			dA(j+jb, j), ldda,
-//                			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
-//                			vd, vd_ld, 
-//                			chk1d, chk1d_ld,
-//                			chk2d, chk2d_ld,
-//                			work, jb, 
-//                			FT, DEBUG, stream);
-//                }
+                if ( (j+jb) < n) {     
+                	magma_set_lapack_numthreads(2);
+                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
+                			dA(j+jb, j), ldda,
+                			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
+                			vd, vd_ld, 
+                			chk1d, chk1d_ld,
+                			chk2d, chk2d_ld,
+                			work, jb, 
+                			FT, DEBUG, stream);
+                }
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
