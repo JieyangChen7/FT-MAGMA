@@ -377,13 +377,13 @@ magma_dpotrf_gpu(
                 			stream,
                 			FT, DEBUG);
                 }
-//
-//                magma_queue_sync( stream[0] );
-//                magma_set_lapack_numthreads(64);
-//                dpotrfFT(work, B, B, info, 
-//                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
-//                		v, v_ld, 
-//                		FT, DEBUG);
+
+                magma_queue_sync( stream[0] );
+                magma_set_lapack_numthreads(64);
+                dpotrfFT(work, B, B, info, 
+                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
+                		v, v_ld, 
+                		FT, DEBUG);
                                 
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
