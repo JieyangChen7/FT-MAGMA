@@ -360,11 +360,11 @@ magma_dpotrf_gpu(
 							FT, DEBUG);
                 }
                               
-//                magma_queue_sync( stream[1] );
-//                magma_dgetmatrix_async( jb, jb,
-//                                        dA(j, j), ldda,
-//                                        work,     jb, stream[0] );
-//                           
+                magma_queue_sync( stream[1] );
+                magma_dgetmatrix_async( jb, jb,
+                                        dA(j, j), ldda,
+                                        work,     jb, stream[0] );
+                           
                 if ( (j+jb) < n && j > 0) {
                 	magma_set_lapack_numthreads(16);
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
@@ -385,11 +385,11 @@ magma_dpotrf_gpu(
 //                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
 //                		v, v_ld, 
 //                		FT, DEBUG);
-//                                
-//                magma_dsetmatrix_async( jb, jb,
-//                                        work,     jb,
-//                                        dA(j, j), ldda, stream[1] );
-//                
+                                
+                magma_dsetmatrix_async( jb, jb,
+                                        work,     jb,
+                                        dA(j, j), ldda, stream[1] );
+                
 //                if (*info != 0) {
 //                    *info = *info + j;
 //                    break;
