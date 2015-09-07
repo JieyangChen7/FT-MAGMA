@@ -60,17 +60,17 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		char N = 'N';
 		char L = 'L';
 		int nOfChecksum = 2;
-//		
-//		
-//		blasf77_dtrmv(  &L, &T, &N,
-//		                &n,
-//		                A, &lda,
-//		                chk1, &chk1_inc );
-//		blasf77_dtrmv(  &L, &T, &N,
-//						&n,
-//						A, &lda,
-//						chk2, &chk2_inc );
-//		
+		
+		
+		blasf77_dtrmv(  &L, &T, &N,
+		                &n,
+		                A, &lda,
+		                chk1, &chk1_inc );
+		blasf77_dtrmv(  &L, &T, &N,
+						&n,
+						A, &lda,
+						chk2, &chk2_inc );
+		
 		
 //		blasf77_dgemm(  &trans, &Ntrans,
 //						 &nOfChecksum, &n, &n,
