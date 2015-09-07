@@ -63,36 +63,36 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //				C, ldc );
 
 	if(FT){	
-		//recalculate checksum1 and checksum2
-//		magma_queue_sync( stream1 );
-		for (int i = 0; i < m; i += n) {
-			magmablasSetKernelStream(streams[2]);
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					C + i, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-			magmablasSetKernelStream(streams[3]);
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-		}
+//		//recalculate checksum1 and checksum2
+////		magma_queue_sync( stream1 );
+//		for (int i = 0; i < m; i += n) {
+//			magmablasSetKernelStream(streams[2]);
+//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//					C + i, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+//			magmablasSetKernelStream(streams[3]);
+//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+//					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
+//		}
 //		magmablasSetKernelStream(streams[1]);
 //		
 //		magma_queue_sync( streams[0] );
 //		//update checksum1 and checksum2
 //				
-//		char N = 'N';
-//		char T = 'T';
-//		int m2 = (m / n) * 2;
-//		int n2 = n;
-//		int k2 = k;
-//		
-//		
-//		blasf77_dgemm(  &N, &T,
-//						&m2, &n2, &k2,
-//						&negone,
-//						checksumA, &checksumA_ld,
-//						temp, &temp_ld,
-//						&one,
-//						checksumC, &checksumC_ld );
-//				
+		char N = 'N';
+		char T = 'T';
+		int m2 = (m / n) * 2;
+		int n2 = n;
+		int k2 = k;
+		
+		
+		blasf77_dgemm(  &N, &T,
+						&m2, &n2, &k2,
+						&negone,
+						checksumA, &checksumA_ld,
+						temp, &temp_ld,
+						&one,
+						checksumC, &checksumC_ld );
+				
 //		
 //		if (DEBUG) {
 //			cout<<"recalculated checksum of C after dgemm:"<<endl;
