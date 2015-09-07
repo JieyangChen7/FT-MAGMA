@@ -325,7 +325,7 @@ magma_dpotrf_gpu(
             }
         }
         else {
-        	magma_set_lapack_numthreads(64);
+        	//magma_set_lapack_numthreads(64);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
@@ -344,7 +344,7 @@ magma_dpotrf_gpu(
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
-            	
+            	magma_set_lapack_numthreads(64);
             	jb = nb;
                 if (j > 0) {
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
@@ -365,6 +365,7 @@ magma_dpotrf_gpu(
                                         work,     jb, stream[0] );
                            
                 if ( (j+jb) < n && j > 0) {
+                	magma_set_lapack_numthreads(16);
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
@@ -393,7 +394,8 @@ magma_dpotrf_gpu(
                     break;
                 }
                 
-                if ( (j+jb) < n) {          	
+                if ( (j+jb) < n) {     
+                	magma_set_lapack_numthreads(2);
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
