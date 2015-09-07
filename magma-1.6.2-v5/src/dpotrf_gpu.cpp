@@ -379,7 +379,7 @@ magma_dpotrf_gpu(
 //                }
 //
 //                magma_queue_sync( stream[0] );
-                magma_set_lapack_numthreads(4);
+                magma_set_lapack_numthreads(2);
                 dpotrfFT(work, B, B, info, 
                 		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
                 		v, v_ld, 
