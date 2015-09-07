@@ -325,7 +325,9 @@ magma_dpotrf_gpu(
             }
         }
         else {
-        	//magma_set_lapack_numthreads(64);
+        	
+        	for (int P = 8; P >=1; P /= 2) {
+        	magma_set_lapack_numthreads(P);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
@@ -344,7 +346,6 @@ magma_dpotrf_gpu(
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
-            	magma_set_lapack_numthreads(64);
             	jb = nb;
 //                if (j > 0) {
 //					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
@@ -379,7 +380,7 @@ magma_dpotrf_gpu(
 //                }
 
 //                magma_queue_sync( stream[0] );
-                magma_set_lapack_numthreads(16);
+                //magma_set_lapack_numthreads(16);
                 dpotrfFT(work, B, B, info, 
                 		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
                 		v, v_ld, 
@@ -420,6 +421,7 @@ magma_dpotrf_gpu(
 					<< real_time << "---" << "Proc_time:"
 					<< proc_time << "---" << "Total GFlops:" << endl;            
 			PAPI_shutdown();
+        	}
         }
     }
 
