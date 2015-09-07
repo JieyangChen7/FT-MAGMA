@@ -326,8 +326,8 @@ magma_dpotrf_gpu(
         }
         else {
         	
-        	for (int P = 64; P >=1; P /= 2) {
-        	magma_set_lapack_numthreads(P);
+        	//for (int P = 64; P >=1; P /= 2) {
+        	magma_set_lapack_numthreads(64);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
@@ -421,7 +421,7 @@ magma_dpotrf_gpu(
 					<< real_time << "---" << "Proc_time:"
 					<< proc_time << "---" << "Total GFlops:" << endl;            
 			PAPI_shutdown();
-        	}
+        	//}
         }
     }
 
