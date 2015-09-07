@@ -34,7 +34,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	//int info;
 	//dpotrf('L', n, A, n, &info);
 	char uplo = 'L';
-	lapackf77_dpotrf(&uplo, &n, A, &n, info);
+	//lapackf77_dpotrf(&uplo, &n, A, &n, info);
 	if (FT) {
 	
 		//cout<<"matrix A after dpotrf:"<<endl;
@@ -62,14 +62,14 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 //		int nOfChecksum = 2;
 //		
 //		
-//		blasf77_dtrmv(  &L, &T, &N,
-//		                &n,
-//		                A, &lda,
-//		                chk1, &chk1_inc );
-//		blasf77_dtrmv(  &L, &T, &N,
-//						&n,
-//						A, &lda,
-//						chk2, &chk2_inc );
+		blasf77_dtrmv(  &L, &T, &N,
+		                &n,
+		                A, &lda,
+		                chk1, &chk1_inc );
+		blasf77_dtrmv(  &L, &T, &N,
+						&n,
+						A, &lda,
+						chk2, &chk2_inc );
 		
 		
 //		blasf77_dgemm(  &trans, &Ntrans,
