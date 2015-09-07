@@ -54,25 +54,25 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //								streams[0] );	
 //	}
 	
-	magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
-				m, n, k,
-				MAGMA_D_ONE * (-1),
-				A, lda, B, ldb,
-				MAGMA_D_ONE,
-				C, ldc );
+//	magma_dgemm(
+//				MagmaNoTrans, MagmaTrans,
+//				m, n, k,
+//				MAGMA_D_ONE * (-1),
+//				A, lda, B, ldb,
+//				MAGMA_D_ONE,
+//				C, ldc );
 
 	if(FT){	
-//		//recalculate checksum1 and checksum2
-////		magma_queue_sync( stream1 );
-//		for (int i = 0; i < m; i += n) {
-//			magmablasSetKernelStream(streams[2]);
-//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//					C + i, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-//			magmablasSetKernelStream(streams[3]);
-//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-//		}
+		//recalculate checksum1 and checksum2
+//		magma_queue_sync( stream1 );
+		for (int i = 0; i < m; i += n) {
+			magmablasSetKernelStream(streams[2]);
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					C + i, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+			magmablasSetKernelStream(streams[3]);
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
+		}
 //		magmablasSetKernelStream(streams[1]);
 //		
 //		magma_queue_sync( streams[0] );
