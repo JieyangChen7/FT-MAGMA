@@ -102,7 +102,7 @@ magma_dpotrf_gpu(
     double          d_neg_one = -1.0;
     int upper = (uplo == MagmaUpper);
 
-    *info = 0;
+    *info = 0; 
     if (! upper && uplo != MagmaLower) {
         *info = -1;
     } else if (n < 0) {
