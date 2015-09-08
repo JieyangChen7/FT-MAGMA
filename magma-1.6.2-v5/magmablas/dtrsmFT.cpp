@@ -39,6 +39,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
+	magmablasSetKernelStream(streams[1]);
 	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 	                                m, n,
 	                                MAGMA_D_ONE, A, lda,
@@ -55,7 +56,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 				B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );	
 		}
-		magmablasSetKernelStream(streams[1]);
+
 		
 		//update checksums on CPU
 		char R = 'R';

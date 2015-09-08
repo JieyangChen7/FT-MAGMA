@@ -51,6 +51,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 	
 //	if (FT) {
+	magmablasSetKernelStream(streams[1]);
 		magma_dgemm(
 				MagmaNoTrans, MagmaTrans,
 				n, n, m,
@@ -89,7 +90,6 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magmablasSetKernelStream(stream3);
 		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 				C, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
-		magmablasSetKernelStream(stream1);
 //		
 //		
 ////		//update checksum1 and checksum2
