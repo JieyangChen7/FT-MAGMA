@@ -361,10 +361,10 @@ magma_dpotrf_gpu(
 							FT, DEBUG);
                 }
                               
-                magma_queue_sync( stream[1] );
+                //magma_queue_sync( stream[1] );
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
-                                        work,     jb, stream[0] );
+                                        work,     jb, stream[1] );
                            
                 if ( (j+jb) < n && j > 0) {
                 	magma_set_lapack_numthreads(16);
@@ -395,7 +395,6 @@ magma_dpotrf_gpu(
                     *info = *info + j;
                     break;
                 }
-                
                 if ( (j+jb) < n) {     
                 	magma_set_lapack_numthreads(2);
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
