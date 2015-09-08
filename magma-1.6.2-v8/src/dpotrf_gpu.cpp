@@ -345,7 +345,7 @@ magma_dpotrf_gpu(
             	jb = nb;
             	
             	bool VERIFY = true;
-				if ((j / B) % 3 == 0) {
+				if ((j / jb) % 5 == 0) {
 					VERIFY = true;
 				} else {
 					VERIFY = false;
