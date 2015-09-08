@@ -344,11 +344,20 @@ magma_dpotrf_gpu(
             	}
             	jb = nb;
             	
+            	bool VERIFY = true;
+				if ((j / B) % 3 == 0) {
+					VERIFY = true;
+				} else {
+					VERIFY = false;
+				}
+            	
                 if (j > 0) {
                 	if (DEBUG) {
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
+                	
+                	
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
@@ -358,7 +367,7 @@ magma_dpotrf_gpu(
 							chk2d, chk2d_ld, 
 							chkd_updateA, chkd_updateA_ld,
 							chkd_updateC, chkd_updateC_ld, stream[0], stream[1], stream[2], stream[3],
-							FT, DEBUG, true);
+							FT, DEBUG, VERIFY);
 					
                 }
                               
@@ -372,12 +381,6 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
-                	bool VERIFY = true;
-                	if ((j / B) % 3 == 0) {
-                		VERIFY = true;
-                	} else {
-                		VERIFY = false;
-                	}
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
