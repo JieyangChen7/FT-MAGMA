@@ -30,7 +30,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		double * chk2, int chk2_ld,
 		double * chkd_updateA, int chkd_updateA_ld, 
 		double * chkd_updateC, int chkd_updateC_ld, 
-		magma_queue_t * streams
+		magma_queue_t * streams,
 		bool FT, bool DEBUG){
 	
 	
