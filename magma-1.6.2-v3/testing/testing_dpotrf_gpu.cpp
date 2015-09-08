@@ -50,7 +50,7 @@ int main( int argc, char** argv)
     //for( int itest = 0; itest < opts.ntest; ++itest ) {
     for( int itest = 0; itest < 1; ++itest ) {
     //    for( int iter = 0; iter < opts.niter; ++iter ) {
-            N   = 15360;
+            N   = 20480;
             //N   = Nsize[itest];
             lda = N;
             n2  = lda*N;
