@@ -318,7 +318,19 @@ magma_dpotrf_gpu(
             }
         }
         else {
-        	magma_set_lapack_numthreads(16);
+        	
+        	
+        	float noFTtime = 0;
+			float FTtime = 0;
+        	for (int P = 0; P < 2; P ++) {
+				if (P == 0) {
+					FT = false;
+				} else {
+					FT = true;
+				}
+        	
+        	
+        	magma_set_lapack_numthreads(64);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
@@ -348,6 +360,7 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
+                	magma_set_lapack_numthreads(64);
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
@@ -371,6 +384,7 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
+                	magma_set_lapack_numthreads(16);
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
@@ -392,6 +406,7 @@ magma_dpotrf_gpu(
 					cout<<"input matrix"<<endl;
 					printMatrix_gpu(dA, ldda, N, N);
 				}
+                magma_set_lapack_numthreads(64);
                 dpotrfFT(work, B, B, info, 
                 		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
                 		v, v_ld, 
@@ -411,6 +426,7 @@ magma_dpotrf_gpu(
 						cout<<"input matrix"<<endl;
 						printMatrix_gpu(dA, ldda, N, N);
 					}
+                	magma_set_lapack_numthreads(2);
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
@@ -429,12 +445,17 @@ magma_dpotrf_gpu(
 				cout << "PAPI ERROR" << endl;
 				return -1;
 			}
-			if (FT)
-					cout << "FT enabled" << endl;
-			cout << "Size:" << N << "(" << B << ")---Real_time:"
-					<< real_time << "---" << "Proc_time:"
-					<< proc_time << "---" << "Total GFlops:" << endl;            
+			if (FT) {
+					//cout << "FT enabled:" << endl;
+					FTtime = real_time;
+			} else {
+					//cout << "FT disabled:" << endl;
+					noFTtime = real_time;
+			}  
 			PAPI_shutdown();
+        	}
+        	float overhead = (FTtime - noFTtime) / noFTtime;
+        	cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
         }
     }
 
