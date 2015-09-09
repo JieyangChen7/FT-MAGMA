@@ -288,7 +288,7 @@ magma_dpotrf_gpu(
 			}
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
-            for (j=0; j < n; j += nb) {
+       /*     for (j=0; j < n; j += nb) {
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
@@ -346,6 +346,7 @@ magma_dpotrf_gpu(
                 			vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
                 }
             }
+            */
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
             //timing end***************
