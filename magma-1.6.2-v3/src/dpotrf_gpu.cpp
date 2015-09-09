@@ -146,7 +146,7 @@ magma_dpotrf_gpu(
     int B = nb;
     int N = n;
     //variables for FT
-    bool FT = true;
+    bool FT = false;
     bool DEBUG = false;
 	double * v;
 	int v_ld;
@@ -173,7 +173,7 @@ magma_dpotrf_gpu(
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
-
+		
 		magma_dmalloc_pinned(&v, B * 2 * sizeof(double));
 		v_ld = B;
 		for (int i = 0; i < B; ++i) {
