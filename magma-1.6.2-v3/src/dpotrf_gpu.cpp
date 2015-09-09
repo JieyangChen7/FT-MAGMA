@@ -195,7 +195,7 @@ magma_dpotrf_gpu(
 
 		//allocate space for update checksum on CPU
 		magma_dmalloc_pinned(&chk, B * 2 * sizeof(double));
-		chk_ld = B;
+		chk_ld = 2;
 		//cout<<"allocate space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on GPU
