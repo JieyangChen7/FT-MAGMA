@@ -64,9 +64,9 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 //					MAGMA_D_ZERO,
 //					chk, chk_ld );
 		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-				C, ldc, vd, 1, MAGMA_D_ZERO, chk1, chk1_ld );
+				C, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
 		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-				C, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2, chk2_ld );
+				C, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
 		
 		//update checksum1 and checksum2
 		

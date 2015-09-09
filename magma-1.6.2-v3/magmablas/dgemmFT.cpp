@@ -59,9 +59,9 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		//recalculate checksum1 and checksum2
 		for (int i = 0; i < m; i += n) {
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					C + i, ldc, vd, 1, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+					C + i, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					C + i, ldc, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
+					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 //			magma_dgemm(
 //						MagmaTrans, MagmaNoTrans,
 //						2, n, n,
