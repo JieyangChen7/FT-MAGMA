@@ -361,7 +361,7 @@ magma_dpotrf_gpu(
 							FT, DEBUG);
                 }
                               
-//                magma_queue_sync( stream[1] );
+                magma_queue_sync( stream[1] );
 //                magma_dgetmatrix_async( jb, jb,
 //                                        dA(j, j), ldda,
 //                                        work,     jb, stream[0] );
