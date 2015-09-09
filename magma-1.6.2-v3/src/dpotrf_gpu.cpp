@@ -277,6 +277,17 @@ magma_dpotrf_gpu(
             }
         }
         else {
+        	
+        	float noFTtime = 0;
+			float FTtime = 0;
+			
+		for (int P = 0; P < 2; P ++) {
+			if (P == 0) {
+				FT = false;
+			} else {
+				FT = true;
+			}
+        	
         	float real_time = 0.0;
 			float proc_time = 0.0;
 			long long flpins = 0.0;
@@ -354,15 +365,19 @@ magma_dpotrf_gpu(
 				cout << "PAPI ERROR" << endl;
 				return -1;
 			}
-			if (FT)
-					cout << "FT enabled" << endl;
-			cout << "Size:" << N << "(" << B << ")---Real_time:"
-					<< real_time << "---" << "Proc_time:"
-					<< proc_time << "---" << "Total GFlops:" << endl;            
+			if (FT) {
+					//cout << "FT enabled:" << endl;
+					FTtime = real_time;
+			} else {
+					//cout << "FT disabled:" << endl;
+					noFTtime = real_time;
+			}           
 			PAPI_shutdown();
-            
-        }
-    }
+		}
+		float overhead = (FTtime - noFTtime) / noFTtime;
+				cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
+     }
+    
 
     magma_free_pinned( work );
 
