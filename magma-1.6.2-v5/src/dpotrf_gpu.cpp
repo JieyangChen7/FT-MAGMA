@@ -432,20 +432,20 @@ magma_dpotrf_gpu(
 			}     
 			PAPI_shutdown();
 			
-			magma_free_pinned( work );
-
-			magma_queue_destroy( stream[0] );
-			if (orig_stream == NULL) {
-				magma_queue_destroy( stream[1] );
-			}
-			magmablasSetKernelStream( orig_stream );
-        	}
+			
         	float overhead = (FTtime - noFTtime) / noFTtime;
         	cout << "no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
         }
     }
 
-    
+        magma_free_pinned( work );
+
+		magma_queue_destroy( stream[0] );
+		if (orig_stream == NULL) {
+			magma_queue_destroy( stream[1] );
+		}
+		magmablasSetKernelStream( orig_stream );
+		}
 
     return *info;
 } /* magma_dpotrf_gpu */
