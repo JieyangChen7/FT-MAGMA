@@ -325,6 +325,8 @@ magma_dpotrf_gpu(
             }
         }
         else {
+        	float noFTtime = 0;
+        	float Fttime = 0;
         	
         for (int P = 0; P < 2; P ++) {
         	if (P == 0) {
@@ -421,23 +423,29 @@ magma_dpotrf_gpu(
 				cout << "PAPI ERROR" << endl;
 				return -1;
 			}
-			if (FT)
-					cout << "FT enabled" << endl;
-			cout << "Size:" << N << "(" << B << ")---Real_time:"
-					<< real_time << "---" << "Proc_time:"
-					<< proc_time << "---" << "Total GFlops:" << endl;            
+			if (FT) {
+					//cout << "FT enabled" << endl;
+					FTtime = real_time;
+			} else {
+					//cout << "FT disabled" << endl;
+					noFTtime = real_time;
+			}     
 			PAPI_shutdown();
+			
+			magma_free_pinned( work );
+
+			magma_queue_destroy( stream[0] );
+			if (orig_stream == NULL) {
+				magma_queue_destroy( stream[1] );
+			}
+			magmablasSetKernelStream( orig_stream );
         	}
+        	float overhead = (FTtime - noFTtime) / noFTtime;
+        	cout << "no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
         }
     }
 
-    magma_free_pinned( work );
-
-    magma_queue_destroy( stream[0] );
-    if (orig_stream == NULL) {
-        magma_queue_destroy( stream[1] );
-    }
-    magmablasSetKernelStream( orig_stream );
+    
 
     return *info;
 } /* magma_dpotrf_gpu */
