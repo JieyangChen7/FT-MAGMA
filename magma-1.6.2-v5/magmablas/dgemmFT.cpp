@@ -48,10 +48,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	double zero = 0;
 	
 	if (FT) {
-		magma_dgetmatrix_async( n, k,
-								B, ldb,
-								temp, temp_ld,
-								streams[0] );	
+			
 	}
 	magmablasSetKernelStream(streams[1]);
 	magma_dgemm(
@@ -63,6 +60,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				C, ldc );
 
 	if(FT){	
+		magma_dgetmatrix_async( n, k,
+										B, ldb,
+										temp, temp_ld,
+										streams[0] );
 		//recalculate checksum1 and checksum2
 //		magma_queue_sync( stream1 );
 		for (int i = 0; i < m; i += n) {
