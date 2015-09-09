@@ -435,7 +435,7 @@ magma_dpotrf_gpu(
         }
         
         float overhead = (FTtime - noFTtime) / noFTtime;
-		cout << "no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
+		cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
     }
 
         magma_free_pinned( work );
