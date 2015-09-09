@@ -212,9 +212,9 @@ magma_dpotrf_gpu(
 		checksum_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
 		checksum_ld = checksum_pitch / sizeof(double);
 		magma_dmalloc(&checksum, checksum_pitch * N);
-/*		initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksum, checksum_ld);
+		initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksum, checksum_ld);
 		//cout<<"checksums initialized"<<endl;
-*/
+
 		//printMatrix_gpu(dA, ldda, N, N);
 		//printMatrix_gpu(checksum, checksum_ld, N / B * 2, N);
 	}
