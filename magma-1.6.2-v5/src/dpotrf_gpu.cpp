@@ -369,10 +369,10 @@ magma_dpotrf_gpu(
 							FT, DEBUG);
                 }
                               
-                magma_queue_sync( stream[1] );
-                magma_dgetmatrix_async( jb, jb,
-                                        dA(j, j), ldda,
-                                        work,     jb, stream[0] );
+//                magma_queue_sync( stream[1] );
+//                magma_dgetmatrix_async( jb, jb,
+//                                        dA(j, j), ldda,
+//                                        work,     jb, stream[0] );
                            
                 if ( (j+jb) < n && j > 0) {
                 	magma_set_lapack_numthreads(16);
@@ -390,14 +390,14 @@ magma_dpotrf_gpu(
 
                 //magma_queue_sync( stream[0] );
      
-                dpotrfFT(work, B, B, info, 
-                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
-                		v, v_ld, 
-                		FT, DEBUG);
-                                
-                magma_dsetmatrix_async( jb, jb,
-                                        work,     jb,
-                                        dA(j, j), ldda, stream[1] );
+//                dpotrfFT(work, B, B, info, 
+//                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
+//                		v, v_ld, 
+//                		FT, DEBUG);
+//                                
+//                magma_dsetmatrix_async( jb, jb,
+//                                        work,     jb,
+//                                        dA(j, j), ldda, stream[1] );
                 
                 if (*info != 0) {
                     *info = *info + j;
@@ -424,18 +424,17 @@ magma_dpotrf_gpu(
 				return -1;
 			}
 			if (FT) {
-					cout << "FT enabled:" << real_time << endl;
+					cout << "FT enabled:" << endl;
 					FTtime = real_time;
 			} else {
-					cout << "FT disabled:" << real_time << endl;
+					cout << "FT disabled:" << endl;
 					noFTtime = real_time;
 			}     
-			PAPI_shutdown();
-			
-			
-        	float overhead = (FTtime - noFTtime) / noFTtime;
-        	cout << "no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
+			PAPI_shutdown();        	
         }
+        
+        float overhead = (FTtime - noFTtime) / noFTtime;
+		cout << "no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
     }
 
         magma_free_pinned( work );
