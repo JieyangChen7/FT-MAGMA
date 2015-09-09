@@ -425,10 +425,10 @@ magma_dpotrf_gpu(
 				return -1;
 			}
 			if (FT) {
-					cout << "FT enabled:" << endl;
+					//cout << "FT enabled:" << endl;
 					FTtime = real_time;
 			} else {
-					cout << "FT disabled:" << endl;
+					//cout << "FT disabled:" << endl;
 					noFTtime = real_time;
 			}     
 			PAPI_shutdown();        	
