@@ -13,7 +13,7 @@ void initializeChecksum(double * matrix, int ld, int N, int B, double * vd, int 
 //		magma_dgemv(MagmaTrans, B, N, MAGMA_D_ONE, matrix + i, ld, vd, 1, \
 //				MAGMA_D_ZERO, chksum + (i / B), chksum_ld);
 		
-		magma_dgemm(MagmaConjTrans, MagmaNoTrans,
+		magma_dgemm(MagmaTrans, MagmaNoTrans,
 					2, N, B,
 					MAGMA_D_ONE, vd, vd_ld,
 					matrix + i, ld,
