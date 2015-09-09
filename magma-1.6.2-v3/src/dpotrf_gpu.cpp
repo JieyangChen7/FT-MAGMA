@@ -146,7 +146,7 @@ magma_dpotrf_gpu(
     int B = nb;
     int N = n;
     //variables for FT
-    bool FT = false;
+    bool FT = true;
     bool DEBUG = false;
 	double * v;
 	int v_ld;
@@ -192,7 +192,7 @@ magma_dpotrf_gpu(
 		magma_dsetmatrix(B, 2, v, B, vd, vd_ld);
 		//printMatrix_gpu(vd, vd_ld, B, 2);
 		//cout<<"checksum vector on gpu initialized"<<endl;
-
+/*
 		//allocate space for update checksum on CPU
 		magma_dmalloc_pinned(&chk, B * 2 * sizeof(double));
 		chk_ld = 2;
@@ -214,7 +214,7 @@ magma_dpotrf_gpu(
 		magma_dmalloc(&checksum, checksum_pitch * N);
 		initializeChecksum(dA, ldda, N, B, vd, vd_ld, checksum, checksum_ld);
 		//cout<<"checksums initialized"<<endl;
-		 
+*/
 		//printMatrix_gpu(dA, ldda, N, N);
 		//printMatrix_gpu(checksum, checksum_ld, N / B * 2, N);
 	}
