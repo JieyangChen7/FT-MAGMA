@@ -361,10 +361,10 @@ magma_dpotrf_gpu(
 							FT, DEBUG);
                 }
                               
-                //magma_queue_sync( stream[1] );
-//                magma_dgetmatrix_async( jb, jb,
-//                                        dA(j, j), ldda,
-//                                        work,     jb, stream[1] );
+                magma_queue_sync( stream[1] );
+                magma_dgetmatrix_async( jb, jb,
+                                        dA(j, j), ldda,
+                                        work,     jb, stream[0] );
                            
                 if ( (j+jb) < n && j > 0) {
                 	//magma_set_lapack_numthreads(64);
@@ -382,21 +382,21 @@ magma_dpotrf_gpu(
 
                 //magma_queue_sync( stream[0] );
      
-//                dpotrfFT(work, B, B, info, 
-//                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
-//                		v, v_ld, 
-//                		FT, DEBUG);
+                dpotrfFT(work, B, B, info, 
+                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
+                		v, v_ld, 
+                		FT, DEBUG);
                                 
-//                magma_dsetmatrix_async( jb, jb,
-//                                        work,     jb,
-//                                        dA(j, j), ldda, stream[1] );
+                magma_dsetmatrix_async( jb, jb,
+                                        work,     jb,
+                                        dA(j, j), ldda, stream[1] );
                 
                 if (*info != 0) {
                     *info = *info + j;
                     break;
                 }
                 if ( (j+jb) < n) {     
-                	//magma_set_lapack_numthreads(2);
+                	magma_set_lapack_numthreads(2);
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
