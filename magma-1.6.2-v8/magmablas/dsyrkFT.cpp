@@ -60,8 +60,8 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 				A, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
 		
 		
-		magma_queue_sync( stream2 );
-		magma_queue_sync( stream3 );
+		//magma_queue_sync( stream2 );
+		//magma_queue_sync( stream3 );
 		magmablasSetKernelStream(stream1);
 		//handle error - to be finished
 		
