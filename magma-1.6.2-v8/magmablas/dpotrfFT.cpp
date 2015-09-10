@@ -28,7 +28,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	double negone = -1;
 	
 	
-	if (VERIFY) {
+	if (FT && VERIFY) {
 		//verify A before use
 		char T = 'T';
 		double * chk1 = new double[n];

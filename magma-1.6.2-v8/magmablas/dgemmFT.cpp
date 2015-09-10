@@ -56,7 +56,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 								stream0 );	
 	}
 	
-	if (VERIFY) {
+	if (FT && VERIFY) {
 		//verify B before use
 		//reclaculate checksums of B on GPU
 		magmablasSetKernelStream(stream2);

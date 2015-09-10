@@ -40,7 +40,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	double one = 1;
 	double zero = 0;
 	
-	if (VERIFY) {
+	if (FT && VERIFY) {
 		//verify B before use
 		//recalculate checksums on GPU
 		double beta = 0;

@@ -43,7 +43,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 	
 	
-	if (VERIFY) {
+	if (FT && VERIFY) {
 		magma_dsetmatrix_async( 2, m,
 								checksumA, checksumA_ld,
 								chkd_updateA, chkd_updateA_ld, stream0);
