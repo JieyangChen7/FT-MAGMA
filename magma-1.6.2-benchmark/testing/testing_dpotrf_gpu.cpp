@@ -18,7 +18,7 @@
 #include "magma.h"
 #include "magma_lapack.h"
 #include "testings.h"
-
+#include"papi.h"
 /* ////////////////////////////////////////////////////////////////////////////
    -- Testing dpotrf
 */
@@ -59,19 +59,40 @@ int main( int argc, char** argv)
             
             TESTING_MALLOC_CPU( h_A, double, n2     );
             TESTING_MALLOC_PIN( h_R, double, n2     );
-            TESTING_MALLOC_DEV( d_A, double, ldda*N );
+            //TESTING_MALLOC_DEV( d_A, double, ldda*N );
             
             /* Initialize the matrix */
             lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
             magma_dmake_hpd( N, h_A, lda );
             lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
-            magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
+            //magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
             
             /* ====================================================================
                Performs operation using MAGMA
                =================================================================== */
             //gpu_time = magma_wtime();
-            magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
+            
+            float real_time = 0.0;
+			float proc_time = 0.0;
+			long long flpins = 0.0;
+			float mflops = 0.0;
+			//timing start***************
+			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+				cout << "PAPI ERROR" << endl;
+				return -1;
+			}
+            
+            char uplo = 'L';
+            int info = 0;
+            lapackf77_dpotrf(&uplo, &N, A, &ldda, &info);
+            
+            if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+				cout << "PAPI ERROR" << endl;
+				return -1;
+			}
+            
+            cout<<"Matrix size:"<<N<<"	time:"<<real_time<<endl;
+            //magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
 //            gpu_time = magma_wtime() - gpu_time;
 //            gpu_perf = gflops / gpu_time;
 //            if (info != 0)
@@ -109,7 +130,7 @@ int main( int argc, char** argv)
 //            }
             TESTING_FREE_CPU( h_A );
             TESTING_FREE_PIN( h_R );
-            TESTING_FREE_DEV( d_A );
+            //TESTING_FREE_DEV( d_A );
             fflush( stdout );
 //        }
 //        if ( opts.niter > 1 ) {
