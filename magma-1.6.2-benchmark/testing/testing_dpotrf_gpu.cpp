@@ -22,6 +22,7 @@
 /* ////////////////////////////////////////////////////////////////////////////
    -- Testing dpotrf
 */
+using namespace std;
 int main( int argc, char** argv)
 {
     TESTING_INIT();
