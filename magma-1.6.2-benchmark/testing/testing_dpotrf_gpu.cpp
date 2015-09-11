@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
+#include <iostream>
 // includes, project
 #include "flops.h"
 #include "magma.h"
@@ -84,7 +84,7 @@ int main( int argc, char** argv)
             
             char uplo = 'L';
             int info = 0;
-            lapackf77_dpotrf(&uplo, &N, A, &ldda, &info);
+            lapackf77_dpotrf(&uplo, &N, h_A, &lda, &info);
             
             if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 				cout << "PAPI ERROR" << endl;
