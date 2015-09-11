@@ -93,6 +93,8 @@ int main( int argc, char** argv)
 			}
             
             cout<<"Matrix size:"<<N<<"	time:"<<real_time<<endl;
+            
+            PAPI_shutdown();
             //magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
 //            gpu_time = magma_wtime() - gpu_time;
 //            gpu_perf = gflops / gpu_time;
