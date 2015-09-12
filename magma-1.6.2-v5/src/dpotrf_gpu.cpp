@@ -355,7 +355,7 @@ magma_dpotrf_gpu(
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
             	jb = nb;
-                if (j > 0) {
+//                if (j > 0) {
 //                	magma_set_lapack_numthreads(64);
 //					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 //							checksum + (j / jb) * 2, checksum_ld, 
