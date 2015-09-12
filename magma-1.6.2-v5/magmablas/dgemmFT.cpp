@@ -47,12 +47,12 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	double one = 1;
 	double zero = 0;
 	
-	if (FT) {
-		magma_dgetmatrix_async( n, k,
-								B, ldb,
-								temp, temp_ld,
-								streams[0] );
-	}
+//	if (FT) {
+//		magma_dgetmatrix_async( n, k,
+//								B, ldb,
+//								temp, temp_ld,
+//								streams[0] );
+//	}
 	magmablasSetKernelStream(streams[1]);
 	magma_dgemm(
 				MagmaNoTrans, MagmaTrans,
