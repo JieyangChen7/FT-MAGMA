@@ -328,13 +328,13 @@ magma_dpotrf_gpu(
         	float noFTtime = 0;
         	float FTtime = 0;
         	
-        for (int P = 0; P < 2; P ++) {
-        	if (P == 0) {
-        		FT = false;
-        	} else {
-        		FT = true;
-        	}
-        
+//        for (int P = 0; P < 2; P ++) {
+//        	if (P == 0) {
+//        		FT = false;
+//        	} else {
+//        		FT = true;
+//        	}
+//        
         	magma_set_lapack_numthreads(64);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
@@ -437,7 +437,7 @@ magma_dpotrf_gpu(
 					noFTtime = real_time;
 			}     
 			PAPI_shutdown();        	
-        }
+    //    }
         
         float overhead = (FTtime - noFTtime) / noFTtime;
 		cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
