@@ -75,7 +75,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 		}
 		
-		magma_queue_sync( streams[0] );
+		magma_queue_sync( streams[4] );
 		//update checksum1 and checksum2
 				
 		char N = 'N';

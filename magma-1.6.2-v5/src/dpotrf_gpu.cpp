@@ -127,7 +127,7 @@ magma_dpotrf_gpu(
     }
 
     /* Define user stream if current stream is NULL */
-    magma_queue_t stream[4];
+    magma_queue_t stream[5];
     
     magma_queue_t orig_stream;
     magmablasGetKernelStream( &orig_stream );
@@ -135,6 +135,7 @@ magma_dpotrf_gpu(
     magma_queue_create( &stream[0] );
     magma_queue_create( &stream[2] );
     magma_queue_create( &stream[3] );
+    magma_queue_create( &stream[4] );
     if (orig_stream == NULL) {
         magma_queue_create( &stream[1] );
         magmablasSetKernelStream(stream[1]);
@@ -368,7 +369,12 @@ magma_dpotrf_gpu(
 							chkd_updateC, chkd_updateC_ld, stream,
 							FT, DEBUG);
                 }
-                              
+                if (FT) {
+					magma_dgetmatrix_async( jb, j,
+											dA(j, 0), ldda,
+											temp, temp_ld,
+											stream[4] );
+				}
                 magma_queue_sync( stream[1] );
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
@@ -416,12 +422,6 @@ magma_dpotrf_gpu(
                 			FT, DEBUG, stream);
                 }
                 
-                if (FT) {
-					magma_dgetmatrix_async( jb, j,
-											dA(j, 0), ldda,
-											temp, temp_ld,
-											stream[0] );
-				}
                 
 //                magma_queue_sync( stream[0] );
 //                magma_queue_sync( stream[1] );
