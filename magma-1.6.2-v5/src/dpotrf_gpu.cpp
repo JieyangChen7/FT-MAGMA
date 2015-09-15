@@ -369,11 +369,18 @@ magma_dpotrf_gpu(
 							chkd_updateC, chkd_updateC_ld, stream,
 							FT, DEBUG);
                 }
+                
+                int total = (n - j - jb) / jb;
+				double k = 0.5;
+				int g_part = (int)(total * k);
+				int c_part = total - g_part;
+                
+                
                 if (FT) {
-                	int total = (n - j - jb) / jb;
-                	double k = 0.5;
-                	int g_part = (int)(total * k);
-                	int c_part = total - g_part;
+//                	int total = (n - j - jb) / jb;
+//                	double k = 0.5;
+//                	int g_part = (int)(total * k);
+//                	int c_part = total - g_part;
                 	
                 	magma_dsetmatrix_async(g_part * 2, j,
                 						checksum + ((j + jb) / jb) * 2, checksum_ld,
