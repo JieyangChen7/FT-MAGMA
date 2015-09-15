@@ -35,14 +35,14 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 	
 
-//	if (FT) {
-//		magma_dsetmatrix_async( 2, m,
-//								checksumA, checksumA_ld,
-//								chkd_updateA, chkd_updateA_ld, streams[0]);
-//		magma_dsetmatrix_async( 2, n,
-//								checksumC, checksumC_ld, 
-//								chkd_updateC, chkd_updateC_ld, streams[0]);
-//	}
+	if (FT) {
+		magma_dsetmatrix_async( 2, m,
+								checksumA, checksumA_ld,
+								chkd_updateA, chkd_updateA_ld, streams[0]);
+		magma_dsetmatrix_async( 2, n,
+								checksumC, checksumC_ld, 
+								chkd_updateC, chkd_updateC_ld, streams[0]);
+	}
 	
 	double negone = -1;
 	double one = 1;
