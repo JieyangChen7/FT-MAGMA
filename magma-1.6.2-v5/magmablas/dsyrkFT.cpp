@@ -69,13 +69,13 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	if(FT){
 		//update checksums on GPU
 	//	magmablasSetKernelStream(streams[0]);
-//		magma_dgemm(
-//					MagmaNoTrans, MagmaTrans,
-//					2, n, m,
-//					MAGMA_D_ONE * (-1),
-//					chkd_updateA, chkd_updateA_ld, A, lda,
-//					MAGMA_D_ONE,
-//					chkd_updateC, chkd_updateC_ld );
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					2, n, m,
+					MAGMA_D_ONE * (-1),
+					chkd_updateA, chkd_updateA_ld, A, lda,
+					MAGMA_D_ONE,
+					chkd_updateC, chkd_updateC_ld );
 		
 		//transfer updated checksum back to CPU
 //		magma_dgetmatrix_async( 2, n,
