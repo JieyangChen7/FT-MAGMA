@@ -73,21 +73,21 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		magma_queue_sync( streams[4] );
 		//update checksum1 and checksum2
 				
-//		char N = 'N';
-//		char T = 'T';
-//		int m2 = (m / n) * 2;
-//		int n2 = n;
-//		int k2 = k;
-//		
-//		
-//		blasf77_dgemm(  &N, &T,
-//						&m2, &n2, &k2,
-//						&negone,
-//						checksumA, &checksumA_ld,
-//						temp, &temp_ld,
-//						&one,
-//						checksumC, &checksumC_ld );
-//				
+		char N = 'N';
+		char T = 'T';
+		int m2 = (m / n) * 2;
+		int n2 = n;
+		int k2 = k;
+		
+		
+		blasf77_dgemm(  &N, &T,
+						&m2, &n2, &k2,
+						&negone,
+						checksumA, &checksumA_ld,
+						temp, &temp_ld,
+						&one,
+						checksumC, &checksumC_ld );
+				
 //		
 //		if (DEBUG) {
 //			cout<<"recalculated checksum of C after dgemm:"<<endl;
