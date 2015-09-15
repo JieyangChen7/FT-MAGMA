@@ -83,22 +83,22 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 //		
 		
 		//update checksum1 and checksum2
-//		for (int i = 0; i < n; i++) {
-//			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, lda, n, i, i);
-//			*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, lda, n, i, i);
-//			
-//			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
-//			int m = n-i-1;
-//			int ONE = 1;
-//			blasf77_dgemm(  &N, &T,
-//							 &nOfChecksum, &m, &ONE,
-//							 &negone,
-//							 chksum + i*chksum_ld, &chksum_ld,
-//							 A + i*lda + i+1, &lda,
-//							 &one,
-//							 chksum + (i+1)*chksum_ld, 
-//							 &chksum_ld );
-//		}
+		for (int i = 0; i < n; i++) {
+			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, lda, n, i, i);
+			*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, lda, n, i, i);
+			
+			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
+			int m = n-i-1;
+			int ONE = 1;
+			blasf77_dgemm(  &N, &T,
+							 &nOfChecksum, &m, &ONE,
+							 &negone,
+							 chksum + i*chksum_ld, &chksum_ld,
+							 A + i*lda + i+1, &lda,
+							 &one,
+							 chksum + (i+1)*chksum_ld, 
+							 &chksum_ld );
+		}
 	
 //		if (DEBUG) {
 //			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
