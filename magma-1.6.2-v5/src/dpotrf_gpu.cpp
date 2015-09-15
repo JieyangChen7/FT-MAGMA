@@ -329,7 +329,7 @@ magma_dpotrf_gpu(
         	float noFTtime = 0;
         	float FTtime = 0;
         	
-        for (double P = 0.0; P <= 1; P+=0.1) {
+//        for (double P = 0.0; P <= 1; P+=0.1) {
 //        	if (P == 0) {
 //        		FT = false;
 //        	} else {
@@ -371,7 +371,7 @@ magma_dpotrf_gpu(
                 }
                 
                 int total = (n - j - jb) / jb;
-				double k = P;
+				double k = 0.1;
 				int g_part = (int)(total * k);
 				int c_part = total - g_part;
                 
@@ -469,7 +469,7 @@ magma_dpotrf_gpu(
 			
 			cout << N <<"		FT:"<< FTtime << endl;
 			PAPI_shutdown();        	
-        }
+      //  }
         
 //        float overhead = (FTtime - noFTtime) / noFTtime;
 //		cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
