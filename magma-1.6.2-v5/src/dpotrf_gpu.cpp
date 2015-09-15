@@ -329,12 +329,12 @@ magma_dpotrf_gpu(
         	float noFTtime = 0;
         	float FTtime = 0;
         	
-        for (int P = 1; P < 2; P++) {
-        	if (P == 0) {
-        		FT = false;
-        	} else {
+        for (double P = 0.0; P <= 1; P+=0.1) {
+//        	if (P == 0) {
+//        		FT = false;
+//        	} else {
         		FT = true;
-        	}
+        	//}
         
         	magma_set_lapack_numthreads(64);
         	int numOfCore = magma_get_lapack_numthreads();
@@ -371,7 +371,7 @@ magma_dpotrf_gpu(
                 }
                 
                 int total = (n - j - jb) / jb;
-				double k = 0.5;
+				double k = P;
 				int g_part = (int)(total * k);
 				int c_part = total - g_part;
                 
@@ -466,11 +466,13 @@ magma_dpotrf_gpu(
 					//cout << "FT disabled:" << endl;
 					noFTtime = real_time;
 			}     
+			
+			cout << N <<"		FT:"<< FTtime << endl;
 			PAPI_shutdown();        	
         }
         
-        float overhead = (FTtime - noFTtime) / noFTtime;
-		cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
+//        float overhead = (FTtime - noFTtime) / noFTtime;
+//		cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
     }
 
         magma_free_pinned( work );
