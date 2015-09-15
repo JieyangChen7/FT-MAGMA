@@ -88,11 +88,11 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 		magma_dgetmatrix_async(g_part * 2, k,
 								checksumA, checksumA_ld,
-								chkd_updateA, chkd_updateA_ld, stream[4]);
+								chkd_updateA, chkd_updateA_ld, streams[4]);
 			
 		magma_dgetmatrix_async(g_part * 2, n,
 						checksumC, checksumC_ld,
-						chkd_updateC, chkd_updateC_ld, stream[4]);
+						chkd_updateC, chkd_updateC_ld, streams[4]);
 							
 		
 		char N = 'N';
