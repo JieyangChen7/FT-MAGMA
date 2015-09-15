@@ -259,11 +259,11 @@ magma_dpotrf_gpu(
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
 		
-		size_t chkd_updateA_pitch = magma_roundup(2 * sizeof(double), 32);
+		size_t chkd_updateA_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
 		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);
 		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * N);
 		
-		size_t chkd_updateC_pitch = magma_roundup(2 * sizeof(double), 32);
+		size_t chkd_updateC_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
 		chkd_updateC_ld = chkd_updateC_pitch / sizeof(double);
 		magma_dmalloc(&chkd_updateC, chkd_updateC_pitch * B);
 		
@@ -370,6 +370,19 @@ magma_dpotrf_gpu(
 							FT, DEBUG);
                 }
                 if (FT) {
+                	int total = (n - j - jb) / jb;
+                	double k = 0.5;
+                	int g_part = (int)(total * k);
+                	int c_part = total - g_part;
+                	
+                	magma_dsetmatrix_async(g_part * 2, j,
+                						checksum + ((j + jb) / jb) * 2, checksum_ld,
+                						chkd_updateA, chkd_updateA_ld, stream[4]);
+                	
+                	magma_dsetmatrix_async(g_part * 2, jb,
+                						checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
+											chkd_updateC, chkd_updateC_ld, stream[4]);
+                	
 					magma_dgetmatrix_async( jb, j,
 											dA(j, 0), ldda,
 											temp, temp_ld,
@@ -390,6 +403,9 @@ magma_dpotrf_gpu(
                 			chk1d, chk1d_ld,
                 			chk2d, chk2d_ld,
                 			temp, temp_ld,
+                			chkd_updateA, chkd_updateA_ld,
+                			chkd_updateC, chkd_updateC_ld,
+                			g_part, c_part,
                 			stream,
                 			FT, DEBUG);
                 }

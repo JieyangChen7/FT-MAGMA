@@ -30,6 +30,9 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
 		double * temp, int temp_ld,
+		double * chkd_updateA, int chkd_updateA_ld,
+		double * chkd_updateC, int chkd_updateC_ld,
+		int g_part, int c_part,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG) {
 
@@ -59,7 +62,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 
 	if(FT){	
 		
-		//recalculate checksum1 and checksum2
+		//recalculate checksum
 //		magma_queue_sync( stream1 );
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(streams[2]);
@@ -71,11 +74,31 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		}
 		
 		magma_queue_sync( streams[4] );
-		//update checksum1 and checksum2
+		//update checksum
 				
+		magmablasSetKernelStream(streams[4]);
+		magma_dgemm(
+					MagmaNoTrans, MagmaTrans,
+					g_part * 2, n, k,
+					MAGMA_D_ONE * (-1),
+					chkd_updateA, chkd_updateA_ld,
+					B, ldb,
+					MAGMA_D_ONE,
+					chkd_updateC, chkd_updateA_ld );
+		
+		magma_dgetmatrix_async(g_part * 2, j,
+								checksumA, checksumA_ld,
+								chkd_updateA, chkd_updateA_ld, stream[4]);
+			
+		magma_dgetmatrix_async(g_part * 2, jb,
+						checksumC, checksumC_ld,
+						chkd_updateC, chkd_updateC_ld, stream[4]);
+							
+		
 		char N = 'N';
 		char T = 'T';
-		int m2 = (m / n) * 2;
+		//int m2 = (m / n) * 2;
+		int m2 = c_part * 2;
 		int n2 = n;
 		int k2 = k;
 		
@@ -83,11 +106,12 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		blasf77_dgemm(  &N, &T,
 						&m2, &n2, &k2,
 						&negone,
-						checksumA, &checksumA_ld,
+						checksumA + g_part * 2, &checksumA_ld,
 						temp, &temp_ld,
 						&one,
-						checksumC, &checksumC_ld );
-				
+						checksumC + g_part * 2, &checksumC_ld );
+		
+		
 //		
 //		if (DEBUG) {
 //			cout<<"recalculated checksum of C after dgemm:"<<endl;
