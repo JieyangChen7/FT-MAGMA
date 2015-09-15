@@ -53,14 +53,14 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //								temp, temp_ld,
 //								streams[0] );
 //	}
-	magmablasSetKernelStream(streams[1]);
-	magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
-				m, n, k,
-				MAGMA_D_ONE * (-1),
-				A, lda, B, ldb,
-				MAGMA_D_ONE,
-				C, ldc );
+//	magmablasSetKernelStream(streams[1]);
+//	magma_dgemm(
+//				MagmaNoTrans, MagmaTrans,
+//				m, n, k,
+//				MAGMA_D_ONE * (-1),
+//				A, lda, B, ldb,
+//				MAGMA_D_ONE,
+//				C, ldc );
 
 	if(FT){	
 		
@@ -75,23 +75,23 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 		}
 		
-		magma_queue_sync( streams[4] );
+//		magma_queue_sync( streams[4] );
 		//update checksum1 and checksum2
 				
-		char N = 'N';
-		char T = 'T';
-		int m2 = (m / n) * 2;
-		int n2 = n;
-		int k2 = k;
-		
-		
-		blasf77_dgemm(  &N, &T,
-						&m2, &n2, &k2,
-						&negone,
-						checksumA, &checksumA_ld,
-						temp, &temp_ld,
-						&one,
-						checksumC, &checksumC_ld );
+//		char N = 'N';
+//		char T = 'T';
+//		int m2 = (m / n) * 2;
+//		int n2 = n;
+//		int k2 = k;
+//		
+//		
+//		blasf77_dgemm(  &N, &T,
+//						&m2, &n2, &k2,
+//						&negone,
+//						checksumA, &checksumA_ld,
+//						temp, &temp_ld,
+//						&one,
+//						checksumC, &checksumC_ld );
 				
 //		
 //		if (DEBUG) {
