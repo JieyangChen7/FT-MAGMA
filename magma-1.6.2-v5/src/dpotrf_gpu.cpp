@@ -371,7 +371,7 @@ magma_dpotrf_gpu(
                 }
                 
                 int total = (n - j - jb) / jb;
-				double k = 0.2;
+				double k = 0.3;
 				int g_part = (int)(total * k);
 				int c_part = total - g_part;
                 
