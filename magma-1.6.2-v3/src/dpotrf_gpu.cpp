@@ -127,12 +127,16 @@ magma_dpotrf_gpu(
     }
 
     /* Define user stream if current stream is NULL */
-    magma_queue_t stream[2];
+    magma_queue_t stream[5];
     
     magma_queue_t orig_stream;
     magmablasGetKernelStream( &orig_stream );
     
-    magma_queue_create( &stream[0] );
+    magma_queue_create( &stream[0] );//data transfer
+    magma_queue_create( &stream[2] );//checksum_1 recalculation
+    magma_queue_create( &stream[3] );//checksum_2 recalculation
+    magma_queue_create( &stream[4] );//checksum updating
+    
     if (orig_stream == NULL) {
         magma_queue_create( &stream[1] );
         magmablasSetKernelStream(stream[1]);
@@ -173,7 +177,11 @@ magma_dpotrf_gpu(
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
-		
+		/* v =
+		 * 1 1 1 1
+		 * 1 2 3 4 
+		 */
+
 		magma_dmalloc_pinned(&v, B * 2 * sizeof(double));
 		v_ld = 2;
 		for (int i = 0; i < B; ++i) {
@@ -309,7 +317,7 @@ magma_dpotrf_gpu(
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-							vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld,
+							vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, stream,
 							FT, DEBUG);
                 }
                             
@@ -328,7 +336,7 @@ magma_dpotrf_gpu(
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
                 			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
-                			vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
+                			vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, stream, FT, DEBUG);
                 }
 
                 magma_queue_sync( stream[0] );
@@ -354,12 +362,14 @@ magma_dpotrf_gpu(
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
-                			vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, FT, DEBUG);
+                			vd, vd_ld, chk1d, chk1d_ld, chk2d, chk2d_ld, stream, FT, DEBUG);
                 }
             }
             
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
+            magma_queue_sync( stream[2] );
+            magma_queue_sync( stream[3] );
             //timing end***************
 			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 				cout << "PAPI ERROR" << endl;
