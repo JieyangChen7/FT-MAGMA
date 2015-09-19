@@ -60,22 +60,22 @@ void dtrsmFT(int m, int n, double * A, int lda,
 
 		
 		//update checksums on CPU
-		char R = 'R';
-		char L = 'L';
-		char T = 'T';
-		char N = 'N';
-		int m2 = (m / n) * 2;
-		int n2 = n;
-		blasf77_dtrsm(&R, &L, &T, &N,
-					 &m2, &n2,
-					 &one,
-					 work, &work_ld,
-					 checksumB, &checksumB_ld);
-		
+//		char R = 'R';
+//		char L = 'L';
+//		char T = 'T';
+//		char N = 'N';
+//		int m2 = (m / n) * 2;
+//		int n2 = n;
+//		blasf77_dtrsm(&R, &L, &T, &N,
+//					 &m2, &n2,
+//					 &one,
+//					 work, &work_ld,
+//					 checksumB, &checksumB_ld);
+		magmablasSetKernelStream(streams[4]);
 		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 					(m / n) * 2, n,
 					MAGMA_D_ONE, A, lda,
-						   B, ldb);
+					chkd_updateC, chkd_updateC_ld);
 		
 //		if (DEBUG) {
 //			cout<<"recalculated checksum of B after dtrsm:"<<endl;

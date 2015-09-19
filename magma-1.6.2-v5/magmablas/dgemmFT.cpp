@@ -89,9 +89,9 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 					MAGMA_D_ONE,
 					chkd_updateC, chkd_updateA_ld );
 		
-		magma_dgetmatrix_async(g_part * 2, k,
-								checksumA, checksumA_ld,
-								chkd_updateA, chkd_updateA_ld, streams[4]);
+//		magma_dgetmatrix_async(g_part * 2, k,
+//								checksumA, checksumA_ld,
+//								chkd_updateA, chkd_updateA_ld, streams[4]);
 			
 		magma_dgetmatrix_async(g_part * 2, n,
 						checksumC, checksumC_ld,
