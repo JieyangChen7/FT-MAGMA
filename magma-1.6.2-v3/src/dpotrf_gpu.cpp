@@ -289,7 +289,7 @@ magma_dpotrf_gpu(
         	float noFTtime = 0;
 			float FTtime = 0;
 			
-		for (int P = 0; P < 2; P ++) {
+		for (int P = 1; P < 2; P ++) {
 			if (P == 0) {
 				FT = false;
 			} else {
