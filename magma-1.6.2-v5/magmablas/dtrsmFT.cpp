@@ -33,6 +33,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
 		double * work, int work_ld, 
+		double * chkd_updateC, int chkd_updateC_ld,
 		bool FT, bool DEBUG, magma_queue_t * streams) {
 
 
@@ -70,6 +71,11 @@ void dtrsmFT(int m, int n, double * A, int lda,
 					 &one,
 					 work, &work_ld,
 					 checksumB, &checksumB_ld);
+		
+		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+					(m / n) * 2, n,
+					MAGMA_D_ONE, A, lda,
+						   B, ldb);
 		
 //		if (DEBUG) {
 //			cout<<"recalculated checksum of B after dtrsm:"<<endl;

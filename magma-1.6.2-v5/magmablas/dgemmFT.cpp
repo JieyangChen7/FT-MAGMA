@@ -59,6 +59,9 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				A, lda, B, ldb,
 				MAGMA_D_ONE,
 				C, ldc );
+	
+	
+	
 
 	if(FT){	
 		
