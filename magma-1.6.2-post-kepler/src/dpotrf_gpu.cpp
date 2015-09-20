@@ -342,7 +342,7 @@ magma_dpotrf_gpu(
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
                 
-                magma_dgetmatrix_async( jb, jb,
+                magma_dgetmatrix_async( 2, jb,
                 						checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
 										chk,     chk_ld, stream[0] );
                 
@@ -368,7 +368,7 @@ magma_dpotrf_gpu(
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
-                magma_dgetmatrix_async( jb, jb,
+                magma_dsetmatrix_async( 2, jb,
                 						chk,     chk_ld,
                 						checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
 										stream[0] );
