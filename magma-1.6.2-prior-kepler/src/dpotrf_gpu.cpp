@@ -358,7 +358,7 @@ magma_dpotrf_gpu(
                 
                 magma_set_lapack_numthreads(64);
                 dpotrfFT(work, B, B, info, 
-                		checksum + (j / B) * 2 + j * checksum_ld, checksum_ld, 
+                		chk,     chk_ld, 
                 		v, v_ld, 
                 		FT, DEBUG);
                                 
