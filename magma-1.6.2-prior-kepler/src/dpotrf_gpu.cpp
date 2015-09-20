@@ -127,7 +127,7 @@ magma_dpotrf_gpu(
     }
 
     /* Define user stream if current stream is NULL */
-    magma_queue_t stream[4];
+    magma_queue_t stream[5];
     
     magma_queue_t orig_stream;
     magmablasGetKernelStream( &orig_stream );
@@ -135,6 +135,7 @@ magma_dpotrf_gpu(
     magma_queue_create( &stream[0] );
     magma_queue_create( &stream[2] );
     magma_queue_create( &stream[3] );
+    magma_queue_create( &stream[4] );
     if (orig_stream == NULL) {
         magma_queue_create( &stream[1] );
         magmablasSetKernelStream(stream[1]);
