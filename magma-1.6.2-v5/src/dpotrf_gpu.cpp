@@ -463,7 +463,7 @@ magma_dpotrf_gpu(
 					noFTtime = real_time;
 			}     
 			
-			cout << N <<"		FT:"<< FTtime << endl;
+			cout << N <<"["<<B<<"]"<<"		FT:"<< FTtime << endl;
 			PAPI_shutdown();        	
         }
         

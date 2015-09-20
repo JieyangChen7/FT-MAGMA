@@ -314,6 +314,7 @@ magma_dpotrf_gpu(
             	
             	jb = nb;
                 if (j > 0) {
+                	magma_set_lapack_numthreads(64);
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
@@ -325,13 +326,14 @@ magma_dpotrf_gpu(
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
-                if (FT) {
-                	magma_dgetmatrix_async(2, jb,
-                			               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-                			               chk, chk_ld, stream[0]);
-                }
+//                if (FT) {
+//                	magma_dgetmatrix_async(2, jb,
+//                			               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+//                			               chk, chk_ld, stream[0]);
+//                }
                 
                 if ( (j+jb) < n && j > 0) {
+                	magma_set_lapack_numthreads(16);
                 	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
                 			dA(j,    0), ldda, dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
@@ -341,17 +343,18 @@ magma_dpotrf_gpu(
 
                 magma_queue_sync( stream[0] );
                            
+                magma_set_lapack_numthreads(64);
                 dpotrfFT(work, B, B, info, chk, chk_ld, v, v_ld, FT, DEBUG);
                 
                 
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
-                if (FT) {
-					magma_dgetmatrix_async(2, jb,
-							               chk, chk_ld,
-							               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld, stream[0]);
-				}
+//                if (FT) {
+//					magma_dgetmatrix_async(2, jb,
+//							               chk, chk_ld,
+//							               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld, stream[0]);
+//				}
                 
                 if (*info != 0) {
                     *info = *info + j;
@@ -359,6 +362,7 @@ magma_dpotrf_gpu(
                 }
                 
                 if ( (j+jb) < n) {
+                	magma_set_lapack_numthreads(2);
                 	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
@@ -385,7 +389,7 @@ magma_dpotrf_gpu(
 			PAPI_shutdown();
 		}
 		float overhead = (FTtime - noFTtime) / noFTtime;
-				cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
+				cout << N<<"["<<B<<"]" <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
      }
     }
 
