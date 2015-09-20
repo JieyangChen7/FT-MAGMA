@@ -327,7 +327,7 @@ magma_dpotrf_gpu(
 							FT, DEBUG);
 					
                 }
-                cout<<"1"<<endl;
+                
                               
                 magma_queue_sync( stream[1] );
                 magma_dgetmatrix_async( jb, jb,
@@ -352,7 +352,7 @@ magma_dpotrf_gpu(
                 			FT, DEBUG);
                 	
                 }
-                cout<<"2"<<endl;
+                
 
                 magma_queue_sync( stream[0] );
                 
@@ -369,7 +369,7 @@ magma_dpotrf_gpu(
                                         chk,     chk_ld, 
                                         checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
                                         stream[1] );
-                cout<<"3"<<endl;
+                
                 if (*info != 0) {
                     *info = *info + j;
                     break;
@@ -389,7 +389,7 @@ magma_dpotrf_gpu(
                 			chk2d, chk2d_ld,
                 			FT, DEBUG, stream);
                 }
-                cout<<"4"<<endl;
+                
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
