@@ -58,7 +58,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 				B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );	
 		}
 
-		
+		 
 		//update checksums on CPU
 //		char R = 'R';
 //		char L = 'L';
