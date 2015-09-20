@@ -344,7 +344,7 @@ magma_dpotrf_gpu(
                 magma_queue_sync( stream[0] );
                            
                 magma_set_lapack_numthreads(64);
-                dpotrfFT(work, B, B, info, chk, chk_ld, v, v_ld, FT, DEBUG);
+            //    dpotrfFT(work, B, B, info, chk, chk_ld, v, v_ld, FT, DEBUG);
                 
                 
                 magma_dsetmatrix_async( jb, jb,
