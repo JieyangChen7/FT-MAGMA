@@ -38,6 +38,5 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
-		double * temp, int temp_ld,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG);
