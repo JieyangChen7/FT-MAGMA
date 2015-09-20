@@ -362,7 +362,7 @@ magma_dpotrf_gpu(
                 }
      
                 dpotrfFT(work, B, B, info, 
-                		chk,     chk_ld 
+                		chk,     chk_ld, 
                 		v, v_ld, 
                 		FT, DEBUG);
                                 
