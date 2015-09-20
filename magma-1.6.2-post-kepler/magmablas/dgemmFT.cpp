@@ -76,7 +76,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		magmablasSetKernelStream(streams[4]);
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
-					g_part * 2, n, k,
+					(m / n) * 2, n, k,
 					MAGMA_D_ONE * (-1),
 					checksumA, checksumA_ld,
 					B, ldb,
