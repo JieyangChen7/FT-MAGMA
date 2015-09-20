@@ -42,26 +42,26 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 	
 	if (FT) {
-		//verify A before use
-		//reclaculate checksums of A on GPU
-		magmablasSetKernelStream(streams[2]);
-		magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
-				A, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
-		magmablasSetKernelStream(streams[3]);
-		magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
-				A, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
-		
-		//handle error - to be finished
-		
-		if (DEBUG) {
-			cout<<"recalculated checksum of A before dsyrk:"<<endl;
-			printMatrix_gpu(chk1, chk1_ld, 1, m);
-			printMatrix_gpu(chk2, chk2_ld, 1, m);
-		
-			cout<<"updated checksum of A before dsyrk:"<<endl;
-			printMatrix_host(checksumA, checksumA_ld, 2, m);
-		}
-		
+//		//verify A before use
+//		//reclaculate checksums of A on GPU
+//		magmablasSetKernelStream(streams[2]);
+//		magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
+//				A, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
+//		magmablasSetKernelStream(streams[3]);
+//		magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
+//				A, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
+//		
+//		//handle error - to be finished
+//		
+//		if (DEBUG) {
+//			cout<<"recalculated checksum of A before dsyrk:"<<endl;
+//			printMatrix_gpu(chk1, chk1_ld, 1, m);
+//			printMatrix_gpu(chk2, chk2_ld, 1, m);
+//		
+//			cout<<"updated checksum of A before dsyrk:"<<endl;
+//			printMatrix_host(checksumA, checksumA_ld, 2, m);
+//		}
+//		
 		
 	}
 	
