@@ -210,7 +210,7 @@ magma_dpotrf_gpu(
 		chk1d_pitch = magma_roundup((N / B) * sizeof(double), 32);
 		chk1d_ld = chk1d_pitch / sizeof(double);
 		magma_dmalloc(&chk1d, chk1d_pitch * B);
-		
+		 
 		chk2d_pitch = magma_roundup((N / B) * sizeof(double), 32);
 		chk2d_ld = chk2d_pitch / sizeof(double);
 		magma_dmalloc(&chk2d, chk2d_pitch * B);
