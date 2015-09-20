@@ -33,7 +33,6 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
 		double * work, int work_ld, 
-		double * chkd_updateC, int chkd_updateC_ld,
 		bool FT, bool DEBUG, magma_queue_t * streams) {
 
 
@@ -47,7 +46,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	                                       B, ldb);
 	if (FT) {
 		//recalculate checksums on GPU
-		magma_queue_sync( streams[1] );
+		//magma_queue_sync( streams[1] );
 		double beta = 0;
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(streams[2]);
@@ -56,27 +55,19 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			magmablasSetKernelStream(streams[3]);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 				B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );	
-		}
-
-		 
+		}		 
 		//update checksums on CPU
-//		char R = 'R';
-//		char L = 'L';
-//		char T = 'T';
-//		char N = 'N';
-//		int m2 = (m / n) * 2;
-//		int n2 = n;
-//		blasf77_dtrsm(&R, &L, &T, &N,
-//					 &m2, &n2,
-//					 &one,
-//					 work, &work_ld,
-//					 checksumB, &checksumB_ld);
-		magmablasSetKernelStream(streams[4]);
-		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
-					(m / n) * 2, n,
-					MAGMA_D_ONE, A, lda,
-					chkd_updateC, chkd_updateC_ld);
-		
+		char R = 'R';
+		char L = 'L';
+		char T = 'T';
+		char N = 'N';
+		int m2 = (m / n) * 2;
+		int n2 = n;
+		blasf77_dtrsm(&R, &L, &T, &N,
+					 &m2, &n2,
+					 &one,
+					 work, &work_ld,
+					 checksumB, &checksumB_ld);
 //		if (DEBUG) {
 //			cout<<"recalculated checksum of B after dtrsm:"<<endl;
 //			printMatrix_gpu(chk1,chk1_ld, (m / n), n);

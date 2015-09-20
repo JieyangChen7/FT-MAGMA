@@ -32,7 +32,6 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * temp, int temp_ld,
 		double * chkd_updateA, int chkd_updateA_ld,
 		double * chkd_updateC, int chkd_updateC_ld,
-		int g_part, int c_part,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG) {
 
@@ -59,12 +58,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				A, lda, B, ldb,
 				MAGMA_D_ONE,
 				C, ldc );
-	
-	
-	
-
-	if(FT){	
-		
+	if(FT){			
 		//recalculate checksum
 //		magma_queue_sync( stream1 );
 		for (int i = 0; i < m; i += n) {
@@ -75,47 +69,21 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 		}
-		
 		magma_queue_sync( streams[4] );
 		//update checksum
-				
-		magmablasSetKernelStream(streams[4]);
-		magma_dgemm(
-					MagmaNoTrans, MagmaTrans,
-					g_part * 2, n, k,
-					MAGMA_D_ONE * (-1),
-					chkd_updateA, chkd_updateA_ld,
-					B, ldb,
-					MAGMA_D_ONE,
-					chkd_updateC, chkd_updateA_ld );
-		
-//		magma_dgetmatrix_async(g_part * 2, k,
-//								checksumA, checksumA_ld,
-//								chkd_updateA, chkd_updateA_ld, streams[4]);
-			
-		magma_dgetmatrix_async(g_part * 2, n,
-						checksumC, checksumC_ld,
-						chkd_updateC, chkd_updateC_ld, streams[4]);
-							
-		
-//		char N = 'N';
-//		char T = 'T';
-//		//int m2 = (m / n) * 2;
-//		int m2 = c_part * 2;
-//		int n2 = n;
-//		int k2 = k;
-//		
-//		
-//		blasf77_dgemm(  &N, &T,
-//						&m2, &n2, &k2,
-//						&negone,
-//						checksumA + g_part * 2, &checksumA_ld,
-//						temp, &temp_ld,
-//						&one,
-//						checksumC + g_part * 2, &checksumC_ld );
-//		
-//		
-//		
+		char N = 'N';
+		char T = 'T';
+		//int m2 = (m / n) * 2;
+		int m2 = c_part * 2;
+		int n2 = n;
+		int k2 = k;		
+		blasf77_dgemm(  &N, &T,
+						&m2, &n2, &k2,
+						&negone,
+						checksumA + g_part * 2, &checksumA_ld,
+						temp, &temp_ld,
+						&one,
+						checksumC + g_part * 2, &checksumC_ld );		
 //		if (DEBUG) {
 //			cout<<"recalculated checksum of C after dgemm:"<<endl;
 //			printMatrix_gpu(chk1, chk1_ld, (m / n), n);

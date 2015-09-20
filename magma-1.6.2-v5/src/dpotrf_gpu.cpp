@@ -369,31 +369,11 @@ magma_dpotrf_gpu(
 							chkd_updateC, chkd_updateC_ld, stream,
 							FT, DEBUG);
                 }
-                
-                int total = (n - j - jb) / jb;
-				double k = 1.0;
-				int g_part = (int)(total * k);
-				int c_part = total - g_part;
-                
-                
                 if (FT) {
-                	int total = (n - j - jb) / jb;
-                	double k = 0.5;
-                	int g_part = (int)(total * k);
-                	int c_part = total - g_part;
-                	
-                	magma_dsetmatrix_async(g_part * 2, j,
-                						checksum + ((j + jb) / jb) * 2, checksum_ld,
-                						chkd_updateA, chkd_updateA_ld, stream[4]);
-                	
-                	magma_dsetmatrix_async(g_part * 2, jb,
-                						checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
-											chkd_updateC, chkd_updateC_ld, stream[4]);
-                	
-//					magma_dgetmatrix_async( jb, j,
-//											dA(j, 0), ldda,
-//											temp, temp_ld,
-//											stream[4] );
+					magma_dgetmatrix_async( jb, j,
+											dA(j, 0), ldda,
+											temp, temp_ld,
+											stream[4] );
 				}
                 magma_queue_sync( stream[1] );
                 magma_dgetmatrix_async( jb, jb,
@@ -412,7 +392,6 @@ magma_dpotrf_gpu(
                 			temp, temp_ld,
                 			chkd_updateA, chkd_updateA_ld,
                 			chkd_updateC, chkd_updateC_ld,
-                			g_part, c_part,
                 			stream,
                 			FT, DEBUG);
                 }

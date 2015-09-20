@@ -35,14 +35,14 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 	
 
-//	if (FT) {
-//		magma_dsetmatrix_async( 2, m,
-//								checksumA, checksumA_ld,
-//								chkd_updateA, chkd_updateA_ld, streams[0]);
-//		magma_dsetmatrix_async( 2, n,
-//								checksumC, checksumC_ld, 
-//								chkd_updateC, chkd_updateC_ld, streams[0]);
-//	}
+	if (FT) {
+		magma_dsetmatrix_async( 2, m,
+								checksumA, checksumA_ld,
+								chkd_updateA, chkd_updateA_ld, streams[0]);
+		magma_dsetmatrix_async( 2, n,
+								checksumC, checksumC_ld, 
+								chkd_updateC, chkd_updateC_ld, streams[0]);
+	}
 	
 	double negone = -1;
 	double one = 1;
@@ -78,10 +78,10 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 					chkd_updateC, chkd_updateC_ld );
 		
 		//transfer updated checksum back to CPU
-//		magma_dgetmatrix_async( 2, n,
-//								chkd_updateC, chkd_updateC_ld,
-//								checksumC, checksumC_ld, streams[0]);
-//		
+		magma_dgetmatrix_async( 2, n,
+								chkd_updateC, chkd_updateC_ld,
+								checksumC, checksumC_ld, streams[0]);
+		
 		//recalculate checksum1 and checksum2
 //		magma_queue_sync( stream1 );
 		magmablasSetKernelStream(streams[2]);
