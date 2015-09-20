@@ -18,77 +18,35 @@ __global__ void detectAndCorrectForGemm(double * C, int ldc, int n,
 }
 */
 /**
- * m: number of row of A (N-i-B)
- * n: number of row of B (B)
- * k: number of col of A / col of B (i)
+ * m: number of row of A
+ * n: number of col of B
+ * k: number of col of A / row of B
  */
 void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * B, int ldb, double * C, int ldc, 
 		double * checksumA, int checksumA_ld,
-		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
-		double * v, int v_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
 		magma_queue_t * streams,
 		bool FT, bool DEBUG) {
 
+	/*cout<<"checksum1 of A before dgemm:"<<endl;
+	printMatrix_gpu(checksumA1, incA1*sizeof(double), m/n,k);
+	cout<<"checksum2 of A before dgemm:"<<endl;
+	printMatrix_gpu(checksumA2, incA2*sizeof(double), m/n,k);
+	
+	cout<<"checksum1 of C before dgemm:"<<endl;
+	printMatrix_gpu(checksumC1, incC1*sizeof(double), m/n,n);
+	cout<<"checksum2 of C before dgemm:"<<endl;
+	printMatrix_gpu(checksumC2, incC2*sizeof(double), m/n,n);
+	*/
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
 	
-	if (FT) {
-//						
-//		//verify B before use
-//		//reclaculate checksums of B on GPU
-//		magmablasSetKernelStream(streams[2]);
-//		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-//				B, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
-//		magmablasSetKernelStream(streams[3]);
-//		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-//				B, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
-//		//handle error - to be finished
-//		
-//		
-//		if (DEBUG) {
-//			cout<<"recalculated checksum of B before dgemm:"<<endl;
-//			printMatrix_gpu(chk1, chk1_ld, 1, k);
-//			printMatrix_gpu(chk2, chk2_ld, 1, k);
-//		
-//			cout<<"updated checksum of B before dgemm:"<<endl;
-//			printMatrix_host(checksumB, checksumB_ld, 2, k);
-//		}
-//		
-//		
-//	
-//		//verify A before use
-//		for (int i = 0; i < m; i += n) {
-//			magmablasSetKernelStream(streams[2]);
-//			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-//					A + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-//			magmablasSetKernelStream(streams[3]);
-//			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-//					A + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-//		}
-//		//handle error - to be finished
-//		
-//
-//		
-//		
-//		
-//		
-//		if (DEBUG) {	
-//			cout<<"recalculated checksum of A before dgemm:"<<endl;
-//			printMatrix_gpu(chk1, chk1_ld, m / n, k);
-//			printMatrix_gpu(chk2, chk2_ld, m / n, k);
-//		
-//			cout<<"updated checksum of A before dgemm:"<<endl;
-//			printMatrix_host(checksumA, checksumA_ld, (m / n) * 2, k);
-//		}
-		
-	}
-	
+
 	magmablasSetKernelStream(streams[1]);
 	magma_dgemm(
 				MagmaNoTrans, MagmaTrans,
@@ -98,14 +56,47 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				MAGMA_D_ONE,
 				C, ldc );
 	
+	
+	
+
 	if(FT){	
+		
+		//recalculate checksum
+//		magma_queue_sync( stream1 );
+		for (int i = 0; i < m; i += n) {
+			magmablasSetKernelStream(streams[2]);
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					C + i, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+			magmablasSetKernelStream(streams[3]);
+			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
+		}
+		
+		//update checksum				
 		magmablasSetKernelStream(streams[4]);
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
 					(m / n) * 2, n, k,
 					MAGMA_D_ONE * (-1),
-					checksumA, checksumA_ld, B, ldb,
+					checksumA, checksumA_ld,
+					B, ldb,
 					MAGMA_D_ONE,
 					checksumC, checksumC_ld );
+	
+//		if (DEBUG) {
+//			cout<<"recalculated checksum of C after dgemm:"<<endl;
+//			printMatrix_gpu(chk1, chk1_ld, (m / n), n);
+//			printMatrix_gpu(chk2, chk2_ld, (m / n), n);
+//		
+//			cout<<"updated checksum of C after dgemm:"<<endl;
+//			printMatrix_host(checksumC, checksumC_ld, (m / n) * 2, n);
+//		}
+		
+		//error detection and error correction
+	//	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
+	//			checksumC1, incC1, checksumC2, incC2,
+	//			chk1, chk1_ld, chk2, chk2_ld);
+				
+		
 	}
 }
