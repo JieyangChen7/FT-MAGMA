@@ -217,7 +217,7 @@ magma_dpotrf_gpu(
 		size_t checksum_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
 		checksum_ld = checksum_pitch / sizeof(double);
 		magma_dmalloc(&checksum, checksum_pitch * N);
-		cudaMemset2D(checksumd, checksumd_pitch, 0, (N / B) * 2 * sizeof(double), N);
+		cudaMemset2D(checksum, checksum_pitch, 0, (N / B) * 2 * sizeof(double), N);
 		
 		initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, checksum, checksum_ld);
 		//cout<<"checksums initialized"<<endl;
