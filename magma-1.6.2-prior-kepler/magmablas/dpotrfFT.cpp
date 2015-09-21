@@ -29,7 +29,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	
 	
 	if (FT) {
-		magma_set_lapack_numthreads(16);
+	//	magma_set_lapack_numthreads(16);
 		//verify A before use
 //		char T = 'T';
 //		double * chk1 = new double[n];
