@@ -359,7 +359,7 @@ magma_dpotrf_gpu(
                 			stream,
                 			FT, DEBUG);
                 }
-     
+                magma_queue_sync( stream[0] );
                 dpotrfFT(work, B, B, info, 
                 		chk,     chk_ld, 
                 		v, v_ld, 
