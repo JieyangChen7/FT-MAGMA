@@ -51,13 +51,13 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 //						chk2, &chk2_inc );
 		//handle error - to be finished
 		
-		if (DEBUG) {
-			cout<<"recalcuated checksum on CPU before factorization:"<<endl;
-			printMatrix_host(chk1, 1, 1, n);
-			printMatrix_host(chk2, 1, 1, n);
-			cout<<"updated checksum on CPU before factorization:"<<endl;
-			printMatrix_host(chksum, chksum_ld, 2, n);
-		}
+//		if (DEBUG) {
+//			cout<<"recalcuated checksum on CPU before factorization:"<<endl;
+//			printMatrix_host(chk1, 1, 1, n);
+//			printMatrix_host(chk2, 1, 1, n);
+//			cout<<"updated checksum on CPU before factorization:"<<endl;
+//			printMatrix_host(chksum, chksum_ld, 2, n);
+//		}
 	}
 	
 	//do Choleksy factorization
