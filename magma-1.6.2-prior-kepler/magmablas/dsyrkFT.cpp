@@ -70,15 +70,15 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	double zero = 0;
 	
 	//if (FT) {
-		magmablasSetKernelStream(streams[1]);
-		magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
-				n, n, m,
-				MAGMA_D_ONE * (-1),
-				A, lda, A, lda,
-				MAGMA_D_ONE,
-				C, ldc );
-//	} else {
+//		magmablasSetKernelStream(streams[1]);
+//		magma_dgemm(
+//				MagmaNoTrans, MagmaTrans,
+//				n, n, m,
+//				MAGMA_D_ONE * (-1),
+//				A, lda, A, lda,
+//				MAGMA_D_ONE,
+//				C, ldc );
+////	} else {
 //		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
 //						MAGMA_D_ONE * (-1), A, lda,
 //						MAGMA_D_ONE,     C, ldc);
