@@ -29,27 +29,27 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	
 	
 	if (FT) {
-	//	magma_set_lapack_numthreads(16);
+		magma_set_lapack_numthreads(16);
 		//verify A before use
-//		char T = 'T';
-//		double * chk1 = new double[n];
-//		double * chk2 = new double[n];
-//		int chk1_inc = 1;
-//		int chk2_inc = 1;
-//		blasf77_dgemv(  &T,
-//		                &n, &n,
-//		                &one,
-//		                A, &lda,
-//		                v, &v_ld,
-//		                &zero,
-//		                chk1, &chk1_inc );
-//		blasf77_dgemv(  &T,
-//						&n, &n,
-//						&one,
-//						A, &lda,
-//						v + 1, &v_ld,
-//						&zero,
-//						chk2, &chk2_inc );
+		char T = 'T';
+		double * chk1 = new double[n];
+		double * chk2 = new double[n];
+		int chk1_inc = 1;
+		int chk2_inc = 1;
+		blasf77_dgemv(  &T,
+		                &n, &n,
+		                &one,
+		                A, &lda,
+		                v, &v_ld,
+		                &zero,
+		                chk1, &chk1_inc );
+		blasf77_dgemv(  &T,
+						&n, &n,
+						&one,
+						A, &lda,
+						v + 1, &v_ld,
+						&zero,
+						chk2, &chk2_inc );
 		//handle error - to be finished
 		
 //		if (DEBUG) {
@@ -62,53 +62,13 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	}
 	
 	//do Choleksy factorization
-//	magma_set_lapack_numthreads(1);
-//	char uplo = 'L';
-//	lapackf77_dpotrf(&uplo, &n, A, &n, info);
+	magma_set_lapack_numthreads(1);
+	char uplo = 'L';
+	lapackf77_dpotrf(&uplo, &n, A, &n, info);
 	if (FT) {
-		//recalculate checksum1 and checksum2
-//		double * chk1 = new double[n];
-//		double * chk2 = new double[n];
-//		for (int i = 0; i < n; i++) {
-//			chk1[i] = 1;
-//			chk2[i] = i + 1;
-//		}
-//		int v1_inc = 1;
-//		int v2_inc = 1;
-//		int chk1_inc = 1;
-//		int chk2_inc = 1;
-		char T = 'T';
-		char N = 'N';
-		char L = 'L';
-		int nOfChecksum = 2;
-//		
-//		blasf77_dtrmv(  &L, &T, &N,
-//		                &n,
-//		                A, &lda,
-//		                chk1, &chk1_inc );
-//		blasf77_dtrmv(  &L, &T, &N,
-//						&n,
-//						A, &lda,
-//						chk2, &chk2_inc );
-		
-		
 		//update checksum1 and checksum2
-//		for (int i = 0; i < n; i++) {
-//			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, lda, n, i, i);
-//			*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, lda, n, i, i);
-//			//daxpy(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
-//			int m = n-i-1;
-//			int ONE = 1;
-//			blasf77_dgemm(  &N, &T,
-//							 &nOfChecksum, &m, &ONE,
-//							 &negone,
-//							 chksum + i*chksum_ld, &chksum_ld,
-//							 A + i*lda + i+1, &lda,
-//							 &one,
-//							 chksum + (i+1)*chksum_ld, 
-//							 &chksum_ld );
-//		}
-		
+
+		magma_set_lapack_numthreads(64);
 		for (int i = 0; i < n; i++) {
 			//chksum1[i] = chksum1[i] / get(A, n, n, i, i);
 			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);

@@ -286,7 +286,7 @@ magma_dpotrf_gpu(
         	
         	float noFTtime = 0;
 			float FTtime = 0;
-        	for (int P = 1; P <= 64; P *= 2) {
+//        	for (int P = 1; P <= 64; P *= 2) {
 //				if (P == 0) {
 //					FT = false;
 //				} else {
@@ -294,7 +294,7 @@ magma_dpotrf_gpu(
 //				}
         	
         	
-        	magma_set_lapack_numthreads(P);
+        	magma_set_lapack_numthreads(64);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
@@ -313,79 +313,78 @@ magma_dpotrf_gpu(
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
-//            	jb = nb;
-//                if (j > 0) {
-//                	//magma_set_lapack_numthreads(64);
-//					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
-//							checksum + (j / jb) * 2, checksum_ld, 
-//							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-//							vd, vd_ld, 
-//							v, v_ld,
-//							chk1d, chk1d_ld, 
-//							chk2d, chk2d_ld, 
-//							stream,
-//							FT, DEBUG);
-//					
-//                }
-//                
-//                              
-//                magma_queue_sync( stream[1] );
-//                magma_dgetmatrix_async( jb, jb,
-//                                        dA(j, j), ldda,
-//                                        work,     jb, stream[0] );
-//                magma_dgetmatrix_async( 2, jb,
-//                						checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
-//                                        chk,     chk_ld, stream[0] );
-//                           
-//                if ( (j+jb) < n && j > 0) {	
-//                	//magma_set_lapack_numthreads(16);
-//                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
-//                			dA(j,    0), ldda, dA(j+jb, j), ldda, 
-//                			checksum + ((j + jb) / jb) * 2, checksum_ld, 
-//                			checksum + (j / jb) * 2, checksum_ld, 
-//                			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
-//                			vd, vd_ld,
-//                			v, v_ld,
-//                			chk1d, chk1d_ld,
-//                			chk2d, chk2d_ld,
-//                			stream,
-//                			FT, DEBUG);
-//                	
-//                }
-//                
-//
-//                magma_queue_sync( stream[0] );
-//                
+            	jb = nb;
+                if (j > 0) {
+
+					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+							checksum + (j / jb) * 2, checksum_ld, 
+							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+							vd, vd_ld, 
+							v, v_ld,
+							chk1d, chk1d_ld, 
+							chk2d, chk2d_ld, 
+							stream,
+							FT, DEBUG);
+					
+                }
+                
+                              
+                magma_queue_sync( stream[1] );
+                magma_dgetmatrix_async( jb, jb,
+                                        dA(j, j), ldda,
+                                        work,     jb, stream[0] );
+                magma_dgetmatrix_async( 2, jb,
+                						checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
+                                        chk,     chk_ld, stream[0] );
+                           
+                if ( (j+jb) < n && j > 0) {	
+     
+                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
+                			dA(j,    0), ldda, dA(j+jb, j), ldda, 
+                			checksum + ((j + jb) / jb) * 2, checksum_ld, 
+                			checksum + (j / jb) * 2, checksum_ld, 
+                			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
+                			vd, vd_ld,
+                			v, v_ld,
+                			chk1d, chk1d_ld,
+                			chk2d, chk2d_ld,
+                			stream,
+                			FT, DEBUG);
+                	
+                }
+                
+
+                magma_queue_sync( stream[0] );
+                
                 //magma_set_lapack_numthreads(64);
                 dpotrfFT(work, B, B, info, 
                 		chk,     chk_ld, 
                 		v, v_ld, 
                 		FT, DEBUG);
                                 
-//                magma_dsetmatrix_async( jb, jb,
-//                                        work,     jb,
-//                                        dA(j, j), ldda, stream[1] );
-//                magma_dsetmatrix_async( 2, jb,
-//                                        chk,     chk_ld, 
-//                                        checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
-//                                        stream[0] );
-//                
-////                if (*info != 0) {
-////                    *info = *info + j;
-////                    break;
-////                }
-////                
-//                if ( (j+jb) < n) {          	
-//                	//magma_set_lapack_numthreads(2);
-//                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
-//                			dA(j+jb, j), ldda,
-//                			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
-//                			vd, vd_ld, 
-//                			chk1d, chk1d_ld,
-//                			chk2d, chk2d_ld,
-//                			FT, DEBUG, stream);
+                magma_dsetmatrix_async( jb, jb,
+                                        work,     jb,
+                                        dA(j, j), ldda, stream[1] );
+                magma_dsetmatrix_async( 2, jb,
+                                        chk,     chk_ld, 
+                                        checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
+                                        stream[0] );
+                
+//                if (*info != 0) {
+//                    *info = *info + j;
+//                    break;
 //                }
 //                
+                if ( (j+jb) < n) {          	
+                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
+                			dA(j+jb, j), ldda,
+                			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
+                			vd, vd_ld, 
+                			chk1d, chk1d_ld,
+                			chk2d, chk2d_ld,
+                			FT, DEBUG, stream);
+                }
+                
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
@@ -409,7 +408,7 @@ magma_dpotrf_gpu(
         	cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
         	}
         }
-    }
+  //  }
 
     magma_free_pinned( work );
 
