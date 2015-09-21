@@ -29,26 +29,27 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	
 	
 	if (FT) {
+		magma_set_lapack_numthreads(16);
 		//verify A before use
-		char T = 'T';
-		double * chk1 = new double[n];
-		double * chk2 = new double[n];
-		int chk1_inc = 1;
-		int chk2_inc = 1;
-		blasf77_dgemv(  &T,
-		                &n, &n,
-		                &one,
-		                A, &lda,
-		                v, &v_ld,
-		                &zero,
-		                chk1, &chk1_inc );
-		blasf77_dgemv(  &T,
-						&n, &n,
-						&one,
-						A, &lda,
-						v + 1, &v_ld,
-						&zero,
-						chk2, &chk2_inc );
+//		char T = 'T';
+//		double * chk1 = new double[n];
+//		double * chk2 = new double[n];
+//		int chk1_inc = 1;
+//		int chk2_inc = 1;
+//		blasf77_dgemv(  &T,
+//		                &n, &n,
+//		                &one,
+//		                A, &lda,
+//		                v, &v_ld,
+//		                &zero,
+//		                chk1, &chk1_inc );
+//		blasf77_dgemv(  &T,
+//						&n, &n,
+//						&one,
+//						A, &lda,
+//						v + 1, &v_ld,
+//						&zero,
+//						chk2, &chk2_inc );
 		//handle error - to be finished
 		
 //		if (DEBUG) {
@@ -62,7 +63,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	
 	//do Choleksy factorization
 	char uplo = 'L';
-	//lapackf77_dpotrf(&uplo, &n, A, &n, info);
+	lapackf77_dpotrf(&uplo, &n, A, &n, info);
 	if (FT) {
 		//recalculate checksum1 and checksum2
 //		double * chk1 = new double[n];
