@@ -35,20 +35,20 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		double * chk2 = new double[n];
 		int chk1_inc = 1;
 		int chk2_inc = 1;
-		blasf77_dgemv(  &T,
-		                &n, &n,
-		                &one,
-		                A, &lda,
-		                v, &v_ld,
-		                &zero,
-		                chk1, &chk1_inc );
-		blasf77_dgemv(  &T,
-						&n, &n,
-						&one,
-						A, &lda,
-						v + 1, &v_ld,
-						&zero,
-						chk2, &chk2_inc );
+//		blasf77_dgemv(  &T,
+//		                &n, &n,
+//		                &one,
+//		                A, &lda,
+//		                v, &v_ld,
+//		                &zero,
+//		                chk1, &chk1_inc );
+//		blasf77_dgemv(  &T,
+//						&n, &n,
+//						&one,
+//						A, &lda,
+//						v + 1, &v_ld,
+//						&zero,
+//						chk2, &chk2_inc );
 		//handle error - to be finished
 		
 //		if (DEBUG) {
