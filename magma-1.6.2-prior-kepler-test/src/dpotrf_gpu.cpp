@@ -324,18 +324,18 @@ magma_dpotrf_gpu(
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
             	jb = nb;
-//               if (j > 0) {
-//  
-//					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
-//							checksum + (j / jb) * 2, checksum_ld, 
-//							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-//							vd, vd_ld, 
-//							v, v_ld,
-//							chk1d, chk1d_ld, 
-//							chk2d, chk2d_ld, 
-//							stream,
-//							FT, DEBUG);
-//                }
+               if (j > 0) {
+  
+					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+							checksum + (j / jb) * 2, checksum_ld, 
+							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+							vd, vd_ld, 
+							v, v_ld,
+							chk1d, chk1d_ld, 
+							chk2d, chk2d_ld, 
+							stream,
+							FT, DEBUG);
+                }
 //
 //                magma_queue_sync( stream[1] );
 //                magma_dgetmatrix_async( jb, jb,
