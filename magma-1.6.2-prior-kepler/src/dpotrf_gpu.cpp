@@ -286,15 +286,15 @@ magma_dpotrf_gpu(
         	
         	float noFTtime = 0;
 			float FTtime = 0;
-        	for (int P = 1; P < 2; P ++) {
-				if (P == 0) {
-					FT = false;
-				} else {
-					FT = true;
-				}
+        	for (int P = 1; P <= 642; P *= 2) {
+//				if (P == 0) {
+//					FT = false;
+//				} else {
+//					FT = true;
+//				}
         	
         	
-        	magma_set_lapack_numthreads(64);
+        	magma_set_lapack_numthreads(P);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
