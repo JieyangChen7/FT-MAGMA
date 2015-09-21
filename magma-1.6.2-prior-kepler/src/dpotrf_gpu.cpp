@@ -391,6 +391,7 @@ magma_dpotrf_gpu(
             magma_queue_sync( stream[1] );
             magma_queue_sync( stream[2] );
             magma_queue_sync( stream[3] );
+            magma_queue_sync( stream[4] );
 			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 				cout << "PAPI ERROR" << endl;
 				return -1;
