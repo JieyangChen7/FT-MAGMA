@@ -286,7 +286,7 @@ magma_dpotrf_gpu(
         	
         	float noFTtime = 0;
 			float FTtime = 0;
-        	for (int P = 1; P <= 642; P *= 2) {
+        	for (int P = 1; P <= 64; P *= 2) {
 //				if (P == 0) {
 //					FT = false;
 //				} else {
@@ -404,9 +404,10 @@ magma_dpotrf_gpu(
 					noFTtime = real_time;
 			}  
 			PAPI_shutdown();
-        	}
+        
         	float overhead = (FTtime - noFTtime) / noFTtime;
         	cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
+        	}
         }
     }
 
