@@ -386,7 +386,7 @@ magma_dpotrf_gpu(
                 			vd, vd_ld, 
                 			chk1d, chk1d_ld,
                 			chk2d, chk2d_ld,
-                			FT, DEBUG, stream, true);
+                			FT, DEBUG, true, stream);
                 }
                 
             }
