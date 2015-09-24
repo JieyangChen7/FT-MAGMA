@@ -73,17 +73,16 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		//update checksum
 		char N = 'N';
 		char T = 'T';
-		//int m2 = (m / n) * 2;
-		int m2 = c_part * 2;
+		int m2 = (m / n) * 2;
 		int n2 = n;
 		int k2 = k;		
 		blasf77_dgemm(  &N, &T,
 						&m2, &n2, &k2,
 						&negone,
-						checksumA + g_part * 2, &checksumA_ld,
+						checksumA, &checksumA_ld,
 						temp, &temp_ld,
 						&one,
-						checksumC + g_part * 2, &checksumC_ld );		
+						checksumC, &checksumC_ld );		
 //		if (DEBUG) {
 //			cout<<"recalculated checksum of C after dgemm:"<<endl;
 //			printMatrix_gpu(chk1, chk1_ld, (m / n), n);
