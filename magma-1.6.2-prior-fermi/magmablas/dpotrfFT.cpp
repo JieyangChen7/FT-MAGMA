@@ -66,7 +66,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	char uplo = 'L';
 	lapackf77_dpotrf(&uplo, &n, A, &n, info);
 	if (FT) {
-		magma_set_lapack_numthreads(64);
+		magma_set_lapack_numthreads(32);
 		for (int i = 0; i < n; i++) {
 			//chksum1[i] = chksum1[i] / get(A, n, n, i, i);
 			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);

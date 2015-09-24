@@ -79,7 +79,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	//cublasDsyrk(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, n, m, &negone, A, lda, &one, C, ldc);
 	
 	
-	if (FT) {
+//	if (FT) {
 		magma_dgemm(
 				MagmaNoTrans, MagmaTrans,
 				n, n, m,
@@ -87,11 +87,11 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 				A, lda, A, lda,
 				MAGMA_D_ONE,
 				C, ldc );
-	} else {
-		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
-						MAGMA_D_ONE * (-1), A, lda,
-						MAGMA_D_ONE,     C, ldc);
-	}
+//	} else {
+//		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
+//						MAGMA_D_ONE * (-1), A, lda,
+//						MAGMA_D_ONE,     C, ldc);
+//	}
 	
 	if(FT){
 		magma_queue_sync( stream0 );

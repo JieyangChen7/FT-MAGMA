@@ -1,5 +1,6 @@
 #include "magma.h"
 #include "magma_lapack.h"
+#include "common_magma.h"
 #include "magmablas.h"
 void printMatrix_host(double * matrix_host, int ld,  int M, int N);
 void printMatrix_gpu(double * matrix_device, int matrix_ld, int M, int N);
