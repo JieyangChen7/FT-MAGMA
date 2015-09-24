@@ -333,7 +333,7 @@ magma_dpotrf_gpu(
 //        	if (P == 0) {
 //        		FT = false;
 //        	} else {
-        		FT = true;
+        		FT = false;
 //        	}
         
         	magma_set_lapack_numthreads(64);
@@ -441,7 +441,7 @@ magma_dpotrf_gpu(
 					noFTtime = real_time;
 			}     
 			
-			cout << N <<"["<<B<<"]"<<"		FT:"<< FTtime << endl;
+			cout << N <<"["<<B<<"]"<<"		FT:"<< noFTtime << endl;
 			PAPI_shutdown();        	
         }
         
