@@ -149,7 +149,7 @@ magma_dpotrf_gpu(
     int B = nb;
     int N = n;
     //variables for FT
-    bool FT = true;
+    bool FT = false;
     bool DEBUG = false;
 	double * v;
 	int v_ld;
@@ -401,7 +401,7 @@ magma_dpotrf_gpu(
 					noFTtime = real_time;
 			}     
 			
-			cout << N <<"["<<B<<"]"<<"		FT:"<< FTtime << endl;
+			cout << N <<"["<<B<<"]"<<"		FT:"<< FTtime <<"	noFT:" <<noFTtime<<endl;
 			PAPI_shutdown();        	
         }
  //       }
