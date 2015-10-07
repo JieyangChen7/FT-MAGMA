@@ -337,11 +337,11 @@ magma_dpotrf_gpu(
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
-                
-                magma_dgetmatrix_async( 2, jb,
+                if (FT) {
+                	magma_dgetmatrix_async( 2, jb,
                 						checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
 										chk,     chk_ld, stream[0] );
-                
+                }
                            
                 if ( (j+jb) < n && j > 0) {
  
@@ -364,10 +364,12 @@ magma_dpotrf_gpu(
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
+                if (FT) {
                 magma_dsetmatrix_async( 2, jb,
                 						chk,     chk_ld,
                 						checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
 										stream[0] );
+                }
                 if (*info != 0) {
                     *info = *info + j;
                     break;
