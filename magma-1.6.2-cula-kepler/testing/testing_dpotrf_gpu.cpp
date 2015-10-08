@@ -86,7 +86,7 @@ int main( int argc, char** argv)
             }
             culaStatus status = culaDeviceDpotrf(MagmaLower, N, d_A, ldda);
         if (status != culaNoError) {
-            cout<<"CULA ERROR"<<endl;
+            cout<<"CULA ERROR:"<<status<<endl;
         }
             if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 							cout << "PAPI ERROR" << endl;
