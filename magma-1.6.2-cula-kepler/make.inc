@@ -51,7 +51,9 @@ LIB       = -lacml_mp -lcblas -lcublas -lcudart -lstdc++ -lm -lgfortran -lpapi -
 
 LIBDIR    = -L$(CUDADIR)/lib64 \
             -L$(ACMLDIR)/gfortran64_mp/lib \
-            -L$(CBLASDIR)/lib
+            -L$(CBLASDIR)/lib \
+            -L$(CULA_LIB_PATH_64)
+   
 
 INC       = -I$(CUDADIR)/include \
             -I$(ACMLDIR)/gfortran64_mp/include \
