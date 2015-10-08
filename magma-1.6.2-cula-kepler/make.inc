@@ -40,7 +40,7 @@ LDFLAGS   =     $(FPIC)              -fopenmp
 
 # for ACML >= 5
 # requires gcc & gfortran >= 4.6
-LIB       = -lacml_mp -lcblas -lcublas -lcudart -lstdc++ -lm -lgfortran -lpapi -L$CULA_LIB_PATH_64 -lcula_lapack_basic
+LIB       = -lacml_mp -lcblas -lcublas -lcudart -lstdc++ -lm -lgfortran -lpapi -L$(CULA_LIB_PATH_64) -lcula_lapack_basic
 
 # define library directories preferably in your environment, or here.
 #ACMLDIR  ?= /opt/acml
@@ -56,4 +56,4 @@ LIBDIR    = -L$(CUDADIR)/lib64 \
 INC       = -I$(CUDADIR)/include \
             -I$(ACMLDIR)/gfortran64_mp/include \
 	    -I$(MAGMA_DIR)/FT \
-	    -I$CULA_INC_PATH
+	    -I$(CULA_INC_PATH)
