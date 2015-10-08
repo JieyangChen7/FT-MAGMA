@@ -20,6 +20,7 @@
 #include "testings.h"
 #include "cula.h"
 #include "papi.h"
+#include <iostream>
 
 /* ////////////////////////////////////////////////////////////////////////////
    -- Testing dpotrf
