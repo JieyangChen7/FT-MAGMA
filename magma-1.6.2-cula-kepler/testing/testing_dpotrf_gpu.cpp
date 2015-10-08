@@ -18,6 +18,8 @@
 #include "magma.h"
 #include "magma_lapack.h"
 #include "testings.h"
+#include "cula.h"
+#include "papi.h"
 
 /* ////////////////////////////////////////////////////////////////////////////
    -- Testing dpotrf
@@ -71,7 +73,26 @@ int main( int argc, char** argv)
                Performs operation using MAGMA
                =================================================================== */
             //gpu_time = magma_wtime();
-            magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
+            float real_time = 0.0;
+			float proc_time = 0.0;
+			long long flpins = 0.0;
+			float mflops = 0.0;
+            culaInitialize();
+            if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+            				cout << "PAPI ERROR" << endl;
+            				//return -1;
+            }
+            culaDeviceDpotrf(MagmaLower, N, d_A, ldda);
+            if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+							cout << "PAPI ERROR" << endl;
+							//return -1;
+			}
+            cout << "CULA["<<N<<"]---time:"<<real_time<<endl;
+            culaShutdown();
+            
+            
+            
+            //magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
 //            gpu_time = magma_wtime() - gpu_time;
 //            gpu_perf = gflops / gpu_time;
 //            if (info != 0)
