@@ -84,7 +84,7 @@ int main( int argc, char** argv)
             				cout << "PAPI ERROR" << endl;
             				//return -1;
             }
-            culaStatus status = culaDeviceDpotrf(MagmaLower, N, d_A, ldda);
+            culaStatus status = culaDeviceDpotrf('l', N, d_A, ldda);
         if (status != culaNoError) {
             cout<<"CULA ERROR:"<<status<<endl;
         }
