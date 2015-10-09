@@ -12,13 +12,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
+#include <iostream>
 // includes, project
 #include "flops.h"
 #include "magma.h"
 #include "magma_lapack.h"
 #include "testings.h"
 #include "papi.h"
+
+using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////////
    -- Testing dpotrf
