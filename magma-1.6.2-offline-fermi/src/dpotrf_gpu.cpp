@@ -227,11 +227,8 @@ magma_dpotrf_gpu(
 		//allocate space for reclaculated checksum on GPU
 		chk1d_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
 		chk1d_ld = chk1d_pitch / sizeof(double);
-		magma_dmalloc(&chk1d, chk1d_pitch * B);
+		magma_dmalloc(&chk1d, chk1d_pitch * N);
 		
-		chk2d_pitch = magma_roundup((N / B) * sizeof(double), 32);
-		chk2d_ld = chk2d_pitch / sizeof(double);
-		magma_dmalloc(&chk2d, chk2d_pitch * B);
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
  
 		//initialize checksums
@@ -425,6 +422,7 @@ magma_dpotrf_gpu(
                 }
                 
             }
+            initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, chk1d, chk1d_ld, stream[0]);
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
             magma_queue_sync( stream[2] );

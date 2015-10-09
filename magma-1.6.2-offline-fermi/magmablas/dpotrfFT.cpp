@@ -40,31 +40,31 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	
 		
 		//recalculate checksum1 and checksum2
-		magma_set_lapack_numthreads(8);
-		double * chk1 = new double[n];
-		double * chk2 = new double[n];
-		for (int i = 0; i < n; i++) {
-			chk1[i] = 1;
-			chk2[i] = i + 1;
-		}
-		int v1_inc = 1;
-		int v2_inc = 1;
-		int chk1_inc = 1;
-		int chk2_inc = 1;
-		char T = 'T';
-		char N = 'N';
-		char L = 'L';
-		int nOfChecksum = 2;
-		
-		
-		blasf77_dtrmv(  &L, &T, &N,
-		                &n,
-		                A, &lda,
-		                chk1, &chk1_inc );
-		blasf77_dtrmv(  &L, &T, &N,
-						&n,
-						A, &lda,
-						chk2, &chk2_inc );
+//		magma_set_lapack_numthreads(8);
+//		double * chk1 = new double[n];
+//		double * chk2 = new double[n];
+//		for (int i = 0; i < n; i++) {
+//			chk1[i] = 1;
+//			chk2[i] = i + 1;
+//		}
+//		int v1_inc = 1;
+//		int v2_inc = 1;
+//		int chk1_inc = 1;
+//		int chk2_inc = 1;
+//		char T = 'T';
+//		char N = 'N';
+//		char L = 'L';
+//		int nOfChecksum = 2;
+//		
+//		
+//		blasf77_dtrmv(  &L, &T, &N,
+//		                &n,
+//		                A, &lda,
+//		                chk1, &chk1_inc );
+//		blasf77_dtrmv(  &L, &T, &N,
+//						&n,
+//						A, &lda,
+//						chk2, &chk2_inc );
 		
 
 		//update checksum1 and checksum2
