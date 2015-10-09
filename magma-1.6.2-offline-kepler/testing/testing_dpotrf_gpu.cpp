@@ -42,13 +42,13 @@ int main( int argc, char** argv)
     
     double tol = opts.tolerance * lapackf77_dlamch("E");
     
-    int Nsize[] = {33280, 30720, 28160, 25600, 23040, 20480, 17920, 15360, 12800, 10240, 7680, 5120, 16};
+    int Nsize[] = {30720, 28160, 25600, 23040, 20480, 17920, 15360, 12800, 10240, 7680, 5120, 16};
     int Nsize1[] = {30720, 25600, 20480, 15360, 10240, 5120, 16};
     printf("uplo = %s\n", lapack_uplo_const(opts.uplo) );
     printf("  N     CPU GFlop/s (sec)   GPU GFlop/s (sec)   ||R_magma - R_lapack||_F / ||R_lapack||_F\n");
     printf("========================================================\n");
     //for( int itest = 0; itest < opts.ntest; ++itest ) {
-    for( int itest = 0; itest < 12; ++itest ) {
+    for( int itest = 0; itest < 11; ++itest ) {
       //  for( int iter = 0; iter < opts.niter; ++iter ) {
             //N   = opts.nsize[itest];
             N   = Nsize[itest];
