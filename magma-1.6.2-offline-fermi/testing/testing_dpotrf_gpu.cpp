@@ -89,7 +89,7 @@ int main( int argc, char** argv)
 				cout << "PAPI ERROR" << endl;
 				return -1;
             }
-            cout<<"N="<<N<<"---time:"<<real_time<<"---gflops:"<<gpu_perf/real_time<<endl;
+            cout<<"N="<<N<<"---time:"<<real_time<<"---gflops:"<<(double)gflops/real_time<<endl;
             PAPI_shutdown();   
 //            gpu_time = magma_wtime() - gpu_time;
 //            gpu_perf = gflops / gpu_time;
