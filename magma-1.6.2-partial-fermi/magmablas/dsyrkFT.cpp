@@ -52,10 +52,11 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 								chkd_updateC, chkd_updateC_ld, stream0);
 		//verify A before use
 		//reclaculate checksums of A on GPU
-		magmablasSetKernelStream(stream2);
+		magmablasSetKernelStream(stream1);
+		//magmablasSetKernelStream(stream2);
 		magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
 				A, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
-		magmablasSetKernelStream(stream3);
+		//magmablasSetKernelStream(stream3);
 		magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
 				A, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
 		
