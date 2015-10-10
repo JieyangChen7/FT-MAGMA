@@ -225,7 +225,7 @@ magma_dpotrf_gpu(
 		//cout<<"allocate space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on GPU
-		chk1d_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
+		chk1d_pitch = magma_roundup((N / B) * sizeof(double), 32);
 		chk1d_ld = chk1d_pitch / sizeof(double);
 		magma_dmalloc(&chk1d, chk1d_pitch * B);
 		
@@ -259,11 +259,11 @@ magma_dpotrf_gpu(
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
 		
-		size_t chkd_updateA_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
+		size_t chkd_updateA_pitch = magma_roundup(2 * sizeof(double), 32);
 		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);
 		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * N);
 		
-		size_t chkd_updateC_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
+		size_t chkd_updateC_pitch = magma_roundup(2 * sizeof(double), 32);
 		chkd_updateC_ld = chkd_updateC_pitch / sizeof(double);
 		magma_dmalloc(&chkd_updateC, chkd_updateC_pitch * B);
 		
@@ -424,6 +424,11 @@ magma_dpotrf_gpu(
                 			FT, DEBUG, stream);
                 }
                 
+            }
+            if (FT) {
+				magma_free_pinned( temp );
+				magma_free_pinned( checksum);
+				magma_free( checksumd );
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
