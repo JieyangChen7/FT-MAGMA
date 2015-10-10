@@ -348,7 +348,7 @@ magma_dpotrf_gpu(
             		cout << "********************************************"<<endl;
             	}
             	jb = nb;
-            	int k = 3;
+            	int k = 5;
             	bool VERIFY = true;
 				if ((j / jb) % k == 0) {
 					VERIFY = true;
