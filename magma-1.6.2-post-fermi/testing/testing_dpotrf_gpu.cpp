@@ -83,6 +83,8 @@ int main( int argc, char** argv)
 			}
 			
             magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
+            magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
+            magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
             
             if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 				cout << "PAPI ERROR" << endl;
