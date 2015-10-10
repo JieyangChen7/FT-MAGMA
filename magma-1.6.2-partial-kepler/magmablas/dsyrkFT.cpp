@@ -87,8 +87,8 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	
 	if(FT){
 		//update checksums on GPU
-		magmablasSetKernelStream(streams[1]);
-		//magmablasSetKernelStream(streams[4]);
+		//magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[4]);
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
 					2, n, m,
