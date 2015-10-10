@@ -320,30 +320,22 @@ magma_dpotrf_gpu(
         else {
         	
         	
-        	float noFTtime = 0;
-			float FTtime = 0;
-			
-		for (int P = 0; P < 2; P ++) {
-			if (P == 0) {
-				FT = false;
-			} else {
-				FT = true;
-			}
-        	
-        	
-        	magma_set_lapack_numthreads(64);
-        	int numOfCore = magma_get_lapack_numthreads();
-        	cout<<"number of core=" << numOfCore<<endl;
-
-        	float real_time = 0.0;
-			float proc_time = 0.0;
-			long long flpins = 0.0;
-			float mflops = 0.0;
+//        	float noFTtime = 0;
+//			float FTtime = 0;
+//			
+//        	magma_set_lapack_numthreads(64);
+//        	int numOfCore = magma_get_lapack_numthreads();
+//        	cout<<"number of core=" << numOfCore<<endl;
+//
+//        	float real_time = 0.0;
+//			float proc_time = 0.0;
+//			long long flpins = 0.0;
+//			float mflops = 0.0;
 			//timing start***************
-			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-				cout << "PAPI ERROR" << endl;
-				return -1;
-			}
+//			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+//				cout << "PAPI ERROR" << endl;
+//				return -1;
+//			}
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
             for (j=0; j < n; j += nb) {
@@ -356,9 +348,9 @@ magma_dpotrf_gpu(
             		cout << "********************************************"<<endl;
             	}
             	jb = nb;
-            	
+            	int k = 1;
             	bool VERIFY = true;
-				if ((j / jb) % 3 == 0) {
+				if ((j / jb) % k == 0) {
 					VERIFY = true;
 				} else {
 					VERIFY = false;
@@ -448,26 +440,31 @@ magma_dpotrf_gpu(
                 }
                 
             }
+            if (FT) {
+				magma_free_pinned( temp );
+				magma_free_pinned( checksum);
+				magma_free( checksumd );
+			}
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
             magma_queue_sync( stream[2] );
             magma_queue_sync( stream[3] );
-			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-				cout << "PAPI ERROR" << endl;
-				return -1;
-			}
-			if (FT) {
-					//cout << "FT enabled:" << endl;
-					FTtime = real_time;
-			} else {
-					//cout << "FT disabled:" << endl;
-					noFTtime = real_time;
-			}     
-			PAPI_shutdown();
-		}
-		float overhead = (FTtime - noFTtime) / noFTtime;
-		cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
-			
+//			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+//				cout << "PAPI ERROR" << endl;
+//				return -1;
+//			}
+//			if (FT) {
+//					//cout << "FT enabled:" << endl;
+//					FTtime = real_time;
+//			} else {
+//					//cout << "FT disabled:" << endl;
+//					noFTtime = real_time;
+//			}     
+//			PAPI_shutdown();
+//		}
+//		float overhead = (FTtime - noFTtime) / noFTtime;
+//		cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
+//			
         }
     }
 
