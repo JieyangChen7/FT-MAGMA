@@ -326,29 +326,29 @@ magma_dpotrf_gpu(
             }
         }
         else {
-        	float noFTtime = 0;
-        	float FTtime = 0;
-        	
-//        for (double P = 0.0; P <= 1; P+=0.1) {
-//        	if (P == 0) {
+//        	float noFTtime = 0;
+//        	float FTtime = 0;
+//        	
+////        for (double P = 0.0; P <= 1; P+=0.1) {
+////        	if (P == 0) {
+////        		FT = false;
+////        	} else {
 //        		FT = false;
-//        	} else {
-        		FT = false;
-//        	}
-        
-        	magma_set_lapack_numthreads(64);
-        	int numOfCore = magma_get_lapack_numthreads();
-        	cout<<"number of core=" << numOfCore<<endl;
-
-        	float real_time = 0.0;
-			float proc_time = 0.0;
-			long long flpins = 0.0;
-			float mflops = 0.0;
-			//timing start***************
-			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-				cout << "PAPI ERROR" << endl;
-				return -1;
-			}
+////        	}
+//        
+//        	magma_set_lapack_numthreads(64);
+//        	int numOfCore = magma_get_lapack_numthreads();
+//        	cout<<"number of core=" << numOfCore<<endl;
+//
+//        	float real_time = 0.0;
+//			float proc_time = 0.0;
+//			long long flpins = 0.0;
+//			float mflops = 0.0;
+//			//timing start***************
+//			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+//				cout << "PAPI ERROR" << endl;
+//				return -1;
+//			}
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
             for (j=0; j < n; j += nb) {
@@ -429,20 +429,20 @@ magma_dpotrf_gpu(
             magma_queue_sync( stream[1] );
             magma_queue_sync( stream[2] );
             magma_queue_sync( stream[3] );
-			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-				cout << "PAPI ERROR" << endl;
-				return -1;
-			}
-			if (FT) {
-					//cout << "FT enabled:" << endl;
-					FTtime = real_time;
-			} else {
-					//cout << "FT disabled:" << endl;
-					noFTtime = real_time;
-			}     
-			
-			cout << N <<"["<<B<<"]"<<"		FT:"<< noFTtime << endl;
-			PAPI_shutdown();        	
+//			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+//				cout << "PAPI ERROR" << endl;
+//				return -1;
+//			}
+//			if (FT) {
+//					//cout << "FT enabled:" << endl;
+//					FTtime = real_time;
+//			} else {
+//					//cout << "FT disabled:" << endl;
+//					noFTtime = real_time;
+//			}     
+//			
+//			cout << N <<"["<<B<<"]"<<"		FT:"<< noFTtime << endl;
+//			PAPI_shutdown();        	
         }
         
 //        float overhead = (FTtime - noFTtime) / noFTtime;
