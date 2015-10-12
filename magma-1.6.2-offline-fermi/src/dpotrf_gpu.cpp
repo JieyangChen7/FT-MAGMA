@@ -183,7 +183,7 @@ magma_dpotrf_gpu(
 	double * checksum;
 	int checksum_ld;
 	
-	double * temp;
+	double * temp = null;
 	int temp_ld;
 	
 	double * chkd_updateA;
@@ -263,8 +263,8 @@ magma_dpotrf_gpu(
 //		cout<<"checksum"<<endl;
 //		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		
-		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
-		temp_ld = B;
+//		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
+//		temp_ld = B;
 		
 		size_t chkd_updateA_pitch = magma_roundup(2 * sizeof(double), 32);
 		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);
@@ -393,6 +393,7 @@ magma_dpotrf_gpu(
                 			temp, temp_ld,
                 			chkd_updateA, chkd_updateA_ld,
                 			chkd_updateC, chkd_updateC_ld,
+                			temp, temp_ld,
                 			stream,
                 			FT, DEBUG);
                 }

@@ -32,6 +32,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * temp, int temp_ld,
 		double * chkd_updateA, int chkd_updateA_ld,
 		double * chkd_updateC, int chkd_updateC_ld,
+		double * temp, int temp_ld,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG) {
 
@@ -59,6 +60,14 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				MAGMA_D_ONE,
 				C, ldc );
 	if(FT){			
+
+		if (temp == null) {
+			magma_dmalloc_pinned(&temp, n * k * sizeof(double));
+		}
+
+		magma_dgetmatrix( n, k,
+								B, ldb,
+								temp, temp_ld);
 		//recalculate checksum
 //		magma_queue_sync( stream1 );
 //		for (int i = 0; i < m; i += n) {
