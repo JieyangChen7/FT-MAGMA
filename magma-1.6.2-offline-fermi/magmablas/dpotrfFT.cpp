@@ -33,7 +33,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	//do Choleksy factorization
 	//int info;
 	//dpotrf('L', n, A, n, &info);
-	magma_set_lapack_numthreads(1);
+	//magma_set_lapack_numthreads(1);
 	char uplo = 'L';
 	lapackf77_dpotrf(&uplo, &n, A, &n, info);
 	if (FT) {
@@ -68,7 +68,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		
 
 		//update checksum1 and checksum2
-		magma_set_lapack_numthreads(64);
+		//magma_set_lapack_numthreads(64);
 				for (int i = 0; i < n; i++) {
 					//chksum1[i] = chksum1[i] / get(A, n, n, i, i);
 					*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
