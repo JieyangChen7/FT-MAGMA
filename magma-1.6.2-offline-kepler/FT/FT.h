@@ -2,7 +2,7 @@
 #include "magma_lapack.h"
 #include "magmablas.h"
 #include "common_magma.h"
-#include "flops.h"
+#include "../testing/flops.h"
 
 
 void printMatrix_host(double * matrix_host, int ld,  int M, int N);
