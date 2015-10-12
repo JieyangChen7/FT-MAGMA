@@ -437,12 +437,9 @@ magma_dpotrf_gpu(
 					noFTtime = real_time;
 			}     
 			
-			cout << N <<"["<<B<<"]"<<"		FT:"<< noFTtime << endl;
+			cout << N <<"["<<B<<"]"<<"		FT:"<< FTtime << endl;
 			PAPI_shutdown();        	
         }
-        
-        float overhead = (FTtime - noFTtime) / noFTtime;
-		cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
  //   }
 
         magma_free_pinned( work );
