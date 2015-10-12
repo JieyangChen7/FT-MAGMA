@@ -189,7 +189,15 @@ magma_dpotrf_gpu(
 	double * chkd_updateC;
 	int chkd_updateC_ld;
 	
-	
+	float real_time = 0.0;
+				float proc_time = 0.0;
+				long long flpins = 0.0;
+				float mflops = 0.0;
+				//timing start***************
+				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+					cout << "PAPI ERROR" << endl;
+					return -1;
+				}
 	
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -327,15 +335,7 @@ magma_dpotrf_gpu(
         else {
         	float noFTtime = 0;
         	float FTtime = 0;
-        	float real_time = 0.0;
-        					float proc_time = 0.0;
-        					long long flpins = 0.0;
-        					float mflops = 0.0;
-        					//timing start***************
-        					if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-        						cout << "PAPI ERROR" << endl;
-        						return -1;
-        					}
+        	
 
 //        	magma_set_lapack_numthreads(64);
 //        	int numOfCore = magma_get_lapack_numthreads();
