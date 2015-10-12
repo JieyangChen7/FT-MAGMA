@@ -398,7 +398,7 @@ magma_dpotrf_gpu(
                 
             }
             if (FT) {
-            	initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, chk1d, chk1d_ld, stream[0]);
+            	//initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, chk1d, chk1d_ld, stream[0]);
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
