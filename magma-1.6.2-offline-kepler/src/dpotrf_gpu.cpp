@@ -427,7 +427,10 @@ magma_dpotrf_gpu(
  //   }
 
         magma_free_pinned( work );
-
+        if (FT) {
+        	magma_free(checksum);
+        	magma_free(chk1d);
+        }
 		magma_queue_destroy( stream[0] );
 		if (orig_stream == NULL) {
 			magma_queue_destroy( stream[1] );
