@@ -272,7 +272,7 @@ magma_dpotrf_gpu(
 //		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		
 //		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
-//		temp_ld = B;
+		temp_ld = B;
 		
 		size_t chkd_updateA_pitch = magma_roundup(2 * sizeof(double), 32);
 		chkd_updateA_ld = chkd_updateA_pitch / sizeof(double);

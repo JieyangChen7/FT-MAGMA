@@ -62,8 +62,9 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 
 		if (temp == NULL) {
 			magma_dmalloc_pinned(&temp, n * k * sizeof(double));
+			
 		}
-
+		
 		magma_dgetmatrix( n, k,
 								B, ldb,
 								temp, temp_ld);
