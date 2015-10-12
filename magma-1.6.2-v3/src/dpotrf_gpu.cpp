@@ -289,12 +289,12 @@ magma_dpotrf_gpu(
         	float noFTtime = 0;
 			float FTtime = 0;
 			
-		for (int P = 1; P < 2; P ++) {
-			if (P == 0) {
-				FT = false;
-			} else {
-				FT = true;
-			}
+//		for (int P = 1; P < 2; P ++) {
+//			if (P == 0) {
+//				FT = false;
+//			} else {
+//				FT = true;
+//			}
         	
         	float real_time = 0.0;
 			float proc_time = 0.0;
@@ -326,11 +326,11 @@ magma_dpotrf_gpu(
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
-//                if (FT) {
-//                	magma_dgetmatrix_async(2, jb,
-//                			               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
-//                			               chk, chk_ld, stream[0]);
-//                }
+                if (FT) {
+                	magma_dgetmatrix_async(2, jb,
+                			               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
+                			               chk, chk_ld, stream[0]);
+                }
                 
                 if ( (j+jb) < n && j > 0) {
                 	magma_set_lapack_numthreads(16);
@@ -344,17 +344,17 @@ magma_dpotrf_gpu(
                 magma_queue_sync( stream[0] );
                            
                 magma_set_lapack_numthreads(64);
-            //    dpotrfFT(work, B, B, info, chk, chk_ld, v, v_ld, FT, DEBUG);
+                dpotrfFT(work, B, B, info, chk, chk_ld, v, v_ld, FT, DEBUG);
                 
                 
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
-//                if (FT) {
-//					magma_dgetmatrix_async(2, jb,
-//							               chk, chk_ld,
-//							               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld, stream[0]);
-//				}
+                if (FT) {
+					magma_dgetmatrix_async(2, jb,
+							               chk, chk_ld,
+							               checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld, stream[0]);
+				}
                 
                 if (*info != 0) {
                     *info = *info + j;
@@ -385,11 +385,12 @@ magma_dpotrf_gpu(
 			} else {
 					//cout << "FT disabled:" << endl;
 					noFTtime = real_time;
-			}           
+			}        
+			cout << N<<"["<<B<<"]" <<"		FT:"<< FTtime <<endl;
 			PAPI_shutdown();
-		}
-		float overhead = (FTtime - noFTtime) / noFTtime;
-				cout << N<<"["<<B<<"]" <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
+//		}
+//		float overhead = (FTtime - noFTtime) / noFTtime;
+//				cout << N<<"["<<B<<"]" <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
      }
     }
 
