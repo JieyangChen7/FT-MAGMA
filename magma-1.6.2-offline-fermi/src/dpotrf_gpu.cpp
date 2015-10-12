@@ -424,7 +424,7 @@ magma_dpotrf_gpu(
                 
             }
             if (FT) {
-            	initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, chk1d, chk1d_ld, stream[0]);
+            	initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, chk1d, chk1d_ld, chk1d, chk1d_ld, stream);
 //            	magma_free_pinned( temp );
 //            	magma_free_pinned( checksum);
 //            	magma_free( checksumd );
