@@ -2,9 +2,7 @@
 #include "magma_lapack.h"
 #include "magmablas.h"
 #include "common_magma.h"
-#define FMULS_POTRF(n_) ((n_) * (((1. / 6.) * (n_) + 0.5) * (n_) + (1. / 3.)))
-#define FADDS_POTRF(n_) ((n_) * (((1. / 6.) * (n_)      ) * (n_) - (1. / 6.)))
-#define FLOPS_DPOTRF(n_) (     FMULS_POTRF((double)(n_)) +       FADDS_POTRF((double)(n_)) )
+
 
 void printMatrix_host(double * matrix_host, int ld,  int M, int N);
 void printMatrix_gpu(double * matrix_device, int matrix_ld, int M, int N);
