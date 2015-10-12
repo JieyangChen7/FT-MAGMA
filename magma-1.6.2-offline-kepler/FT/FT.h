@@ -2,6 +2,9 @@
 #include "magma_lapack.h"
 #include "magmablas.h"
 #include "common_magma.h"
+#include "./testing/flops.h"
+
+
 void printMatrix_host(double * matrix_host, int ld,  int M, int N);
 void printMatrix_gpu(double * matrix_device, int matrix_ld, int M, int N);
 void printVector_host(double * vector_host, int N);
