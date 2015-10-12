@@ -149,7 +149,7 @@ magma_dpotrf_gpu(
     int B = nb;
     int N = n;
     //variables for FT
-    bool FT = true;
+    bool FT = false;
     bool DEBUG = false;
 	double * v;
 	int v_ld;
@@ -435,7 +435,9 @@ magma_dpotrf_gpu(
 				cout << "PAPI ERROR" << endl;
 				return -1;
 			}
-			cout << N <<"["<<B<<"]"<<"		FT:"<< real_time << endl;
+			double gflops = FLOPS_DPOTRF( N ) / 1e9;
+			
+			cout << N <<"["<<B<<"]"<<"		FT:"<< real_time << "GFLOPS"<<gflops/real_time<<endl;
 			PAPI_shutdown();        	
         }
         if (FT) {
