@@ -336,7 +336,7 @@ magma_dpotrf_gpu(
         		FT = true;
 //        	}
         
-        	magma_set_lapack_numthreads(64);
+        	magma_set_lapack_numthreads(32);
         	int numOfCore = magma_get_lapack_numthreads();
         	cout<<"number of core=" << numOfCore<<endl;
 
@@ -357,7 +357,7 @@ magma_dpotrf_gpu(
                 //jb = min(nb, (n-j));
             	jb = nb;
                 if (j > 0) {
-                	magma_set_lapack_numthreads(64);
+                	magma_set_lapack_numthreads(32);
 					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
