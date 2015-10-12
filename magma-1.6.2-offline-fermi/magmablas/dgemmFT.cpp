@@ -60,7 +60,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				C, ldc );
 	if(FT){			
 
-		if (temp == null) {
+		if (temp == NULL) {
 			magma_dmalloc_pinned(&temp, n * k * sizeof(double));
 		}
 
@@ -77,7 +77,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 //			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 //					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 //		}
-		magma_queue_sync( streams[4] );
+		//magma_queue_sync( streams[4] );
 		//update checksum
 		char N = 'N';
 		char T = 'T';

@@ -183,7 +183,7 @@ magma_dpotrf_gpu(
 	double * checksum;
 	int checksum_ld;
 	
-	double * temp = null;
+	double * temp = NULL;
 	int temp_ld;
 	
 	double * chkd_updateA;
