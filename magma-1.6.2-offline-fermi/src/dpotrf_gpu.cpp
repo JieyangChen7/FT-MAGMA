@@ -252,8 +252,8 @@ magma_dpotrf_gpu(
 		magma_dmalloc(&checksumd, checksumd_pitch * N);
 		//cudaMemset2D(checksumd, checksumd_pitch, 0, (N / B) * 2 * sizeof(double), N);
 		
-				
-		magma_dmalloc_pinned(&checksum, (N / B) * 2 * N * sizeof(double));
+		checksum = new double[ (N / B) * 2 * N ];
+		//magma_dmalloc_pinned(&checksum, (N / B) * 2 * N * sizeof(double));
 		checksum_ld = (N / B) * 2;
 		
 				
@@ -445,8 +445,10 @@ magma_dpotrf_gpu(
 			PAPI_shutdown();        	
         }
         if (FT) {
-			magma_free_pinned( temp );
-			magma_free_pinned( checksum);
+			magma_free( temp );
+			//magma_free_pinned( temp );
+			magma_free( checksum);
+			//magma_free_pinned( checksum);
 			magma_free( checksumd );
         }
         magma_free_pinned( work );
