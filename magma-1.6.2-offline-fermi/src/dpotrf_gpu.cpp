@@ -393,7 +393,6 @@ magma_dpotrf_gpu(
                 			temp, temp_ld,
                 			chkd_updateA, chkd_updateA_ld,
                 			chkd_updateC, chkd_updateC_ld,
-                			temp, temp_ld,
                 			stream,
                 			FT, DEBUG);
                 }
