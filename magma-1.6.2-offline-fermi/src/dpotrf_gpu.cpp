@@ -191,15 +191,15 @@ magma_dpotrf_gpu(
 	
 	double * chkd_updateC;
 	int chkd_updateC_ld;
-	float real_time = 0.0;
-				float proc_time = 0.0;
-				long long flpins = 0.0;
-				float mflops = 0.0;
-				//timing start***************
-				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-					cout << "PAPI ERROR" << endl;
-					return -1;
-				}
+//	float real_time = 0.0;
+//				float proc_time = 0.0;
+//				long long flpins = 0.0;
+//				float mflops = 0.0;
+//				//timing start***************
+//				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+//					cout << "PAPI ERROR" << endl;
+//					return -1;
+//				}
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
@@ -435,14 +435,14 @@ magma_dpotrf_gpu(
             magma_queue_sync( stream[1] );
             magma_queue_sync( stream[2] );
             magma_queue_sync( stream[3] );
-			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-				cout << "PAPI ERROR" << endl;
-				return -1;
-			}
-			double gflops = FLOPS_DPOTRF( N ) / 1e9;
-			
-			cout << N <<"["<<B<<"]"<<"		FT:"<< real_time << "GFLOPS"<<gflops/real_time<<endl;
-			PAPI_shutdown();        	
+//			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+//				cout << "PAPI ERROR" << endl;
+//				return -1;
+//			}
+//			double gflops = FLOPS_DPOTRF( N ) / 1e9;
+//			
+//			cout << N <<"["<<B<<"]"<<"		FT:"<< real_time << "GFLOPS"<<gflops/real_time<<endl;
+//			PAPI_shutdown();        	
         }
         if (FT) {
         	delete[] temp;
