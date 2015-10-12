@@ -429,8 +429,10 @@ magma_dpotrf_gpu(
                 
             }
             if (FT) {
-				magma_free_pinned( temp );
-				magma_free_pinned( checksum);
+				//magma_free_pinned( temp );
+				//magma_free_pinned( checksum);
+            	delete[] temp;
+            	delete[] checksum;
 				magma_free( checksumd );
             }
             magma_queue_sync( stream[0] );
