@@ -271,6 +271,7 @@ magma_dpotrf_gpu(
 //		cout<<"checksum"<<endl;
 //		printMatrix_host(checksum, checksum_ld, (N / B) * 2, N);
 		
+		
 		magma_dmalloc_pinned(&temp, B * N * sizeof(double));
 		temp_ld = B;
 		
@@ -370,12 +371,12 @@ magma_dpotrf_gpu(
 							chkd_updateC, chkd_updateC_ld, stream,
 							FT, DEBUG);
                 }
-//                if (FT) {
-//					magma_dgetmatrix_async( jb, j,
-//											dA(j, 0), ldda,
-//											temp, temp_ld,
-//											stream[4] );
-//				}
+                if (FT) {
+					magma_dgetmatrix_async( jb, j,
+											dA(j, 0), ldda,
+											temp, temp_ld,
+											stream[4] );
+				}
                 magma_queue_sync( stream[1] );
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
