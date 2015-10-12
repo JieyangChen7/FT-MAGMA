@@ -445,9 +445,11 @@ magma_dpotrf_gpu(
 			PAPI_shutdown();        	
         }
         if (FT) {
-			magma_free( temp );
+        	delete[] temp;
+        	delete[] checksum;
+			//magma_free( temp );
 			//magma_free_pinned( temp );
-			magma_free( checksum);
+			//magma_free( checksum);
 			//magma_free_pinned( checksum);
 			magma_free( checksumd );
         }
