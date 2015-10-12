@@ -194,10 +194,7 @@ magma_dpotrf_gpu(
 				long long flpins = 0.0;
 				float mflops = 0.0;
 				//timing start***************
-				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-					cout << "PAPI ERROR" << endl;
-					return -1;
-				}
+				
 	
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -215,6 +212,10 @@ magma_dpotrf_gpu(
 		for (int i = 0; i < B; ++i) {
 			*(v + i * v_ld + 1) = i+1;
 		}
+		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+							cout << "PAPI ERROR" << endl;
+							return -1;
+						}
 //		cout<<"vector on CPU"<<endl;
 //		printMatrix_host(v, v_ld, 2, B);
 		//cout<<"checksum vector on CPU initialized"<<endl;
