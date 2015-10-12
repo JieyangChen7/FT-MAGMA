@@ -204,6 +204,8 @@ magma_dpotrf_gpu(
 		 * 1 1 1 1
 		 * 1 2 3 4 
 		 */
+		real_time = 0.0;
+		proc_time = 0.0;
 		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 							cout << "PAPI ERROR" << endl;
 							return -1;
@@ -219,7 +221,8 @@ magma_dpotrf_gpu(
 		cout<<"a:"<<real_time<<endl;
 		PAPI_shutdown();        	
 
-		
+		real_time = 0.0;
+		proc_time = 0.0;
 		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 											cout << "PAPI ERROR" << endl;
 											return -1;
@@ -236,6 +239,8 @@ magma_dpotrf_gpu(
 		magma_dsetmatrix(2, B, v, v_ld, vd, vd_ld);
 		cout<<"b:"<<real_time<<endl;
 				PAPI_shutdown(); 
+				real_time = 0.0;
+				proc_time = 0.0;
 		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 									cout << "PAPI ERROR" << endl;
 									return -1;
@@ -255,6 +260,8 @@ magma_dpotrf_gpu(
 		magma_dmalloc(&chk1d, chk1d_pitch * N);
 		cout<<"c:"<<real_time<<endl;
 						PAPI_shutdown(); 
+						real_time = 0.0;
+						proc_time = 0.0;
 		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 											cout << "PAPI ERROR" << endl;
 											return -1;
@@ -269,6 +276,8 @@ magma_dpotrf_gpu(
 		
 		cout<<"d:"<<real_time<<endl;
 								PAPI_shutdown(); 
+								real_time = 0.0;
+								proc_time = 0.0;
 				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 													cout << "PAPI ERROR" << endl;
 													return -1;
@@ -278,6 +287,8 @@ magma_dpotrf_gpu(
 		checksum_ld = (N / B) * 2;
 		cout<<"e:"<<real_time<<endl;
 								PAPI_shutdown(); 
+								real_time = 0.0;
+								proc_time = 0.0;
 				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 													cout << "PAPI ERROR" << endl;
 													return -1;
@@ -285,6 +296,8 @@ magma_dpotrf_gpu(
 		initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, checksumd, checksumd_ld, checksum, checksum_ld,stream);
 		cout<<"f:"<<real_time<<endl;
 								PAPI_shutdown(); 
+								real_time = 0.0;
+								proc_time = 0.0;
 				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 													cout << "PAPI ERROR" << endl;
 													return -1;
@@ -294,6 +307,8 @@ magma_dpotrf_gpu(
 								checksum,     checksum_ld, stream[0] );
 		cout<<"g:"<<real_time<<endl;
 								PAPI_shutdown(); 
+								real_time = 0.0;
+								proc_time = 0.0;
 				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 													cout << "PAPI ERROR" << endl;
 													return -1;
@@ -310,6 +325,8 @@ magma_dpotrf_gpu(
 		temp_ld = B;
 		cout<<"h:"<<real_time<<endl;
 								PAPI_shutdown(); 
+								real_time = 0.0;
+								proc_time = 0.0;
 				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 													cout << "PAPI ERROR" << endl;
 													return -1;
@@ -320,6 +337,8 @@ magma_dpotrf_gpu(
 		magma_dmalloc(&chkd_updateA, chkd_updateA_pitch * N);
 		cout<<"i:"<<real_time<<endl;
 								PAPI_shutdown(); 
+								real_time = 0.0;
+								proc_time = 0.0;
 				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 													cout << "PAPI ERROR" << endl;
 													return -1;
@@ -330,6 +349,8 @@ magma_dpotrf_gpu(
 		magma_dmalloc(&chkd_updateC, chkd_updateC_pitch * B);
 		cout<<"j:"<<real_time<<endl;
 								PAPI_shutdown(); 
+								real_time = 0.0;
+								proc_time = 0.0;
 				if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 													cout << "PAPI ERROR" << endl;
 													return -1;
