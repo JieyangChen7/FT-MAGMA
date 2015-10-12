@@ -61,7 +61,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	if(FT){			
 
 		if (temp == NULL) {
-			magma_dmalloc_pinned(&temp, n * k * sizeof(double));
+			//magma_dmalloc_pinned(&temp, n * k * sizeof(double));
 			
 		}
 		
