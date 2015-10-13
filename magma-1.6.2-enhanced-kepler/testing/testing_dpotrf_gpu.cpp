@@ -51,7 +51,7 @@ int main( int argc, char** argv)
     for( int itest = 0; itest < 7; ++itest ) {
       //  for( int iter = 0; iter < opts.niter; ++iter ) {
             //N   = opts.nsize[itest];
-            N   = Nsize1[itest];
+            N   = Nsize[itest];
             lda = N;
             n2  = lda*N;
             ldda = ((N+31)/32)*32;
