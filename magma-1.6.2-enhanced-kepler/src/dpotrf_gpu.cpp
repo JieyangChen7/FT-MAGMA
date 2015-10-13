@@ -313,7 +313,7 @@ magma_dpotrf_gpu(
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
-            	int k = 3;
+            	int k = 5;
             	bool VERIFY = false;
             	if (j % k == 0) {
             		VERIFY = true;
@@ -416,7 +416,12 @@ magma_dpotrf_gpu(
   //  }
 
     magma_free_pinned( work );
-
+    if (FT) {
+            	magma_free(chk1d);
+            	magma_free(chk2d);
+            	magma_free(checksum);
+            	
+            }
     magma_queue_destroy( stream[0] );
     if (orig_stream == NULL) {
         magma_queue_destroy( stream[1] );

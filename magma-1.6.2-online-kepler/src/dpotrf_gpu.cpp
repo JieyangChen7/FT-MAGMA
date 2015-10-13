@@ -408,6 +408,12 @@ magma_dpotrf_gpu(
  //   }
 
         magma_free_pinned( work );
+        if (FT) {
+        	magma_free(chk1d);
+        	magma_free(chk2d);
+        	magma_free(checksum);
+        	
+        }
 
 		magma_queue_destroy( stream[0] );
 		if (orig_stream == NULL) {
