@@ -72,8 +72,7 @@ int main(int argc, char**argv){
 		  	  v, 1,
 		  	  &one,
 		  	  v, 1);
-  status = cublasDestroy(handle);
+  cublasDestroy(handle);
 }
 
     
-}
