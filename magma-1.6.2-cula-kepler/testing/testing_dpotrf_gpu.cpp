@@ -91,7 +91,7 @@ int main( int argc, char** argv)
 							cout << "PAPI ERROR" << endl;
 							//return -1;
 			}
-            cout << "CULA["<<N<<"]---time:"<<real_time<<endl;
+            cout << "CULA["<<N<<"]---time:"<<real_time<<"---gflops:"<<(double)gflops/real_time<<endl;
             culaShutdown();
             PAPI_shutdown();
             
