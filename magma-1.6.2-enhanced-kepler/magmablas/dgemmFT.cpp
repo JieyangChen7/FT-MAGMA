@@ -101,8 +101,8 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				C, ldc );
 	
 	if(FT){	
-		//magmablasSetKernelStream(streams[1]);
-		magmablasSetKernelStream(streams[4]);
+		magmablasSetKernelStream(streams[1]);
+		//magmablasSetKernelStream(streams[4]);
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
 					(m / n) * 2, n, k,
