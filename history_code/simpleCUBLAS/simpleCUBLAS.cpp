@@ -65,7 +65,7 @@ int main(int argc, char**argv){
   cudaMalloc((void **)&v, B * sizeof(double));
   cudaMalloc((void **)&m, B * B * sizeof(double));
   double one = 1;
-  cublasDgemv(handle, 'N',
+  cublasDgemv(handle, CUBLAS_OP_N,
 		  	  B, B,
 		  	  &one,
 		  	  m, B,
