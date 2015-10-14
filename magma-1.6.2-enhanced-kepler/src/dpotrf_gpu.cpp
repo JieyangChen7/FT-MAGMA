@@ -149,7 +149,7 @@ magma_dpotrf_gpu(
     int B = nb;
     int N = n;
     //variables for FT
-    bool FT = false;
+    bool FT = true;
     bool DEBUG = false;
 	double * v;
 	int v_ld;
@@ -220,7 +220,7 @@ magma_dpotrf_gpu(
 		magma_dmalloc(&checksum, checksum_pitch * N);
 		cudaMemset2D(checksum, checksum_pitch, 0, (N / B) * 2 * sizeof(double), N);
 		
-		initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, checksum, checksum_ld);
+		initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, checksum, checksum_ld, stream);
 		//cout<<"checksums initialized"<<endl;
 
 	}

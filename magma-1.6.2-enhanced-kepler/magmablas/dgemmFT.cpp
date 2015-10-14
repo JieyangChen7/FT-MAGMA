@@ -66,10 +66,11 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		//verify A before use
 		//magmablasSetKernelStream(streams[1]);
 		for (int i = 0; i < m; i += n) {
-			magmablasSetKernelStream(streams[2]);
+			
+			magmablasSetKernelStream(streams[i%5]);
 			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 					A + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-			magmablasSetKernelStream(streams[3]);
+			//magmablasSetKernelStream(streams[3]);
 			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 					A + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 		}

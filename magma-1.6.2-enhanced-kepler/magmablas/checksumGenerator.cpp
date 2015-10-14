@@ -6,12 +6,12 @@ void initializeChecksum(double * matrix, int ld,
 		int N, int B,
 		double * vd, int vd_ld,
 		double * v, int v_ld,
-		double * chksum, int chksum_ld) {
+		double * chksum, int chksum_ld, magma_queue_t * streams) {
 
 
 	
 	for (int i = 0; i < N; i += B) {
-
+		magmablasSetKernelStream(streams[i%5]);
 		
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
 					2, i + B, B,
