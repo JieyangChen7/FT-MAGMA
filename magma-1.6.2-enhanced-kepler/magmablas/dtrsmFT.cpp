@@ -70,8 +70,8 @@ void dtrsmFT(int m, int n, double * A, int lda,
 					   B, ldb);
 	if (FT) {
 		//update checksums
-		//magmablasSetKernelStream(streams[1]);	
-		magmablasSetKernelStream(streams[4]);	
+		magmablasSetKernelStream(streams[1]);	
+		//magmablasSetKernelStream(streams[4]);	
 		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 			                                (m / n) * 2, n,
 			                                MAGMA_D_ONE, A, lda,
