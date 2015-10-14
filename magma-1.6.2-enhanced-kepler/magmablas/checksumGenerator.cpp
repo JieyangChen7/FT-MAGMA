@@ -11,14 +11,21 @@ void initializeChecksum(double * matrix, int ld,
 
 	
 	for (int i = 0; i < N; i += B) {
-		magmablasSetKernelStream(streams[i%5]);
+		magmablasSetKernelStream(streams[2]);
 		
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
 					2, i + B, B,
 					MAGMA_D_ONE, vd, vd_ld,
 					matrix + i, ld,
 					MAGMA_D_ZERO, chksum + (i / B) * 2, chksum_ld);
-		
+		i+=B;
+		magmablasSetKernelStream(streams[3]);
+				
+				magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+							2, i + B, B,
+							MAGMA_D_ONE, vd, vd_ld,
+							matrix + i, ld,
+							MAGMA_D_ZERO, chksum + (i / B) * 2, chksum_ld);
 
 	}
 
