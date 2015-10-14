@@ -42,9 +42,9 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		//verify B before use
 		//recalculate checksums on GPU
 		double beta = 0;
-		//magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[1]);
 		for (int i = 0; i < m; i += n) {
-			magmablasSetKernelStream(streams[i%5]);
+			//magmablasSetKernelStream(streams[2]);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
 			//magmablasSetKernelStream(streams[3]);
