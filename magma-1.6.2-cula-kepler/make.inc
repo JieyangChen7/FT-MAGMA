@@ -56,4 +56,5 @@ LIBDIR    = -L$(CUDADIR)/lib64 \
 
 INC       = -I$(CUDADIR)/include \
             -I$(ACMLDIR)/gfortran64_mp/include \
+	     -I$(MAGMA_DIR)/FT	\
 	    -I$(CULA_INC_PATH)
