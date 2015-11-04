@@ -83,10 +83,13 @@ int main( int argc, char** argv)
             				cout << "PAPI ERROR" << endl;
             				//return -1;
             }
-            culaStatus status = culaDeviceDpotrf('l', N, d_A, ldda);
-        if (status != culaNoError) {
-            cout<<"CULA ERROR:"<<status<<endl;
-        }
+//            culaStatus status = culaDeviceDpotrf('l', N, d_A, ldda);
+//			if (status != culaNoError) {
+//				cout<<"CULA ERROR:"<<status<<endl;
+//			}
+			
+			magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
+			
             if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 							cout << "PAPI ERROR" << endl;
 							//return -1;
