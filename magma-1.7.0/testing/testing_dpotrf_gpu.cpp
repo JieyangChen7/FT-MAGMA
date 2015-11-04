@@ -81,5 +81,5 @@ int main( int argc, char** argv)
     }
 
     TESTING_FINALIZE();
-    return status;
+    return 0;
 }
