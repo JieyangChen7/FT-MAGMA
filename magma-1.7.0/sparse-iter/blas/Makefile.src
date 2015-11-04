@@ -1,0 +1,105 @@
+# Automatically generated from Makefile ZHDR and ZSRC
+CHDR = \
+	
+
+DHDR = \
+	
+
+SHDR = \
+	
+
+CSRC = \
+	magma_c_blaswrapper.cpp \
+	cbajac_csr.cu \
+	cgeaxpy.cu \
+	cgecsrmv.cu \
+	cgeellmv.cu \
+	cgeelltmv.cu \
+	cgeellrtmv.cu \
+	cgesellcmv.cu \
+	cgesellcmmv.cu \
+	cjacobisetup.cu \
+	clobpcg_shift.cu \
+	clobpcg_residuals.cu \
+	clobpcg_maxpy.cu \
+	cmdot.cu \
+	cmergebicgstab.cu \
+	cmergebicgstab2.cu \
+	cmergeidr.cu \
+	cmergecg.cu \
+	cmgecsrmv.cu \
+	cmgeellmv.cu \
+	cmgeelltmv.cu \
+	cmgesellcmmv.cu \
+	cpipelinedgmres.cu \
+	citerilu_kernels.cu \
+	citeric.cu \
+	ccompact.cu \
+	magma_cmcsrcompressor_gpu.cu \
+	magma_cdiagcheck.cu \
+	cgecsrreimsplit.cu \
+	cgedensereimsplit.cu
+
+DSRC = \
+	magma_d_blaswrapper.cpp \
+	dbajac_csr.cu \
+	dgeaxpy.cu \
+	dgecsrmv.cu \
+	dgeellmv.cu \
+	dgeelltmv.cu \
+	dgeellrtmv.cu \
+	dgesellcmv.cu \
+	dgesellcmmv.cu \
+	djacobisetup.cu \
+	dlobpcg_shift.cu \
+	dlobpcg_residuals.cu \
+	dlobpcg_maxpy.cu \
+	dmdot.cu \
+	dmergebicgstab.cu \
+	dmergebicgstab2.cu \
+	dmergeidr.cu \
+	dmergecg.cu \
+	dmgecsrmv.cu \
+	dmgeellmv.cu \
+	dmgeelltmv.cu \
+	dmgesellcmmv.cu \
+	dpipelinedgmres.cu \
+	diterilu_kernels.cu \
+	diteric.cu \
+	dcompact.cu \
+	magma_dmcsrcompressor_gpu.cu \
+	magma_ddiagcheck.cu \
+	dgecsrreimsplit.cu \
+	dgedensereimsplit.cu
+
+SSRC = \
+	magma_s_blaswrapper.cpp \
+	sbajac_csr.cu \
+	sgeaxpy.cu \
+	sgecsrmv.cu \
+	sgeellmv.cu \
+	sgeelltmv.cu \
+	sgeellrtmv.cu \
+	sgesellcmv.cu \
+	sgesellcmmv.cu \
+	sjacobisetup.cu \
+	slobpcg_shift.cu \
+	slobpcg_residuals.cu \
+	slobpcg_maxpy.cu \
+	smdot.cu \
+	smergebicgstab.cu \
+	smergebicgstab2.cu \
+	smergeidr.cu \
+	smergecg.cu \
+	smgecsrmv.cu \
+	smgeellmv.cu \
+	smgeelltmv.cu \
+	smgesellcmmv.cu \
+	spipelinedgmres.cu \
+	siterilu_kernels.cu \
+	siteric.cu \
+	scompact.cu \
+	magma_smcsrcompressor_gpu.cu \
+	magma_sdiagcheck.cu \
+	sgecsrreimsplit.cu \
+	sgedensereimsplit.cu
