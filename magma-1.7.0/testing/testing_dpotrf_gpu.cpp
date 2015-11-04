@@ -96,7 +96,7 @@ int main( int argc, char** argv)
 			}
             cout << "CULA["<<N<<"]---time:"<<real_time<<"---gflops:"<<(double)gflops/real_time<<endl;
             //culaShutdown();
-        //    PAPI_shutdown();
+            PAPI_shutdown();
             
             
             //magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
