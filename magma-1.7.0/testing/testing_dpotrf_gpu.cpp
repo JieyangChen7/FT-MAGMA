@@ -45,7 +45,7 @@ int main( int argc, char** argv)
     opts.lapack |= opts.check;  // check (-c) implies lapack (-l)
     
     double tol = opts.tolerance * lapackf77_dlamch("E");
-    culaInitialize();
+   // culaInitialize();
     int Nsize[] = {5120, 7680, 10240, 12800, 15360, 17920, 20480, 23040, 25600, 28160, 30720, 33280, 16};
     printf("uplo = %s\n", lapack_uplo_const(opts.uplo) );
     printf("  N     CPU GFlop/s (sec)   GPU GFlop/s (sec)   ||R_magma - R_lapack||_F / ||R_lapack||_F\n");
@@ -96,7 +96,7 @@ int main( int argc, char** argv)
 			}
             cout << "CULA["<<N<<"]---time:"<<real_time<<"---gflops:"<<(double)gflops/real_time<<endl;
             //culaShutdown();
-            PAPI_shutdown();
+        //    PAPI_shutdown();
             
             
             //magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
