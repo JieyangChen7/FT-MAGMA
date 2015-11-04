@@ -216,7 +216,7 @@ ZSRC += $(ZSRCF)
 -include Makefile.local
 -include Makefile.src
 
-ALLSRC := $(ZSRC) $(CSRC) $(DSRC) $(SSRC)
+ALLSRC := $(DSRC) 
 
 ALLOBJ := $(ALLSRC:.cpp=.o)
 ALLOBJ := $(filter %.o, $(ALLOBJ))
