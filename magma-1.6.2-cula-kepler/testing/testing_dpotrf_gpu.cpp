@@ -92,7 +92,7 @@ int main( int argc, char** argv)
 							//return -1;
 			}
             cout << "CULA["<<N<<"]---time:"<<real_time<<"---gflops:"<<(double)gflops/real_time<<endl;
-            culaShutdown();
+            //culaShutdown();
             PAPI_shutdown();
             
             
