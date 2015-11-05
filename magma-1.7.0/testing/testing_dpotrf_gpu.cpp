@@ -113,7 +113,7 @@ int main( int argc, char** argv)
 			culaShutdown();
 			PAPI_shutdown();
 			
-			
+			cout<<endl;
 			
             TESTING_FREE_CPU( h_A );
             TESTING_FREE_PIN( h_R );
