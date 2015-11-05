@@ -91,8 +91,8 @@ int main( int argc, char** argv)
             
             TESTING_MALLOC_CPU( h_A, double, n2     );
             TESTING_MALLOC_CPU( h_R, double, n2     );
-            TESTING_MALLOC_PIN( resultMAGMA, double, n2     );
-            TESTING_MALLOC_PIN( resultCULA, double, n2     );
+            TESTING_MALLOC_CPU( resultMAGMA, double, n2     );
+            TESTING_MALLOC_CPU( resultCULA, double, n2     );
             TESTING_MALLOC_DEV( d_A, double, ldda*N );
             
             /* Initialize the matrix */
@@ -154,8 +154,8 @@ int main( int argc, char** argv)
 			
 			double maxdiff = 0;
 			for (int i = 0; i < n2; i++) {
-				if (maxdiff < abs(resultMAGMA - resultCULA)) {
-					maxdiff = abs(resultMAGMA - resultCULA);
+				if (maxdiff < abs(resultMAGMA[i] - resultCULA[i])) {
+					maxdiff = abs(resultMAGMA[i] - resultCULA[i]);
 				}
 			}
 			cout << "max diff:" << maxdiff << endl;
