@@ -174,7 +174,7 @@ magma_dpotrf_gpu(
 	int checksum_ld;
 
 
-	test_abft();
+	//test_abft();
 	
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;

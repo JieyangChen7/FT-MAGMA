@@ -48,4 +48,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG, bool VERIFY);
 
-void test_abft();
+void test_abft(double * A, int lda, int B, int n, int m,
+		double * checksum_update, double * checksum_update_ld,
+		double * checksum1_recal, double * checksum1_recal_ld,
+		double * checksum2_recal, double * checksum2_recal_ld) 
