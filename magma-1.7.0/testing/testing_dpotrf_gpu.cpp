@@ -90,7 +90,7 @@ int main( int argc, char** argv)
             gflops = FLOPS_DPOTRF( N ) / 1e9;
             
             TESTING_MALLOC_CPU( h_A, double, n2     );
-            TESTING_MALLOC_CPU( h_R, double, n2     );
+            TESTING_MALLOC_PIN( h_R, double, n2     );
             TESTING_MALLOC_CPU( resultMAGMA, double, n2     );
             TESTING_MALLOC_CPU( resultCULA, double, n2     );
             TESTING_MALLOC_DEV( d_A, double, ldda*N );
@@ -154,8 +154,8 @@ int main( int argc, char** argv)
 			
 			double maxdiff = 0;
 			for (int i = 0; i < n2; i++) {
-				if (maxdiff < abs(resultMAGMA[i] - resultCULA[i])) {
-					maxdiff = abs(resultMAGMA[i] - resultCULA[i]);
+				if (maxdiff < fabs(resultMAGMA[i] - resultCULA[i])) {
+					maxdiff = fabs(resultMAGMA[i] - resultCULA[i]);
 				}
 			}
 			cout << "max diff:" << maxdiff << endl;
