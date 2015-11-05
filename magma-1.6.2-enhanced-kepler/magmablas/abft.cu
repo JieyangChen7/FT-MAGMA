@@ -18,9 +18,9 @@
 // each thread does one index, x[i] and w[i]
 __global__ void
 DetectAndCorrect(double * A, int lda, int B, double E,
-				double * checksum_update, double * checksum_update_ld,
-				double * checksum1_recal, double * checksum1_recal_ld,
-				double * checksum2_recal, double * checksum2_recal_ld)
+				double * checksum_update, int checksum_update_ld,
+				double * checksum1_recal, int checksum1_recal_ld,
+				double * checksum2_recal, int checksum2_recal_ld)
 {
     //determin the block to process
 	A = A + blockIdx.x * B * lda + blockIdx.y * B;
@@ -51,9 +51,9 @@ DetectAndCorrect(double * A, int lda, int B, double E,
 // copies w = b
 void
 test_abft(double * A, int lda, int B, int n, int m,
-		double * checksum_update, double * checksum_update_ld,
-		double * checksum1_recal, double * checksum1_recal_ld,
-		double * checksum2_recal, double * checksum2_recal_ld) 
+		double * checksum_update, int checksum_update_ld,
+		double * checksum1_recal, int checksum1_recal_ld,
+		double * checksum2_recal, int checksum2_recal_ld) 
 {
 	
 	double E = 1e-10;
