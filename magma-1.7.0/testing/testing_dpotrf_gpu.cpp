@@ -99,7 +99,7 @@ int main( int argc, char** argv)
             lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
             magma_dmake_hpd( N, h_A, lda );
             lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
-            magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
+            //magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
             
             //testing MAGMA-----------------------------------------------------------
             float real_time = 0.0;
@@ -112,7 +112,8 @@ int main( int argc, char** argv)
 					return -1;
             }            
 			
-			magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
+			//magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
+			magma_dpotrf( MagmaLower, N, h_A, ldda, &info );
 			
             if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 					cout << "PAPI ERROR" << endl;
@@ -122,10 +123,10 @@ int main( int argc, char** argv)
       
             PAPI_shutdown();
             
-            magma_dgetmatrix( N, N, d_A, ldda, resultMAGMA, ldda );
+            //magma_dgetmatrix( N, N, d_A, ldda, resultMAGMA, ldda );
             
             //testing CULA----------------------------------------------------------------
-            magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
+            //magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
             culaInitialize();
             
             real_time = 0.0;
@@ -138,7 +139,8 @@ int main( int argc, char** argv)
 					cout << "PAPI ERROR" << endl;
 					return -1;
 			}
-			culaStatus status = culaDeviceDpotrf('l', N, d_A, ldda);
+			//culaStatus status = culaDeviceDpotrf('l', N, d_A, ldda);
+			culaStatus status = culaDpotrf('l', N, h_A, ldda);
 			if (status != culaNoError) {
 				cout<<"CULA ERROR:"<<status<<endl;
 			}
@@ -150,15 +152,15 @@ int main( int argc, char** argv)
 			culaShutdown();
 			PAPI_shutdown();
 			
-			magma_dgetmatrix( N, N, d_A, ldda, resultCULA, ldda );
+			//magma_dgetmatrix( N, N, d_A, ldda, resultCULA, ldda );
 			
-			double maxdiff = 0;
-			for (int i = 0; i < n2; i++) {
-				if (maxdiff < fabs(resultMAGMA[i] - resultCULA[i])) {
-					maxdiff = fabs(resultMAGMA[i] - resultCULA[i]);
-				}
-			}
-			cout << "max diff:" << maxdiff << endl;
+//			double maxdiff = 0;
+//			for (int i = 0; i < n2; i++) {
+//				if (maxdiff < fabs(resultMAGMA[i] - resultCULA[i])) {
+//					maxdiff = fabs(resultMAGMA[i] - resultCULA[i]);
+//				}
+//			}
+//			cout << "max diff:" << maxdiff << endl;
 			
 			cout << endl;
 			
