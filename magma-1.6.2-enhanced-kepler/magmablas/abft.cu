@@ -17,14 +17,9 @@
 // each thread does one index, x[i] and w[i]
 __global__ void
 test(
-    int m, float *r, double *x,
-    const double *b, double *w )
+    int m)
 {
-    const int i = threadIdx.x + blockIdx.x*NB;
-    if ( i < m ) {
-        x[i] = MAGMA_D_ADD( x[i], (double)( r[i] ) );
-        w[i] = b[i];
-    }
+    
 }
 
 
@@ -36,14 +31,7 @@ extern "C" void
 test_abft() 
 {
 	
-	magma_int_t m,
-	    magmaFloat_ptr r,
-	    magmaDouble_ptr x,
-	    magmaDouble_const_ptr b,
-	    magmaDouble_ptr w,
-	    magma_queue_t queue
-    dim3 threads( NB );
-    dim3 grid( (m + NB - 1)/NB );
-    dsaxpycp_kernel <<< grid, threads, 0, queue >>> ( m, r, x, b, w );
+	
+	test <<< 1, 1, 1>>> ( 1 );
 }
 
