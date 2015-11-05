@@ -7,7 +7,7 @@
 
 // includes, project
 #include "flops.h"
-#include "magma.h"
+//#include "magma.h"
 //#include "magma_lapack.h"
 #include "cula.h"
 #include "papi.h"
@@ -42,16 +42,16 @@ int main( int argc, char** argv)
             double gflops = FLOPS_DPOTRF( N ) / 1e9;
             
             
-            h_A = new double[n2];
-            magma_dmalloc_pinned(&h_R, n2 * sizeof(double));
-            magma_dmalloc(&d_A, ldda*N*sizeof(double));
-            
+//            h_A = new double[n2];
+//            magma_dmalloc_pinned(&h_R, n2 * sizeof(double));
+//            magma_dmalloc(&d_A, ldda*N*sizeof(double));
+//            
             
             /* Initialize the matrix */
 //            lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
 //            magma_dmake_hpd( N, h_A, lda );
 //            lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
-            magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
+   //         magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
             
             float real_time = 0.0;
 			float proc_time = 0.0;
@@ -79,9 +79,9 @@ int main( int argc, char** argv)
             PAPI_shutdown();
             
             
-            delete[] h_A;
-            magma_free(h_R);
-            magma_free(d_A);
+     //       delete[] h_A;
+     //       magma_free(h_R);
+     //       magma_free(d_A);
             
             fflush( stdout );
     }
