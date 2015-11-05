@@ -51,7 +51,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
 		}
-		
+		test_abft(B, ldb, n, m, n, checksumB, checksumB_ld, chk1, chk1_ld,chk2, chk2_ld);
 		//handle error - to be finished
 		
 		if (DEBUG) {
