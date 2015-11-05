@@ -23,6 +23,39 @@
 #include <iostream>
 
 using namespace std;
+
+int MeetsMinimumCulaRequirements()
+{
+    int cudaMinimumVersion = culaGetCudaMinimumVersion();
+    int cudaRuntimeVersion = culaGetCudaRuntimeVersion();
+    int cudaDriverVersion = culaGetCudaDriverVersion();
+    int cublasMinimumVersion = culaGetCublasMinimumVersion();
+    int cublasRuntimeVersion = culaGetCublasRuntimeVersion();
+
+    if(cudaRuntimeVersion < cudaMinimumVersion)
+    {
+        printf("CUDA runtime version is insufficient; "
+               "version %d or greater is required\n", cudaMinimumVersion);
+        return 0;
+    }
+
+    if(cudaDriverVersion < cudaMinimumVersion)
+    {
+        printf("CUDA driver version is insufficient; "
+               "version %d or greater is required\n", cudaMinimumVersion);
+        return 0;
+    }
+
+    if(cublasRuntimeVersion < cublasMinimumVersion)
+    {
+        printf("CUBLAS runtime version is insufficient; "
+               "version %d or greater is required\n", cublasMinimumVersion);
+        return 0;
+    }
+
+    return 1;
+}
+
 /* ////////////////////////////////////////////////////////////////////////////
    -- Testing dpotrf
 */
@@ -45,7 +78,7 @@ int main( int argc, char** argv)
     opts.lapack |= opts.check;  // check (-c) implies lapack (-l)
     
     double tol = opts.tolerance * lapackf77_dlamch("E");
-   
+    MeetsMinimumCulaRequirements();
     int Nsize[] = {5120, 7680, 10240, 12800, 15360, 17920, 20480, 23040, 25600, 28160, 30720, 33280, 16};
  
     for( int itest = 0; itest < 12; ++itest ) {
