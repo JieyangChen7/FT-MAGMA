@@ -174,7 +174,7 @@ magma_dpotrf_gpu(
 	int checksum_ld;
 
 
-	//test_abft();
+
 	
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
@@ -225,7 +225,7 @@ magma_dpotrf_gpu(
 		
 		initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, checksum, checksum_ld, stream);
 		//cout<<"checksums initialized"<<endl;
-
+		test_abft(dA, ldda, B, N, N, checksum, checksum_ld, checksum, checksum_ld,checksum, checksum_ld);
 	}
     
     
