@@ -27,7 +27,7 @@ int main( int argc, char** argv)
 
 
     
-    double *h_A, *h_R;
+    double *h_A, *h_R, d_A;
     
     int N, n2, lda, ldda, info;
    
@@ -39,7 +39,7 @@ int main( int argc, char** argv)
             lda = N;
             n2  = lda*N;
             ldda = ((N+31)/32)*32;
-            gflops = FLOPS_DPOTRF( N ) / 1e9;
+            double gflops = FLOPS_DPOTRF( N ) / 1e9;
             
             
             h_A = new double[n2];
