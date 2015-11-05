@@ -64,7 +64,8 @@ int main( int argc, char** argv)
     TESTING_INIT();
 
     real_Double_t   gflops, gpu_perf, gpu_time, cpu_perf, cpu_time;
-    double *h_A, *h_R;
+    double *h_A;
+    double *resultMAGMA, *resultCULA
     magmaDouble_ptr d_A;
     magma_int_t N, n2, lda, ldda, info;
     double c_neg_one = MAGMA_D_NEG_ONE;
@@ -89,7 +90,8 @@ int main( int argc, char** argv)
             gflops = FLOPS_DPOTRF( N ) / 1e9;
             
             TESTING_MALLOC_CPU( h_A, double, n2     );
-            TESTING_MALLOC_PIN( h_R, double, n2     );
+            TESTING_MALLOC_PIN( resultMAGMA, double, n2     );
+            TESTING_MALLOC_PIN( resultCULA, double, n2     );
             TESTING_MALLOC_DEV( d_A, double, ldda*N );
             
             /* Initialize the matrix */
@@ -119,6 +121,7 @@ int main( int argc, char** argv)
       
             PAPI_shutdown();
             
+            magma_dgetmatrix( N, N, d_A, ldda, resultMAGMA, ldda );
             
             //testing CULA----------------------------------------------------------------
             magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
@@ -145,6 +148,16 @@ int main( int argc, char** argv)
 			cout << "CULA["<<N<<"]---time:"<<real_time<<"---gflops:"<<(double)gflops/real_time<<endl;
 			culaShutdown();
 			PAPI_shutdown();
+			
+			magma_dgetmatrix( N, N, d_A, ldda, resultCULA, ldda );
+			
+			double maxdiff = 0;
+			for (int i = 0; i < n2; i++) {
+				if (maxdiff < abs(resultMAGMA - resultCULA)) {
+					maxdiff = abs(resultMAGMA - resultCULA);
+				}
+			}
+			cout << "max diff:" << maxdiff << endl;
 			
 			cout << endl;
 			
