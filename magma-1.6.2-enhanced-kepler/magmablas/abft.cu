@@ -8,6 +8,7 @@
        @generated from zcaxpycp.cu mixed zc -> ds, Fri Jan 30 19:00:07 2015
 
 */
+#include "FT.h"
 #include "common_magma.h"
 
 #define NB 64
