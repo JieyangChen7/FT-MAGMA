@@ -8,7 +8,7 @@
 // includes, project
 #include "flops.h"
 #include "magma.h"
-//#include "magma_lapack.h"
+#include "magma_lapack.h"
 #include "cula.h"
 #include "papi.h"
 #include <iostream>
