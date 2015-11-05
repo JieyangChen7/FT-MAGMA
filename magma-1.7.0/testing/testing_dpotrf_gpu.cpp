@@ -163,6 +163,8 @@ int main( int argc, char** argv)
 			cout << endl;
 			
             TESTING_FREE_CPU( h_A );
+            TESTING_FREE_CPU( resultMAGMA );
+            TESTING_FREE_CPU( resultCULA );
             TESTING_FREE_PIN( h_R );
             TESTING_FREE_DEV( d_A );
             fflush( stdout );
