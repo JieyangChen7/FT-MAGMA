@@ -27,12 +27,16 @@ int main( int argc, char** argv)
 
 
     
-    double *h_A, *h_R, *d_A;
-    
-    int N, n2, lda, ldda, info;
-   
-    
-    
+	double *h_A, *h_R;
+	    magmaDouble_ptr d_A;
+	    magma_int_t N, n2, lda, ldda, info;
+	    double c_neg_one = MAGMA_D_NEG_ONE;
+	    magma_int_t ione     = 1;
+	    magma_int_t ISEED[4] = {0,0,0,2};
+	    double      work[1], error;
+	    magma_int_t     status = 0;
+	    
+	    
     int Nsize[] = {5120, 7680, 10240, 12800, 15360, 17920, 20480, 23040, 25600, 28160, 30720, 33280, 16};
     for( int i = 0; i < 12; ++i ) {
             N  = Nsize[i];
