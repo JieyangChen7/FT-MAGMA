@@ -89,7 +89,7 @@ int main( int argc, char** argv)
             ldda = ((N+31)/32)*32;
             gflops = FLOPS_DPOTRF( N ) / 1e9;
             
-            TESTING_MALLOC_CPU( h_A, double, n2     );
+            TESTING_MALLOC_PIN( h_A, double, n2     );
             TESTING_MALLOC_PIN( h_R, double, n2     );
             TESTING_MALLOC_CPU( resultMAGMA, double, n2     );
             TESTING_MALLOC_CPU( resultCULA, double, n2     );
@@ -164,7 +164,7 @@ int main( int argc, char** argv)
 			
 			cout << endl;
 			
-            TESTING_FREE_CPU( h_A );
+            TESTING_FREE_PIN( h_A );
             TESTING_FREE_CPU( resultMAGMA );
             TESTING_FREE_CPU( resultCULA );
             TESTING_FREE_PIN( h_R );
