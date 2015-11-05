@@ -58,7 +58,7 @@ test_abft(double * A, int lda, int B, int n, int m,
 	
 	double E = 1e-10;
 	
-	_DetectAndCorrect<<<dim3(m/B, n/B), dim3(B)>>>(A, lda, B, E,
+	DetectAndCorrect<<<dim3(m/B, n/B), dim3(B)>>>(A, lda, B, E,
 					checksum_update, checksum_update_ld,
 					checksum1_recal, checksum1_recal_ld,
 					checksum2_recal, checksum2_recal_ld)
