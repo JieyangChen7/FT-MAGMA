@@ -64,7 +64,7 @@ int main( int argc, char** argv)
     TESTING_INIT();
 
     real_Double_t   gflops, gpu_perf, gpu_time, cpu_perf, cpu_time;
-    double *h_A;
+    double *h_A, *h_R;
     double *resultMAGMA, *resultCULA;
     magmaDouble_ptr d_A;
     magma_int_t N, n2, lda, ldda, info;
@@ -90,6 +90,7 @@ int main( int argc, char** argv)
             gflops = FLOPS_DPOTRF( N ) / 1e9;
             
             TESTING_MALLOC_CPU( h_A, double, n2     );
+            TESTING_MALLOC_CPU( h_R, double, n2     );
             TESTING_MALLOC_PIN( resultMAGMA, double, n2     );
             TESTING_MALLOC_PIN( resultCULA, double, n2     );
             TESTING_MALLOC_DEV( d_A, double, ldda*N );
