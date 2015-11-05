@@ -17,13 +17,13 @@
 // copies w = b
 // each thread does one index, x[i] and w[i]
 __global__ void
-_DetectAndCorrect(double * A, int lda, int B, double E,
+DetectAndCorrect(double * A, int lda, int B, double E,
 				double * checksum_update, double * checksum_update_ld,
 				double * checksum1_recal, double * checksum1_recal_ld,
 				double * checksum2_recal, double * checksum2_recal_ld)
 {
     //determin the block to process
-	A = A + blockidx.x * B * ld + blockidx.y * B;
+	A = A + blockIdx.x * B * ld + blockIdx.y * B;
     checksum_update = checksum_update + blockIdx.x * B * checksum_update_ld + blockIdx.y * 2;
     checksum1_recal = checksum1_recal + blockIdx.x * B * checksum1_recal_ld + blockIdx.y;
     checksum2_recal = checksum2_recal + blockIdx.x * B * checksum2_recal_ld + blockIdx.y;
