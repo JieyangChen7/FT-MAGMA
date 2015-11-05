@@ -7,7 +7,7 @@
 
 // includes, project
 #include "flops.h"
-//#include "magma.h"
+#include "magma.h"
 //#include "magma_lapack.h"
 #include "cula.h"
 #include "papi.h"
@@ -41,6 +41,7 @@ int main( int argc, char** argv)
             ldda = ((N+31)/32)*32;
             double gflops = FLOPS_DPOTRF( N ) / 1e9;
             
+            cudaMalloc((void**)&d_A,N*ldda*sizeof(double));
             
 //            h_A = new double[n2];
 //            magma_dmalloc_pinned(&h_R, n2 * sizeof(double));
