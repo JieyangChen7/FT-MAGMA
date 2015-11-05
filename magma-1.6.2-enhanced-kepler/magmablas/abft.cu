@@ -28,7 +28,7 @@ test(
 // ----------------------------------------------------------------------
 // adds   x += r (including conversion to double)  --and--
 // copies w = b
-extern "C" void
+void
 test_abft() 
 {
 	
