@@ -65,7 +65,7 @@ int main( int argc, char** argv)
 
     real_Double_t   gflops, gpu_perf, gpu_time, cpu_perf, cpu_time;
     double *h_A;
-    double *resultMAGMA, *resultCULA
+    double *resultMAGMA, *resultCULA;
     magmaDouble_ptr d_A;
     magma_int_t N, n2, lda, ldda, info;
     double c_neg_one = MAGMA_D_NEG_ONE;
