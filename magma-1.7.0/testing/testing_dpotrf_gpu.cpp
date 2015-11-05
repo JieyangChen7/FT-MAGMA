@@ -65,7 +65,7 @@ int main( int argc, char** argv)
             lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
             magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
             
-            //testing MAGMA
+            //testing MAGMA-----------------------------------------------------------
             float real_time = 0.0;
 			float proc_time = 0.0;
 			long long flpins = 0.0;
@@ -87,7 +87,7 @@ int main( int argc, char** argv)
             PAPI_shutdown();
             
             
-            //testing CULA
+            //testing CULA----------------------------------------------------------------
             magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
             culaInitialize();
             

@@ -8,10 +8,15 @@
 // includes, project
 #include "flops.h"
 #include "magma.h"
-#include "magma_lapack.h"
+//#include "magma_lapack.h"
 #include "cula.h"
 #include "papi.h"
 #include <iostream>
+
+#define FMULS_POTRF(n_) ((n_) * (((1. / 6.) * (n_) + 0.5) * (n_) + (1. / 3.)))
+#define FADDS_POTRF(n_) ((n_) * (((1. / 6.) * (n_)      ) * (n_) - (1. / 6.)))
+#define FLOPS_DPOTRF(n_) (     FMULS_POTRF((double)(n_)) +       FADDS_POTRF((double)(n_)) )
+
 
 using namespace std;
 
@@ -21,13 +26,11 @@ int main( int argc, char** argv)
 {
 
 
-    real_Double_t   gflops;
+    
     double *h_A, *h_R;
-    magmaDouble_ptr d_A;
-    magma_int_t N, n2, lda, ldda, info;
-    double c_neg_one = MAGMA_D_NEG_ONE;
-    magma_int_t ione     = 1;
-    magma_int_t ISEED[4] = {0,0,0,2};
+    
+    int N, n2, lda, ldda, info;
+   
     
     
     int Nsize[] = {5120, 7680, 10240, 12800, 15360, 17920, 20480, 23040, 25600, 28160, 30720, 33280, 16};
@@ -39,19 +42,15 @@ int main( int argc, char** argv)
             gflops = FLOPS_DPOTRF( N ) / 1e9;
             
             
-            //TESTING_MALLOC_CPU( h_A, double, n2     );
-           // TESTING_MALLOC_PIN( h_R, double, n2     );
-           // TESTING_MALLOC_DEV( d_A, double, ldda*N );
-            
             h_A = new double[n2];
             magma_dmalloc_pinned(&h_R, n2 * sizeof(double));
             magma_dmalloc(&d_A, ldda*N*sizeof(double));
             
             
             /* Initialize the matrix */
-            lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
-            magma_dmake_hpd( N, h_A, lda );
-            lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
+//            lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
+//            magma_dmake_hpd( N, h_A, lda );
+//            lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
             magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
             
             float real_time = 0.0;
