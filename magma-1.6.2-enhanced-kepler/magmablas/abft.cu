@@ -23,13 +23,13 @@ DetectAndCorrect(double * A, int lda, int B, double E,
 				double * checksum2_recal, double * checksum2_recal_ld)
 {
     //determin the block to process
-	A = A + blockIdx.x * B * ld + blockIdx.y * B;
+	A = A + blockIdx.x * B * lda + blockIdx.y * B;
     checksum_update = checksum_update + blockIdx.x * B * checksum_update_ld + blockIdx.y * 2;
     checksum1_recal = checksum1_recal + blockIdx.x * B * checksum1_recal_ld + blockIdx.y;
     checksum2_recal = checksum2_recal + blockIdx.x * B * checksum2_recal_ld + blockIdx.y;
     
     //determine the specific colum to process
-    A = A + threadIdx.x * ld;
+    A = A + threadIdx.x * lda;
     checksum_update = checksum_update + threadIdx.x * checksum_update_ld;
 	checksum1_recal = checksum_update + threadIdx.x * checksum1_recal_ld;
 	checksum2_recal = checksum_update + threadIdx.x * checksum2_recal_ld;
