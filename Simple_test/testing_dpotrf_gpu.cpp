@@ -28,13 +28,9 @@ int main( int argc, char** argv)
 
     
 	double *h_A, *h_R;
-	    magmaDouble_ptr d_A;
-	    magma_int_t N, n2, lda, ldda, info;
-	    double c_neg_one = MAGMA_D_NEG_ONE;
-	    magma_int_t ione     = 1;
-	    magma_int_t ISEED[4] = {0,0,0,2};
-	    double      work[1], error;
-	    magma_int_t     status = 0;
+	double * d_A;
+	magma_int_t N, n2, lda, ldda, info;
+	    
 	    
 	    
     int Nsize[] = {5120, 7680, 10240, 12800, 15360, 17920, 20480, 23040, 25600, 28160, 30720, 33280, 16};
@@ -45,15 +41,12 @@ int main( int argc, char** argv)
             ldda = ((N+31)/32)*32;
             double gflops = FLOPS_DPOTRF( N ) / 1e9;
             
-            cudaMalloc((void**)&d_A,N*ldda*sizeof(double));
-            
-//            h_A = new double[n2];
-//            magma_dmalloc_pinned(&h_R, n2 * sizeof(double));
-            magma_dmalloc(&d_A, ldda*N*sizeof(double));
-//            
+            h_A = new double[n2];
+            magma_dmalloc_pinned(&h_R, n2 * sizeof(double));
+            magma_dmalloc(&d_A, ldda*N*sizeof(double));           
             
             /* Initialize the matrix */
-            lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
+//            lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
 //            magma_dmake_hpd( N, h_A, lda );
 //            lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
    //         magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
@@ -73,7 +66,7 @@ int main( int argc, char** argv)
 				cout<<"CULA ERROR:"<<status<<endl;
 			}
 			
-			//magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
+			magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
 			
             if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
                     cout << "PAPI ERROR" << endl;
