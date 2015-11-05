@@ -27,7 +27,7 @@ int main( int argc, char** argv)
 
 
     
-    double *h_A, *h_R, d_A;
+    double *h_A, *h_R, *d_A;
     
     int N, n2, lda, ldda, info;
    
