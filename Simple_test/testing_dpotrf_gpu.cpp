@@ -45,7 +45,7 @@ int main( int argc, char** argv)
             
 //            h_A = new double[n2];
 //            magma_dmalloc_pinned(&h_R, n2 * sizeof(double));
-//            magma_dmalloc(&d_A, ldda*N*sizeof(double));
+            magma_dmalloc(&d_A, ldda*N*sizeof(double));
 //            
             
             /* Initialize the matrix */
