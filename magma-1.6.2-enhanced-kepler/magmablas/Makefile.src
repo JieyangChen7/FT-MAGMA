@@ -178,7 +178,8 @@ DSRC = \
 	dpotrfFT.cpp \
 	dtrsmFT.cpp \
 	dsyrkFT.cpp \
-	dgemmFT.cpp
+	dgemmFT.cpp \
+	abft.cu
 	
 SSRC = \
 	sgeadd.cu \

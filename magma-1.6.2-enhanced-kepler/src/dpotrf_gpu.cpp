@@ -86,13 +86,6 @@ using namespace std;
     @ingroup magma_dposv_comp
     ********************************************************************/
 
-__global__ void resultVerify_gpu_help(double * realResult, double * testResult,double * diff, int N){
-    int col = threadIdx.x+blockIdx.x*blockDim.x;
-    int row = threadIdx.y+blockIdx.y*blockDim.y;
-    diff[col*N+row] = testResult[col*N+row] - realResult[col*N+row];
-}
-
-
 extern "C" magma_int_t
 magma_dpotrf_gpu(
     magma_uplo_t uplo, magma_int_t n,
@@ -181,6 +174,8 @@ magma_dpotrf_gpu(
 	int checksum_ld;
 
 
+	test_abft();
+	
 	if (FT) {
 		//cout<<"check sum initialization started"<<endl;
 		//intialize checksum vector on CPU
