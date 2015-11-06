@@ -99,7 +99,7 @@ int main( int argc, char** argv)
             lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
             magma_dmake_hpd( N, h_A, lda );
             lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
-            //magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
+            magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
             
             //testing MAGMA-----------------------------------------------------------
             float real_time = 0.0;
