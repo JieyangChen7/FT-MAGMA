@@ -31,7 +31,7 @@ F90FLAGS  = -O3 -DADD_ -x f95-cpp-input
 NVCCFLAGS = -O3 -DADD_ -Xcompiler -fno-strict-aliasing
 LDFLAGS   = -fopenmp
 
-LIB       = -lacml_mp -lacml_mv -lcblas -lcublas -lcudart -lstdc++ -lm -L$(CULA_LIB_PATH_64) -lcula_lapack -lpapi
+LIB       = -lacml_mp -lcblas -lcublas -lcudart -lstdc++ -lm -L$(CULA_LIB_PATH_64) -lcula_lapack -lpapi
 
 # define library directories here or in your environment
 #ACMLDIR  ?= /opt/acml
