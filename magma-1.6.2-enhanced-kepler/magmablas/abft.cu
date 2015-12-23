@@ -34,8 +34,8 @@ DetectAndCorrect(double * A, int lda, int B, double E,
     //determine the specific colum to process
     A = A + threadIdx.x * lda;
     checksum_update = checksum_update + threadIdx.x * checksum_update_ld;
-	checksum1_recal = checksum_update + threadIdx.x * checksum1_recal_ld;
-	checksum2_recal = checksum_update + threadIdx.x * checksum2_recal_ld;
+	checksum1_recal = checksum1_recal + threadIdx.x * checksum1_recal_ld;
+	checksum2_recal = checksum2_recal + threadIdx.x * checksum2_recal_ld;
 	
 	double d1 = (*checksum_update) - (*checksum1_recal);
 	double d2 = (*(checksum_update + 1)) - (*checksum2_recal);
