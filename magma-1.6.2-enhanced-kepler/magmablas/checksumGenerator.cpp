@@ -40,24 +40,24 @@ void initializeChecksum(double * matrix, int ld,
 	
 	
 	
-	for (int i = 0; i < N; i += B) {		
-			magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-						//2, i + B, B,
-						1, N, B,
-						MAGMA_D_ONE, vd, vd_ld,
-						matrix + i, ld,
-						MAGMA_D_ZERO, chk1d + (i / B), chk1d_ld);			
-		}
-	
-	
-	for (int i = 0; i < N; i += B) {		
-			magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-						//2, i + B, B,
-						1, N, B,
-						MAGMA_D_ONE, vd + 1, vd_ld,
-						matrix + i, ld,
-						MAGMA_D_ZERO, chk2d + (i / B), chk2d_ld);			
-		}
+//	for (int i = 0; i < N; i += B) {		
+//			magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+//						//2, i + B, B,
+//						1, N, B,
+//						MAGMA_D_ONE, vd, vd_ld,
+//						matrix + i, ld,
+//						MAGMA_D_ZERO, chk1d + (i / B), chk1d_ld);			
+//		}
+//	
+//	
+//	for (int i = 0; i < N; i += B) {		
+//			magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+//						//2, i + B, B,
+//						1, N, B,
+//						MAGMA_D_ONE, vd + 1, vd_ld,
+//						matrix + i, ld,
+//						MAGMA_D_ZERO, chk2d + (i / B), chk2d_ld);			
+//		}
 	
 	
 	cout << "Matrix:" << endl;
