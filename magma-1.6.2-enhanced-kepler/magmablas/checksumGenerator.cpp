@@ -1,5 +1,6 @@
 #include "magma.h"
 #include"FT.h"
+#include<iostream>
 using namespace std;
 //initialize checksum
 void initializeChecksum(double * matrix, int ld,
