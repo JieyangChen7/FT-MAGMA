@@ -21,12 +21,15 @@ DetectAndCorrect(double * A, int lda, int B, double E,
     //determin the block to process
 	A = A + blockIdx.x * B + blockIdx.y * B * lda;
 	
-	printf("block:%f---blockx=%d, blocky=%d \n",*A,blockIdx.x,blockIdx.y);
+	//printf("block:%f---blockx=%d, blocky=%d \n",*A,blockIdx.x,blockIdx.y);
 	
 	
-    checksum_update = checksum_update + blockIdx.x * B * checksum_update_ld + blockIdx.y * 2;
-    checksum1_recal = checksum1_recal + blockIdx.x * B * checksum1_recal_ld + blockIdx.y;
-    checksum2_recal = checksum2_recal + blockIdx.x * B * checksum2_recal_ld + blockIdx.y;
+    checksum_update = checksum_update + blockIdx.x * 2  + blockIdx.y * B * checksum_update_ld;
+    checksum1_recal = checksum1_recal + blockIdx.x + blockIdx.y * B * checksum1_recal_ld;
+    checksum2_recal = checksum2_recal + blockIdx.x + blockIdx.y * B * checksum2_recal_ld;
+    
+    
+    
     
     //determine the specific colum to process
     A = A + threadIdx.x * lda;
