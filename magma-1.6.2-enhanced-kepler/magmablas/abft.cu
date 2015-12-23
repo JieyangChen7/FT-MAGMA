@@ -29,7 +29,7 @@ DetectAndCorrect(double * A, int lda, int B, double E,
     checksum2_recal = checksum2_recal + blockIdx.x + blockIdx.y * B * checksum2_recal_ld;
     
     
-    printf("block:%f---blockx=%d, blocky=%d \n",*checksum2_recal,blockIdx.x,blockIdx.y);
+    //printf("block:%f---blockx=%d, blocky=%d \n",*checksum2_recal,blockIdx.x,blockIdx.y);
     
     //determine the specific colum to process
     A = A + threadIdx.x * lda;
