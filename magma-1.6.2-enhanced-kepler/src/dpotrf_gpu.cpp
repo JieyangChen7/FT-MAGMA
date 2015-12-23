@@ -208,7 +208,7 @@ magma_dpotrf_gpu(
 		//cout<<"allocate space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on GPU (vertical)
-		chk1d_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
+		chk1d_pitch = magma_roundup((N / B) * sizeof(double), 32);
 		chk1d_ld = chk1d_pitch / sizeof(double);
 		magma_dmalloc(&chk1d, chk1d_pitch * N);
 		
@@ -284,39 +284,15 @@ magma_dpotrf_gpu(
                 }
             }
         }
-        else {
+        else if (0){
         	
-        	
-//        	float noFTtime = 0;
-//			float FTtime = 0;
-////        	for (int P = 1; P <= 64; P *= 2) {
-////				if (P == 0) {
-////					FT = false;
-////				} else {
-////					FT = true;
-////				}
-//        	
-//        	
-//        	magma_set_lapack_numthreads(64);
-//        	int numOfCore = magma_get_lapack_numthreads();
-//        	cout<<"number of core=" << numOfCore<<endl;
-//
-//        	float real_time = 0.0;
-//			float proc_time = 0.0;
-//			long long flpins = 0.0;
-//			float mflops = 0.0;
-			//timing start***************
-//			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-//				cout << "PAPI ERROR" << endl;
-//				return -1;
-//			}
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
             for (j=0; j < n; j += nb) {
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
-            	int k = 5;
+            	int k = 1;
             	bool VERIFY = false;
             	if (j % k == 0) {
             		VERIFY = true;
@@ -376,7 +352,7 @@ magma_dpotrf_gpu(
                 magma_dsetmatrix_async( 2, jb,
                                         chk,     chk_ld, 
                                         checksum + (j / B) * 2 + j * checksum_ld, checksum_ld,
-                                        stream[0] );
+                                        stream[1] );
                 
 //                if (*info != 0) {
 //                    *info = *info + j;

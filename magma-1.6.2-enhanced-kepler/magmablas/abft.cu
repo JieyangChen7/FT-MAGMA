@@ -11,11 +11,7 @@
 #include "FT.h"
 #include "common_magma.h"
 
-#define NB 64
 
-// adds   x += r (including conversion to double)  --and--
-// copies w = b
-// each thread does one index, x[i] and w[i]
 __global__ void
 DetectAndCorrect(double * A, int lda, int B, double E,
 				double * checksum_update, int checksum_update_ld,
@@ -46,9 +42,7 @@ DetectAndCorrect(double * A, int lda, int B, double E,
 
 
 
-// ----------------------------------------------------------------------
-// adds   x += r (including conversion to double)  --and--
-// copies w = b
+
 void
 test_abft(double * A, int lda, int B, int n, int m,
 		double * checksum_update, int checksum_update_ld,
