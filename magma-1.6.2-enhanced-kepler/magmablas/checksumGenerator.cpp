@@ -73,6 +73,6 @@ void initializeChecksum(double * matrix, int ld,
 	cout << "checksum 2:" << endl;
 	printMatrix_gpu(chk2d, chk2d_ld, N / B, N);	
 	
-//	test_abft(B, ldb, n, m, n, checksumB, checksumB_ld, chk1, chk1_ld, chk2, chk2_ld);
+	test_abft(B, ldb, n, m, n, checksumB, checksumB_ld, chk1, chk1_ld, chk2, chk2_ld);
 
 }
