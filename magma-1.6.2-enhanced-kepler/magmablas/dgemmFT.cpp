@@ -28,15 +28,17 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 						
 		//verify B before use
 		//reclaculate checksums of B on GPU
-		magmablasSetKernelStream(streams[1]);
-		//magmablasSetKernelStream(streams[2]);
+		//magmablasSetKernelStream(streams[1]);
+		cudaStreamSynchronize(streams[1]);
+		cudaStreamSynchronize(streams[4]);
+		magmablasSetKernelStream(streams[2]);
 		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 				B, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
-		//magmablasSetKernelStream(streams[3]);
+		magmablasSetKernelStream(streams[3]);
 		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 				B, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
-		//cudaStreamSynchronize(streams[2]);
-		//cudaStreamSynchronize(streams[3]);
+		cudaStreamSynchronize(streams[2]);
+		cudaStreamSynchronize(streams[3]);
 		//handle error 
 		ErrorDetectAndCorrect(B, ldb,
 							n, n, k, 
@@ -58,18 +60,18 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 	
 		//verify A before use
-		magmablasSetKernelStream(streams[1]);
+		//magmablasSetKernelStream(streams[1]);
 		for (int i = 0; i < m; i += n) {
 			
-			//magmablasSetKernelStream(streams[2]);
+			magmablasSetKernelStream(streams[2]);
 			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 					A + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-			//magmablasSetKernelStream(streams[3]);
+			magmablasSetKernelStream(streams[3]);
 			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 					A + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 		}
-		//cudaStreamSynchronize(streams[2]);
-		//cudaStreamSynchronize(streams[3]);
+		cudaStreamSynchronize(streams[2]);
+		cudaStreamSynchronize(streams[3]);
 		//handle error
 		ErrorDetectAndCorrect(A, lda,
 							n, m, k, 
@@ -99,8 +101,8 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				C, ldc );
 	
 	if(FT){	
-		magmablasSetKernelStream(streams[1]);
-		//magmablasSetKernelStream(streams[4]);
+		//magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[4]);
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
 					(m / n) * 2, n, k,
