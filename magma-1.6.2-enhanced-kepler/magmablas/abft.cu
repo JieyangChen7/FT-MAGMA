@@ -39,7 +39,7 @@ DetectAndCorrectKernel(double * A, int lda, int B, double E,
 	if(fabs(d1) > E) {
 		//locate the error
 		int loc = round(d2 - d1) - 1;
-		//printf("error detected:%f---%d \n",d1,loc);
+		printf("error detected:%f---%d \n",d1,loc);
 		
 		//the sum of the rest correct number except the error one
 		double sum = 0.0;
