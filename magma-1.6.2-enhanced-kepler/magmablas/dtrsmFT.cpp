@@ -23,17 +23,19 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		//verify B before use
 		//recalculate checksums on GPU
 		double beta = 0;
-		magmablasSetKernelStream(streams[1]);
+		//magmablasSetKernelStream(streams[1]);
+		cudaStreamSynchronize(streams[1]);
+		//cudaStreamSynchronize(streams[4]);
 		for (int i = 0; i < m; i += n) {
-			//magmablasSetKernelStream(streams[2]);
+			magmablasSetKernelStream(streams[2]);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-			//magmablasSetKernelStream(streams[3]);
+			magmablasSetKernelStream(streams[3]);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
 		}
-		cudaStreamSynchronize(streams[1]);
-		//cudaStreamSynchronize(streams[3]);
+		cudaStreamSynchronize(streams[2]);
+		cudaStreamSynchronize(streams[3]);
 		ErrorDetectAndCorrect(B, ldb,
 							n, m, n, 
 							checksumB, checksumB_ld, 
