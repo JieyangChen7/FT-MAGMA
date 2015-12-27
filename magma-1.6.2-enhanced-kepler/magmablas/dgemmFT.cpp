@@ -2,21 +2,7 @@
 #include<iostream>
 using namespace std;
 //dgemm with FT
-/*
-__global__ void detectAndCorrectForGemm(double * C, int ldc, int n,
-		double * chksumC1, int incC1, double * chksumC2, int incC2,
-		double * chkC1, int incC1_2, double * chkC2, int incC2_2){
-	//determin the reponsisble column 
-	int block = blockIdx.x;
-	int col = threadIdx.x;
-	double diff = abs(*(chkC1+block+col*incC1_2)-*(chksumC1+block+col*incC1));
-	if(diff>0.1){
-		double diff2=abs(*(chkC2+block+col*incC2_2)-*(chksumC2+block+col*incC2));
-		int row = (int)round(diff2/diff)-1;
-		*(C+n*block+row+col*ldc) += *(chksumC1+block+col*incC1)-*(chkC1+block+col*incC1_2);
-	}
-}
-*/
+
 /**
  * m: number of row of A (N-i-B)
  * n: number of row of B (B)
@@ -49,7 +35,14 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		//magmablasSetKernelStream(streams[3]);
 		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 				B, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
-		//handle error - to be finished
+
+		//handle error 
+		ErrorDetectAndCorrect(B, ldb,
+							n, n, k, 
+							checksumB, checksumB_ld, 
+							chk1, chk1_ld, 
+							chk2, chk2_ld,
+							streams[1]);
 		
 		
 		if (DEBUG) {
@@ -74,12 +67,13 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 					A + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 		}
-		//handle error - to be finished
-		
-
-		
-		
-		
+		//handle error
+		ErrorDetectAndCorrect(A, lda,
+							n, m, k, 
+							checksumA, checksumA_ld, 
+							chk1, chk1_ld, 
+							chk2, chk2_ld,
+							streams[1]);
 		
 		if (DEBUG) {	
 			cout<<"recalculated checksum of A before dgemm:"<<endl;

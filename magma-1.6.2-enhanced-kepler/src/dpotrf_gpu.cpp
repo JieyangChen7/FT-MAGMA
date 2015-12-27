@@ -284,7 +284,7 @@ magma_dpotrf_gpu(
                 }
             }
         }
-        else if (0){
+        else {
         	
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.

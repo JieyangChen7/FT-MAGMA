@@ -1,19 +1,14 @@
 /*
-    -- MAGMA (version 1.6.1) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date January 2015
-
-       @generated from zcaxpycp.cu mixed zc -> ds, Fri Jan 30 19:00:07 2015
-
+    Enhanced Online ABFT
+    UC Riverside
+    Jieyang Chen
 */
 #include "FT.h"
 #include "common_magma.h"
 
 
 __global__ void
-DetectAndCorrect(double * A, int lda, int B, double E,
+DetectAndCorrectKernel(double * A, int lda, int B, double E,
 				double * checksum_update, int checksum_update_ld,
 				double * checksum1_recal, int checksum1_recal_ld,
 				double * checksum2_recal, int checksum2_recal_ld)
@@ -42,24 +37,38 @@ DetectAndCorrect(double * A, int lda, int B, double E,
 	
 	//error detected
 	if(fabs(d1) > E) {
-		int loc = round(d2 - d1);
-		printf("error detected:%f---%d \n",d1,loc);
+		//locate the error
+		int loc = round(d2 - d1) - 1;
+		//printf("error detected:%f---%d \n",d1,loc);
+		
+		//the sum of the rest correct number except the error one
+		double sum = 0.0;
+		for (int i = 0; i < B; i++) {
+			if (i != loc) {
+				sum +=	*(A + i) 
+			}
+		}
+		//correct the error
+		*(A + loc) = *checksum_update - sum;
 	}
 }
 
+/*
+ * B: block size
+ * m: # of row
+ * n: # of column
+ */
 
 
-
-void
-test_abft(double * A, int lda, int B, int n, int m,
+void ErrorDetectAndCorrect(double * A, int lda, int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
 		double * checksum1_recal, int checksum1_recal_ld,
-		double * checksum2_recal, int checksum2_recal_ld) 
+		double * checksum2_recal, int checksum2_recal_ld， cudaStream_t stream) 
 {
-	
+	//error threshold 
 	double E = 1e-10;
 	
-	DetectAndCorrect<<<dim3(m/B, n/B), dim3(B)>>>(A, lda, B, E,
+	DetectAndCorrectKernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(A, lda, B, E,
 					checksum_update, checksum_update_ld,
 					checksum1_recal, checksum1_recal_ld,
 					checksum2_recal, checksum2_recal_ld);
