@@ -35,7 +35,8 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		//magmablasSetKernelStream(streams[3]);
 		magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 				B, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
-
+		cudaStreamSynchronize(streams[2]);
+		cudaStreamSynchronize(streams[3]);
 		//handle error 
 		ErrorDetectAndCorrect(B, ldb,
 							n, n, k, 
@@ -67,6 +68,8 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
 					A + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
 		}
+		cudaStreamSynchronize(streams[2]);
+		cudaStreamSynchronize(streams[3]);
 		//handle error
 		ErrorDetectAndCorrect(A, lda,
 							n, m, k, 
