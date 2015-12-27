@@ -45,7 +45,7 @@ DetectAndCorrectKernel(double * A, int lda, int B, double E,
 		double sum = 0.0;
 		for (int i = 0; i < B; i++) {
 			if (i != loc) {
-				sum +=	*(A + i) 
+				sum +=	*(A + i); 
 			}
 		}
 		//correct the error
@@ -63,7 +63,8 @@ DetectAndCorrectKernel(double * A, int lda, int B, double E,
 void ErrorDetectAndCorrect(double * A, int lda, int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
 		double * checksum1_recal, int checksum1_recal_ld,
-		double * checksum2_recal, int checksum2_recal_ld， cudaStream_t stream) 
+		double * checksum2_recal, int checksum2_recal_ld, 
+		cudaStream_t stream) 
 {
 	//error threshold 
 	double E = 1e-10;
