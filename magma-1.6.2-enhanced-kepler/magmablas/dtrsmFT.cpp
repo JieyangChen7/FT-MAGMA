@@ -32,7 +32,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
 		}
-		//cudaStreamSynchronize(streams[2]);
+		cudaStreamSynchronize(streams[1]);
 		//cudaStreamSynchronize(streams[3]);
 		ErrorDetectAndCorrect(B, ldb,
 							n, m, n, 
