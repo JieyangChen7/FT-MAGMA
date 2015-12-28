@@ -294,9 +294,9 @@ magma_dpotrf_gpu(
                 //jb = min(nb, (n-j));
             	int k = 1;
             	bool VERIFY = false;
-            	if (j % k == 0) {
-            		VERIFY = true;
-            	}
+//            	if (j % k == 0) {
+//            		VERIFY = true;
+//            	}
             	jb = nb;
                 if (j > 0) {
 
