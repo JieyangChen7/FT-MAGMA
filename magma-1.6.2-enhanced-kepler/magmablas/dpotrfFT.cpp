@@ -50,7 +50,11 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 						v + 1, &v_ld,
 						&zero,
 						chk2, &chk2_inc );
-		//handle error - to be finished
+		//handle error 
+		ErrorDetectAndCorrectHost(A, lda, n, n, n,
+								chksum, chksum_ld
+								chk1, chk1_inc,
+								chk2, chk2_inc);
 		
 //		if (DEBUG) {
 //			cout<<"recalcuated checksum on CPU before factorization:"<<endl;

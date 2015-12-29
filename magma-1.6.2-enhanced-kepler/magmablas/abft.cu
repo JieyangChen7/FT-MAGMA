@@ -75,3 +75,32 @@ void ErrorDetectAndCorrect(double * A, int lda, int B, int m, int n,
 					checksum2_recal, checksum2_recal_ld);
 }
 
+void ErrorDetectAndCorrectHost(double * A, int lda, int B, int m, int n,
+		double * checksum_update, int checksum_update_ld,
+		double * checksum1_recal, int checksum1_recal_ld,
+		double * checksum2_recal, int checksum2_recal_ld)
+{
+	double E = 1e-10;
+	//check one column by one column
+	for (int c = 0; c < B; c++) {
+		double d1 = *(checksum_update + checksum_update_ld * c) - *(checksum1_recal + checksum1_recal_ld * c);
+		double d2 = *(checksum_update + 1 + checksum_update_ld * c) - *(checksum2_recal + checksum2_recal_ld * c);
+		if(fabs(d1) > E) {
+			int loc = round(d2 - d1) - 1;
+			printf("error detected:%f---%d \n",d1,loc);
+			
+			//the sum of the rest correct number except the error one
+			double sum = 0.0;
+			for (int i = 0; i < B; i++) {
+				if (i != loc) {
+					sum +=	*(A + lda * c + i); 
+				}
+			}
+			//correct the error
+			*(A + lda * c + loc) = *(checksum_update + checksum_update_ld * c) - sum;
+		}
+		
+	}
+}
+
+
