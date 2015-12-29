@@ -52,7 +52,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 						chk2, &chk2_inc );
 		//handle error 
 		ErrorDetectAndCorrectHost(A, lda, n, n, n,
-								chksum, chksum_ld
+								chksum, chksum_ld,
 								chk1, chk1_inc,
 								chk2, chk2_inc);
 		
