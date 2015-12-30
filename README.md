@@ -12,7 +12,7 @@ Each of the following folder contains the complete source code of MAGMA(v1.6.2) 
 * [magma-1.6.2-online-fermi] - containes Online-ABFT Cholesky Decompostion for Nvidia GPUs with Fermi microarchitecture
 * [magma-1.6.2-offline-kepler] - containes Offline-ABFT Cholesky Decompostion for Nvidia GPUs with Kepler microarchitecture
 * [magma-1.6.2-offline-fermi] - containes Offline-ABFT Cholesky Decompostion for Nvidia GPUs with Fermi microarchitecture
-* [magma-1.6.2-cula] - containes the benchmark code for original Nvidia CULA's Cholesky Decomposition, no ABFT added. This code has nothing to do with MAGMA, we just using the MAGMA's testing framework to test CULA. 
+* [magma-1.6.2-cula] - containes the benchmark code for original Nvidia CULA's Cholesky Decomposition, no ABFT added. This code has nothing to do with MAGMA, we are just using the MAGMA's testing framework to test CULA. 
 
 #### Configure and Install
 
