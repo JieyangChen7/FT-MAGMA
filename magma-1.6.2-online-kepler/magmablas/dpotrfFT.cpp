@@ -62,7 +62,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 				
 		
 		//update checksum1 and checksum2
-		magma_set_lapack_numthreads(64);
+		magma_set_lapack_numthreads(1);
 		for (int i = 0; i < n; i++) {
 			//chksum1[i] = chksum1[i] / get(A, n, n, i, i);
 			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
