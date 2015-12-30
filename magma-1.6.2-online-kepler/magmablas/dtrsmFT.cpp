@@ -2,26 +2,7 @@
 #include<iostream>
 using namespace std;
 //TRSM with FT on GPU using cuBLAS
-/*
-__global__ void detectAndCorrectForTrsm(double * B, int ldb, int n,
-		double * chksumB1, int incB1, double * chksumB2, int incB2,
-		double * chkB1, int incB1_2, double * chkB2, int incB2_2) {
-	//determin the reponsisble column 
-	int block = blockIdx.x;
-	int col = threadIdx.x;
-	double diff = abs(
-			*(chkB1 + block + col * incB1_2)
-					- *(chksumB1 + block + col * incB1));
-	if (diff > 0.1) {
-		double diff2 = abs(
-				*(chkB2 + block + col * incB2_2)
-						- *(chksumB2 + block + col * incB2));
-		int row = (int) round(diff2 / diff) - 1;
-		*(B + n * block + row + col * ldb) += *(chksumB1 + block + col * incB1)
-				- *(chkB1 + block + col * incB1_2);
-	}
-}
-*/
+
 /*
  * m: number of row of B
  * n: number of col of B
@@ -73,13 +54,13 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			printMatrix_gpu(checksumB, checksumB_ld, (m / n) * 2, n);
 		}
 		
-		magma_queue_sync( streams[2] );
-		magma_queue_sync( streams[3] );
-		magma_queue_sync( streams[4] );
-		ErrorDetectAndCorrect(B, ldb, n, m, n, 
-				checksumB, checksumB_ld,
-				chk1,chk1_ld,
-				chk2,chk2_ld,
-				streams[1]);
+//		magma_queue_sync( streams[2] );
+//		magma_queue_sync( streams[3] );
+//		magma_queue_sync( streams[4] );
+//		ErrorDetectAndCorrect(B, ldb, n, m, n, 
+//				checksumB, checksumB_ld,
+//				chk1,chk1_ld,
+//				chk2,chk2_ld,
+//				streams[1]);
 	}
 }

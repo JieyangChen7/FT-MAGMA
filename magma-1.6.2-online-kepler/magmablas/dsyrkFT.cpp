@@ -2,20 +2,7 @@
 #include<iostream>
 using namespace std;
 //dsyrk with FT
-/*
-__global__ void detectAndCorrectForSyrk(double * C, int ldc,
-		double * chksumC1, int incC1, double * chksumC2, int incC2,
-		double * chkC1, int incC1_2, double * chkC2, int incC2_2){
-	//determin the reponsisble column 
-	int col = threadIdx.x;
-	double diff = abs(*(chkC1+col*incC1_2)-*(chksumC1+col*incC1));
-	if(diff>0.1){
-		double diff2=abs(*(chkC2+col*incC2_2)-*(chksumC2+col*incC2));
-		int row = (int)round(diff2/diff)-1;
-		*(C+row+col*ldc) += *(chksumC1+col*incC1)-*(chkC1+col*incC1_2);
-	}
-}
-*/
+
 
 /**
  * n: number of row of A
@@ -75,15 +62,15 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			printMatrix_gpu(checksumC, checksumC_ld, 2, n);
 		}
 		
-		magma_queue_sync( streams[2] );
-		magma_queue_sync( streams[3] );		
-		magma_queue_sync( streams[4] );
-		//detect error and correct error
-		ErrorDetectAndCorrect(C, ldc, n, n, n,
-				checksumC, checksumC_ld,
-				chk1, chk1_ld,
-				chk2, chk2_ld,
-				streams[1]);
+//		magma_queue_sync( streams[2] );
+//		magma_queue_sync( streams[3] );		
+//		magma_queue_sync( streams[4] );
+//		//detect error and correct error
+//		ErrorDetectAndCorrect(C, ldc, n, n, n,
+//				checksumC, checksumC_ld,
+//				chk1, chk1_ld,
+//				chk2, chk2_ld,
+//				streams[1]);
 		
 	}
 }
