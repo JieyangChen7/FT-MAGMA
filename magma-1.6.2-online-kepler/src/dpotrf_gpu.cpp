@@ -145,7 +145,7 @@ magma_dpotrf_gpu(
     int N = n;
     //variables for FT
     bool FT = true;
-    bool DEBUG = true;
+    bool DEBUG = false;
 	double * v;
 	int v_ld;
 	
