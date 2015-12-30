@@ -78,7 +78,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 				checksumC, checksumC_ld,
 				chk1, chk1_ld,
 				chk2, chk2_ld,
-				stream[1]);
+				streams[1]);
 		
 	}
 }
