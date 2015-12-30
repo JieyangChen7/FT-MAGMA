@@ -1,4 +1,4 @@
-# Enhanced Online-ABFT Cholesky Decompostion Benchmark
+## Enhanced Online-ABFT Cholesky Decompostion Benchmark
 Author: Jieyang Chen, Xin Liang, Zizhong Chen    
 Affiliate: Department of Computer Science & Engineering @ University of California, Riverside
 
@@ -21,7 +21,7 @@ Each version of our modified MAGMA has the similar way of configuration and inst
 1. Install CUDA (version 6.5 and above), please refer to: [CUDA](https://developer.nvidia.com/cuda-downloads)
 2. Install CPU-side optimizaed BLAS library (ACML, MKL, ATLAS, etc.)
 3. Install the current lastest CULA R18, please refer to: [CULA](http://www.culatools.com/)
-4. Install lastest PAPI library, please refer to: [PAPI](http://icl.cs.utk.edu/papi/)
+4. Install the lastest PAPI library, please refer to: [PAPI](http://icl.cs.utk.edu/papi/)
 5. clone our code from GitHub
 6. Configre make.inc file inside each folder to link with CUDA and CPU-side optimizaed BLAS library. For details, please refer to [MAGMA](http://icl.cs.utk.edu/magma/)
 7. After confiure make.inc file, append "-lpapi" to the LIB variable and append "-I$(MAGMA_DIR)/FT" to the INC variable
