@@ -55,9 +55,10 @@ void dtrsmFT(int m, int n, double * A, int lda,
 			printMatrix_gpu(checksumB, checksumB_ld, (m / n) * 2, n);
 		}
 		
-		magma_queue_sync( streams[1] );
+		magma_queue_sync( streams[2] );
 		magma_queue_sync( streams[3] );
 		magma_queue_sync( streams[4] );
+		cout << "trsm" <<endl;
 		ErrorDetectAndCorrect(B, ldb, n, m, n, 
 				checksumB, checksumB_ld,
 				chk1,chk1_ld,
