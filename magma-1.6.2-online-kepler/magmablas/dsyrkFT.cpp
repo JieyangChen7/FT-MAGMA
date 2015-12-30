@@ -22,6 +22,8 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	double one = 1;
 	double zero = 0;
 	
+	
+	magma_queue_sync( streams[1] );
 	magmablasSetKernelStream(streams[1]);
 	magma_dgemm(
 			MagmaNoTrans, MagmaTrans,
