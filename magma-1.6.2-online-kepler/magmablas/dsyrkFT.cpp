@@ -35,14 +35,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 
 	
 	if(FT){
-		//update checksums
-		magmablasSetKernelStream(streams[4]);
-		magma_dgemm(MagmaNoTrans, MagmaTrans,
-					2, n, m,
-					MAGMA_D_ONE * (-1),
-					checksumA, checksumA_ld, A, lda,
-					MAGMA_D_ONE,
-					checksumC, checksumC_ld );
+		
 		
 		
 		//recalculate checksum
@@ -54,7 +47,14 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		//magmablasSetKernelStream(streams[3]);
 		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 				C, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
-		 
+		//update checksums
+		magmablasSetKernelStream(streams[4]);
+		magma_dgemm(MagmaNoTrans, MagmaTrans,
+					2, n, m,
+					MAGMA_D_ONE * (-1),
+					checksumA, checksumA_ld, A, lda,
+					MAGMA_D_ONE,
+					checksumC, checksumC_ld );
 
 		if (DEBUG) {
 			cout<<"recalculated checksum of C after dsyrk:"<<endl;
@@ -65,8 +65,8 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			printMatrix_gpu(checksumC, checksumC_ld, 2, n);
 		}
 		
-		magma_queue_sync( streams[2] );
-		magma_queue_sync( streams[3] );		
+		//magma_queue_sync( streams[2] );
+		//magma_queue_sync( streams[3] );		
 		magma_queue_sync( streams[4] );
 
 		//detect error and correct error
