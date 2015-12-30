@@ -367,27 +367,8 @@ magma_dpotrf_gpu(
             magma_queue_sync( stream[2] );
             magma_queue_sync( stream[3] );
             magma_queue_sync( stream[4] );
-//			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-//				cout << "PAPI ERROR" << endl;
-//				return -1;
-//			}
-//			if (FT) {
-//					//cout << "FT enabled:" << endl;
-//					FTtime = real_time;
-//			} else {
-//					//cout << "FT disabled:" << endl;
-//					noFTtime = real_time;
-//			}     
-//			
-//			cout << N <<"["<<B<<"]"<<"		FT:"<< FTtime <<"	noFT:" <<noFTtime<<endl;
-//			PAPI_shutdown();        	
+   	
         }
- //       }
-        
-//        float overhead = (FTtime - noFTtime) / noFTtime;
-//		cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
- //   }
-
         magma_free_pinned( work );
         if (FT) {
         	magma_free(chk1d);
