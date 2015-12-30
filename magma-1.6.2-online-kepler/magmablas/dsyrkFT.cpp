@@ -63,8 +63,8 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			printMatrix_gpu(checksumC, checksumC_ld, 2, n);
 		}
 		
-//		magma_queue_sync( streams[2] );
-//		magma_queue_sync( streams[3] );		
+		magma_queue_sync( streams[2] );
+		magma_queue_sync( streams[3] );		
 		magma_queue_sync( streams[4] );
 		//detect error and correct error
 		ErrorDetectAndCorrect(C, ldc, n, n, n,

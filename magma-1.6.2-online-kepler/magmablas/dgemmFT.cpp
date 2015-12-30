@@ -71,8 +71,8 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			printMatrix_gpu(checksumC, checksumC_ld, (m / n) * 2, n);
 		}
 		
-//		magma_queue_sync( streams[2] );
-//		magma_queue_sync( streams[3] );
+		magma_queue_sync( streams[2] );
+		magma_queue_sync( streams[3] );
 		magma_queue_sync( streams[4] );
 		//error detection and error correction
 		ErrorDetectAndCorrect(C, ldc, n, m, n,
