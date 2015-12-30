@@ -87,7 +87,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				checksumC, checksumC_ld,
 				chk1, chk1_ld,
 				chk2, chk2_ld,
-				stream[1]);
+				streams[1]);
 				
 		
 	}
