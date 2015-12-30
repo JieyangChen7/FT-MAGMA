@@ -65,17 +65,20 @@ void dtrsmFT(int m, int n, double * A, int lda,
 					MAGMA_D_ONE, A, lda,
 					checksumB, checksumB_ld);
 		
-//		if (DEBUG) {
-//			cout<<"recalculated checksum of B after dtrsm:"<<endl;
-//			printMatrix_gpu(chk1,chk1_ld, (m / n), n);
-//			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
-//
-//			cout<<"updated checksum of B after dtrsm:"<<endl;
-//			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
-//		}
-		/*detectAndCorrectForTrsm<<<dim3(m/n),dim3(n)>>>(B, ldb, n,
-			checksumB1, incB1, checksumB2, incB2,
-			chk1, chk1_ld, chk2, chk2_ld);
-		*/
+		if (DEBUG) {
+			cout<<"recalculated checksum of B after dtrsm:"<<endl;
+			printMatrix_gpu(chk1,chk1_ld, (m / n), n);
+			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
+
+			cout<<"updated checksum of B after dtrsm:"<<endl;
+			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
+		}
+		
+		magma_queue_sync( streams[4] );
+		ErrorDetectAndCorrect(B, ldb, n, m, n, 
+				checksumB, checksumB_ld,
+				chk1,chk1_ld,
+				chk2,chk2_ld,
+				streams[1]);
 	}
 }

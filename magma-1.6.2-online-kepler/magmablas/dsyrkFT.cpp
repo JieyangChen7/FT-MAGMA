@@ -35,35 +35,20 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	double one = 1;
 	double zero = 0;
 	
-//	if (FT) {
 	magmablasSetKernelStream(streams[1]);
-		magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
-				n, n, m,
-				MAGMA_D_ONE * (-1),
-				A, lda, A, lda,
-				MAGMA_D_ONE,
-				C, ldc );
-//	} else {
-//		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
-//						MAGMA_D_ONE * (-1), A, lda,
-//						MAGMA_D_ONE,     C, ldc);
-//	}
+	magma_dgemm(
+			MagmaNoTrans, MagmaTrans,
+			n, n, m,
+			MAGMA_D_ONE * (-1),
+			A, lda, A, lda,
+			MAGMA_D_ONE,
+			C, ldc );
 
 	
 	if(FT){
-		//update checksums
-		magmablasSetKernelStream(streams[4]);
-		magma_dgemm(
-					MagmaNoTrans, MagmaTrans,
-					2, n, m,
-					MAGMA_D_ONE * (-1),
-					checksumA, checksumA_ld, A, lda,
-					MAGMA_D_ONE,
-					checksumC, checksumC_ld );
-				
+			
 		//recalculate checksum
-//		magma_queue_sync( stream1 );
+		magma_queue_sync( stream[1] );
 		magmablasSetKernelStream(streams[2]);
 		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 				C, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
@@ -71,10 +56,15 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 				C, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
 		 
-		
+		//update checksums
+		magmablasSetKernelStream(streams[4]);
+		magma_dgemm(MagmaNoTrans, MagmaTrans,
+					2, n, m,
+					MAGMA_D_ONE * (-1),
+					checksumA, checksumA_ld, A, lda,
+					MAGMA_D_ONE,
+					checksumC, checksumC_ld );
 		if (DEBUG) {
-			
-			
 			cout<<"recalculated checksum of C after dsyrk:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, 1, n);
 			printMatrix_gpu(chk2, chk2_ld, 1, n);
@@ -82,11 +72,13 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			cout<<"updated checksum of C after dsyrk:"<<endl;
 			printMatrix_host(checksumC, checksumC_ld, 2, n);
 		}
-		
+		magma_queue_sync( stream[4] );
 		//detect error and correct error
-	//	detectAndCorrectForSyrk<<<dim3(1),dim3(n)>>>(C, ldc,
-	//			checksumC1, incC1, checksumC2, incC2,
-	//			 chk1, chk1_ld, chk2, chk2_ld);
+		ErrorDetectAndCorrect(C, ldc, n, n, n,
+				checksumC, checksumC_ld,
+				chk1, chk1_ld,
+				chk2, chk2_ld,
+				stream[1]);
 		
 	}
 }

@@ -43,3 +43,13 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		double * chk2, int chk2_ld, 
 		magma_queue_t * streams,
 		bool FT, bool DEBUG);
+
+void ErrorDetectAndCorrect(double * A, int lda, int B, int m, int n,
+		double * checksum_update, int checksum_update_ld,
+		double * checksum1_recal, int checksum1_recal_ld,
+		double * checksum2_recal, int checksum2_recal_ld, cudaStream_t stream);
+
+void ErrorDetectAndCorrectHost(double * A, int lda, int B, int m, int n,
+		double * checksum_update, int checksum_update_ld,
+		double * checksum1_recal, int checksum1_recal_ld,
+		double * checksum2_recal, int checksum2_recal_ld);

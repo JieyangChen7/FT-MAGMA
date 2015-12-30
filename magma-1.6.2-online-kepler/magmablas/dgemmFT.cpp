@@ -32,16 +32,6 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG) {
 
-	/*cout<<"checksum1 of A before dgemm:"<<endl;
-	printMatrix_gpu(checksumA1, incA1*sizeof(double), m/n,k);
-	cout<<"checksum2 of A before dgemm:"<<endl;
-	printMatrix_gpu(checksumA2, incA2*sizeof(double), m/n,k);
-	
-	cout<<"checksum1 of C before dgemm:"<<endl;
-	printMatrix_gpu(checksumC1, incC1*sizeof(double), m/n,n);
-	cout<<"checksum2 of C before dgemm:"<<endl;
-	printMatrix_gpu(checksumC2, incC2*sizeof(double), m/n,n);
-	*/
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
@@ -62,7 +52,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	if(FT){	
 		
 		//recalculate checksum
-//		magma_queue_sync( stream1 );
+		magma_queue_sync( stream[1] );
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(streams[2]);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
@@ -83,19 +73,21 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 					MAGMA_D_ONE,
 					checksumC, checksumC_ld );
 	
-//		if (DEBUG) {
-//			cout<<"recalculated checksum of C after dgemm:"<<endl;
-//			printMatrix_gpu(chk1, chk1_ld, (m / n), n);
-//			printMatrix_gpu(chk2, chk2_ld, (m / n), n);
-//		
-//			cout<<"updated checksum of C after dgemm:"<<endl;
-//			printMatrix_host(checksumC, checksumC_ld, (m / n) * 2, n);
-//		}
+		if (DEBUG) {
+			cout<<"recalculated checksum of C after dgemm:"<<endl;
+			printMatrix_gpu(chk1, chk1_ld, (m / n), n);
+			printMatrix_gpu(chk2, chk2_ld, (m / n), n);
 		
+			cout<<"updated checksum of C after dgemm:"<<endl;
+			printMatrix_host(checksumC, checksumC_ld, (m / n) * 2, n);
+		}
+		magma_queue_sync( stream[4] );
 		//error detection and error correction
-	//	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
-	//			checksumC1, incC1, checksumC2, incC2,
-	//			chk1, chk1_ld, chk2, chk2_ld);
+		ErrorDetectAndCorrect(C, ldc, n, m, n,
+				checksumC, checksumC_ld,
+				chk1, chk1_ld,
+				chk2, chk2_ld,
+				stream[1]);
 				
 		
 	}
