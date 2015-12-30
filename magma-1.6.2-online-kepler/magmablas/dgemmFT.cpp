@@ -73,13 +73,13 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 //		magma_queue_sync( streams[2] );
 //		magma_queue_sync( streams[3] );
-//		magma_queue_sync( streams[4] );
-//		//error detection and error correction
-//		ErrorDetectAndCorrect(C, ldc, n, m, n,
-//				checksumC, checksumC_ld,
-//				chk1, chk1_ld,
-//				chk2, chk2_ld,
-//				streams[1]);
+		magma_queue_sync( streams[4] );
+		//error detection and error correction
+		ErrorDetectAndCorrect(C, ldc, n, m, n,
+				checksumC, checksumC_ld,
+				chk1, chk1_ld,
+				chk2, chk2_ld,
+				streams[1]);
 				
 		
 	}
