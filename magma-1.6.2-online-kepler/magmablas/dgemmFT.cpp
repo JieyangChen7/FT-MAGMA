@@ -2,21 +2,7 @@
 #include<iostream>
 using namespace std;
 //dgemm with FT
-/*
-__global__ void detectAndCorrectForGemm(double * C, int ldc, int n,
-		double * chksumC1, int incC1, double * chksumC2, int incC2,
-		double * chkC1, int incC1_2, double * chkC2, int incC2_2){
-	//determin the reponsisble column 
-	int block = blockIdx.x;
-	int col = threadIdx.x;
-	double diff = abs(*(chkC1+block+col*incC1_2)-*(chksumC1+block+col*incC1));
-	if(diff>0.1){
-		double diff2=abs(*(chkC2+block+col*incC2_2)-*(chksumC2+block+col*incC2));
-		int row = (int)round(diff2/diff)-1;
-		*(C+n*block+row+col*ldc) += *(chksumC1+block+col*incC1)-*(chkC1+block+col*incC1_2);
-	}
-}
-*/
+
 /**
  * m: number of row of A
  * n: number of col of B
@@ -84,15 +70,15 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			printMatrix_gpu(checksumC, checksumC_ld, (m / n) * 2, n);
 		}
 		
-		magma_queue_sync( streams[2] );
-		magma_queue_sync( streams[3] );
-		magma_queue_sync( streams[4] );
-		//error detection and error correction
-		ErrorDetectAndCorrect(C, ldc, n, m, n,
-				checksumC, checksumC_ld,
-				chk1, chk1_ld,
-				chk2, chk2_ld,
-				streams[1]);
+//		magma_queue_sync( streams[2] );
+//		magma_queue_sync( streams[3] );
+//		magma_queue_sync( streams[4] );
+//		//error detection and error correction
+//		ErrorDetectAndCorrect(C, ldc, n, m, n,
+//				checksumC, checksumC_ld,
+//				chk1, chk1_ld,
+//				chk2, chk2_ld,
+//				streams[1]);
 				
 		
 	}
