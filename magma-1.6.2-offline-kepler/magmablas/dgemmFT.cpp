@@ -2,21 +2,7 @@
 #include<iostream>
 using namespace std;
 //dgemm with FT
-/*
-__global__ void detectAndCorrectForGemm(double * C, int ldc, int n,
-		double * chksumC1, int incC1, double * chksumC2, int incC2,
-		double * chkC1, int incC1_2, double * chkC2, int incC2_2){
-	//determin the reponsisble column 
-	int block = blockIdx.x;
-	int col = threadIdx.x;
-	double diff = abs(*(chkC1+block+col*incC1_2)-*(chksumC1+block+col*incC1));
-	if(diff>0.1){
-		double diff2=abs(*(chkC2+block+col*incC2_2)-*(chksumC2+block+col*incC2));
-		int row = (int)round(diff2/diff)-1;
-		*(C+n*block+row+col*ldc) += *(chksumC1+block+col*incC1)-*(chkC1+block+col*incC1_2);
-	}
-}
-*/
+
 /**
  * m: number of row of A
  * n: number of col of B
@@ -45,23 +31,10 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 				A, lda, B, ldb,
 				MAGMA_D_ONE,
 				C, ldc );
-	
-	
-	
+		
 
 	if(FT){	
-		
-		//recalculate checksum
-//		magma_queue_sync( stream1 );
-//		for (int i = 0; i < m; i += n) {
-//			magmablasSetKernelStream(streams[2]);
-//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//					C + i, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-//			magmablasSetKernelStream(streams[3]);
-//			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-//					C + i, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-//		}
-		
+		magma_queue_sync( stream[1] );
 		//update checksum				
 		magmablasSetKernelStream(streams[4]);
 		magma_dgemm(
@@ -73,20 +46,14 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 					MAGMA_D_ONE,
 					checksumC, checksumC_ld );
 	
-//		if (DEBUG) {
-//			cout<<"recalculated checksum of C after dgemm:"<<endl;
-//			printMatrix_gpu(chk1, chk1_ld, (m / n), n);
-//			printMatrix_gpu(chk2, chk2_ld, (m / n), n);
-//		
-//			cout<<"updated checksum of C after dgemm:"<<endl;
-//			printMatrix_host(checksumC, checksumC_ld, (m / n) * 2, n);
-//		}
+		if (DEBUG) {
+			cout<<"recalculated checksum of C after dgemm:"<<endl;
+			printMatrix_gpu(chk1, chk1_ld, (m / n), n);
+			printMatrix_gpu(chk2, chk2_ld, (m / n), n);
 		
-		//error detection and error correction
-	//	detectAndCorrectForGemm<<<dim3(m/n),dim3(n)>>>(C, ldc, n,
-	//			checksumC1, incC1, checksumC2, incC2,
-	//			chk1, chk1_ld, chk2, chk2_ld);
-				
-		
+			cout<<"updated checksum of C after dgemm:"<<endl;
+			printMatrix_host(checksumC, checksumC_ld, (m / n) * 2, n);
+		}
+						
 	}
 }
