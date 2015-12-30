@@ -17,6 +17,7 @@ Each of the following folder contains the complete source code of MAGMA(v1.6.2) 
 #### Configure and Install
 
 Each version of our modified MAGMA has the similar way of configuration and installation as the origianl MAGMA except our program uses PAPI for more accurate timing. 
+
 1. Install CUDA (version 6.5 and above), please refer to: [CUDA](https://developer.nvidia.com/cuda-downloads)
 2. Install CPU-side optimizaed BLAS library (ACML, MKL, ATLAS, etc.)
 3. Install the current lastest CULA R18, please refer to: [CULA](http://www.culatools.com/)
