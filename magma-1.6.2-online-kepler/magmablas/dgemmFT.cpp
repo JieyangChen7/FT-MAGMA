@@ -52,7 +52,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	if(FT){	
 		
 		//recalculate checksum
-		magma_queue_sync( stream[1] );
+		magma_queue_sync( streams[1] );
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(streams[2]);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
@@ -81,7 +81,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 			cout<<"updated checksum of C after dgemm:"<<endl;
 			printMatrix_host(checksumC, checksumC_ld, (m / n) * 2, n);
 		}
-		magma_queue_sync( stream[4] );
+		magma_queue_sync( streams[4] );
 		//error detection and error correction
 		ErrorDetectAndCorrect(C, ldc, n, m, n,
 				checksumC, checksumC_ld,

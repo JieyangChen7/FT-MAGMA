@@ -48,7 +48,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	if(FT){
 			
 		//recalculate checksum
-		magma_queue_sync( stream[1] );
+		magma_queue_sync( streams[1] );
 		magmablasSetKernelStream(streams[2]);
 		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 				C, ldc, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
@@ -72,7 +72,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			cout<<"updated checksum of C after dsyrk:"<<endl;
 			printMatrix_host(checksumC, checksumC_ld, 2, n);
 		}
-		magma_queue_sync( stream[4] );
+		magma_queue_sync( streams[4] );
 		//detect error and correct error
 		ErrorDetectAndCorrect(C, ldc, n, n, n,
 				checksumC, checksumC_ld,
