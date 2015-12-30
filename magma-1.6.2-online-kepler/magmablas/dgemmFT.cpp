@@ -22,7 +22,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	double one = 1;
 	double zero = 0;
 	
-	magma_queue_sync( streams[1] );
+	//magma_queue_sync( streams[1] );
 	magmablasSetKernelStream(streams[1]);
 	magma_dgemm(
 				MagmaNoTrans, MagmaTrans,
@@ -51,7 +51,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		}
 		
 		//update checksum				
-		magmablasSetKernelStream(streams[4]);
+		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
 					(m / n) * 2, n, k,
@@ -73,7 +73,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 		//magma_queue_sync( streams[2] );
 		//magma_queue_sync( streams[3] );
-		magma_queue_sync( streams[4] );
+		//magma_queue_sync( streams[4] );
 
 		//error detection and error correction
 		ErrorDetectAndCorrect(C, ldc, n, m, n,

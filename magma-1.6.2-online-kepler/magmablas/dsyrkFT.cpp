@@ -23,7 +23,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 	double zero = 0;
 	
 	
-	magma_queue_sync( streams[1] );
+	//magma_queue_sync( streams[1] );
 	magmablasSetKernelStream(streams[1]);
 	magma_dgemm(
 			MagmaNoTrans, MagmaTrans,
@@ -48,7 +48,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
 				C, ldc, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
 		//update checksums
-		magmablasSetKernelStream(streams[4]);
+		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(MagmaNoTrans, MagmaTrans,
 					2, n, m,
 					MAGMA_D_ONE * (-1),
@@ -67,7 +67,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		
 		//magma_queue_sync( streams[2] );
 		//magma_queue_sync( streams[3] );		
-		magma_queue_sync( streams[4] );
+		//magma_queue_sync( streams[4] );
 
 		//detect error and correct error
 		ErrorDetectAndCorrect(C, ldc, n, n, n,

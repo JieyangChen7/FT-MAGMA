@@ -19,7 +19,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
-	magma_queue_sync( streams[1] );
+	//magma_queue_sync( streams[1] );
 	magmablasSetKernelStream(streams[1]);
 	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 	                                m, n,
@@ -43,7 +43,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		}
 
 		//update checksums 
-				magmablasSetKernelStream(streams[4]);
+				magmablasSetKernelStream(streams[1]);
 				magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 							(m / n) * 2, n,
 							MAGMA_D_ONE, A, lda,
@@ -59,7 +59,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		
 		//magma_queue_sync( streams[2] );
 		//magma_queue_sync( streams[3] );
-		magma_queue_sync( streams[4] );
+		//magma_queue_sync( streams[4] );
 		ErrorDetectAndCorrect(B, ldb, n, m, n, 
 				checksumB, checksumB_ld,
 				chk1,chk1_ld,
