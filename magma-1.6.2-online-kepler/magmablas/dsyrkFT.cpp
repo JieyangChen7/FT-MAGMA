@@ -70,7 +70,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 			printMatrix_gpu(chk2, chk2_ld, 1, n);
 		
 			cout<<"updated checksum of C after dsyrk:"<<endl;
-			printMatrix_host(checksumC, checksumC_ld, 2, n);
+			printMatrix_gpu(checksumC, checksumC_ld, 2, n);
 		}
 		
 //		magma_queue_sync( streams[2] );
