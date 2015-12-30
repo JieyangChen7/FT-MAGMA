@@ -74,6 +74,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		magma_queue_sync( streams[2] );
 		magma_queue_sync( streams[3] );
 		magma_queue_sync( streams[4] );
+		cout << "gemm" <<endl;
 		//error detection and error correction
 		ErrorDetectAndCorrect(C, ldc, n, m, n,
 				checksumC, checksumC_ld,
