@@ -60,7 +60,8 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 						A, &lda,
 						chk2, &chk2_inc );
 				
-		
+		cout<<"updated checksum on CPU before factorization:"<<endl;
+					printMatrix_host(chksum, chksum_ld, 2, n);
 		//update checksum1 and checksum2
 		magma_set_lapack_numthreads(1);
 		for (int i = 0; i < n; i++) {
