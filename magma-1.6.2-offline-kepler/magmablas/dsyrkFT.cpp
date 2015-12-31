@@ -38,7 +38,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 
 	
 	if(FT){
-		magma_queue_sync( stream[1] );
+		magma_queue_sync( streams[1] );
 		//update checksums
 		magmablasSetKernelStream(streams[4]);
 		magma_dgemm(

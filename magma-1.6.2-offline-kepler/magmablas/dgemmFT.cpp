@@ -34,7 +34,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		
 
 	if(FT){	
-		magma_queue_sync( stream[1] );
+		magma_queue_sync( streams[1] );
 		//update checksum				
 		magmablasSetKernelStream(streams[4]);
 		magma_dgemm(

@@ -26,7 +26,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 	                                       B, ldb);
 	if (FT) {		 
 		//update checksums 
-		magma_queue_sync( stream[1] );
+		magma_queue_sync( streams[1] );
 		magmablasSetKernelStream(streams[4]);
 		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
 					(m / n) * 2, n,
