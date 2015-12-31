@@ -80,8 +80,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 			int m = n-i-1;
 			double alpha = negone * (*(chksum + i * chksum_ld));
 			int incx = 1;
-			int incy = 1;
-			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum + (i+1) * chksum_ld, &incy );
+			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum + (i+1) * chksum_ld, &chksum_ld );
 		}
 	
 		for (int i = 0; i < n; i++) {
@@ -91,8 +90,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 			int m = n-i-1;
 			double alpha = negone *  (*(chksum + i * chksum_ld + 1));
 			int incx = 1;
-			int incy = 1;
-			blasf77_daxpy(&m, &alpha, A + i * lda + i+1, &incx, chksum + 1 + (i + 1) * chksum_ld, &incy );
+			blasf77_daxpy(&m, &alpha, A + i * lda + i+1, &incx, chksum + 1 + (i + 1) * chksum_ld, &chksum_ld );
 		}
 
 		
