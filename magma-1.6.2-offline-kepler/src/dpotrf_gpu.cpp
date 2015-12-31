@@ -234,9 +234,13 @@ magma_dpotrf_gpu(
 		//cout<<"allocate space for recalculated checksum on CPU"<<endl;
 
 		//allocate space for reclaculated checksum on GPU
-		chk1d_pitch = magma_roundup((N / B) * 2 * sizeof(double), 32);
+		chk1d_pitch = magma_roundup((N / B) * sizeof(double), 32);
 		chk1d_ld = chk1d_pitch / sizeof(double);
 		magma_dmalloc(&chk1d, chk1d_pitch * N);
+		
+		chk2d_pitch = magma_roundup((N / B) * sizeof(double), 32);
+		chk2d_ld = chk2d_pitch / sizeof(double);
+		magma_dmalloc(&chk2d, chk2d_pitch * N);
 
 		
 		//cout<<"allocate space for recalculated checksum on GPU"<<endl;
@@ -398,7 +402,38 @@ magma_dpotrf_gpu(
                 
             }
             if (FT) {
-            	initializeChecksum(dA, ldda, N, B, vd, vd_ld, v, v_ld, chk1d, chk1d_ld, stream[0]);
+            	//checksum recalculation
+            	char T = 'T';
+				char N = 'N';
+				char L = 'L';
+            	for (int i = 0; i < N; i += B) {
+					magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+								1, i, B,
+								MAGMA_D_ONE, vd, vd_ld,
+								matrix + i, ld,
+								MAGMA_D_ZERO, chk1d + (i / B), chk1d_ld);
+					magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+								1, i, B,
+								MAGMA_D_ONE, vd + 1, vd_ld,
+								matrix + i, ld,
+								MAGMA_D_ZERO, chk2d + (i / B), chk2d_ld);
+					
+					
+					blasf77_dtrmv(  &L, &T, &N,
+									&B,
+									matrix + i + i * ld, &ld,
+									chk1d + (i / B) + i * chk1d_ld, &chk1d_ld );
+					blasf77_dtrmv(  &L, &T, &N,
+									&B,
+									matrix + i + i * ld, &ld,
+									chk2d + (i / B) + i * chk2d_ld, &chk2d_ld );
+					
+					ErrorDetectAndCorrect(matrix + 1, ld, B, B, i + B,
+									chksum + (i / B) * 2, chksum_ld,
+									chk1d + (i / B), chk1d_ld,
+									chk2d + (i / B), chk2d_ld, stream[1]);
+					
+            	}
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
