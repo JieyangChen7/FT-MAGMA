@@ -26,7 +26,9 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	double one = 1;
 	double zero = 0;
 	double negone = -1;
-	
+	cout << "matrix A" << endl;
+				
+				printMatrix_host(A, lda, n, n);
 	//do Choleksy factorization
 	magma_set_lapack_numthreads(1);
 	char uplo = 'L';
