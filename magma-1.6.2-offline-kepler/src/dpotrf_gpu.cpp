@@ -421,11 +421,11 @@ magma_dpotrf_gpu(
 					
 					blasf77_dtrmv(  &L, &T, &N,
 									&B,
-									A + i + i * ld, &ldda,
+									A + i + i * ldda, &ldda,
 									chk1d + (i / B) + i * chk1d_ld, &chk1d_ld );
 					blasf77_dtrmv(  &L, &T, &N,
 									&B,
-									A + i + i * ld, &ldda,
+									A + i + i * ldda, &ldda,
 									chk2d + (i / B) + i * chk2d_ld, &chk2d_ld );
 					
 					ErrorDetectAndCorrect(A + i, ldda, B, B, i + B,
