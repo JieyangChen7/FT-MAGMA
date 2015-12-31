@@ -429,7 +429,7 @@ magma_dpotrf_gpu(
 									chk2d + (i / B) + i * chk2d_ld, &chk2d_ld );
 					
 					ErrorDetectAndCorrect(A + i, ld, B, B, i + B,
-									chksum + (i / B) * 2, chksum_ld,
+							checksum + (i / B) * 2, checksum_ld,
 									chk1d + (i / B), chk1d_ld,
 									chk2d + (i / B), chk2d_ld, stream[1]);
 					
