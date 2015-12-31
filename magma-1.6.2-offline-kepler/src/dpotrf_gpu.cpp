@@ -410,25 +410,25 @@ magma_dpotrf_gpu(
 					magma_dgemm(MagmaNoTrans, MagmaNoTrans,
 								1, i, B,
 								MAGMA_D_ONE, vd, vd_ld,
-								A + i, ld,
+								A + i, ldda,
 								MAGMA_D_ZERO, chk1d + (i / B), chk1d_ld);
 					magma_dgemm(MagmaNoTrans, MagmaNoTrans,
 								1, i, B,
 								MAGMA_D_ONE, vd + 1, vd_ld,
-								A + i, ld,
+								A + i, ldda,
 								MAGMA_D_ZERO, chk2d + (i / B), chk2d_ld);
 					
 					
 					blasf77_dtrmv(  &L, &T, &N,
 									&B,
-									A + i + i * ld, &ld,
+									A + i + i * ld, &ldda,
 									chk1d + (i / B) + i * chk1d_ld, &chk1d_ld );
 					blasf77_dtrmv(  &L, &T, &N,
 									&B,
-									A + i + i * ld, &ld,
+									A + i + i * ld, &ldda,
 									chk2d + (i / B) + i * chk2d_ld, &chk2d_ld );
 					
-					ErrorDetectAndCorrect(A + i, ld, B, B, i + B,
+					ErrorDetectAndCorrect(A + i, ldda, B, B, i + B,
 							checksum + (i / B) * 2, checksum_ld,
 									chk1d + (i / B), chk1d_ld,
 									chk2d + (i / B), chk2d_ld, stream[1]);
