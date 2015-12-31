@@ -26,9 +26,6 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 	double one = 1;
 	double zero = 0;
 	double negone = -1;
-	cout << "matrix A" << endl;
-				
-				printMatrix_host(A, lda, n, n);
 	//do Choleksy factorization
 	magma_set_lapack_numthreads(1);
 	char uplo = 'L';
@@ -62,10 +59,8 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 						A, &lda,
 						chk2, &chk2_inc );
 				
-		cout<<"updated checksum on CPU before factorization:"<<endl;
-					printMatrix_host(chksum, chksum_ld, 2, n);
 		//update checksum1 and checksum2
-		magma_set_lapack_numthreads(1);
+		magma_set_lapack_numthreads(64);
 		for (int i = 0; i < n; i++) {
 			//chksum1[i] = chksum1[i] / get(A, n, n, i, i);
 			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
@@ -73,7 +68,6 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 			int m = n-i-1;
 			double alpha = negone * (*(chksum + i * chksum_ld));
 			int incx = 1;
-			//int incy = 1;
 			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum + (i+1) * chksum_ld, &chksum_ld );
 		}
 	
@@ -84,15 +78,10 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 			int m = n-i-1;
 			double alpha = negone *  (*(chksum + i * chksum_ld + 1));
 			int incx = 1;
-			//int incy = 1;
 			blasf77_daxpy(&m, &alpha, A + i * lda + i+1, &incx, chksum + 1 + (i + 1) * chksum_ld, &chksum_ld );
 		}
 	
 		if (DEBUG) {
-			cout << "matrix A" << endl;
-			
-			printMatrix_host(A, lda, n, n);
-			
 			cout<<"recalcuated checksum on CPU after factorization:"<<endl;
 			printMatrix_host(chk1, 1, 1, n);
 			printMatrix_host(chk2, 1, 1, n);
@@ -100,10 +89,10 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 			printMatrix_host(chksum, chksum_ld, 2, n);
 		}
 		
-//		ErrorDetectAndCorrectHost(A, lda, n, n, n,
-//				chksum, chksum_ld,
-//				chk1, chk1_inc,
-//				chk2, chk2_inc);
+		ErrorDetectAndCorrectHost(A, lda, n, n, n,
+				chksum, chksum_ld,
+				chk1, chk1_inc,
+				chk2, chk2_inc);
 		
 	}
 }
