@@ -14,7 +14,7 @@
 # The default is "Fermi Kepler".
 # See http://developer.nvidia.com/cuda-gpus
 #
-GPU_TARGET = Fermi
+#GPU_TARGET = Fermi
 
 CC        = gcc
 CXX       = g++
