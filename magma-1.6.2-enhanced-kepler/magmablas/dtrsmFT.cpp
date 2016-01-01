@@ -15,17 +15,12 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		double * chk2, int chk2_ld, 
 		bool FT, bool DEBUG, bool VERIFY, magma_queue_t * streams) {
 
-	double negone = -1;
-	double one = 1;
-	double zero = 0;
 	cudaStreamSynchronize(streams[1]);
 	cudaStreamSynchronize(streams[4]);
 	if (FT && VERIFY) {
 		//verify B before use
 		//recalculate checksums on GPU
-		double beta = 0;
-		//magmablasSetKernelStream(streams[1]);
-		
+
 		for (int i = 0; i < m; i += n) {
 			magmablasSetKernelStream(streams[2]);
 			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,

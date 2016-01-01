@@ -20,9 +20,6 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG, bool VERIFY) {
 
-	double negone = -1;
-	double one = 1;
-	double zero = 0;
 	cudaStreamSynchronize(streams[1]);
 	cudaStreamSynchronize(streams[4]);
 	if (FT && VERIFY) {
