@@ -35,16 +35,6 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		magma_queue_t stream0, magma_queue_t stream1, magma_queue_t stream2, magma_queue_t stream3,
 		bool FT, bool DEBUG, bool VERIFY) {
 
-	/*cout<<"checksum1 of A before dgemm:"<<endl;
-	printMatrix_gpu(checksumA1, incA1*sizeof(double), m/n,k);
-	cout<<"checksum2 of A before dgemm:"<<endl;
-	printMatrix_gpu(checksumA2, incA2*sizeof(double), m/n,k);
-	
-	cout<<"checksum1 of C before dgemm:"<<endl;
-	printMatrix_gpu(checksumC1, incC1*sizeof(double), m/n,n);
-	cout<<"checksum2 of C before dgemm:"<<endl;
-	printMatrix_gpu(checksumC2, incC2*sizeof(double), m/n,n);
-	*/
 	double negone = -1;
 	double one = 1;
 	double zero = 0;
@@ -130,4 +120,8 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 						&one,
 						checksumC, &checksumC_ld );
 	}
+	
+	
+	
+	
 }

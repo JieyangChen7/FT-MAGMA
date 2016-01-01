@@ -40,13 +40,13 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		cudaStreamSynchronize(streams[2]);
 		cudaStreamSynchronize(streams[3]);
 		//handle error 
-		ErrorDetectAndCorrect(B, ldb,
-							n, n, k, 
-							checksumB, checksumB_ld, 
-							chk1, chk1_ld, 
-							chk2, chk2_ld,
-							streams[1]);
-		
+//		ErrorDetectAndCorrect(B, ldb,
+//							n, n, k, 
+//							checksumB, checksumB_ld, 
+//							chk1, chk1_ld, 
+//							chk2, chk2_ld,
+//							streams[1]);
+//		
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of B before dgemm:"<<endl;
@@ -73,12 +73,12 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		cudaStreamSynchronize(streams[2]);
 		cudaStreamSynchronize(streams[3]);
 		//handle error
-		ErrorDetectAndCorrect(A, lda,
-							n, m, k, 
-							checksumA, checksumA_ld, 
-							chk1, chk1_ld, 
-							chk2, chk2_ld,
-							streams[1]);
+//		ErrorDetectAndCorrect(A, lda,
+//							n, m, k, 
+//							checksumA, checksumA_ld, 
+//							chk1, chk1_ld, 
+//							chk2, chk2_ld,
+//							streams[1]);
 		
 		if (DEBUG) {	
 			cout<<"recalculated checksum of A before dgemm:"<<endl;

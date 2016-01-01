@@ -36,12 +36,12 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		}
 		cudaStreamSynchronize(streams[2]);
 		cudaStreamSynchronize(streams[3]);
-		ErrorDetectAndCorrect(B, ldb,
-							n, m, n, 
-							checksumB, checksumB_ld, 
-							chk1, chk1_ld, 
-							chk2, chk2_ld,
-							streams[1]);
+//		ErrorDetectAndCorrect(B, ldb,
+//							n, m, n, 
+//							checksumB, checksumB_ld, 
+//							chk1, chk1_ld, 
+//							chk2, chk2_ld,
+//							streams[1]);
 		//handle error - to be finished
 		
 		if (DEBUG) {

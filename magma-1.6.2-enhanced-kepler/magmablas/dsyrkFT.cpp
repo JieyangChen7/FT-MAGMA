@@ -42,12 +42,12 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		cudaStreamSynchronize(streams[2]);
 		cudaStreamSynchronize(streams[3]);
 		//handle error 
-		ErrorDetectAndCorrect(A, lda,
-							n, n, n, 
-							checksumA, checksumA_ld, 
-							chk1, chk1_ld, 
-							chk2, chk2_ld,
-							streams[1]);
+//		ErrorDetectAndCorrect(A, lda,
+//							n, n, n, 
+//							checksumA, checksumA_ld, 
+//							chk1, chk1_ld, 
+//							chk2, chk2_ld,
+//							streams[1]);
 		
 		if (DEBUG) {
 			cout<<"recalculated checksum of A before dsyrk:"<<endl;
