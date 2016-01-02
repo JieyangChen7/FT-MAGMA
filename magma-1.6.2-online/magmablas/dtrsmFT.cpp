@@ -16,9 +16,7 @@ void dtrsmFT(int m, int n, double * A, int lda,
 		bool FT, bool DEBUG, magma_queue_t * streams) {
 
 
-	double negone = -1;
-	double one = 1;
-	double zero = 0;
+
 	//magma_queue_sync( streams[1] );
 	magmablasSetKernelStream(streams[1]);
 	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,

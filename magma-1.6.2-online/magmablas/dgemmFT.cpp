@@ -18,10 +18,7 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG) {
 
-	double negone = -1;
-	double one = 1;
-	double zero = 0;
-	
+
 	//magma_queue_sync( streams[1] );
 	magmablasSetKernelStream(streams[1]);
 	magma_dgemm(

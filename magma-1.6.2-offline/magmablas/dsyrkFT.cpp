@@ -17,10 +17,7 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG){
 	
-	double negone = -1;
-	double one = 1;
-	double zero = 0;
-	
+
 //	if (FT) {
 	magmablasSetKernelStream(streams[1]);
 		magma_dgemm(
