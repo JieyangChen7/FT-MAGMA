@@ -75,12 +75,12 @@ int main( int argc, char** argv)
  			}
  			cout<<"N="<<N<<"---time:"<<real_time<<"---gflops:"<<(double)gflops/real_time<<endl;
  			PAPI_shutdown();   
-         }
+         
             TESTING_FREE_CPU( h_A );
             TESTING_FREE_PIN( h_R );
             TESTING_FREE_DEV( d_A );
             fflush( stdout );
-  
+    }
 
     TESTING_FINALIZE();
     return status;
