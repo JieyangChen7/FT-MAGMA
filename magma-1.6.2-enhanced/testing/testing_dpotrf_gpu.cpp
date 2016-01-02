@@ -92,7 +92,7 @@ int main( int argc, char** argv)
             TESTING_FREE_PIN( h_R );
             TESTING_FREE_DEV( d_A );
             fflush( stdout );
-    }
+  
 
     TESTING_FINALIZE();
     return status;
