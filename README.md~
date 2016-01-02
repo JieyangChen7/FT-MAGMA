@@ -6,7 +6,6 @@ This is the instruction for configuring, installing and benchmarking our Enhance
 
 #### File structures:
 Each of the following folder contains the complete source code of MAGMA(v1.6.2) with our modified ABFT Cholesky Decompostion routine. Different settings are decribed as follow:
-* [magma-1.6.2] - contains Cholesky Decomposition without ABFT
 * [magma-1.6.2-enhanced] - containes Enhanced Online-ABFT Cholesky Decompostion
 * [magma-1.6.2-online] - containes Online-ABFT Cholesky Decompostion
 * [magma-1.6.2-offline] - containes Offline-ABFT Cholesky Decompostion
