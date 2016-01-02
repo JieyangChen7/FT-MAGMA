@@ -37,7 +37,6 @@ int main( int argc, char** argv)
     magma_int_t     status = 0;
 
     int Nsize[] = {5120, 7680, 10240, 12800, 15360, 17920, 20480, 23040, 25600, 28160, 30720, 33280, 16};
-    printf("uplo = %s\n", lapack_uplo_const(opts.uplo) );
     printf("========================================================\n");
     for( int itest = 0; itest < 11; ++itest ) {
             N   = Nsize[itest];
