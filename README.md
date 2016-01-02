@@ -6,12 +6,9 @@ This is the instruction for configuring, installing and benchmarking our Enhance
 
 #### File structures:
 Each of the following folder contains the complete source code of MAGMA(v1.6.2) with our modified ABFT Cholesky Decompostion routine. Different settings are decribed as follow:
-* [magma-1.6.2-enhanced-kepler] - containes Enhanced Online-ABFT Cholesky Decompostion for Nvidia GPUs with Kepler microarchitecture
-* [magma-1.6.2-enhanced-fermi] - containes Enhanced Online-ABFT Cholesky Decompostion for Nvidia GPUs with Fermi microarchitecture
-* [magma-1.6.2-online-kepler] - containes Online-ABFT Cholesky Decompostion for Nvidia GPUs with Kepler microarchitecture
-* [magma-1.6.2-online-fermi] - containes Online-ABFT Cholesky Decompostion for Nvidia GPUs with Fermi microarchitecture
-* [magma-1.6.2-offline-kepler] - containes Offline-ABFT Cholesky Decompostion for Nvidia GPUs with Kepler microarchitecture
-* [magma-1.6.2-offline-fermi] - containes Offline-ABFT Cholesky Decompostion for Nvidia GPUs with Fermi microarchitecture
+* [magma-1.6.2-enhanced] - containes Enhanced Online-ABFT Cholesky Decompostion
+* [magma-1.6.2-online] - containes Online-ABFT Cholesky Decompostion
+* [magma-1.6.2-offline] - containes Offline-ABFT Cholesky Decompostion
 * [magma-1.6.2-cula] - containes the benchmark code for original Nvidia CULA's Cholesky Decomposition, no ABFT added. This code has nothing to do with MAGMA, we are just using the MAGMA's testing framework to test CULA. 
 
 #### Configure and Install
