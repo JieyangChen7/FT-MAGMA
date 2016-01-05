@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Enhanced-online-abft-cholesky-decomposition by cjy7117</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Enhanced-online-abft-cholesky-decomposition</h1>
+        <p>Enhanced Online-ABFT Cholesky Decompostion </p>
+
+        <p class="view"><a href="https://github.com/cjy7117/Enhanced-Online-ABFT-Cholesky-Decomposition">View the Project on GitHub <small>cjy7117/Enhanced-Online-ABFT-Cholesky-Decomposition</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/cjy7117/Enhanced-Online-ABFT-Cholesky-Decomposition/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/cjy7117/Enhanced-Online-ABFT-Cholesky-Decomposition/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/cjy7117/Enhanced-Online-ABFT-Cholesky-Decomposition">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>
+<a id="enhanced-online-abft-cholesky-decompostion-benchmark" class="anchor" href="#enhanced-online-abft-cholesky-decompostion-benchmark" aria-hidden="true"><span class="octicon octicon-link"></span></a>Enhanced Online-ABFT Cholesky Decompostion Benchmark</h2>
+
+<p>Author: Jieyang Chen, Xin Liang, Zizhong Chen<br>
+Affiliate: Department of Computer Science &amp; Engineering @ University of California, Riverside</p>
+
+<p>This is the instruction for configuring, installing and benchmarking our Enhanced Online-ABFT Cholesky Decompostion routine. Our program is designed to run on heterogeneous systems with GPUs.</p>
+
+<h4>
+<a id="file-structures" class="anchor" href="#file-structures" aria-hidden="true"><span class="octicon octicon-link"></span></a>File structures:</h4>
+
+<p>Each of the following folder contains the complete source code of MAGMA(v1.6.2) with our modified ABFT Cholesky Decompostion routine. Different settings are decribed as follow:</p>
+
+<ul>
+<li>[magma-1.6.2] - contains Cholesky Decomposition without ABFT</li>
+<li>[magma-1.6.2-enhanced] - containes Enhanced Online-ABFT Cholesky Decompostion</li>
+<li>[magma-1.6.2-online] - containes Online-ABFT Cholesky Decompostion</li>
+<li>[magma-1.6.2-offline] - containes Offline-ABFT Cholesky Decompostion</li>
+<li>[magma-1.6.2-cula] - containes the benchmark code for original Nvidia CULA's Cholesky Decomposition, no ABFT added. This code has nothing to do with MAGMA, we are just using the MAGMA's testing framework to test CULA. </li>
+</ul>
+
+<h4>
+<a id="configure-and-install" class="anchor" href="#configure-and-install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure and Install</h4>
+
+<p>Each version of our modified MAGMA has the similar way of configuration and installation as the origianl MAGMA except our program uses PAPI for more accurate timing. </p>
+
+<ol>
+<li>Install CUDA (version 6.5 and above), please refer to: <a href="https://developer.nvidia.com/cuda-downloads">CUDA</a>
+</li>
+<li>Install CPU-side optimizaed BLAS library (ACML, MKL, ATLAS, etc.)</li>
+<li>Install the current lastest CULA R18, please refer to: <a href="http://www.culatools.com/">CULA</a>
+</li>
+<li>Install the lastest PAPI library, please refer to: <a href="http://icl.cs.utk.edu/papi/">PAPI</a>
+</li>
+<li>clone our code from GitHub</li>
+<li>Configre make.inc file inside each folder to link with CUDA and CPU-side optimizaed BLAS library. For details, please refer to <a href="http://icl.cs.utk.edu/magma/">MAGMA</a>
+</li>
+<li>After confiure make.inc file, append "-lpapi" to the LIB variable and append "-I$(MAGMA_DIR)/FT" to the INC variable</li>
+<li>To test CULA, please also append "-lcula_lapack" to the LIB variable and append "-I$(CULA_INC_PATH)" to the INC variable</li>
+<li>Save the make.inc file and type command "make".</li>
+<li>Please make sure there is no error before proceeding to the next step</li>
+</ol>
+
+<h4>
+<a id="benckmark" class="anchor" href="#benckmark" aria-hidden="true"><span class="octicon octicon-link"></span></a>Benckmark</h4>
+
+<ol>
+<li>Please make sure both software and hardware are set properly</li>
+<li>Please also make sure there no other applications running</li>
+<li>cd into a MAGMA folder and run command: ./testing/testing_dpotrf_gpu.</li>
+<li>The program will run benchmarking by decomposes position definite matrices with size from 5120*5120 to maximum GPU memeory allowable size. Execution time will show for each different matrix size.</li>
+</ol>
+
+<h4>
+<a id="questions" class="anchor" href="#questions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Questions</h4>
+
+<p>For any question or suggestion regards to our program, please feel free to send emails to: <a href="mailto:jchen098@ucr.edu">jchen098@ucr.edu</a>. </p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/cjy7117">cjy7117</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
