@@ -9,7 +9,8 @@
        @generated from zgetrf_gpu.cpp normal z -> d, Fri Jan 30 19:00:14 2015
 */
 #include "common_magma.h"
-
+#include <iostream>
+using namespace std;
 
 /**
     Purpose
@@ -191,7 +192,7 @@ magma_dgetrf_gpu(
             for (int i = 0; i < nb; ++i) {
                 *(v + i * v_ld + 1) = i+1;
             }
-            std::cout << "checksum vectors initialization done on CPU." << std::endl;
+            cout << "checksum vectors initialization done on CPU." << endl;
 
 
             /* initialize checksum vectors on GPU */
