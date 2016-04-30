@@ -191,11 +191,13 @@ magma_dgetrf_gpu(
         int checksum_ld;
 
         if (FT) {
+
             /* initialize checksum vectors on CPU */
             /* v =
              * 1 1 1 1
              * 1 2 3 4 
              */
+            cout << "checksum vectors initialization on CPU......"; 
             magma_dmalloc_pinned(&v, nb * 2 * sizeof(double));
             v_ld = 2;
             for (int i = 0; i < nb; ++i) {
@@ -204,41 +206,45 @@ magma_dgetrf_gpu(
             for (int i = 0; i < nb; ++i) {
                 *(v + i * v_ld + 1) = i+1;
             }
-            cout << "checksum vectors initialization on CPU done." << endl;
+            cout << "done." << endl;
 
 
             /* initialize checksum vectors on GPU */
+            cout << "checksum vectors initialization on GPU......";
             size_t vd_pitch = magma_roundup(2 * sizeof(double), 32);
             vd_ld = vd_pitch / sizeof(double);  
             magma_dmalloc(&vd, vd_pitch * nb * sizeof(double));
             magma_dsetmatrix(2, nb, v, v_ld, vd, vd_ld);
 
-            cout << "checksum vectors initialization on GPU done." << endl;
+            cout << "done." << endl;
 
 
             /* allocate space for update checksum on CPU */
+            cout << "allocate space for checksum on CPU......";
             magma_dmalloc_pinned(&chk, nb * (n / nb) * 2 * sizeof(double));
             chk_ld = 2;
-            cout << "allocate space for checksum on CPU done." << endl;
+            cout << "done." << endl;
 
             /* allocate space for reclaculated checksum on GPU */
             size_t chk1d_pitch = magma_roundup((n / nb) * sizeof(double), 32);
             chk1d_ld = chk1d_pitch / sizeof(double);
             magma_dmalloc(&chk1d, chk1d_pitch * m);
             
+            cout << "allocate space for recalculated checksum on GPU......";
             size_t chk2d_pitch = magma_roundup((n / nb) * sizeof(double), 32);
             chk2d_ld = chk2d_pitch / sizeof(double);
             magma_dmalloc(&chk2d, chk2d_pitch * m);
-            cout << "allocate space for recalculated checksum on GPU done." << endl;
+            cout << "done." << endl;
 
             /* initialize checksums */
+            cout << "checksums initiallization......";
             size_t checksum_pitch = magma_roundup((n / nb) * 2 * sizeof(double), 32);
             checksum_ld = checksum_pitch / sizeof(double);
             magma_dmalloc(&checksum, checksum_pitch * m);
             cudaMemset2D(checksum, checksum_pitch, 0, (n / nb) * 2 * sizeof(double), m);
             
             initializeChecksum(dAT, lddat, n, m, nb, vd, vd_ld, v, v_ld, checksum, checksum_ld, stream);
-            cout << "checksums initiallization done." << endl;
+            cout << "done." << endl;
         } 
 
 
