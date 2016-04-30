@@ -185,20 +185,20 @@ magma_dgetrf_gpu(
              */
             magma_dmalloc_pinned(&v, nb * 2 * sizeof(double));
             v_ld = 2;
-            for (int i = 0; i < B; ++i) {
+            for (int i = 0; i < nb; ++i) {
                 *(v + i * v_ld) = 1;
             }
-            for (int i = 0; i < B; ++i) {
+            for (int i = 0; i < nb; ++i) {
                 *(v + i * v_ld + 1) = i+1;
             }
-            cout << "checksum vectors initialization done on CPU." << endl;
+            std::cout << "checksum vectors initialization done on CPU." << std::endl;
 
 
             /* initialize checksum vectors on GPU */
             size_t vd_pitch = magma_roundup(2 * sizeof(double), 32);
             vd_ld = vd_pitch / sizeof(double);  
-            magma_dmalloc(&vd, vd_pitch * B * sizeof(double));
-            magma_dsetmatrix(2, B, v, v_ld, vd, vd_ld);
+            magma_dmalloc(&vd, vd_pitch * nb * sizeof(double));
+            magma_dsetmatrix(2, nb, v, v_ld, vd, vd_ld);
         }
 
 
