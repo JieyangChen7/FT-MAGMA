@@ -3,8 +3,10 @@
 #include<iostream>
 using namespace std;
 //initialize checksum
+//M: number of rows
+//N: numner of cols
 void initializeChecksum(double * matrix, int ld,
-		int N, int B,
+		int M, int N, int B,
 		double * vd, int vd_ld,
 		double * v, int v_ld,
 		double * chksum, int chksum_ld, magma_queue_t * streams) {
