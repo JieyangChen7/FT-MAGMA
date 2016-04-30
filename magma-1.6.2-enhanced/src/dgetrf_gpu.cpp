@@ -167,6 +167,41 @@ magma_dgetrf_gpu(
             stream[1] = orig_stream;
         }
   
+        /* flags */
+        bool FT = true;
+        bool DEBUG = false;
+
+        double * v;
+        int v_ld;
+
+        double * vd;
+        int vd_ld;
+
+        if (FT) {
+            /* initialize checksum vectors on CPU */
+            /* v =
+             * 1 1 1 1
+             * 1 2 3 4 
+             */
+            magma_dmalloc_pinned(&v, nb * 2 * sizeof(double));
+            v_ld = 2;
+            for (int i = 0; i < B; ++i) {
+                *(v + i * v_ld) = 1;
+            }
+            for (int i = 0; i < B; ++i) {
+                *(v + i * v_ld + 1) = i+1;
+            }
+            cout << "checksum vectors initialization done on CPU." << endl;
+
+
+            /* initialize checksum vectors on GPU */
+            size_t vd_pitch = magma_roundup(2 * sizeof(double), 32);
+            vd_ld = vd_pitch / sizeof(double);  
+            magma_dmalloc(&vd, vd_pitch * B * sizeof(double));
+            magma_dsetmatrix(2, B, v, v_ld, vd, vd_ld);
+        }
+
+
         for( j=0; j < s; j++ ) {
             // download j-th panel
             cols = maxm - j*nb;
