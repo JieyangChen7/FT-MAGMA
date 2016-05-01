@@ -104,6 +104,10 @@ magma_dgetrf_gpu(
     /* Function Body */
     mindim = min(m, n);
     nb     = magma_get_dgetrf_nb(m);
+
+    /* debug use only */
+    nb = 4;
+
     s      = mindim / nb;
 
     if (nb <= 1 || nb >= min(m,n)) {
@@ -171,7 +175,7 @@ magma_dgetrf_gpu(
   
         /* flags */
         bool FT = true;
-        bool DEBUG = false;
+        bool DEBUG = true;
 
         double * v;
         int v_ld;
@@ -206,6 +210,10 @@ magma_dgetrf_gpu(
             for (int i = 0; i < nb; ++i) {
                 *(v + i * v_ld + 1) = i+1;
             }
+            if(DEBUG) {
+                cout << "checksum vector on CPU:" << endl;
+                printMatrix_host(v, v_ld, 2, nb);
+            }
             cout << "done." << endl;
 
 
@@ -215,7 +223,10 @@ magma_dgetrf_gpu(
             vd_ld = vd_pitch / sizeof(double);  
             magma_dmalloc(&vd, vd_pitch * nb * sizeof(double));
             magma_dsetmatrix(2, nb, v, v_ld, vd, vd_ld);
-
+            if(DEBUG) {
+                cout << "checksum vector on GPU:" << endl;
+                printMatrix_gpu(vd, vd_ld, 2, nb);
+            }
             cout << "done." << endl;
 
 
@@ -244,6 +255,10 @@ magma_dgetrf_gpu(
             cudaMemset2D(checksum, checksum_pitch, 0, (n / nb) * 2 * sizeof(double), m);
             
             initializeChecksum(dAT, lddat, n, m, nb, vd, vd_ld, v, v_ld, checksum, checksum_ld, stream);
+            if(DEBUG) {
+                cout << "checksum matrix on GPU:" << endl;
+                printMatrix_gpu(checksum, checksum_ld, (n / nb) * 2, m);
+            }
             cout << "done." << endl;
         } 
 
