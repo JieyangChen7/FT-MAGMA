@@ -1,4 +1,4 @@
-/*
+                                                                                                                                                             /*
     -- MAGMA (version 1.6.1) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
@@ -194,6 +194,12 @@ magma_dgetrf_gpu(
         double * checksum;
         int checksum_ld;
 
+        double * dAP_chk;
+        int dAP_chk_ld;
+
+        double * work_chk;
+        int work_chk_ld;
+
         if (FT) {
 
             /* initialize checksum vectors on CPU */
@@ -231,9 +237,9 @@ magma_dgetrf_gpu(
 
 
             /* allocate space for update checksum on CPU */
-            cout << "allocate space for checksum on CPU......";
-            magma_dmalloc_pinned(&chk, nb * (n / nb) * 2 * sizeof(double));
-            chk_ld = 2;
+            cout << "allocate space for checksum of work on CPU......";
+            magma_dmalloc_pinned(&work_chk, maxm * 2 * sizeof(double));
+            work_chk_ld = maxm;
             cout << "done." << endl;
 
             /* allocate space for reclaculated checksum on GPU */
@@ -262,6 +268,15 @@ magma_dgetrf_gpu(
                 printMatrix_gpu(checksum, checksum_ld, (n / nb) * 2, m);
             }
             cout << "done." << endl;
+
+            /* allocate space for checksum of dAP */
+            cout << "allocate space for checksum of dAP......";
+            size_t dAP_chk_pitch = maxm * sizeof(double);
+            dAP_chk_ld = maxm;
+            magma_dmalloc(&dAP_chk, dAP_chk_pitch * 2);
+            cout << "done." << endl;
+
+
         } 
 
 
