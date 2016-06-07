@@ -176,7 +176,7 @@ magma_dgetrf_gpu(
         /* flags */
         bool FT = true;
         bool DEBUG = true;
-
+        bool VERIFY = false;
         double * v;
         int v_ld;
 
@@ -285,9 +285,16 @@ magma_dgetrf_gpu(
             cols = maxm - j*nb;
             magmablas_dtranspose( nb, m-j*nb, dAT(j,j), lddat, dAP, cols );
 
+            // also transpose checksums
+            magmablas_dtranspose( 2, m-j*nb, checksum+j*checksum_ld+(j/nb)*2, checksum_ld, dAP_chk, dAP_chk_ld ); 
+
             // make sure that the transpose has completed
             magma_queue_sync( stream[1] );
             magma_dgetmatrix_async( m-j*nb, nb, dAP, cols, work, ldwork,
+                                    stream[0]);
+
+            // also copy checksums to CPU
+            magma_dgetmatrix_async( m-j*nb, 2, dAP_chk, dAP_chk_ld, work_chk, work_chk_ld,
                                     stream[0]);
 
             if ( j > 0 ) {
@@ -305,13 +312,22 @@ magma_dgetrf_gpu(
             // do the cpu part
             rows = m - j*nb;
             magma_queue_sync( stream[0] );
-            lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
+            //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
+
+            dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo,
+                     work_chk, work_chk_ld, v, v_ld, FT, DEBUG, VERIFY);
+
             if ( *info == 0 && iinfo > 0 )
                 *info = iinfo + j*nb;
 
             // upload j-th panel
             magma_dsetmatrix_async( m-j*nb, nb, work, ldwork, dAP, maxm,
                                     stream[0]);
+
+            // transfer checksums back to GPU.
+            magma_dsetmatrix_async( m-j*nb, 2, work_chk, work_chk_ld, dAP_chk, dAP_chk_ld,
+                                    stream[0]);
+
 
             for( i=j*nb; i < j*nb + nb; ++i ) {
                 ipiv[i] += j*nb;
@@ -320,6 +336,9 @@ magma_dgetrf_gpu(
 
             magma_queue_sync( stream[0] );
             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
+
+            //transpose checksums back
+            magmablas_dtranspose( m-j*nb, 2, dAP_chk, dAP_chk_ld, checksum+j*checksum_ld+(j/nb)*2, checksum_ld);
 
             // do the small non-parallel computations (next panel update)
             if ( s > (j+1) ) {
