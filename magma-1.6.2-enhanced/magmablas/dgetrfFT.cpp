@@ -15,7 +15,7 @@ void row_swap(double * chksum, int chksum_ld, int n, int i, int j) {
 	}
 }
 
-void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * infom
+void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
               double * chksum, int chksum_ld,
               double * v, int v_ld,
               bool FT , bool DEBUG, bool VERIFY) {
