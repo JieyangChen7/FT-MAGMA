@@ -8,7 +8,8 @@ using namespace std;
  * n: number of col of B
  */
 
-void dtrsmFT(int m, int n, double * A, int lda,
+void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
+		int m, int n, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 

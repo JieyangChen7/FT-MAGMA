@@ -159,7 +159,7 @@ magma_dgetrf_gpu(
         }
 
         /* Define user stream if current stream is NULL */
-        magma_queue_t stream[2];
+        magma_queue_t stream[5];
         
         magma_queue_t orig_stream;
         magmablasGetKernelStream( &orig_stream );
@@ -334,6 +334,9 @@ magma_dgetrf_gpu(
             }
             magmablas_dlaswp( n, dAT, lddat, j*nb + 1, j*nb + nb, ipiv, 1 );
 
+            // also do row swap on checksums
+            magmablas_dlaswp( (n/nb)*2, checksum, checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
+
             magma_queue_sync( stream[0] );
             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
 
@@ -346,6 +349,7 @@ magma_dgetrf_gpu(
                              nb, nb,
                              c_one, dAT(j, j  ), lddat,
                                     dAT(j, j+1), lddat);
+                
                 magma_dgemm( MagmaNoTrans, MagmaNoTrans,
                              nb, m-(j+1)*nb, nb,
                              c_neg_one, dAT(j,   j+1), lddat,
