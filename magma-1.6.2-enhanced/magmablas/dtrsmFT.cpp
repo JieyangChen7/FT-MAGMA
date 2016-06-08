@@ -9,7 +9,7 @@ using namespace std;
  */
 
 void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-		int m, int n, double * A, int lda,
+		int m, int n, double alpha, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
@@ -50,18 +50,22 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		}		
 	}
 	magmablasSetKernelStream(streams[1]);	
-	magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+	//[Cholesky]MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit, MAGMA_D_ONE
+	magma_dtrsm(side, uplo, trans, diag,
 				m, n,
-				MAGMA_D_ONE, A, lda,
-					   B, ldb);
+				alpha, A, lda,
+			    B, ldb);
+	
+
+
 	if (FT) {
 		//update checksums
 		//magmablasSetKernelStream(streams[1]);	
 		
 		magmablasSetKernelStream(streams[4]);	
-		magma_dtrsm(MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
-			                                (m / n) * 2, n,
-			                                MAGMA_D_ONE, A, lda,
-			                                checksumB, checksumB_ld);
+		magma_dtrsm(side, uplo, trans, diag,
+                    (m / n) * 2, n,
+                    alpha, A, lda,
+                    checksumB, checksumB_ld);
 	}
 }

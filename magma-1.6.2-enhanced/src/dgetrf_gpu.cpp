@@ -298,15 +298,40 @@ magma_dgetrf_gpu(
                                     stream[0]);
 
             if ( j > 0 ) {
-                magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
+                // magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
+                //              n - (j+1)*nb, nb,
+                //              c_one, dAT(j-1,j-1), lddat,
+                //                     dAT(j-1,j+1), lddat );
+
+                dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n - (j+1)*nb, nb,
                              c_one, dAT(j-1,j-1), lddat,
-                                    dAT(j-1,j+1), lddat );
-                magma_dgemm( MagmaNoTrans, MagmaNoTrans,
+                                    dAT(j-1,j+1), lddat,
+                             checksum+(j-1)*checksum_ld+(j+1)*2, checksum_ld,
+                             vd, vd_ld,
+                             chk1d, chk1d_ld, 
+                             chk2d, chk2d_ld, 
+                             FT, DEBUG, VERIFY, streams);
+
+
+                // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
+                //              n-(j+1)*nb, m-j*nb, nb,
+                //              c_neg_one, dAT(j-1,j+1), lddat,
+                //                         dAT(j,  j-1), lddat,
+                //              c_one,     dAT(j,  j+1), lddat );
+
+                 magma_dgemm( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-j*nb, nb,
                              c_neg_one, dAT(j-1,j+1), lddat,
                                         dAT(j,  j-1), lddat,
-                             c_one,     dAT(j,  j+1), lddat );
+                             c_one,     dAT(j,  j+1), lddat,
+                             checksum+(j-1)*checksum_ld+(j+1)*2, checksum_ld,
+                             checksum+j*checksum_ld+(j-1)*2, checksum_ld,
+                             checksum+j*checksum_ld+(j+1)*2, checksum_ld,
+                             vd, d_ld,
+                             chk1d, chk1d_ld, 
+                             chk2d, chk2d_ld, 
+                             FT, DEBUG, VERIFY, streams );
             }
 
             // do the cpu part
@@ -345,27 +370,76 @@ magma_dgetrf_gpu(
 
             // do the small non-parallel computations (next panel update)
             if ( s > (j+1) ) {
-                magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
-                             nb, nb,
-                             c_one, dAT(j, j  ), lddat,
-                                    dAT(j, j+1), lddat);
+                // magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
+                //              nb, nb,
+                //              c_one, dAT(j, j  ), lddat,
+                //                     dAT(j, j+1), lddat);
+
+                dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
+                         nb, nb, 
+                         c_one, dAT(j, j  ), lddat,
+                         dAT(j, j+1), lddat,
+                         checksum+j*checksum_ld+(j+1)*2, checksum_ld,
+                            vd, vd_ld,
+                            chk1d, chk1d_ld, 
+                            chk2d, chk2d_ld, 
+                            FT, DEBUG, VERIFY, streams);
                 
-                magma_dgemm( MagmaNoTrans, MagmaNoTrans,
-                             nb, m-(j+1)*nb, nb,
-                             c_neg_one, dAT(j,   j+1), lddat,
-                                        dAT(j+1, j  ), lddat,
-                             c_one,     dAT(j+1, j+1), lddat );
+                // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
+                //              nb, m-(j+1)*nb, nb,
+                //              c_neg_one, dAT(j,   j+1), lddat,
+                //                         dAT(j+1, j  ), lddat,
+                //              c_one,     dAT(j+1, j+1), lddat );
+                dgemmFT( MagmaNoTrans, MagmaNoTrans,
+                            nb, m-(j+1)*nb, nb,
+                            c_neg_one,
+                            dAT(j,   j+1), lddat,
+                            dAT(j+1, j  ), lddat,
+                            c_one,     dAT(j+1, j+1), lddat,
+                            checksum+j*checksum_ld+(j+1)*2, checksum_ld,
+                            checksum+(j+1)*checksum_ld+j*2, checksum_ld,
+                            checksum+(j+1)*checksum_ld+(j+1)*2, checksum_ld,
+                            vd, d_ld,
+                            chk1d, chk1d_ld, 
+                            chk2d, chk2d_ld, 
+                            FT, DEBUG, VERIFY, streams);
+
             }
             else {
-                magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
+                // magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
+                //              n-s*nb, nb,
+                //              c_one, dAT(j, j  ), lddat,
+                //                     dAT(j, j+1), lddat);
+
+                dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n-s*nb, nb,
                              c_one, dAT(j, j  ), lddat,
-                                    dAT(j, j+1), lddat);
-                magma_dgemm( MagmaNoTrans, MagmaNoTrans,
+                                    dAT(j, j+1), lddat,
+                             checksum+j*checksum_ld+(j+1)*2, checksum_ld,
+                             vd, vd_ld,
+                             chk1d, chk1d_ld, 
+                             chk2d, chk2d_ld, 
+                             FT, DEBUG, VERIFY, streams);
+
+
+                // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
+                //              n-(j+1)*nb, m-(j+1)*nb, nb,
+                //              c_neg_one, dAT(j,   j+1), lddat,
+                //                         dAT(j+1, j  ), lddat,
+                //              c_one,     dAT(j+1, j+1), lddat );
+
+                dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-(j+1)*nb, nb,
                              c_neg_one, dAT(j,   j+1), lddat,
                                         dAT(j+1, j  ), lddat,
-                             c_one,     dAT(j+1, j+1), lddat );
+                             c_one,     dAT(j+1, j+1), lddat,
+                             checksum+j*checksum_ld+(j+1)*2, checksum_ld,
+                             checksum+(j+1)*checksum_ld+j*2, checksum_ld,
+                             checksum+(j+1)*checksum_ld+(j+1)*2, checksum_ld,
+                             vd, d_ld,
+                             chk1d, chk1d_ld, 
+                             chk2d, chk2d_ld, 
+                             FT, DEBUG, VERIFY, streams);
             }
         }
 

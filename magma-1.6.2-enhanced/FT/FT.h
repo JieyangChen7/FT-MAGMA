@@ -19,7 +19,8 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 				double * v, int v_ld, 
 				bool FT , bool DEBUG, bool VERIFY);
 
-void dtrsmFT(int m, int n, double * A, int lda,
+void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
+		int m, int n, double alpha, double * A, int lda,
 		double * B, int ldb, double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
@@ -36,17 +37,20 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 		magma_queue_t * streams,
 		bool FT, bool DEBUG, bool VERIFY);
 
-void dgemmFT(int m, int n, int k, double * A, int lda,
-		double * B, int ldb, double * C, int ldc, 
+void dgemmFT(magma_trans_t transA, magma_trans_t transB,
+		int m, int n, int k, 
+		double alpha, 
+		double * A, int lda,
+		double * B, int ldb, 
+		double beta, 
+		double * C, int ldc, 
 		double * checksumA, int checksumA_ld,
 		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
-		double * v, int v_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
-		magma_queue_t * streams,
-		bool FT, bool DEBUG, bool VERIFY);
+		bool FT, bool DEBUG, bool VERIFY, magma_queue_t * streams);
 
 void ErrorDetectAndCorrect(double * A, int lda, int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,

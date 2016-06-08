@@ -8,17 +8,21 @@ using namespace std;
  * n: number of row of B (B)
  * k: number of col of A / col of B (i)
  */
-void dgemmFT(int m, int n, int k, double * A, int lda,
-		double * B, int ldb, double * C, int ldc, 
+void dgemmFT( magma_trans_t transA, magma_trans_t transB,
+	    int m, int n, int k, 
+	    double alpha, 
+	    double * A, int lda,
+		double * B, int ldb, 
+		double beta, 
+		double * C, int ldc, 
 		double * checksumA, int checksumA_ld,
 		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
-		double * v, int v_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
-		magma_queue_t * streams,
-		bool FT, bool DEBUG, bool VERIFY) {
+		bool FT, bool DEBUG, bool VERIFY, 
+		magma_queue_t * streams) {
 
 	cudaStreamSynchronize(streams[1]);
 	cudaStreamSynchronize(streams[4]);
@@ -89,23 +93,22 @@ void dgemmFT(int m, int n, int k, double * A, int lda,
 	}
 	
 	magmablasSetKernelStream(streams[1]);
-	magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
+	//[Cholesky] MagmaNoTrans, MagmaTrans, MAGMA_D_ONE * (-1)， MAGMA_D_ONE
+	magma_dgemm(transA, transB,
 				m, n, k,
-				MAGMA_D_ONE * (-1),
+				alpha,
 				A, lda, B, ldb,
-				MAGMA_D_ONE,
+				beta,
 				C, ldc );
 	
 	if(FT){	
 		//magmablasSetKernelStream(streams[1]);
 		magmablasSetKernelStream(streams[4]);
-		magma_dgemm(
-					MagmaNoTrans, MagmaTrans,
+		magma_dgemm(transA, transB,
 					(m / n) * 2, n, k,
-					MAGMA_D_ONE * (-1),
+					alpha,
 					checksumA, checksumA_ld, B, ldb,
-					MAGMA_D_ONE,
+					beta,
 					checksumC, checksumC_ld );
 	}
 }
