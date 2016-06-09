@@ -20,22 +20,31 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 				bool FT , bool DEBUG, bool VERIFY);
 
 void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-		int m, int n, double alpha, double * A, int lda,
-		double * B, int ldb, double * checksumB, int checksumB_ld,
+		int m, int n, 
+		double alpha,
+		double * A, int lda,
+		double * B, int ldb, 
+		double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
-		bool FT, bool DEBUG, bool VERIFY, magma_queue_t * streams);
+		bool FT, bool DEBUG, bool VERIFY, 
+		magma_queue_t * streams);
 
-void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
+void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
+		int n, int m, 
+		double alpha,
+		double * A, int lda,
+		double beta,
+		double * C, int ldc,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
 		double * v, int v_ld,
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
-		magma_queue_t * streams,
-		bool FT, bool DEBUG, bool VERIFY);
+		bool FT, bool DEBUG, bool VERIFY, 
+		magma_queue_t * streams);
 
 void dgemmFT(magma_trans_t transA, magma_trans_t transB,
 		int m, int n, int k, 
@@ -50,14 +59,18 @@ void dgemmFT(magma_trans_t transA, magma_trans_t transB,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
-		bool FT, bool DEBUG, bool VERIFY, magma_queue_t * streams);
+		bool FT, bool DEBUG, bool VERIFY, 
+		magma_queue_t * streams);
 
-void ErrorDetectAndCorrect(double * A, int lda, int B, int m, int n,
+void ErrorDetectAndCorrect(double * A, int lda, 
+		int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
 		double * checksum1_recal, int checksum1_recal_ld,
-		double * checksum2_recal, int checksum2_recal_ld, cudaStream_t stream);
+		double * checksum2_recal, int checksum2_recal_ld, 
+		cudaStream_t stream);
 
-void ErrorDetectAndCorrectHost(double * A, int lda, int B, int m, int n,
+void ErrorDetectAndCorrectHost(double * A, int lda, 
+		int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
 		double * checksum1_recal, int checksum1_recal_ld,
 		double * checksum2_recal, int checksum2_recal_ld);

@@ -1,4 +1,4 @@
-/*
+ /*
     -- MAGMA (version 1.6.1) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
@@ -300,15 +300,20 @@ magma_dpotrf_gpu(
             	jb = nb;
                 if (j > 0) {
 
-					dsyrkFT(jb, j, dA(j, 0), ldda, dA(j, j), ldda,
+					dsyrkFT(MagmaLower, MagmaNoTrans,
+                            jb, j,
+                            MAGMA_D_ONE * (-1),
+                            dA(j, 0), ldda, 
+                            MAGMA_D_ONE,
+                            dA(j, j), ldda,
 							checksum + (j / jb) * 2, checksum_ld, 
 							checksum + (j / jb) * 2 + j * checksum_ld, checksum_ld,
 							vd, vd_ld, 
 							v, v_ld,
 							chk1d, chk1d_ld, 
 							chk2d, chk2d_ld, 
-							stream,
-							FT, DEBUG, VERIFY);
+							FT, DEBUG, VERIFY,
+                            stream);
 					
                 }
                 
@@ -325,8 +330,13 @@ magma_dpotrf_gpu(
                            
                 if ( (j+jb) < n && j > 0) {	
      
-                	dgemmFT((n-j-jb), jb, j, dA(j+jb, 0), ldda,
-                			dA(j,    0), ldda, dA(j+jb, j), ldda, 
+                	dgemmFT( MagmaNoTrans, MagmaTrans,
+                            (n-j-jb), jb, j, 
+                            MAGMA_D_ONE * (-1),
+                            dA(j+jb, 0), ldda,
+                			dA(j,    0), ldda, 
+                            MAGMA_D_ONE,
+                            dA(j+jb, j), ldda, 
                 			checksum + ((j + jb) / jb) * 2, checksum_ld, 
                 			checksum + (j / jb) * 2, checksum_ld, 
                 			checksum + j * checksum_ld + ((j + jb) / jb) * 2, checksum_ld,
@@ -334,8 +344,8 @@ magma_dpotrf_gpu(
                 			v, v_ld,
                 			chk1d, chk1d_ld,
                 			chk2d, chk2d_ld,
-                			stream,
-                			FT, DEBUG, VERIFY);
+                			FT, DEBUG, VERIFY,
+                            stream);
                 	
                 }
                 
@@ -364,13 +374,16 @@ magma_dpotrf_gpu(
 //                }
 //                
                 if ( (j+jb) < n) {          	
-                	dtrsmFT((n-j-jb), jb, dA(j,    j), ldda,
+                	dtrsmFT( MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
+                            (n-j-jb), jb, MAGMA_D_ONE,
+                            dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
                 			vd, vd_ld, 
                 			chk1d, chk1d_ld,
                 			chk2d, chk2d_ld,
-                			FT, DEBUG, VERIFY, stream);
+                			FT, DEBUG, VERIFY, 
+                            stream);
                 }
                 
             }

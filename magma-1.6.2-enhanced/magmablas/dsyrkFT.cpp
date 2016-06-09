@@ -7,15 +7,20 @@ using namespace std;
  * n: number of row of A
  * m: number of col of A
  */
-void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
+void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
+		int n, int m, 
+		double alpha,
+		double * A, int lda,
+		double beta,
+		double * C, int ldc,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
 		double * v, int v_ld,
 		double * chk1, int chk1_ld,
 		double * chk2, int chk2_ld,
-		magma_queue_t * streams,
-		bool FT, bool DEBUG, bool VERIFY){
+		bool FT, bool DEBUG, bool VERIFY, 
+		magma_queue_t * streams){
 	
 	/*		   m				n
 	 * ******************   *********
@@ -71,9 +76,9 @@ void dsyrkFT(int n, int m, double * A, int lda, double * C, int ldc,
 				MAGMA_D_ONE,
 				C, ldc );
 //	} else {
-//		magma_dsyrk(MagmaLower, MagmaNoTrans, n, m,
-//						MAGMA_D_ONE * (-1), A, lda,
-//						MAGMA_D_ONE,     C, ldc);
+//		magma_dsyrk(uplo, trans, n, m,
+//					alpha, A, lda,
+//					beta,     C, ldc);
 //	}
 	
 	if(FT){
