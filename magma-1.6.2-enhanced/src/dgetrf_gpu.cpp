@@ -419,7 +419,7 @@ magma_dgetrf_gpu(
                              vd, vd_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
-                             FT, DEBUG, VERIFY, streams);
+                             FT, DEBUG, VERIFY, stream);
 
 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -436,10 +436,10 @@ magma_dgetrf_gpu(
                              checksum+j*checksum_ld+(j+1)*2, checksum_ld,
                              checksum+(j+1)*checksum_ld+j*2, checksum_ld,
                              checksum+(j+1)*checksum_ld+(j+1)*2, checksum_ld,
-                             vd, d_ld,
+                             vd, vd_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
-                             FT, DEBUG, VERIFY, streams);
+                             FT, DEBUG, VERIFY, stream);
             }
         }
 
