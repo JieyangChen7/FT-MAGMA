@@ -1,5 +1,5 @@
-#include"FT.h"
-#include<iostream>
+#include "FT.h"
+#include <iostream>
 
 using namespace std;
 
