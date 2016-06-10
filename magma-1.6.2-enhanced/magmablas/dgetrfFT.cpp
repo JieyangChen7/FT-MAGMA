@@ -32,12 +32,13 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         	if (Ajj != 0) {
         		double r = *(chksum + j) * (-1);
         		int inc = 1;
-        		blasf77_daxpy(m - j - 1, &r, 
+                int t = m - j - 1;
+        		blasf77_daxpy(&t, &r, 
         			A + j * lda + j + 1, &inc,
         			chksum + j + 1, &inc);
 
 				r = *(chksum + chksum_ld + j) * (-1);
-        		blasf77_daxpy(m - j - 1, &r, 
+        		blasf77_daxpy(&t, &r, 
         			A + j * lda + j + 1, &inc,
         			chksum + chksum_ld + j + 1, &inc);
         	}
