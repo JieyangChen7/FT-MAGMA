@@ -19,6 +19,11 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 				double * v, int v_ld, 
 				bool FT , bool DEBUG, bool VERIFY);
 
+void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
+              double * chksum, int chksum_ld,
+              double * v, int v_ld,
+              bool FT , bool DEBUG, bool VERIFY);
+
 void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
 		int m, int n, 
 		double alpha,

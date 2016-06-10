@@ -311,7 +311,7 @@ magma_dgetrf_gpu(
                              vd, vd_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
-                             FT, DEBUG, VERIFY, streams);
+                             FT, DEBUG, VERIFY, stream);
 
 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -320,7 +320,7 @@ magma_dgetrf_gpu(
                 //                         dAT(j,  j-1), lddat,
                 //              c_one,     dAT(j,  j+1), lddat );
 
-                 magma_dgemm( MagmaNoTrans, MagmaNoTrans,
+                 dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-j*nb, nb,
                              c_neg_one, dAT(j-1,j+1), lddat,
                                         dAT(j,  j-1), lddat,
@@ -328,10 +328,10 @@ magma_dgetrf_gpu(
                              checksum+(j-1)*checksum_ld+(j+1)*2, checksum_ld,
                              checksum+j*checksum_ld+(j-1)*2, checksum_ld,
                              checksum+j*checksum_ld+(j+1)*2, checksum_ld,
-                             vd, d_ld,
+                             vd, vd_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
-                             FT, DEBUG, VERIFY, streams );
+                             FT, DEBUG, VERIFY, stream );
             }
 
             // do the cpu part
@@ -383,7 +383,7 @@ magma_dgetrf_gpu(
                             vd, vd_ld,
                             chk1d, chk1d_ld, 
                             chk2d, chk2d_ld, 
-                            FT, DEBUG, VERIFY, streams);
+                            FT, DEBUG, VERIFY, stream);
                 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
                 //              nb, m-(j+1)*nb, nb,
@@ -399,10 +399,10 @@ magma_dgetrf_gpu(
                             checksum+j*checksum_ld+(j+1)*2, checksum_ld,
                             checksum+(j+1)*checksum_ld+j*2, checksum_ld,
                             checksum+(j+1)*checksum_ld+(j+1)*2, checksum_ld,
-                            vd, d_ld,
+                            vd, vd_ld,
                             chk1d, chk1d_ld, 
                             chk2d, chk2d_ld, 
-                            FT, DEBUG, VERIFY, streams);
+                            FT, DEBUG, VERIFY, stream);
 
             }
             else {
