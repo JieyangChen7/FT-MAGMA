@@ -176,6 +176,7 @@ DSRC = \
 	checksumGenerator.cpp \
 	printHelper.cpp \
 	dpotrfFT.cpp \
+	dgetrfFT.cpp \
 	dtrsmFT.cpp \
 	dsyrkFT.cpp \
 	dgemmFT.cpp \
