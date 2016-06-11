@@ -165,6 +165,9 @@ magma_dgetrf_gpu(
         magmablasGetKernelStream( &orig_stream );
 
         magma_queue_create( &stream[0] );
+        magma_queue_create( &stream[2] );
+        magma_queue_create( &stream[3] );
+        magma_queue_create( &stream[4] );
         if (orig_stream == NULL) {
             magma_queue_create( &stream[1] );
             magmablasSetKernelStream(stream[1]);
