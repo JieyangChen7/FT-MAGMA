@@ -174,7 +174,7 @@ magma_dgetrf_gpu(
         }
   
         /* flags */
-        bool FT = true;
+        bool FT = false;
         bool DEBUG = true;
         bool VERIFY = false;
         double * v;
