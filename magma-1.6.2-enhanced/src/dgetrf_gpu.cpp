@@ -279,23 +279,29 @@ magma_dgetrf_gpu(
 
         } 
 
-
+        cout << "start computation" << endl;
         for( j=0; j < s; j++ ) {
             // download j-th panel
             cols = maxm - j*nb;
             magmablas_dtranspose( nb, m-j*nb, dAT(j,j), lddat, dAP, cols );
 
-            // also transpose checksums
-            magmablas_dtranspose( 2, m-j*nb, checksum+j*checksum_ld+(j/nb)*2, checksum_ld, dAP_chk, dAP_chk_ld ); 
+            if (FT) {
+                if (DEBUG) cout << "transpose checksums" << endl;
+                // also transpose checksums
+                magmablas_dtranspose( 2, m-j*nb, checksum+j*checksum_ld+(j/nb)*2, checksum_ld, dAP_chk, dAP_chk_ld ); 
+            }
 
             // make sure that the transpose has completed
             magma_queue_sync( stream[1] );
             magma_dgetmatrix_async( m-j*nb, nb, dAP, cols, work, ldwork,
                                     stream[0]);
 
-            // also copy checksums to CPU
-            magma_dgetmatrix_async( m-j*nb, 2, dAP_chk, dAP_chk_ld, work_chk, work_chk_ld,
-                                    stream[0]);
+            if (FT) {
+                if (DEBUG) cout << "copy checksums to CPU" << endl;
+                // also copy checksums to CPU
+                magma_dgetmatrix_async( m-j*nb, 2, dAP_chk, dAP_chk_ld, work_chk, work_chk_ld,
+                                        stream[0]);
+            }
 
             if ( j > 0 ) {
                 // magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
@@ -349,9 +355,13 @@ magma_dgetrf_gpu(
             magma_dsetmatrix_async( m-j*nb, nb, work, ldwork, dAP, maxm,
                                     stream[0]);
 
-            // transfer checksums back to GPU.
-            magma_dsetmatrix_async( m-j*nb, 2, work_chk, work_chk_ld, dAP_chk, dAP_chk_ld,
-                                    stream[0]);
+            if (FT) {
+
+                if (DEBUG) cout << "transfer checksum back to GPU" << endl;
+                // transfer checksums back to GPU.
+                magma_dsetmatrix_async( m-j*nb, 2, work_chk, work_chk_ld, dAP_chk, dAP_chk_ld,
+                                        stream[0]);
+            }
 
 
             for( i=j*nb; i < j*nb + nb; ++i ) {
@@ -359,14 +369,22 @@ magma_dgetrf_gpu(
             }
             magmablas_dlaswp( n, dAT, lddat, j*nb + 1, j*nb + nb, ipiv, 1 );
 
-            // also do row swap on checksums
-            magmablas_dlaswp( (n/nb)*2, checksum, checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
+            if (FT) {
+
+                if (DEBUG) cout << "row swap on checksums" << endl;
+                // also do row swap on checksums
+                magmablas_dlaswp( (n/nb)*2, checksum, checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
+            }
 
             magma_queue_sync( stream[0] );
             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
 
-            //transpose checksums back
-            magmablas_dtranspose( m-j*nb, 2, dAP_chk, dAP_chk_ld, checksum+j*checksum_ld+(j/nb)*2, checksum_ld);
+            if (FT) {
+
+                if (DEBUG) cout << "transpose checksums back" << endl;
+                //transpose checksums back
+                magmablas_dtranspose( m-j*nb, 2, dAP_chk, dAP_chk_ld, checksum+j*checksum_ld+(j/nb)*2, checksum_ld);
+            }
 
             // do the small non-parallel computations (next panel update)
             if ( s > (j+1) ) {
