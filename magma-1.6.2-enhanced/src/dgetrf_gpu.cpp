@@ -281,6 +281,9 @@ magma_dgetrf_gpu(
 
         cout << "start computation" << endl;
         for( j=0; j < s; j++ ) {
+            if (DEBUG) {
+                cout << "transpose panel" << endl;
+            }
             // download j-th panel
             cols = maxm - j*nb;
             magmablas_dtranspose( nb, m-j*nb, dAT(j,j), lddat, dAP, cols );
@@ -293,6 +296,10 @@ magma_dgetrf_gpu(
 
             // make sure that the transpose has completed
             magma_queue_sync( stream[1] );
+
+            if (DEBUG) {
+                cout << "copy panel to CPU" << endl;
+            }
             magma_dgetmatrix_async( m-j*nb, nb, dAP, cols, work, ldwork,
                                     stream[0]);
 
@@ -309,6 +316,9 @@ magma_dgetrf_gpu(
                 //              c_one, dAT(j-1,j-1), lddat,
                 //                     dAT(j-1,j+1), lddat );
 
+                if (DEBUG) {
+                    cout << "trsmFT" << endl;
+                }
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n - (j+1)*nb, nb,
                              c_one, dAT(j-1,j-1), lddat,
@@ -326,6 +336,9 @@ magma_dgetrf_gpu(
                 //                         dAT(j,  j-1), lddat,
                 //              c_one,     dAT(j,  j+1), lddat );
 
+                 if (DEBUG) {
+                    cout << "gemmFT" << endl;
+                 }
                  dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-j*nb, nb,
                              c_neg_one, dAT(j-1,j+1), lddat,
@@ -345,12 +358,18 @@ magma_dgetrf_gpu(
             magma_queue_sync( stream[0] );
             //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
 
+            if (DEBUG) {
+                    cout << "getrfFT" << endl;
+            }
             dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo,
                      work_chk, work_chk_ld, v, v_ld, FT, DEBUG, VERIFY);
 
             if ( *info == 0 && iinfo > 0 )
                 *info = iinfo + j*nb;
 
+            if (DEBUG) {
+                cout << "transfer panel back to GPU" << endl;
+            }
             // upload j-th panel
             magma_dsetmatrix_async( m-j*nb, nb, work, ldwork, dAP, maxm,
                                     stream[0]);
@@ -367,6 +386,10 @@ magma_dgetrf_gpu(
             for( i=j*nb; i < j*nb + nb; ++i ) {
                 ipiv[i] += j*nb;
             }
+
+            if (DEBUG) {
+                cout << "row swap on matrix" << endl;
+            }
             magmablas_dlaswp( n, dAT, lddat, j*nb + 1, j*nb + nb, ipiv, 1 );
 
             if (FT) {
@@ -377,6 +400,10 @@ magma_dgetrf_gpu(
             }
 
             magma_queue_sync( stream[0] );
+
+            if (DEBUG) {
+                cout << "transpose panel back" << endl;
+            }
             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
 
             if (FT) {
@@ -392,7 +419,9 @@ magma_dgetrf_gpu(
                 //              nb, nb,
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
-
+                if (DEBUG) {
+                    cout << "trsmFT1" << endl;
+                }
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                          nb, nb, 
                          c_one, dAT(j, j  ), lddat,
@@ -408,6 +437,10 @@ magma_dgetrf_gpu(
                 //              c_neg_one, dAT(j,   j+1), lddat,
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
+
+                if (DEBUG) {
+                    cout << "gemmFT1" << endl;
+                }
                 dgemmFT( MagmaNoTrans, MagmaNoTrans,
                             nb, m-(j+1)*nb, nb,
                             c_neg_one,
@@ -429,6 +462,9 @@ magma_dgetrf_gpu(
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
 
+                if (DEBUG) {
+                    cout << "trsmFT2" << endl;
+                }
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n-s*nb, nb,
                              c_one, dAT(j, j  ), lddat,
@@ -446,6 +482,9 @@ magma_dgetrf_gpu(
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
 
+                if (DEBUG) {
+                    cout << "gemmFT2" << endl;
+                }
                 dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-(j+1)*nb, nb,
                              c_neg_one, dAT(j,   j+1), lddat,
