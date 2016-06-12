@@ -16,7 +16,6 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		double * chk2, int chk2_ld, 
 		bool FT, bool DEBUG, bool VERIFY, magma_queue_t * streams) {
 
-	cout << "test0" << endl;
 	cudaStreamSynchronize(streams[1]);
 	cudaStreamSynchronize(streams[4]);
 	if (FT && VERIFY) {
@@ -53,12 +52,11 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 	magmablasSetKernelStream(streams[1]);	
 	//[Cholesky]MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit, MAGMA_D_ONE
 
-	cout << "test1" << endl;
+
 	magma_dtrsm(side, uplo, trans, diag,
 				m, n,
 				alpha, A, lda,
 			    B, ldb);
-	cout << "test2" << endl;
 
 
 	if (FT) {
