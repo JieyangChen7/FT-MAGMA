@@ -19,7 +19,31 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
               double * chksum, int chksum_ld,
               double * v, int v_ld,
               bool FT , bool DEBUG, bool VERIFY) {
-    
+
+
+    if (FT & VERIFY) {
+        double * chk1 = new double[m];
+        double * chk2 = new double[m];
+        int chk1_inc = 1;
+        int chk2_inc = 1;
+
+        blasf77_dgemv(  &T,
+                        &n, &n,
+                        &one,
+                        A, &lda,
+                        v, &v_ld,
+                        &zero,
+                        chk1, &chk1_inc );
+        blasf77_dgemv(  &T,
+                        &n, &n,
+                        &one,
+                        A, &lda,
+                        v + 1, &v_ld,
+                        &zero,
+                        chk2, &chk2_inc );
+
+
+    }
     
     lapackf77_dgetrf( &m, &n, A, &lda, ipiv, info);
     
