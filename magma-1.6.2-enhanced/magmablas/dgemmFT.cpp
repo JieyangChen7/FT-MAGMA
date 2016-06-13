@@ -111,10 +111,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		// }
 
 		// number of row and col of A stored in memory(no trans operation)
-		if (transB == MagmaNoTrans) {
+		if (transA == MagmaNoTrans) {
 			mem_row = m;
 			mem_col = k;
-		} else if (transB == MagmaTrans) {
+		} else if (transA == MagmaTrans) {
 			mem_row = k;
 			mem_col = m;
 		}
@@ -150,6 +150,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	if(FT){	
 		//magmablasSetKernelStream(streams[1]);
 		magmablasSetKernelStream(streams[4]);
+		//this only works if A is not trans, B can be trans or not trans
+		//we can further work on this to support trans A.
 		magma_dgemm(transA, transB,
 					(m / n) * 2, n, k,
 					alpha,

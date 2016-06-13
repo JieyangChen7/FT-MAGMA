@@ -78,3 +78,29 @@ void initializeChecksum(double * matrix, int ld,
 	//test_abft(matrix, ld, B, N, N, chksum, chksum_ld, chk1d, chk1d_ld, chk2d, chk2d_ld);
 
 }
+
+
+//recalculate column checksums
+//M: number of rows of A
+//N: numner of cols of A
+void recalculateChecksum(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb) {
+		magmablasSetKernelStream(streams[2]);
+		magma_dgemv(MagmaTrans, n, chk_nb, MAGMA_D_ONE,
+				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
+		magmablasSetKernelStream(streams[3]);
+		magma_dgemv(MagmaTrans, n, chk_nb, MAGMA_D_ONE,
+				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+	}
+	
+	cudaStreamSynchronize(streams[2]);
+	cudaStreamSynchronize(streams[3]);
+
+
+}
