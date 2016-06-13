@@ -49,10 +49,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
 
         if (DEBUG) {
 			cout<<"recalcuated checksum on CPU before factorization:"<<endl;
-			printMatrix_host(chk1, 1, n, 1);
-			printMatrix_host(chk2, 1, n, 1);
+			printMatrix_host(chk1, 1, m, 1);
+			printMatrix_host(chk2, 1, m, 1);
 			cout<<"updated checksum on CPU before factorization:"<<endl;
-			printMatrix_host(chksum, chksum_ld, n, 2);
+			printMatrix_host(chksum, chksum_ld, m, 2);
 		}
 
     }
