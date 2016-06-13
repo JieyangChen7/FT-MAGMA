@@ -22,26 +22,35 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
 
 
     if (FT & VERIFY) {
+    	char N = 'N';
         double * chk1 = new double[m];
         double * chk2 = new double[m];
         int chk1_inc = 1;
         int chk2_inc = 1;
 
-        blasf77_dgemv(  &T,
-                        &n, &n,
+
+        blasf77_dgemv(  &N,
+                        &m, &n,
                         &one,
                         A, &lda,
                         v, &v_ld,
                         &zero,
                         chk1, &chk1_inc );
-        blasf77_dgemv(  &T,
-                        &n, &n,
+        blasf77_dgemv(  &N,
+                        &m, &n,
                         &one,
                         A, &lda,
                         v + 1, &v_ld,
                         &zero,
                         chk2, &chk2_inc );
 
+        if (DEBUG) {
+			cout<<"recalcuated checksum on CPU before factorization:"<<endl;
+			printMatrix_host(chk1, 1, n, 1);
+			printMatrix_host(chk2, 1, n, 1);
+			cout<<"updated checksum on CPU before factorization:"<<endl;
+			printMatrix_host(chksum, chksum_ld, n, 2);
+		}
 
     }
     
