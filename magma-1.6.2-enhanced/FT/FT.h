@@ -29,6 +29,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		double alpha,
 		double * A, int lda,
 		double * B, int ldb, 
+		int chk_nb,
 		double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 

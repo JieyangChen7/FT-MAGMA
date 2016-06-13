@@ -377,6 +377,7 @@ magma_dpotrf_gpu(
                             (n-j-jb), jb, MAGMA_D_ONE,
                             dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
+                            nb,
                 			checksum + ((j + jb) / jb) * 2 + j * checksum_ld, checksum_ld,
                 			vd, vd_ld, 
                 			chk1d, chk1d_ld,

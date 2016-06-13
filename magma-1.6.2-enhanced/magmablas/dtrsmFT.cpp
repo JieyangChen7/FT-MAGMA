@@ -10,7 +10,9 @@ using namespace std;
 
 void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
 		int m, int n, double alpha, double * A, int lda,
-		double * B, int ldb, double * checksumB, int checksumB_ld,
+		double * B, int ldb, 
+		int chk_nb,
+		double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
@@ -22,16 +24,16 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		//verify B before use
 		//recalculate checksums on GPU
 
-		for (int i = 0; i < m; i += n) {
-			magmablasSetKernelStream(streams[2]);
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-			magmablasSetKernelStream(streams[3]);
-			magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-					B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
-		}
-		cudaStreamSynchronize(streams[2]);
-		cudaStreamSynchronize(streams[3]);
+		// for (int i = 0; i < m; i += n) {
+		// 	magmablasSetKernelStream(streams[2]);
+		// 	magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+		// 			B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
+		// 	magmablasSetKernelStream(streams[3]);
+		// 	magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
+		// 			B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
+		// }
+		// cudaStreamSynchronize(streams[2]);
+		// cudaStreamSynchronize(streams[3]);
 //		ErrorDetectAndCorrect(B, ldb,
 //							n, m, n, 
 //							checksumB, checksumB_ld, 
@@ -40,14 +42,35 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 //							streams[1]);
 		//handle error - to be finished
 		
-		if (DEBUG) {
-			cout<<"recalculated checksum of B before dtrsm:"<<endl;
-			printMatrix_gpu(chk1,chk1_ld, (m / n), n);
-			printMatrix_gpu(chk2,chk2_ld, (m / n), n);
+		// if (DEBUG) {
+		// 	cout<<"recalculated checksum of B before dtrsm:"<<endl;
+		// 	printMatrix_gpu(chk1,chk1_ld, (m / n), n);
+		// 	printMatrix_gpu(chk2,chk2_ld, (m / n), n);
 
-			cout<<"updated checksum of B before dtrsm:"<<endl;
-			printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
-		}		
+		// 	cout<<"updated checksum of B before dtrsm:"<<endl;
+		// 	printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
+		// }		
+
+		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
+		int mem_col = n;
+
+		
+		recalculateChecksum(B, ldb,
+							mem_row, mem_col,
+							chk_nb,
+							vd, vd_ld,
+							chk1, chk2_ld,
+							chk2, chk2_ld,
+							streams);
+		if (DEBUG) {
+			cout<<"recalculated checksum of B before dgemm:"<<endl;
+			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
+			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
+		
+			cout<<"updated checksum of B before dgemm:"<<endl;
+			printMatrix_host(checksumB, checksumB_ld, (mem_row / chk_nb) * 2, mem_col);
+		}
+
 	}
 	magmablasSetKernelStream(streams[1]);	
 	//[Cholesky]MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit, MAGMA_D_ONE
