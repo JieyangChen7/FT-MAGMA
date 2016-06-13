@@ -13,6 +13,12 @@ void initializeChecksum(double * matrix, int ld,
                         double * v, int v_ld,
                         double * chksum, int chksum_ld, magma_queue_t * streams);
 
+void recalculateChecksum(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams);
 
 void dpotrfFT(double * A, int lda, int n, int * info,
 				double * chksum, int chksum_ld,

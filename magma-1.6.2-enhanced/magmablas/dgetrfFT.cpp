@@ -20,6 +20,9 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
               double * v, int v_ld,
               bool FT , bool DEBUG, bool VERIFY) {
 
+    double one = 1;
+    double zero = 0;
+    double negone = -1;
 
     if (FT & VERIFY) {
     	char N = 'N';
