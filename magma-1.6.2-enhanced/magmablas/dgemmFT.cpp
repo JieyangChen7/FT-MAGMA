@@ -126,12 +126,12 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 							chk2, chk2_ld,
 							streams);
 		if (DEBUG) {
-			cout<<"recalculated checksum of B before dgemm:"<<endl;
+			cout<<"recalculated checksum of A before dgemm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
 			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
 		
-			cout<<"updated checksum of B before dgemm:"<<endl;
-			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / chk_nb) * 2, mem_col);
+			cout<<"updated checksum of A before dgemm:"<<endl;
+			printMatrix_gpu(checksumA, checksumA_ld, (mem_row / chk_nb) * 2, mem_col);
 		}
 
 
