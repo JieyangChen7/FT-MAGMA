@@ -177,9 +177,9 @@ magma_dgetrf_gpu(
         }
   
         /* flags */
-        bool FT = false;
+        bool FT = true;
         bool DEBUG = true;
-        bool VERIFY = false;
+        bool VERIFY = true;
         double * v;
         int v_ld;
 
@@ -284,15 +284,12 @@ magma_dgetrf_gpu(
 
         cout << "start computation" << endl;
         for( j=0; j < s; j++ ) {
-            if (DEBUG) {
-                cout << "transpose panel" << endl;
-            }
+            
             // download j-th panel
             cols = maxm - j*nb;
             magmablas_dtranspose( nb, m-j*nb, dAT(j,j), lddat, dAP, cols );
 
             if (FT) {
-                if (DEBUG) cout << "transpose checksums" << endl;
                 // also transpose checksums
                 magmablas_dtranspose( 2, m-j*nb, checksum+j*checksum_ld+(j/nb)*2, checksum_ld, dAP_chk, dAP_chk_ld ); 
             }
@@ -300,14 +297,10 @@ magma_dgetrf_gpu(
             // make sure that the transpose has completed
             magma_queue_sync( stream[1] );
 
-            if (DEBUG) {
-                cout << "copy panel to CPU" << endl;
-            }
             magma_dgetmatrix_async( m-j*nb, nb, dAP, cols, work, ldwork,
                                     stream[0]);
 
             if (FT) {
-                if (DEBUG) cout << "copy checksums to CPU" << endl;
                 // also copy checksums to CPU
                 magma_dgetmatrix_async( m-j*nb, 2, dAP_chk, dAP_chk_ld, work_chk, work_chk_ld,
                                         stream[0]);
@@ -319,9 +312,6 @@ magma_dgetrf_gpu(
                 //              c_one, dAT(j-1,j-1), lddat,
                 //                     dAT(j-1,j+1), lddat );
 
-                if (DEBUG) {
-                    cout << "trsmFT" << endl;
-                }
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n - (j+1)*nb, nb,
                              c_one, dAT(j-1,j-1), lddat,
@@ -340,9 +330,7 @@ magma_dgetrf_gpu(
                 //                         dAT(j,  j-1), lddat,
                 //              c_one,     dAT(j,  j+1), lddat );
 
-                 if (DEBUG) {
-                    cout << "gemmFT" << endl;
-                 }
+    
                  dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-j*nb, nb,
                              c_neg_one, dAT(j-1,j+1), lddat,
@@ -363,25 +351,19 @@ magma_dgetrf_gpu(
             magma_queue_sync( stream[0] );
             //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
 
-            if (DEBUG) {
-                    cout << "getrfFT" << endl;
-            }
+
             dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo,
                      work_chk, work_chk_ld, v, v_ld, FT, DEBUG, VERIFY);
 
             if ( *info == 0 && iinfo > 0 )
                 *info = iinfo + j*nb;
 
-            if (DEBUG) {
-                cout << "transfer panel back to GPU" << endl;
-            }
             // upload j-th panel
             magma_dsetmatrix_async( m-j*nb, nb, work, ldwork, dAP, maxm,
                                     stream[0]);
 
             if (FT) {
 
-                if (DEBUG) cout << "transfer checksum back to GPU" << endl;
                 // transfer checksums back to GPU.
                 magma_dsetmatrix_async( m-j*nb, 2, work_chk, work_chk_ld, dAP_chk, dAP_chk_ld,
                                         stream[0]);
@@ -392,28 +374,18 @@ magma_dgetrf_gpu(
                 ipiv[i] += j*nb;
             }
 
-            if (DEBUG) {
-                cout << "row swap on matrix" << endl;
-            }
             magmablas_dlaswp( n, dAT, lddat, j*nb + 1, j*nb + nb, ipiv, 1 );
 
             if (FT) {
-
-                if (DEBUG) cout << "row swap on checksums" << endl;
                 // also do row swap on checksums
                 magmablas_dlaswp( (n/nb)*2, checksum, checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
             }
 
             magma_queue_sync( stream[0] );
 
-            if (DEBUG) {
-                cout << "transpose panel back" << endl;
-            }
             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
 
             if (FT) {
-
-                if (DEBUG) cout << "transpose checksums back" << endl;
                 //transpose checksums back
                 magmablas_dtranspose( m-j*nb, 2, dAP_chk, dAP_chk_ld, checksum+j*checksum_ld+(j/nb)*2, checksum_ld);
             }
@@ -424,9 +396,6 @@ magma_dgetrf_gpu(
                 //              nb, nb,
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
-                if (DEBUG) {
-                    cout << "trsmFT1" << endl;
-                }
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                          nb, nb, 
                          c_one, dAT(j, j  ), lddat,
@@ -444,9 +413,6 @@ magma_dgetrf_gpu(
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
 
-                if (DEBUG) {
-                    cout << "gemmFT1" << endl;
-                }
                 dgemmFT( MagmaNoTrans, MagmaNoTrans,
                             nb, m-(j+1)*nb, nb,
                             c_neg_one,
@@ -469,9 +435,6 @@ magma_dgetrf_gpu(
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
 
-                if (DEBUG) {
-                    cout << "trsmFT2" << endl;
-                }
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n-s*nb, nb,
                              c_one, dAT(j, j  ), lddat,
@@ -490,9 +453,6 @@ magma_dgetrf_gpu(
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
 
-                if (DEBUG) {
-                    cout << "gemmFT2" << endl;
-                }
                 dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-(j+1)*nb, nb,
                              c_neg_one, dAT(j,   j+1), lddat,
