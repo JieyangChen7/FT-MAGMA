@@ -59,7 +59,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 							mem_row, mem_col,
 							chk_nb,
 							vd, vd_ld,
-							chk1, chk2_ld,
+							chk1, chk1_ld,
 							chk2, chk2_ld,
 							streams);
 		if (DEBUG) {

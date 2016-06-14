@@ -54,7 +54,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 							mem_row, mem_col,
 							chk_nb,
 							vd, vd_ld,
-							chk1, chk2_ld,
+							chk1, chk1_ld,
 							chk2, chk2_ld,
 							streams);
 		if (DEBUG) {
@@ -127,7 +127,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 							mem_row, mem_col,
 							chk_nb,
 							vd, vd_ld,
-							chk1, chk2_ld,
+							chk1, chk1_ld,
 							chk2, chk2_ld,
 							streams);
 		if (DEBUG) {
