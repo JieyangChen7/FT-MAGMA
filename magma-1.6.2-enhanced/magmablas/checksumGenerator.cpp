@@ -92,10 +92,10 @@ void recalculateChecksum(double * A, int lda,
 
 	for (int i = 0; i < m; i += chk_nb) {
 		magmablasSetKernelStream(streams[2]);
-		magma_dgemv(MagmaTrans, n, chk_nb, MAGMA_D_ONE,
+		magma_dgemv(MagmaTrans, chk_nb, chk_nb, MAGMA_D_ONE,
 				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
 		magmablasSetKernelStream(streams[3]);
-		magma_dgemv(MagmaTrans, n, chk_nb, MAGMA_D_ONE,
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
 	}
 	
