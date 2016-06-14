@@ -276,13 +276,13 @@ magma_dgetrf_gpu(
                             n, m,
                             nb,
                             vd, vd_ld,
-                            chk1, chk1_ld,
-                            chk2, chk2_ld,
+                            chk1d, chk1d_ld,
+                            chk2d, chk2d_ld,
                             streams);
 
                 cout<<"recalculated checksum:"<<endl;
-                printMatrix_gpu(chk1, chk1_ld, n / chk_nb, m);
-                printMatrix_gpu(chk2, chk2_ld, n / chk_nb, m);
+                printMatrix_gpu(chk1d, chk1d_ld, n / nb, m);
+                printMatrix_gpu(chk2d, chk2d_ld, n / nb, m);
             }
             cout << "done." << endl;
 
