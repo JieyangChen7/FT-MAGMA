@@ -75,6 +75,8 @@ magma_dgetrf_gpu(
 {
     #define dAT(i_, j_) (dAT + (i_)*nb*lddat + (j_)*nb)
 
+    #define CHK(i_, j_) (checksum + (i_)*nb*checksum_ld + (j_)*2)
+
     double c_one     = MAGMA_D_ONE;
     double c_neg_one = MAGMA_D_NEG_ONE;
 
@@ -291,7 +293,7 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 // also transpose checksums
-                magmablas_dtranspose( 2, m-j*nb, checksum+j*checksum_ld+(j/nb)*2, checksum_ld, dAP_chk, dAP_chk_ld ); 
+                magmablas_dtranspose( 2, m-j*nb, CHK(j,j), checksum_ld, dAP_chk, dAP_chk_ld ); 
             }
 
             // make sure that the transpose has completed
@@ -317,7 +319,7 @@ magma_dgetrf_gpu(
                              c_one, dAT(j-1,j-1), lddat,
                              dAT(j-1,j+1), lddat,
                              nb,
-                             checksum+(j-1)*checksum_ld+(j+1)*2, checksum_ld,
+                             CHK(j-1, j+1), checksum_ld,
                              vd, vd_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
@@ -337,9 +339,9 @@ magma_dgetrf_gpu(
                                         dAT(j,  j-1), lddat,
                              c_one,     dAT(j,  j+1), lddat,
                              nb,
-                             checksum+(j-1)*checksum_ld+(j+1)*2, checksum_ld,
-                             checksum+j*checksum_ld+(j-1)*2, checksum_ld,
-                             checksum+j*checksum_ld+(j+1)*2, checksum_ld,
+                             CHK(j-1, j+1), checksum_ld,
+                             CHK(j, j-1), checksum_ld,
+                             CHK(j, j+1), checksum_ld,
                              vd, vd_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
@@ -387,7 +389,7 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 //transpose checksums back
-                magmablas_dtranspose( m-j*nb, 2, dAP_chk, dAP_chk_ld, checksum+j*checksum_ld+(j/nb)*2, checksum_ld);
+                magmablas_dtranspose( m-j*nb, 2, dAP_chk, dAP_chk_ld, CHK(j, j), checksum_ld);
             }
 
             // do the small non-parallel computations (next panel update)
@@ -401,11 +403,11 @@ magma_dgetrf_gpu(
                          c_one, dAT(j, j  ), lddat,
                          dAT(j, j+1), lddat,
                          nb,
-                         checksum+j*checksum_ld+(j+1)*2, checksum_ld,
-                            vd, vd_ld,
-                            chk1d, chk1d_ld, 
-                            chk2d, chk2d_ld, 
-                            FT, DEBUG, VERIFY, stream);
+                         CHK(j, j+1), checksum_ld,
+                        vd, vd_ld,
+                        chk1d, chk1d_ld, 
+                        chk2d, chk2d_ld, 
+                        FT, DEBUG, VERIFY, stream);
                 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
                 //              nb, m-(j+1)*nb, nb,
@@ -420,9 +422,9 @@ magma_dgetrf_gpu(
                             dAT(j+1, j  ), lddat,
                             c_one,     dAT(j+1, j+1), lddat,
                             nb,
-                            checksum+j*checksum_ld+(j+1)*2, checksum_ld,
-                            checksum+(j+1)*checksum_ld+j*2, checksum_ld,
-                            checksum+(j+1)*checksum_ld+(j+1)*2, checksum_ld,
+                            CHK(j, j+1), checksum_ld,
+                            CHK(j+1, j), checksum_ld,
+                            CHK(j+1, j+1), checksum_ld,
                             vd, vd_ld,
                             chk1d, chk1d_ld, 
                             chk2d, chk2d_ld, 
@@ -440,7 +442,7 @@ magma_dgetrf_gpu(
                              c_one, dAT(j, j  ), lddat,
                                     dAT(j, j+1), lddat,
                              nb,
-                             checksum+j*checksum_ld+(j+1)*2, checksum_ld,
+                             CHK(j, j+1), checksum_ld,
                              vd, vd_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
@@ -459,9 +461,9 @@ magma_dgetrf_gpu(
                                         dAT(j+1, j  ), lddat,
                              c_one,     dAT(j+1, j+1), lddat,
                              nb,
-                             checksum+j*checksum_ld+(j+1)*2, checksum_ld,
-                             checksum+(j+1)*checksum_ld+j*2, checksum_ld,
-                             checksum+(j+1)*checksum_ld+(j+1)*2, checksum_ld,
+                             CHK(j, j+1), checksum_ld,
+                             CHK(j+1, j), checksum_ld,
+                             CHK(j+1, j+1), checksum_ld,
                              vd, vd_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
