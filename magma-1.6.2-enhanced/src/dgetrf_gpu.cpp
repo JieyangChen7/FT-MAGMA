@@ -320,7 +320,7 @@ magma_dgetrf_gpu(
                                         stream[0]);
             }
 
-            if ( j > 0 ) {
+            if ( j > 0 && n - (j+1)*nb > 0 && m-j*nb > 0) {
                 // magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                 //              n - (j+1)*nb, nb,
                 //              c_one, dAT(j-1,j-1), lddat,
@@ -448,7 +448,7 @@ magma_dgetrf_gpu(
                             FT, DEBUG, VERIFY, stream);
 
             }
-            else {
+            else if (n-s*nb > 0){
                 // magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                 //              n-s*nb, nb,
                 //              c_one, dAT(j, j  ), lddat,
