@@ -58,6 +58,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 							chk2, chk2_ld,
 							streams);
 		if (DEBUG) {
+			cudaStreamSynchronize(streams[1]);
 			cout<<"B before dgemm:"<<endl;
 
 			printMatrix_gpu(B, ldb, mem_row, mem_col);
