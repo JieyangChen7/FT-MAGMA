@@ -26,6 +26,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 				bool FT , bool DEBUG, bool VERIFY);
 
 void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
+			  int nb,
               double * chksum, int chksum_ld,
               double * v, int v_ld,
               bool FT , bool DEBUG, bool VERIFY);
@@ -36,6 +37,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		double * A, int lda,
 		double * B, int ldb, 
 		int chk_nb,
+		int nb,
 		double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
@@ -65,6 +67,7 @@ void dgemmFT(magma_trans_t transA, magma_trans_t transB,
 		double beta, 
 		double * C, int ldc, 
 		int chk_nb,
+		int nb,
 		double * checksumA, int checksumA_ld,
 		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,

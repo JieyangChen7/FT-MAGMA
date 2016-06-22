@@ -12,6 +12,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		int m, int n, double alpha, double * A, int lda,
 		double * B, int ldb, 
 		int chk_nb,
+		int nb,
 		double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
@@ -58,7 +59,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		
 		magmablasSetKernelStream(streams[4]);	
 		magma_dtrsm(side, uplo, trans, diag,
-                    (m / n) * 2, n,
+                    (m / nb) * 2, n,
                     alpha, A, lda,
                     checksumB, checksumB_ld);
 
