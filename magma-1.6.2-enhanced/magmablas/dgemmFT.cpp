@@ -59,62 +59,20 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 							streams);
 		if (DEBUG) {
 			cudaStreamSynchronize(streams[1]);
-			cout<<"B before dgemm:"<<endl;
+			cout<<"[dgemm] B before dgemm:"<<endl;
 
 			printMatrix_gpu(B, ldb, mem_row, mem_col);
 
 
-			cout<<"recalculated checksum of B before dgemm:"<<endl;
+			cout<<"[dgemm] recalculated checksum of B before dgemm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
 			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
 		
-			cout<<"updated checksum of B before dgemm:"<<endl;
+			cout<<"[dgemm] updated checksum of B before dgemm:"<<endl;
 			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / chk_nb) * 2, mem_col);
 		}
 
 
-		//handle error 
-//		ErrorDetectAndCorrect(B, ldb,
-//							n, n, k, 
-//							checksumB, checksumB_ld, 
-//							chk1, chk1_ld, 
-//							chk2, chk2_ld,
-//							streams[1]);
-//		
-		
-		
-		
-		
-	
-		//verify A before use
-		//magmablasSetKernelStream(streams[1]);
-		// for (int i = 0; i < m; i += n) {
-			
-		// 	magmablasSetKernelStream(streams[2]);
-		// 	magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-		// 			A + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-		// 	magmablasSetKernelStream(streams[3]);
-		// 	magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-		// 			A + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );
-		// }
-		// cudaStreamSynchronize(streams[2]);
-		// cudaStreamSynchronize(streams[3]);
-		//handle error
-//		ErrorDetectAndCorrect(A, lda,
-//							n, m, k, 
-//							checksumA, checksumA_ld, 
-//							chk1, chk1_ld, 
-//							chk2, chk2_ld,
-//							streams[1]);
-		
-		// if (DEBUG) {	
-		// 	cout<<"recalculated checksum of A before dgemm:"<<endl;
-		// 	printMatrix_gpu(chk1, chk1_ld, m / n, k);
-		// 	printMatrix_gpu(chk2, chk2_ld, m / n, k);
-		
-		// 	cout<<"updated checksum of A before dgemm:"<<endl;
-		// 	printMatrix_host(checksumA, checksumA_ld, (m / n) * 2, k);
-		// }
 
 		// number of row and col of A stored in memory(no trans operation)
 		if (transA == MagmaNoTrans) {
@@ -133,17 +91,44 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 							streams);
 		if (DEBUG) {
 
-			cout<<"A before dgemm:"<<endl;
+			cout<<"[dgemm] A before dgemm:"<<endl;
 
 			printMatrix_gpu(A, lda, mem_row, mem_col);
 
-			cout<<"recalculated checksum of A before dgemm:"<<endl;
+			cout<<"[dgemm] recalculated checksum of A before dgemm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
 			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
 		
-			cout<<"updated checksum of A before dgemm:"<<endl;
+			cout<<"[dgemm] updated checksum of A before dgemm:"<<endl;
 			printMatrix_gpu(checksumA, checksumA_ld, (mem_row / chk_nb) * 2, mem_col);
 		}
+
+
+		
+		mem_row = m;
+		mem_col = n;
+		
+		recalculateChecksum(C, ldc,
+							mem_row, mem_col,
+							chk_nb,
+							vd, vd_ld,
+							chk1, chk1_ld,
+							chk2, chk2_ld,
+							streams);
+		if (DEBUG) {
+
+			cout<<"[dgemm] C before dgemm:"<<endl;
+
+			printMatrix_gpu(C, ldc, mem_row, mem_col);
+
+			cout<<"[dgemm] recalculated checksum of C before dgemm:"<<endl;
+			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
+			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
+		
+			cout<<"[dgemm] updated checksum of C before dgemm:"<<endl;
+			printMatrix_gpu(checksumC, checksumC_ld, (mem_row / chk_nb) * 2, mem_col);
+		}
+
 
 
 		
@@ -169,5 +154,35 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 					checksumA, checksumA_ld, B, ldb,
 					beta,
 					checksumC, checksumC_ld );
+
+		cudaStreamSynchronize(streams[1]);
+		cudaStreamSynchronize(streams[4]);
+
+		mem_row = m;
+		mem_col = n;
+		
+		recalculateChecksum(C, ldc,
+							mem_row, mem_col,
+							chk_nb,
+							vd, vd_ld,
+							chk1, chk1_ld,
+							chk2, chk2_ld,
+							streams);
+		if (DEBUG) {
+
+			cout<<"[dgemm] C before dgemm:"<<endl;
+
+			printMatrix_gpu(C, ldc, mem_row, mem_col);
+
+			cout<<"[dgemm] recalculated checksum of C after dgemm:"<<endl;
+			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
+			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
+		
+			cout<<"[dgemm] updated checksum of C after dgemm:"<<endl;
+			printMatrix_gpu(checksumC, checksumC_ld, (mem_row / chk_nb) * 2, mem_col);
+		}
+
+
+
 	}
 }

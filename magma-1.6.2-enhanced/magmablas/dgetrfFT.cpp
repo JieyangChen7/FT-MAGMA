@@ -24,6 +24,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
     double zero = 0;
     double negone = -1;
 
+    cout << "[dgetrf] to be updated matrix:" << endl;
+    printMatrix_host(A, lda,  m, n);
+
+
     if (FT & VERIFY) {
     	char N = 'N';
         double * chk1 = new double[m];
@@ -48,14 +52,16 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
                         chk2, &chk2_inc );
 
         if (DEBUG) {
-			cout<<"recalcuated checksum on CPU before factorization:"<<endl;
+			cout<<"[dgetrf] recalcuated checksum on CPU before factorization:"<<endl;
 			printMatrix_host(chk1, 1, m, 1);
 			printMatrix_host(chk2, 1, m, 1);
-			cout<<"updated checksum on CPU before factorization:"<<endl;
+			cout<<"[dgetrf] updated checksum on CPU before factorization:"<<endl;
 			printMatrix_host(chksum, chksum_ld, m, 2);
 		}
 
     }
+
+
     
     lapackf77_dgetrf( &m, &n, A, &lda, ipiv, info);
     

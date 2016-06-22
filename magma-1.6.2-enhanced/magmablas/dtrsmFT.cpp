@@ -22,39 +22,8 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 	cudaStreamSynchronize(streams[4]);
 	if (FT && VERIFY) {
 		//verify B before use
-		//recalculate checksums on GPU
-
-		// for (int i = 0; i < m; i += n) {
-		// 	magmablasSetKernelStream(streams[2]);
-		// 	magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-		// 			B + i, ldb, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / n), chk1_ld );
-		// 	magmablasSetKernelStream(streams[3]);
-		// 	magma_dgemv(MagmaTrans, n, n, MAGMA_D_ONE,
-		// 			B + i, ldb, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / n), chk2_ld );			
-		// }
-		// cudaStreamSynchronize(streams[2]);
-		// cudaStreamSynchronize(streams[3]);
-//		ErrorDetectAndCorrect(B, ldb,
-//							n, m, n, 
-//							checksumB, checksumB_ld, 
-//							chk1, chk1_ld, 
-//							chk2, chk2_ld,
-//							streams[1]);
-		//handle error - to be finished
-		
-		// if (DEBUG) {
-		// 	cout<<"recalculated checksum of B before dtrsm:"<<endl;
-		// 	printMatrix_gpu(chk1,chk1_ld, (m / n), n);
-		// 	printMatrix_gpu(chk2,chk2_ld, (m / n), n);
-
-		// 	cout<<"updated checksum of B before dtrsm:"<<endl;
-		// 	printMatrix_host(checksumB, checksumB_ld, (m / n) * 2, n);
-		// }		
-
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
-		int mem_col = n;
-
-		
+		int mem_col = n;		
 		recalculateChecksum(B, ldb,
 							mem_row, mem_col,
 							chk_nb,
@@ -64,11 +33,11 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 							streams);
 		if (DEBUG) {
 			cudaStreamSynchronize(streams[1]);
-			cout<<"recalculated checksum of B before trsm:"<<endl;
+			cout<<"[trsm] recalculated checksum of B before trsm:"<<endl;
 			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
 			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
 		
-			cout<<"updated checksum of B before trsm:"<<endl;
+			cout<<"[trsm] updated checksum of B before trsm:"<<endl;
 			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / chk_nb) * 2, mem_col);
 		}
 
@@ -92,5 +61,26 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
                     (m / n) * 2, n,
                     alpha, A, lda,
                     checksumB, checksumB_ld);
+
+		cudaStreamSynchronize(streams[1]);
+		cudaStreamSynchronize(streams[4]);
+		//verify B before use
+		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
+		int mem_col = n;		
+		recalculateChecksum(B, ldb,
+							mem_row, mem_col,
+							chk_nb,
+							vd, vd_ld,
+							chk1, chk1_ld,
+							chk2, chk2_ld,
+							streams);
+		if (DEBUG) {
+			cout<<"[trsm] recalculated checksum of B after trsm:"<<endl;
+			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
+			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
+		
+			cout<<"[trsm] updated checksum of B after trsm:"<<endl;
+			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / chk_nb) * 2, mem_col);
+		}
 	}
 }
