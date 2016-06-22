@@ -1,0 +1,1 @@
+./testing/testing_dgetrf_gpu -N 16,16
