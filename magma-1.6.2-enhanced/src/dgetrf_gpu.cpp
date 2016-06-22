@@ -372,6 +372,12 @@ magma_dgetrf_gpu(
                      nb,
                      work_chk, work_chk_ld, v, v_ld, FT, DEBUG, VERIFY);
 
+            cout<<"[ipiv] ipiv:"<<endl;
+                for (int i = 0; i < m; i++) {
+                    cout << ipiv[i] << " ";
+                }
+                cout << endl;
+
             if ( *info == 0 && iinfo > 0 )
                 *info = iinfo + j*nb;
 
