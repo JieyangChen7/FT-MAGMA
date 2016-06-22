@@ -395,7 +395,7 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 // also do row swap on checksums
-                magmablas_dlaswp( (n/nb)*2, checksum, checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
+                //magmablas_dlaswp( (n/nb)*2, checksum, checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
             }
 
             magma_queue_sync( stream[0] );
