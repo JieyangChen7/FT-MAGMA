@@ -70,7 +70,9 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         //update checksums
         for (int j = 0; j < n; j++) {
         	//swap row j with ipiv[j]
-        	row_swap(chksum, chksum_ld, 2, j, ipiv[j]);
+        	if (ipiv[j] != 0) {
+        		row_swap(chksum, chksum_ld, 2, j, ipiv[j]-1);
+        	}
 
         }
          for (int j = 0; j < n; j++) {
