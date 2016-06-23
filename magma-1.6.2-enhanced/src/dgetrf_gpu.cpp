@@ -396,11 +396,11 @@ magma_dgetrf_gpu(
             if (FT) {
                 // also do row swap on checksums
                 magmablas_dlaswp( (n/nb)*2, checksum, checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
-                // cout<<"[ipiv] ipiv:"<<endl;
-                // for (int i = 0; i < m; i++) {
-                //     cout << ipiv[i] << " ";
-                // }
-                // cout << endl;
+                cout<<"[ipiv] ipiv:"<<endl;
+                for (int i = 0; i < m; i++) {
+                    cout << ipiv[i] << " ";
+                }
+                cout << endl;
 
             }
 
