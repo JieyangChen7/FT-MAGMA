@@ -72,7 +72,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         	//swap row j with ipiv[j]
         	row_swap(chksum, chksum_ld, 2, j, ipiv[j]);
 
-        ｝
+        }
          for (int j = 0; j < n; j++) {
         	double Ajj = *(A + j * lda + j);
         	if (Ajj != 0) {
