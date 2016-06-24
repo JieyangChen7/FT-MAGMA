@@ -1,6 +1,7 @@
 #include "magma.h"
-#include"FT.h"
-#include<iostream>
+#include "FT.h"
+#include <iostream>
+#include <cmath>
 using namespace std;
 //initialize checksum
 //M: number of rows
@@ -130,9 +131,67 @@ void recalculateChecksum2(double * A, int lda,
 }
 
 
+
+
+
+//recalculate column checksums
+//M: number of rows of A
+//N: numner of cols of A
+void recalculateChecksum3(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb) {
+		//magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[2]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
+		magmablasSetKernelStream(streams[3]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+	}
+	//cudaStreamSynchronize(streams[1]);
+	
+	cudaStreamSynchronize(streams[2]);
+	cudaStreamSynchronize(streams[3]);
+
+
+}
+
+
+
+void recalculateChecksum4(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb) {
+		magmablasSetKernelStream(streams[1]);
+		magma_dgemm(MagmaTrans, MagmaNoTrans,
+					2, m, n,
+					//2, B + i, B,
+					MAGMA_D_ONE, vd, vd_ld,
+					A + i, lda,
+					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
+	}
+	
+	cudaStreamSynchronize(streams[1]);
+}
+
+
+
+
+
+
 void benchmark(double * A, int lda,
 			   int m, int n, int chk_nb,
 			   double * vd, int vd_ld,
+			   double * vd2, int vd2_ld,
 			   double * chk1, int chk1_ld, 
 			   double * chk2, int chk2_ld, 
 			   magma_queue_t * streams
@@ -140,6 +199,8 @@ void benchmark(double * A, int lda,
 //	cout << "Separated:" << endl;
 	double gpu_time1 = 0.0;
 	double gpu_time2 = 0.0;
+	double gpu_time3 = 0.0;
+	double gpu_time4 = 0.0;
 	for (int i = chk_nb; i < m; i += chk_nb) {
 		cout << "[" << i << "]:	";
 		for (int j = chk_nb; j < n; j += chk_nb) {
@@ -163,8 +224,35 @@ void benchmark(double * A, int lda,
 			   			streams);
 			gpu_time2 = magma_wtime() - gpu_time2;
 
-			if (gpu_time1 < gpu_time2) cout << "S ";
-			else cout <<"C ";
+
+			gpu_time3 = magma_wtime();
+			recalculateChecksum(A, lda,
+						i, j, chk_nb,
+						vd2, vd2_ld,
+			   			chk1, chk1_ld, 
+			   			chk2, chk2_ld, 
+			   			streams);
+			gpu_time3 = magma_wtime() - gpu_time3;
+			//cout << gpu_time <<"	";
+
+
+			gpu_time4 = magma_wtime();
+			recalculateChecksum2(A, lda,
+						i, j, chk_nb,
+						vd2, vd2_ld,
+			   			chk1, chk1_ld, 
+			   			chk2, chk2_ld, 
+			   			streams);
+			gpu_time4 = magma_wtime() - gpu_time4;
+
+			double min_time = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
+
+			if (min_time == gpu_time1) cout << "1 ";
+			else if (min_time == gpu_time2) cout << "2 ";
+			else if  (min_time == gpu_time3) cout << "3 ";
+			else if  (min_time == gpu_time4) cout << "4 ";
+			// if (gpu_time1 < gpu_time2) cout << "S ";
+			// else cout <<"C ";
 		}
 		cout << endl;
 	}

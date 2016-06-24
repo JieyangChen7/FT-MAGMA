@@ -334,6 +334,7 @@ magma_dgetrf_gpu(
         benchmark(dAT, lddat,
                n, m, nb,
                vd, vd_ld,
+               vd2, vd2_ld,
                chk1d, chk1d_ld, 
                chk2d, chk2d_ld, 
                stream);
