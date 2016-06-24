@@ -137,7 +137,7 @@ void benchmark(double * A, int lda,
 			   ) {
 	cout << "Separated:" << endl;
 	for (int i = chk_nb; i < m; i += chk_nb) {
-		cout << "[" << chk_nb << "]:	";
+		cout << "[" << i << "]:	";
 		for (int j = chk_nb; j < n; j += chk_nb) {
 			double gpu_time = magma_wtime();
 			recalculateChecksum(A, lda,
@@ -155,7 +155,7 @@ void benchmark(double * A, int lda,
 cout << "Combined:" << endl;
 
 for (int i = chk_nb; i < m; i += chk_nb) {
-		cout << "[" << chk_nb << "]:	";
+		cout << "[" << i << "]:	";
 		for (int j = chk_nb; j < n; j += chk_nb) {
 			double gpu_time = magma_wtime();
 			recalculateChecksum2(A, lda,
