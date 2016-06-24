@@ -225,15 +225,15 @@ void benchmark(double * A, int lda,
 			gpu_time2 = magma_wtime() - gpu_time2;
 
 
-			gpu_time3 = magma_wtime();
-			recalculateChecksum(A, lda,
-						i, j, chk_nb,
-						vd2, vd2_ld,
-			   			chk1, chk1_ld, 
-			   			chk2, chk2_ld, 
-			   			streams);
-			gpu_time3 = magma_wtime() - gpu_time3;
-			//cout << gpu_time <<"	";
+			// gpu_time3 = magma_wtime();
+			// recalculateChecksum(A, lda,
+			// 			i, j, chk_nb,
+			// 			vd2, vd2_ld,
+			//    			chk1, chk1_ld, 
+			//    			chk2, chk2_ld, 
+			//    			streams);
+			// gpu_time3 = magma_wtime() - gpu_time3;
+			// //cout << gpu_time <<"	";
 
 
 			gpu_time4 = magma_wtime();
@@ -249,7 +249,7 @@ void benchmark(double * A, int lda,
 
 			if (min_time == gpu_time1) cout << "1 ";
 			else if (min_time == gpu_time2) cout << "2 ";
-			else if  (min_time == gpu_time3) cout << "3 ";
+		//	else if  (min_time == gpu_time3) cout << "3 ";
 			else if  (min_time == gpu_time4) cout << "4 ";
 			// if (gpu_time1 < gpu_time2) cout << "S ";
 			// else cout <<"C ";
