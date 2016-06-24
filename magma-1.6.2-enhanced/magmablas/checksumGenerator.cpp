@@ -148,7 +148,7 @@ void benchmark(double * A, int lda,
 			   			chk1, chk1_ld, 
 			   			chk2, chk2_ld, 
 			   			streams);
-			gpu_time1 = magma_wtime() - gpu_time;
+			gpu_time1 = magma_wtime() - gpu_time1;
 			//cout << gpu_time <<"	";
 
 
@@ -159,7 +159,7 @@ void benchmark(double * A, int lda,
 			   			chk1, chk1_ld, 
 			   			chk2, chk2_ld, 
 			   			streams);
-			gpu_time2 = magma_wtime() - gpu_time;
+			gpu_time2 = magma_wtime() - gpu_time2;
 
 			if (gpu_time1 < gpu_time2) cout << "S ";
 			else cout <<"C ";
