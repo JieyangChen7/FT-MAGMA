@@ -188,6 +188,13 @@ magma_dgetrf_gpu(
         double * vd;
         int vd_ld;
 
+        double * v2;
+        int v2_ld;
+
+        double * vd2;
+        int vd2_ld;
+
+
         double * chk;
         int chk_ld;
 
@@ -228,15 +235,39 @@ magma_dgetrf_gpu(
             cout << "done." << endl;
 
 
+
+            /* initialize checksum vectors on CPU */
+            /* v2 =
+             * 1 1 
+             * 1 2  
+             * 1 3
+             * 1 4
+             */
+            cout << "checksum vectors initialization on CPU......"; 
+            magma_dmalloc_pinned(&v2, nb * 2 * sizeof(double));
+            v2_ld = nb;
+            for (int i = 0; i < nb; ++i) {
+                *(v2 + i) = 1;
+            }
+            for (int i = 0; i < nb; ++i) {
+                *(v2 + v2_ld + i) = i+1;
+            }
+            if(DEBUG) {
+                cout << "checksum vector on CPU:" << endl;
+                printMatrix_host(v2, v2_ld, nb, 2);
+            }
+            cout << "done." << endl;
+
+
             /* initialize checksum vectors on GPU */
             cout << "checksum vectors initialization on GPU......";
-            size_t vd_pitch = magma_roundup(2 * sizeof(double), 32);
-            vd_ld = vd_pitch / sizeof(double);  
-            magma_dmalloc(&vd, vd_pitch * nb * sizeof(double));
-            magma_dsetmatrix(2, nb, v, v_ld, vd, vd_ld);
+            size_t vd2_pitch = magma_roundup(nb * sizeof(double), 32);
+            vd2_ld = vd2_pitch / sizeof(double);  
+            magma_dmalloc(&vd2, vd2_pitch * 2 * sizeof(double));
+            magma_dsetmatrix(nb, 2, v2, v2_ld, vd2, vd2_ld);
             if(DEBUG) {
                 cout << "checksum vector on GPU:" << endl;
-                printMatrix_gpu(vd, vd_ld, 2, nb);
+                printMatrix_gpu(vd2, vd2_ld, nb, 2);
             }
             cout << "done." << endl;
 
