@@ -236,6 +236,20 @@ magma_dgetrf_gpu(
 
 
 
+            /* initialize checksum vectors on GPU */
+            cout << "checksum vectors initialization on GPU......";
+            size_t vd_pitch = magma_roundup(2 * sizeof(double), 32);
+            vd_ld = vd_pitch / sizeof(double);  
+            magma_dmalloc(&vd, vd_pitch * 2 * sizeof(double));
+            magma_dsetmatrix(2, nb, v, v_ld, vd, vd_ld);
+            if(DEBUG) {
+                cout << "checksum vector on GPU:" << endl;
+                printMatrix_gpu(vd, vd_ld, nb, 2);
+            }
+            cout << "done." << endl;
+
+
+
             /* initialize checksum vectors on CPU */
             /* v2 =
              * 1 1 
@@ -331,13 +345,13 @@ magma_dgetrf_gpu(
 
         cout << "banchmarking:" << endl;
 
-        // benchmark(dAT, lddat,
-        //        n, m, nb,
-        //        vd, vd_ld,
-        //        vd2, vd2_ld,
-        //        chk1d, chk1d_ld, 
-        //        chk2d, chk2d_ld, 
-        //        stream);
+        benchmark(dAT, lddat,
+               n, m, nb,
+               vd, vd_ld,
+               vd2, vd2_ld,
+               chk1d, chk1d_ld, 
+               chk2d, chk2d_ld, 
+               stream);
 
         cout << "start computation" << endl;
         for( j=0; j < s; j++ ) {

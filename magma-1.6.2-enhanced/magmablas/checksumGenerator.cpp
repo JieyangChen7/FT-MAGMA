@@ -225,25 +225,25 @@ void benchmark(double * A, int lda,
 			gpu_time2 = magma_wtime() - gpu_time2;
 
 
-			// gpu_time3 = magma_wtime();
-			// recalculateChecksum(A, lda,
-			// 			i, j, chk_nb,
-			// 			vd2, vd2_ld,
-			//    			chk1, chk1_ld, 
-			//    			chk2, chk2_ld, 
-			//    			streams);
-			// gpu_time3 = magma_wtime() - gpu_time3;
-			// //cout << gpu_time <<"	";
+			gpu_time3 = magma_wtime();
+			recalculateChecksum(A, lda,
+						i, j, chk_nb,
+						vd2, vd2_ld,
+			   			chk1, chk1_ld, 
+			   			chk2, chk2_ld, 
+			   			streams);
+			gpu_time3 = magma_wtime() - gpu_time3;
+			//cout << gpu_time <<"	";
 
 
-			// gpu_time4 = magma_wtime();
-			// recalculateChecksum2(A, lda,
-			// 			i, j, chk_nb,
-			// 			vd2, vd2_ld,
-			//    			chk1, chk1_ld, 
-			//    			chk2, chk2_ld, 
-			//    			streams);
-			// gpu_time4 = magma_wtime() - gpu_time4;
+			gpu_time4 = magma_wtime();
+			recalculateChecksum2(A, lda,
+						i, j, chk_nb,
+						vd2, vd2_ld,
+			   			chk1, chk1_ld, 
+			   			chk2, chk2_ld, 
+			   			streams);
+			gpu_time4 = magma_wtime() - gpu_time4;
 
 			double min_time = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
 
