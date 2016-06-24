@@ -248,12 +248,12 @@ magma_dgetrf_gpu(
             cout << "done." << endl;
 
             /* allocate space for reclaculated checksum on GPU */
-            size_t chk1d_pitch = magma_roundup((n / nb) * sizeof(double), 32);
+            size_t chk1d_pitch = magma_roundup(2 * (n / nb) * sizeof(double), 32);
             chk1d_ld = chk1d_pitch / sizeof(double);
             magma_dmalloc(&chk1d, chk1d_pitch * m);
             
             cout << "allocate space for recalculated checksum on GPU......";
-            size_t chk2d_pitch = magma_roundup((n / nb) * sizeof(double), 32);
+            size_t chk2d_pitch = magma_roundup(2 * (n / nb) * sizeof(double), 32);
             chk2d_ld = chk2d_pitch / sizeof(double);
             magma_dmalloc(&chk2d, chk2d_pitch * m);
             cout << "done." << endl;
@@ -295,6 +295,17 @@ magma_dgetrf_gpu(
 
 
         } 
+
+
+
+        cout << "banchmarking:" << endl;
+
+        benchmark(A, da,
+               m, n, chk_nb,
+               vd, vd_ld,
+               chk1, chk1_ld, 
+               chk2, chk2_ld, 
+               streams);
 
         cout << "start computation" << endl;
         for( j=0; j < s; j++ ) {

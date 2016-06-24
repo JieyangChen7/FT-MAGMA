@@ -104,3 +104,63 @@ void recalculateChecksum(double * A, int lda,
 
 
 }
+
+
+
+void recalculateChecksum2(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb) {
+		magmablasSetKernelStream(streams[1]);
+		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+					2, m, n,
+					//2, B + i, B,
+					MAGMA_D_ONE, vd, vd_ld,
+					matrix + i, ld,
+					MAGMA_D_ZERO, chk1 + (i / B) * 2, chk1_ld);		
+	}
+	
+	cudaStreamSynchronize(streams[1]);
+}
+
+
+void benchmark(double * A, int lda,
+			   int m, int n, int chk_nb,
+			   double * vd, int vd_ld,
+			   double * chk1, int chk1_ld, 
+			   double * chk2, int chk2_ld, 
+			   magma_queue_t * streams
+			   ) ｛
+	for (int i = chk_nb; i < m; i += chk_nb) {
+		cout << "[" << chk_nb << "]:	";
+		for (int j = chk_nb; j < n; j += chk_nb) {
+			double gpu_time = magma_wtime();
+			recalculateChecksum(double * A, int lda,
+						i, j, chk_nb,
+						vd, vd_ld,
+			   			chk1, chk1_ld, 
+			   			chk2, chk2_ld, 
+			   			streams);
+			gpu_time = magma_wtime() - gpu_time;
+			cout << gpu_time <<"	";
+		}
+		cout << endl;
+	}
+
+
+
+
+
+
+
+
+
+
+｝
+	
+
+
