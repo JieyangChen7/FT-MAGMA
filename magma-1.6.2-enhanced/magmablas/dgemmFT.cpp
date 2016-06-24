@@ -159,19 +159,19 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		// 					chk1, chk1_ld,
 		// 					chk2, chk2_ld,
 		// 					streams);
-		if (DEBUG) {
+		// if (DEBUG) {
 
-			cout<<"[dgemm] C before dgemm:"<<endl;
+		// 	cout<<"[dgemm] C before dgemm:"<<endl;
 
-			printMatrix_gpu(C, ldc, mem_row, mem_col);
+		// 	printMatrix_gpu(C, ldc, mem_row, mem_col);
 
-			cout<<"[dgemm] recalculated checksum of C after dgemm:"<<endl;
-			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
-			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
+		// 	cout<<"[dgemm] recalculated checksum of C after dgemm:"<<endl;
+		// 	printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
+		// 	printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
 		
-			cout<<"[dgemm] updated checksum of C after dgemm:"<<endl;
-			printMatrix_gpu(checksumC, checksumC_ld, (mem_row / chk_nb) * 2, mem_col);
-		}
+		// 	cout<<"[dgemm] updated checksum of C after dgemm:"<<endl;
+		// 	printMatrix_gpu(checksumC, checksumC_ld, (mem_row / chk_nb) * 2, mem_col);
+		// }
 
 
 

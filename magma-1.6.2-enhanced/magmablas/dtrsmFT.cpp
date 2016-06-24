@@ -75,13 +75,13 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		// 					chk1, chk1_ld,
 		// 					chk2, chk2_ld,
 		// 					streams);
-		if (DEBUG) {
-			cout<<"[trsm] recalculated checksum of B after trsm:"<<endl;
-			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
-			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
+		// if (DEBUG) {
+		// 	cout<<"[trsm] recalculated checksum of B after trsm:"<<endl;
+		// 	printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
+		// 	printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
 		
-			cout<<"[trsm] updated checksum of B after trsm:"<<endl;
-			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / chk_nb) * 2, mem_col);
-		}
+		// 	cout<<"[trsm] updated checksum of B after trsm:"<<endl;
+		// 	printMatrix_gpu(checksumB, checksumB_ld, (mem_row / chk_nb) * 2, mem_col);
+		// }
 	}
 }
