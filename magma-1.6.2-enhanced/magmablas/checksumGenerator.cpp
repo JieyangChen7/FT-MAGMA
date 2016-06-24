@@ -141,7 +141,7 @@ void benchmark(double * A, int lda,
 	for (int i = chk_nb; i < m; i += chk_nb) {
 		cout << "[" << i << "]:	";
 		for (int j = chk_nb; j < n; j += chk_nb) {
-			double gpu_time1 = magma_wtime();
+			gpu_time1 = magma_wtime();
 			recalculateChecksum(A, lda,
 						i, j, chk_nb,
 						vd, vd_ld,
