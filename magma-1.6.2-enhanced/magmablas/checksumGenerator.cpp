@@ -91,16 +91,18 @@ void recalculateChecksum(double * A, int lda,
 		magma_queue_t * streams) {
 
 	for (int i = 0; i < m; i += chk_nb) {
-		magmablasSetKernelStream(streams[2]);
+		magmablasSetKernelStream(streams[1]);
+		//magmablasSetKernelStream(streams[2]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
-		magmablasSetKernelStream(streams[3]);
+		//magmablasSetKernelStream(streams[3]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
 	}
+	cudaStreamSynchronize(streams[1]);
 	
-	cudaStreamSynchronize(streams[2]);
-	cudaStreamSynchronize(streams[3]);
+	//cudaStreamSynchronize(streams[2]);
+	//cudaStreamSynchronize(streams[3]);
 
 
 }
