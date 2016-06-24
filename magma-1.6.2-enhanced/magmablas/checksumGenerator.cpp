@@ -197,10 +197,10 @@ void benchmark(double * A, int lda,
 			   magma_queue_t * streams
 			   ) {
 //	cout << "Separated:" << endl;
-	double gpu_time1 = 0.0;
-	double gpu_time2 = 0.0;
-	double gpu_time3 = 0.0;
-	double gpu_time4 = 0.0;
+	double gpu_time1 = 1000.0;
+	double gpu_time2 = 1000.0;
+	double gpu_time3 = 1000.0;
+	double gpu_time4 = 1000.0;
 	for (int i = chk_nb; i < m; i += chk_nb) {
 		cout << "[" << i << "]:	";
 		for (int j = chk_nb; j < n; j += chk_nb) {
@@ -236,20 +236,20 @@ void benchmark(double * A, int lda,
 			// //cout << gpu_time <<"	";
 
 
-			gpu_time4 = magma_wtime();
-			recalculateChecksum2(A, lda,
-						i, j, chk_nb,
-						vd2, vd2_ld,
-			   			chk1, chk1_ld, 
-			   			chk2, chk2_ld, 
-			   			streams);
-			gpu_time4 = magma_wtime() - gpu_time4;
+			// gpu_time4 = magma_wtime();
+			// recalculateChecksum2(A, lda,
+			// 			i, j, chk_nb,
+			// 			vd2, vd2_ld,
+			//    			chk1, chk1_ld, 
+			//    			chk2, chk2_ld, 
+			//    			streams);
+			// gpu_time4 = magma_wtime() - gpu_time4;
 
 			double min_time = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
 
 			if (min_time == gpu_time1) cout << "1 ";
 			else if (min_time == gpu_time2) cout << "2 ";
-		//	else if  (min_time == gpu_time3) cout << "3 ";
+			else if  (min_time == gpu_time3) cout << "3 ";
 			else if  (min_time == gpu_time4) cout << "4 ";
 			// if (gpu_time1 < gpu_time2) cout << "S ";
 			// else cout <<"C ";
