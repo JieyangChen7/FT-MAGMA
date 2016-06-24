@@ -331,13 +331,13 @@ magma_dgetrf_gpu(
 
         cout << "banchmarking:" << endl;
 
-        benchmark(dAT, lddat,
-               n, m, nb,
-               vd, vd_ld,
-               vd2, vd2_ld,
-               chk1d, chk1d_ld, 
-               chk2d, chk2d_ld, 
-               stream);
+        // benchmark(dAT, lddat,
+        //        n, m, nb,
+        //        vd, vd_ld,
+        //        vd2, vd2_ld,
+        //        chk1d, chk1d_ld, 
+        //        chk2d, chk2d_ld, 
+        //        stream);
 
         cout << "start computation" << endl;
         for( j=0; j < s; j++ ) {
