@@ -300,12 +300,12 @@ magma_dgetrf_gpu(
 
         cout << "banchmarking:" << endl;
 
-        benchmark(A, da,
-               m, n, chk_nb,
+        benchmark(dAT, lda,
+               n, m, nb,
                vd, vd_ld,
-               chk1, chk1_ld, 
-               chk2, chk2_ld, 
-               streams);
+               chk1d, chk1d_ld, 
+               chk2d, chk2d_ld, 
+               stream);
 
         cout << "start computation" << endl;
         for( j=0; j < s; j++ ) {
