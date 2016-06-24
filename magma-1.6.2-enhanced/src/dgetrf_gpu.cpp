@@ -203,6 +203,11 @@ magma_dgetrf_gpu(
         int chk1d_ld;
         int chk2d_ld;
 
+        double * chk21d;
+        double * chk22d;
+        int chk21d_ld;
+        int chk22d_ld;
+
         double * checksum;
         int checksum_ld;
 
@@ -292,16 +297,33 @@ magma_dgetrf_gpu(
             work_chk_ld = maxm;
             cout << "done." << endl;
 
+             cout << "allocate space for recalculated checksum on GPU......";
             /* allocate space for reclaculated checksum on GPU */
             size_t chk1d_pitch = magma_roundup(2 * (n / nb) * sizeof(double), 32);
             chk1d_ld = chk1d_pitch / sizeof(double);
             magma_dmalloc(&chk1d, chk1d_pitch * m);
             
-            cout << "allocate space for recalculated checksum on GPU......";
+           
             size_t chk2d_pitch = magma_roundup(2 * (n / nb) * sizeof(double), 32);
             chk2d_ld = chk2d_pitch / sizeof(double);
             magma_dmalloc(&chk2d, chk2d_pitch * m);
             cout << "done." << endl;
+
+
+
+            cout << "allocate space for recalculated checksum on GPU......";
+            /* allocate space for reclaculated checksum on GPU */
+            size_t chk21d_pitch = magma_roundup( m * sizeof(double), 32);
+            chk21d_ld = chk21d_pitch / sizeof(double);
+            magma_dmalloc(&chk21d, chk21d_pitch * 2 * (n / nb));
+            
+           
+            size_t chk22d_pitch = magma_roundup(m * sizeof(double), 32);
+            chk22d_ld = chk22d_pitch / sizeof(double);
+            magma_dmalloc(&chk22d, chk22d_pitch * 2 * (n / nb));
+            cout << "done." << endl;
+
+
 
             /* initialize checksums */
             cout << "checksums initiallization......";
@@ -345,13 +367,16 @@ magma_dgetrf_gpu(
 
         cout << "banchmarking:" << endl;
 
-        benchmark(dAT, lddat,
+        void benchmark(dAT, lddat,
                n, m, nb,
                vd, vd_ld,
                vd2, vd2_ld,
-               chk1d, chk1d_ld, 
-               chk2d, chk2d_ld, 
-               stream);
+               chk1, chk1_ld, 
+               chk2, chk2_ld, 
+               chk21, chk21_ld, 
+               chk22, chk22_ld, 
+               stream
+               );
 
         cout << "start computation" << endl;
         for( j=0; j < s; j++ ) {

@@ -33,8 +33,10 @@ void benchmark(double * A, int lda,
 			   double * vd2, int vd2_ld,
 			   double * chk1, int chk1_ld, 
 			   double * chk2, int chk2_ld, 
+			   double * chk21, int chk21_ld, 
+			   double * chk22, int chk22_ld, 
 			   magma_queue_t * streams
-			   );
+			   ) ;
 
 void dpotrfFT(double * A, int lda, int n, int * info,
 				double * chksum, int chksum_ld,

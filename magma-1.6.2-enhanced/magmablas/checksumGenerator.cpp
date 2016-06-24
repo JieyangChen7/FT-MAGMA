@@ -84,6 +84,10 @@ void initializeChecksum(double * matrix, int ld,
 //recalculate column checksums
 //M: number of rows of A
 //N: numner of cols of A
+//non-col-read-A
+//col-read-B
+//non-col-write-C
+//separated
 void recalculateChecksum(double * A, int lda,
 		int m, int n, int chk_nb,
 		double * vd, int vd_ld,
@@ -109,7 +113,10 @@ void recalculateChecksum(double * A, int lda,
 }
 
 
-
+//non-col-read-A
+//col-read-B
+//non-col-write-C
+//combined
 void recalculateChecksum2(double * A, int lda,
 		int m, int n, int chk_nb,
 		double * vd, int vd_ld,
@@ -120,8 +127,7 @@ void recalculateChecksum2(double * A, int lda,
 	for (int i = 0; i < m; i += chk_nb) {
 		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-					2, m, n,
-					//2, B + i, B,
+					2, n, chk_nb,
 					MAGMA_D_ONE, vd, vd_ld,
 					A + i, lda,
 					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
@@ -134,9 +140,10 @@ void recalculateChecksum2(double * A, int lda,
 
 
 
-//recalculate column checksums
-//M: number of rows of A
-//N: numner of cols of A
+//col-read-A
+//col-read-B
+//non-col-write-C
+//separated
 void recalculateChecksum3(double * A, int lda,
 		int m, int n, int chk_nb,
 		double * vd, int vd_ld,
@@ -162,8 +169,117 @@ void recalculateChecksum3(double * A, int lda,
 }
 
 
-
+//col-read-A
+//col-read-B
+//non-col-write-C
+//combined
 void recalculateChecksum4(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb) {
+		magmablasSetKernelStream(streams[1]);
+		magma_dgemm(MagmaTrans, MagmaNoTrans,
+					2, n, chk_nb,
+					MAGMA_D_ONE, vd, vd_ld,
+					A + i, lda,
+					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
+	}
+	
+	cudaStreamSynchronize(streams[1]);
+}
+
+
+
+//non-col-read-A
+//col-read-B
+//col-write-C
+//separated
+void recalculateChecksum5(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb) {
+		//magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[2]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, 1 );
+		magmablasSetKernelStream(streams[3]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, 1 );
+	}
+	//cudaStreamSynchronize(streams[1]);
+	
+	cudaStreamSynchronize(streams[2]);
+	cudaStreamSynchronize(streams[3]);
+
+
+}
+
+
+//non-col-read-A
+//col-read-B
+//col-write-C
+//combined
+void recalculateChecksum6(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb) {
+		magmablasSetKernelStream(streams[1]);
+		magma_dgemm(MagmaTrans, MagmaTrans,
+					n, 2, chk_nb,
+					MAGMA_D_ONE, vd, vd_ld,
+					A + i, lda,
+					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2 * chk1_ld, chk1_ld);		
+	}
+	
+	cudaStreamSynchronize(streams[1]);
+}
+
+
+
+
+
+//recalculate column checksums
+//M: number of rows of A
+//N: numner of cols of A
+void recalculateChecksum7(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb) {
+		//magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[2]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
+		magmablasSetKernelStream(streams[3]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+	}
+	//cudaStreamSynchronize(streams[1]);
+	
+	cudaStreamSynchronize(streams[2]);
+	cudaStreamSynchronize(streams[3]);
+
+
+}
+
+
+
+void recalculateChecksum8(double * A, int lda,
 		int m, int n, int chk_nb,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
@@ -184,16 +300,14 @@ void recalculateChecksum4(double * A, int lda,
 }
 
 
-
-
-
-
 void benchmark(double * A, int lda,
 			   int m, int n, int chk_nb,
 			   double * vd, int vd_ld,
 			   double * vd2, int vd2_ld,
 			   double * chk1, int chk1_ld, 
 			   double * chk2, int chk2_ld, 
+			   double * chk21, int chk21_ld, 
+			   double * chk22, int chk22_ld, 
 			   magma_queue_t * streams
 			   ) {
 //	cout << "Separated:" << endl;
