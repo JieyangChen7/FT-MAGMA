@@ -34,18 +34,6 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	if (FT && VERIFY) {
 						
 		//verify B before use
-		//reclaculate checksums of B on GPU
-		//magmablasSetKernelStream(streams[1]);
-		
-		// magmablasSetKernelStream(streams[2]);
-		// magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-		// 		B, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
-		// magmablasSetKernelStream(streams[3]);
-		// magma_dgemv(MagmaTrans, n, k, MAGMA_D_ONE,
-		// 		B, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
-
-
-		
 		if (transB == MagmaNoTrans) {
 			mem_row = k;
 			mem_col = n;
@@ -148,7 +136,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	
 	if(FT){	
 		//magmablasSetKernelStream(streams[1]);
-		magmablasSetKernelStream(streams[4]);
+		//magmablasSetKernelStream(streams[4]);
 		//this only works if A is not trans, B can be trans or not trans
 		//we can further work on this to support trans A.
 		magma_dgemm(transA, transB,
@@ -158,19 +146,19 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 					beta,
 					checksumC, checksumC_ld );
 
-		cudaStreamSynchronize(streams[1]);
-		cudaStreamSynchronize(streams[4]);
+		// cudaStreamSynchronize(streams[1]);
+		// cudaStreamSynchronize(streams[4]);
 
-		mem_row = m;
-		mem_col = n;
+		// mem_row = m;
+		// mem_col = n;
 		
-		recalculateChecksum(C, ldc,
-							mem_row, mem_col,
-							chk_nb,
-							vd, vd_ld,
-							chk1, chk1_ld,
-							chk2, chk2_ld,
-							streams);
+		// recalculateChecksum(C, ldc,
+		// 					mem_row, mem_col,
+		// 					chk_nb,
+		// 					vd, vd_ld,
+		// 					chk1, chk1_ld,
+		// 					chk2, chk2_ld,
+		// 					streams);
 		if (DEBUG) {
 
 			cout<<"[dgemm] C before dgemm:"<<endl;

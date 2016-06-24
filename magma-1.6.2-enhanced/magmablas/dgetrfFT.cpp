@@ -25,8 +25,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
     double zero = 0;
     double negone = -1;
 
-    cout << "[dgetrf] to be updated matrix:" << endl;
-    printMatrix_host(A, lda,  m, n);
+    if (DEBUG) {
+        cout << "[dgetrf] to be updated matrix:" << endl;
+        printMatrix_host(A, lda,  m, n);
+    }
 
 
     if (FT & VERIFY) {

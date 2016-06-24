@@ -108,7 +108,7 @@ magma_dgetrf_gpu(
     nb     = magma_get_dgetrf_nb(m);
 
     /* debug use only */
-    nb = 4;
+    //nb = 4;
 
     s      = mindim / nb;
 
@@ -179,9 +179,9 @@ magma_dgetrf_gpu(
         }
   
         /* flags */
-        bool FT = true;
-        bool DEBUG = true;
-        bool VERIFY = true;
+        bool FT = false;
+        bool DEBUG = false;
+        bool VERIFY = false;
         double * v;
         int v_ld;
 
@@ -396,11 +396,13 @@ magma_dgetrf_gpu(
             if (FT) {
                 // also do row swap on checksums
                 magmablas_dlaswp( (n/nb)*2, checksum, checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
-                cout<<"[ipiv] ipiv:"<<endl;
-                for (int i = 0; i < m; i++) {
-                    cout << ipiv[i] << " ";
+                if (DEBUG) {
+                    cout<<"[ipiv] ipiv:"<<endl;
+                    for (int i = 0; i < m; i++) {
+                        cout << ipiv[i] << " ";
+                    }
+                    cout << endl;
                 }
-                cout << endl;
 
             }
 
