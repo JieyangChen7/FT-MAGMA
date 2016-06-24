@@ -135,40 +135,58 @@ void benchmark(double * A, int lda,
 			   double * chk2, int chk2_ld, 
 			   magma_queue_t * streams
 			   ) {
-	cout << "Separated:" << endl;
+//	cout << "Separated:" << endl;
+	double gpu_time1 = 0.0;
+	double gpu_time2 = 0.0;
 	for (int i = chk_nb; i < m; i += chk_nb) {
 		cout << "[" << i << "]:	";
 		for (int j = chk_nb; j < n; j += chk_nb) {
-			double gpu_time = magma_wtime();
+			double gpu_time1 = magma_wtime();
 			recalculateChecksum(A, lda,
 						i, j, chk_nb,
 						vd, vd_ld,
 			   			chk1, chk1_ld, 
 			   			chk2, chk2_ld, 
 			   			streams);
-			gpu_time = magma_wtime() - gpu_time;
-			cout << gpu_time <<"	";
-		}
-		cout << endl;
-	}
+			gpu_time1 = magma_wtime() - gpu_time;
+			//cout << gpu_time <<"	";
 
-cout << "Combined:" << endl;
 
-for (int i = chk_nb; i < m; i += chk_nb) {
-		cout << "[" << i << "]:	";
-		for (int j = chk_nb; j < n; j += chk_nb) {
-			double gpu_time = magma_wtime();
+			gpu_time2 = magma_wtime();
 			recalculateChecksum2(A, lda,
 						i, j, chk_nb,
 						vd, vd_ld,
 			   			chk1, chk1_ld, 
 			   			chk2, chk2_ld, 
 			   			streams);
-			gpu_time = magma_wtime() - gpu_time;
-			cout << gpu_time <<"	";
+			gpu_time2 = magma_wtime() - gpu_time;
+
+			if (gpu_time1 < gpu_time2) cout << "S ";
+			else cout <<"C ";
 		}
 		cout << endl;
 	}
+
+
+// cout << "Combined:" << endl;
+// double gpu_time2 = 0.0
+// for (int i = chk_nb; i < m; i += chk_nb) {
+// 		cout << "[" << i << "]:	";
+// 		for (int j = chk_nb; j < n; j += chk_nb) {
+// 			gpu_time2 = magma_wtime();
+// 			recalculateChecksum2(A, lda,
+// 						i, j, chk_nb,
+// 						vd, vd_ld,
+// 			   			chk1, chk1_ld, 
+// 			   			chk2, chk2_ld, 
+// 			   			streams);
+// 			gpu_time2 = magma_wtime() - gpu_time;
+// 			//cout << gpu_time <<"	";
+// 		}
+// 		cout << endl;
+// 	}
+
+
 
 }
 	
