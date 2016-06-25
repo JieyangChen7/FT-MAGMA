@@ -335,9 +335,9 @@ void benchmark(double * A, int lda,
 	double gpu_time8 = 1000.0;
 	int K = 1;
 cudaProfilerStart();
-	for (int i = chk_nb; i < 1024; i += chk_nb) {
+	for (int i = chk_nb; i < 5120; i += chk_nb) {
 		cout << "[" << i << "]:	";
-		for (int j = chk_nb; j < 1024; j += chk_nb) {
+		for (int j = chk_nb; j < 5120; j += chk_nb) {
 			// gpu_time1 = magma_wtime();
 			// for (int k = 0; k < K; k ++) {
 			// recalculateChecksum(A, lda,
