@@ -245,7 +245,7 @@ magma_dgetrf_gpu(
             cout << "checksum vectors initialization on GPU......";
             size_t vd_pitch = magma_roundup(2 * sizeof(double), 32);
             vd_ld = vd_pitch / sizeof(double);  
-            magma_dmalloc(&vd, vd_pitch * 2 * sizeof(double));
+            magma_dmalloc(&vd, vd_pitch * nb * sizeof(double));
             magma_dsetmatrix(2, nb, v, v_ld, vd, vd_ld);
             if(DEBUG) {
                 cout << "checksum vector on GPU:" << endl;
