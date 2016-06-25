@@ -335,9 +335,9 @@ void benchmark(double * A, int lda,
 	double gpu_time8 = 1000.0;
 	int K = 1;
 cudaProfilerStart();
-	for (int i = chk_nb; i < 10240; i += chk_nb) {
+	for (int i = chk_nb; i < 1024; i += chk_nb) {
 		cout << "[" << i << "]:	";
-		for (int j = chk_nb; j < 10240; j += chk_nb) {
+		for (int j = chk_nb; j < 1024; j += chk_nb) {
 			// gpu_time1 = magma_wtime();
 			// for (int k = 0; k < K; k ++) {
 			// recalculateChecksum(A, lda,
@@ -389,16 +389,16 @@ cudaProfilerStart();
 			// gpu_time4 = magma_wtime() - gpu_time4;
 
 
-			// gpu_time5 = magma_wtime();
-			// for (int k = 0; k < K; k ++){
-			// recalculateChecksum(A, lda,
-			// 			i, j, chk_nb,
-			// 			vd, vd_ld,
-			//    			chk21, chk21_ld, 
-			//    			chk22, chk22_ld, 
-			//    			streams);
-			// }
-			// gpu_time5 = magma_wtime() - gpu_time5;
+			gpu_time5 = magma_wtime();
+			for (int k = 0; k < K; k ++){
+			recalculateChecksum(A, lda,
+						i, j, chk_nb,
+						vd, vd_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+			}
+			gpu_time5 = magma_wtime() - gpu_time5;
 
 
 
@@ -427,16 +427,16 @@ cudaProfilerStart();
 			
 
 
-			gpu_time8 = magma_wtime();
-			for (int k = 0; k < K; k ++){
-			recalculateChecksum2(A, lda,
-						i, j, chk_nb,
-						vd2, vd2_ld,
-			   			chk21, chk21_ld, 
-			   			chk22, chk22_ld, 
-			   			streams);
-			}
-			gpu_time8 = magma_wtime() - gpu_time8;
+			// gpu_time8 = magma_wtime();
+			// for (int k = 0; k < K; k ++){
+			// recalculateChecksum2(A, lda,
+			// 			i, j, chk_nb,
+			// 			vd2, vd2_ld,
+			//    			chk21, chk21_ld, 
+			//    			chk22, chk22_ld, 
+			//    			streams);
+			// }
+			// gpu_time8 = magma_wtime() - gpu_time8;
 
 			double min_time1 = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
 			double min_time2 = fmin(gpu_time5, fmin(gpu_time6, fmin(gpu_time7, gpu_time8)));
