@@ -41,7 +41,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_row = n;
 			mem_col = k;
 		}
-		recalculateChecksum(B, ldb,
+		recalculateChecksum2(B, ldb,
 							mem_row, mem_col,
 							chk_nb,
 							vd, vd_ld,
@@ -73,7 +73,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_row = k;
 			mem_col = m;
 		}
-		recalculateChecksum(A, lda,
+		recalculateChecksum2(A, lda,
 							mem_row, mem_col,
 							chk_nb,
 							vd, vd_ld,
@@ -99,7 +99,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		mem_row = m;
 		mem_col = n;
 		
-		recalculateChecksum(C, ldc,
+		recalculateChecksum2(C, ldc,
 							mem_row, mem_col,
 							chk_nb,
 							vd, vd_ld,
