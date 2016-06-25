@@ -402,41 +402,41 @@ cudaProfilerStart();
 
 
 
-			gpu_time6 = magma_wtime();
-			for (int k = 0; k < K; k ++){
-			recalculateChecksum6(A, lda,
-						i, j, chk_nb,
-						vd, vd_ld,
-			   			chk21, chk21_ld, 
-			   			chk22, chk22_ld, 
-			   			streams);
-			}
-			gpu_time6 = magma_wtime() - gpu_time6;
+			// gpu_time6 = magma_wtime();
+			// for (int k = 0; k < K; k ++){
+			// recalculateChecksum6(A, lda,
+			// 			i, j, chk_nb,
+			// 			vd, vd_ld,
+			//    			chk21, chk21_ld, 
+			//    			chk22, chk22_ld, 
+			//    			streams);
+			// }
+			// gpu_time6 = magma_wtime() - gpu_time6;
 
 
-			gpu_time7 = magma_wtime();
-			for (int k = 0; k < K; k ++){
-			recalculateChecksum7(A, lda,
-						i, j, chk_nb,
-						vd2, vd2_ld,
-			   			chk21, chk21_ld, 
-			   			chk22, chk22_ld, 
-			   			streams);
-			}
-			gpu_time7 = magma_wtime() - gpu_time7;
+			// gpu_time7 = magma_wtime();
+			// for (int k = 0; k < K; k ++){
+			// recalculateChecksum7(A, lda,
+			// 			i, j, chk_nb,
+			// 			vd2, vd2_ld,
+			//    			chk21, chk21_ld, 
+			//    			chk22, chk22_ld, 
+			//    			streams);
+			// }
+			// gpu_time7 = magma_wtime() - gpu_time7;
 			
 
 
-			gpu_time8 = magma_wtime();
-			for (int k = 0; k < K; k ++){
-			recalculateChecksum8(A, lda,
-						i, j, chk_nb,
-						vd2, vd2_ld,
-			   			chk21, chk21_ld, 
-			   			chk22, chk22_ld, 
-			   			streams);
-			}
-			gpu_time8 = magma_wtime() - gpu_time8;
+			// gpu_time8 = magma_wtime();
+			// for (int k = 0; k < K; k ++){
+			// recalculateChecksum8(A, lda,
+			// 			i, j, chk_nb,
+			// 			vd2, vd2_ld,
+			//    			chk21, chk21_ld, 
+			//    			chk22, chk22_ld, 
+			//    			streams);
+			// }
+			// gpu_time8 = magma_wtime() - gpu_time8;
 
 			double min_time1 = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
 			double min_time2 = fmin(gpu_time5, fmin(gpu_time6, fmin(gpu_time7, gpu_time8)));
