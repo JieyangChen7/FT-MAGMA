@@ -6,7 +6,7 @@ rm profile
 touch profile
 chmod 777 profile
 
-nvprof --profile-from-start off -o profile ./testing/testing_dgetrf -N 20480,20480
+nvprof --profile-from-start off -o profile ./testing/testing_dgetrf_gpu -N 20480,20480
 
 git add profile
 git commit -m "updated profile"
