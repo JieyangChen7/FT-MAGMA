@@ -100,14 +100,14 @@ void recalculateChecksum(double * A, int lda,
 		magmablasSetKernelStream(streams[1]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
-		magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[2]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
 
-		magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[3]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i + chk_nb, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) + 1, chk1_ld );
-		magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[4]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i + chk_nb, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) + 1, chk2_ld );
 	}
