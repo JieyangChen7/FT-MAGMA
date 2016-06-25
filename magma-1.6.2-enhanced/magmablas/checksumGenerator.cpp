@@ -2,6 +2,7 @@
 #include "FT.h"
 #include <iostream>
 #include <cmath>
+#include "cuda_profiler_api.h"
 using namespace std;
 //initialize checksum
 //M: number of rows
@@ -333,7 +334,7 @@ void benchmark(double * A, int lda,
 	double gpu_time7 = 1000.0;
 	double gpu_time8 = 1000.0;
 	int K = 1;
-
+cudaProfilerStart();
 	for (int i = chk_nb; i < 2048; i += chk_nb) {
 		cout << "[" << i << "]:	";
 		for (int j = chk_nb; j < 2048; j += chk_nb) {
@@ -464,6 +465,7 @@ void benchmark(double * A, int lda,
 		}
 		cout << endl;
 	}
+	cudaProfilerStop();
 
 
 // cout << "Combined:" << endl;

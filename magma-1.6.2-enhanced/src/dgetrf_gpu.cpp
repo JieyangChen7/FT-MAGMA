@@ -11,7 +11,7 @@
 #include "common_magma.h"
 #include <iostream>
 #include "FT.h"       
-#include "cuda_profiler_api.h"
+
 using namespace std;
 
 /**
@@ -367,7 +367,7 @@ magma_dgetrf_gpu(
 
 
         cout << "banchmarking:" << endl;
-        cudaProfilerStart();
+
         benchmark(dAT, lddat,
                n, m, nb,
                vd, vd_ld,
@@ -378,8 +378,6 @@ magma_dgetrf_gpu(
                chk22d, chk22d_ld, 
                stream
                );
-        cudaProfilerStop();
-
 
         cout << "start computation" << endl;
         for( j=0; j < s; j++ ) {
