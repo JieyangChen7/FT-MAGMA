@@ -333,10 +333,10 @@ void benchmark(double * A, int lda,
 	double gpu_time7 = 1000.0;
 	double gpu_time8 = 1000.0;
 	int K = 1;
-	
-	for (int i = chk_nb; i < m; i += chk_nb) {
+
+	for (int i = chk_nb; i < 2048; i += chk_nb) {
 		cout << "[" << i << "]:	";
-		for (int j = chk_nb; j < n; j += chk_nb) {
+		for (int j = chk_nb; j < 2048; j += chk_nb) {
 			gpu_time1 = magma_wtime();
 			for (int k = 0; k < K; k ++) {
 			recalculateChecksum(A, lda,
