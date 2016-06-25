@@ -111,10 +111,12 @@ void recalculateChecksum(double * A, int lda,
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i + chk_nb, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) + 1, chk2_ld );
 	}
-	//cudaStreamSynchronize(streams[1]);
+	cudaStreamSynchronize(streams[1]);
 	
 	cudaStreamSynchronize(streams[2]);
 	cudaStreamSynchronize(streams[3]);
+
+	cudaStreamSynchronize(streams[4]);
 
 
 }
