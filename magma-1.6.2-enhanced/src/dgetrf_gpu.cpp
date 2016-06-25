@@ -367,7 +367,7 @@ magma_dgetrf_gpu(
 
         cout << "banchmarking:" << endl;
 
-        void benchmark(dAT, lddat,
+        benchmark(dAT, lddat,
                n, m, nb,
                vd, vd_ld,
                vd2, vd2_ld,
