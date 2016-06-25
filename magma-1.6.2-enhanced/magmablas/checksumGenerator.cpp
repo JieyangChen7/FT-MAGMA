@@ -399,7 +399,7 @@ cudaProfilerStart();
 			   			streams);
 			}
 			gpu_time5 = magma_wtime() - gpu_time5;
-			cout << gpu_time <<"	";
+
 
 
 			// gpu_time6 = magma_wtime();
