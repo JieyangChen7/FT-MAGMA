@@ -365,7 +365,7 @@ cudaProfilerStart();
 
 			gpu_time3 = magma_wtime();
 			for (int k = 0; k < K; k ++){
-			recalculateChecksum(A, lda,
+			recalculateChecksum3(A, lda,
 						i, j, chk_nb,
 						vd2, vd2_ld,
 			   			chk1, chk1_ld, 
@@ -378,7 +378,7 @@ cudaProfilerStart();
 
 			gpu_time4 = magma_wtime();
 			for (int k = 0; k < K; k ++){
-			recalculateChecksum2(A, lda,
+			recalculateChecksum4(A, lda,
 						i, j, chk_nb,
 						vd2, vd2_ld,
 			   			chk1, chk1_ld, 
