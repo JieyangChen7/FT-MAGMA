@@ -250,9 +250,10 @@ void recalculateChecksum6(double * A, int lda,
 
 
 
-//recalculate column checksums
-//M: number of rows of A
-//N: numner of cols of A
+//col-read-A
+//col-read-B
+//col-write-C
+//separated
 void recalculateChecksum7(double * A, int lda,
 		int m, int n, int chk_nb,
 		double * vd, int vd_ld,
@@ -264,10 +265,10 @@ void recalculateChecksum7(double * A, int lda,
 		//magmablasSetKernelStream(streams[1]);
 		magmablasSetKernelStream(streams[2]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
+				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, 1 );
 		magmablasSetKernelStream(streams[3]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, 1 );
 	}
 	//cudaStreamSynchronize(streams[1]);
 	
@@ -278,7 +279,10 @@ void recalculateChecksum7(double * A, int lda,
 }
 
 
-
+//col-read-A
+//col-read-B
+//col-write-C
+//combined
 void recalculateChecksum8(double * A, int lda,
 		int m, int n, int chk_nb,
 		double * vd, int vd_ld,
@@ -289,11 +293,11 @@ void recalculateChecksum8(double * A, int lda,
 	for (int i = 0; i < m; i += chk_nb) {
 		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
-					2, m, n,
+					n, 2, chk_nb,
 					//2, B + i, B,
 					MAGMA_D_ONE, vd, vd_ld,
 					A + i, lda,
-					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
+					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2 * chk1_ld, chk1_ld);		
 	}
 	
 	cudaStreamSynchronize(streams[1]);
@@ -315,6 +319,10 @@ void benchmark(double * A, int lda,
 	double gpu_time2 = 1000.0;
 	double gpu_time3 = 1000.0;
 	double gpu_time4 = 1000.0;
+	double gpu_time5 = 1000.0;
+	double gpu_time6 = 1000.0;
+	double gpu_time7 = 1000.0;
+	double gpu_time8 = 1000.0;
 	for (int i = chk_nb; i < m; i += chk_nb) {
 		cout << "[" << i << "]:	";
 		for (int j = chk_nb; j < n; j += chk_nb) {
@@ -359,12 +367,60 @@ void benchmark(double * A, int lda,
 			   			streams);
 			gpu_time4 = magma_wtime() - gpu_time4;
 
-			double min_time = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
+
+			gpu_time5 = magma_wtime();
+			recalculateChecksum(A, lda,
+						i, j, chk_nb,
+						vd, vd_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+			gpu_time5 = magma_wtime() - gpu_time5;
+			//cout << gpu_time <<"	";
+
+
+			gpu_time6 = magma_wtime();
+			recalculateChecksum2(A, lda,
+						i, j, chk_nb,
+						vd, vd_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+			gpu_time6 = magma_wtime() - gpu_time6;
+
+
+			gpu_time7 = magma_wtime();
+			recalculateChecksum(A, lda,
+						i, j, chk_nb,
+						vd2, vd2_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+			gpu_time7 = magma_wtime() - gpu_time7;
+			//cout << gpu_time <<"	";
+
+
+			gpu_time8 = magma_wtime();
+			recalculateChecksum2(A, lda,
+						i, j, chk_nb,
+						vd2, vd2_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+			gpu_time8 = magma_wtime() - gpu_time8;
+
+			double min_time1 = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
+			double min_time2 = fmin(gpu_time5, fmin(gpu_time6, fmin(gpu_time7, gpu_time8)));
+			double min_time = fmin(min_time1, min_time2);
 
 			if (min_time == gpu_time1) cout << "1 ";
 			else if (min_time == gpu_time2) cout << "2 ";
 			else if  (min_time == gpu_time3) cout << "3 ";
 			else if  (min_time == gpu_time4) cout << "4 ";
+			else if (min_time == gpu_time5) cout << "5 ";
+			else if  (min_time == gpu_time6) cout << "6 ";
+			else if  (min_time == gpu_time7) cout << "7 ";
+			else if  (min_time == gpu_time8) cout << "8 ";
 			// if (gpu_time1 < gpu_time2) cout << "S ";
 			// else cout <<"C ";
 		}
