@@ -371,10 +371,10 @@ magma_dgetrf_gpu(
                n, m, nb,
                vd, vd_ld,
                vd2, vd2_ld,
-               chk1, chk1_ld, 
-               chk2, chk2_ld, 
-               chk21, chk21_ld, 
-               chk22, chk22_ld, 
+               chk1d, chk1d_ld, 
+               chk2d, chk2d_ld, 
+               chk21d, chk21d_ld, 
+               chk22d, chk22d_ld, 
                stream
                );
 
