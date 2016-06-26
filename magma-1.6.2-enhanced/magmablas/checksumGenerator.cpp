@@ -547,7 +547,7 @@ void ChecksumRecalSelector(double * A, int lda,
 
 		switch(select) {
 			case 1: recalculateChecksum(A, lda,
-						i, j, chk_nb,
+						m, n, chk_nb,
 						vd, vd_ld,
 			   			chk1, chk1_ld, 
 			   			chk2, chk2_ld, 
@@ -556,7 +556,7 @@ void ChecksumRecalSelector(double * A, int lda,
 
 
 			case 2:	recalculateChecksum2(A, lda,
-						i, j, chk_nb,
+						m, n, chk_nb,
 						vd, vd_ld,
 			   			chk1, chk1_ld, 
 			   			chk2, chk2_ld, 
@@ -564,7 +564,7 @@ void ChecksumRecalSelector(double * A, int lda,
 					break;
 
 			case 3: recalculateChecksum3(A, lda,
-						i, j, chk_nb,
+						m, n, chk_nb,
 						vd2, vd2_ld,
 			   			chk1, chk1_ld, 
 			   			chk2, chk2_ld, 
@@ -573,7 +573,7 @@ void ChecksumRecalSelector(double * A, int lda,
 
 
 			case 4: recalculateChecksum4(A, lda,
-						i, j, chk_nb,
+						m, n, chk_nb,
 						vd2, vd2_ld,
 			   			chk1, chk1_ld, 
 			   			chk2, chk2_ld, 
@@ -582,7 +582,7 @@ void ChecksumRecalSelector(double * A, int lda,
 
 
 			case 5: recalculateChecksum5(A, lda,
-						i, j, chk_nb,
+						m, n, chk_nb,
 						vd, vd_ld,
 			   			chk21, chk21_ld, 
 			   			chk22, chk22_ld, 
@@ -590,7 +590,7 @@ void ChecksumRecalSelector(double * A, int lda,
 					break;
 		
 			case 6: recalculateChecksum6(A, lda,
-						i, j, chk_nb,
+						m, n, chk_nb,
 						vd, vd_ld,
 			   			chk21, chk21_ld, 
 			   			chk22, chk22_ld, 
@@ -599,7 +599,7 @@ void ChecksumRecalSelector(double * A, int lda,
 		
 
 			case 7: recalculateChecksum7(A, lda,
-						i, j, chk_nb,
+						m, n, chk_nb,
 						vd2, vd2_ld,
 			   			chk21, chk21_ld, 
 			   			chk22, chk22_ld, 
@@ -607,7 +607,7 @@ void ChecksumRecalSelector(double * A, int lda,
 					break;
 			
 			case 8: recalculateChecksum8(A, lda,
-						i, j, chk_nb,
+						m, n, chk_nb,
 						vd2, vd2_ld,
 			   			chk21, chk21_ld, 
 			   			chk22, chk22_ld, 
