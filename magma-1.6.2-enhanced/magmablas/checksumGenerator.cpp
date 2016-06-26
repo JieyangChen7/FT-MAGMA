@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 #include "cuda_profiler_api.h"
+#include "cublas_v2.h"
 using namespace std;
 //initialize checksum
 //M: number of rows
@@ -190,13 +191,24 @@ void recalculateChecksum4(double * A, int lda,
 		double * chk2, int chk2_ld, 
 		magma_queue_t * streams) {
 
-//	for (int i = 0; i < m; i += chk_nb) {
-	//	magmablasSetKernelStream(streams[1]);
-		magma_dgemm(MagmaTrans, MagmaNoTrans,
-					200, 15360, 512,
+cublasHandle_t handle;
+cublasCreate(&handle);
+cublasSetStream(handle, streams[1]);
+
+cublasDgemm(handle,
+		'T', 'N',
+					2, 15360, 512,
 					MAGMA_D_ONE, A, lda,
 					A, lda,
-					MAGMA_D_ZERO, A, lda);		
+					MAGMA_D_ZERO, A, lda);	
+
+//	for (int i = 0; i < m; i += chk_nb) {
+	//	magmablasSetKernelStream(streams[1]);
+		// magma_dgemm(MagmaTrans, MagmaNoTrans,
+		// 			200, 15360, 512,
+		// 			MAGMA_D_ONE, A, lda,
+		// 			A, lda,
+		// 			MAGMA_D_ZERO, A, lda);		
 //	}
 	
 	cudaStreamSynchronize(streams[1]);
