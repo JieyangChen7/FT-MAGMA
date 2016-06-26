@@ -190,10 +190,10 @@ void recalculateChecksum4(double * A, int lda,
 		double * chk2, int chk2_ld, 
 		magma_queue_t * streams) {
 
-	for (int i = 0; i < m; i += chk_nb) {
+	for (int i = 0; i < 10240; i += chk_nb) {
 		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
-					2, n, chk_nb,
+					2, 15360, chk_nb,
 					MAGMA_D_ONE, vd, vd_ld,
 					A + i, lda,
 					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
@@ -337,9 +337,9 @@ void benchmark(double * A, int lda,
 	double gpu_time8 = 1000.0;
 	int K = 5;
 cudaProfilerStart();
-	for (int i = chk_nb; i < 15360; i += chk_nb) {
+	for (int i = chk_nb; i < m; i += chk_nb) {
 		cout << "[" << i << "]:	";
-		for (int j = chk_nb; j < 15360; j += chk_nb) {
+		for (int j = chk_nb; j < n; j += chk_nb) {
 			// gpu_time1 = magma_wtime();
 			// for (int k = 0; k < K; k ++) {
 			// recalculateChecksum(A, lda,
