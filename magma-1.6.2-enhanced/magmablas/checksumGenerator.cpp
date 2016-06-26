@@ -202,7 +202,7 @@ cublasOperation_t T = CUBLAS_OP_T;
 cublasOperation_t N = CUBLAS_OP_N;
 cublasDgemm(handle,
 		T, N,
-					2, 15360, 512,
+					200, 15360, 512,
 					&one, A, lda,
 					A, lda,
 					&zero, A, lda);	
