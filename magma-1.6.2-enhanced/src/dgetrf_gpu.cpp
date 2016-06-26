@@ -367,7 +367,7 @@ magma_dgetrf_gpu(
 
 
         cout << "banchmarking:" << endl;
-
+        int * mapping = new int[n][m];
         benchmark(dAT, lddat,
                n, m, nb,
                vd, vd_ld,
@@ -376,8 +376,8 @@ magma_dgetrf_gpu(
                chk2d, chk2d_ld, 
                chk21d, chk21d_ld, 
                chk22d, chk22d_ld, 
-               stream
-               );
+               stream,
+               mapping);
 
         cout << "start computation" << endl;
         double comp_time = magma_wtime();
@@ -423,7 +423,8 @@ magma_dgetrf_gpu(
                              chk2d, chk2d_ld, 
                              chk21d, chk21d_ld, 
                              chk22d, chk22d_ld, 
-                             FT, DEBUG, VERIFY, stream);
+                             FT, DEBUG, VERIFY, stream,
+                             mapping);
 
 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -449,7 +450,8 @@ magma_dgetrf_gpu(
                              chk2d, chk2d_ld, 
                              chk21d, chk21d_ld, 
                              chk22d, chk22d_ld,
-                             FT, DEBUG, VERIFY, stream );
+                             FT, DEBUG, VERIFY, stream,
+                             mapping );
             }
 
             // do the cpu part
@@ -524,7 +526,8 @@ magma_dgetrf_gpu(
                          chk2d, chk2d_ld, 
                          chk21d, chk21d_ld, 
                          chk22d, chk22d_ld,
-                        FT, DEBUG, VERIFY, stream);
+                        FT, DEBUG, VERIFY, stream,
+                        mapping);
                 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
                 //              nb, m-(j+1)*nb, nb,
@@ -549,7 +552,8 @@ magma_dgetrf_gpu(
                              chk2d, chk2d_ld, 
                              chk21d, chk21d_ld, 
                              chk22d, chk22d_ld,
-                            FT, DEBUG, VERIFY, stream);
+                            FT, DEBUG, VERIFY, stream,
+                            mapping);
 
             }
             else if (n-s*nb > 0){
@@ -571,7 +575,8 @@ magma_dgetrf_gpu(
                              chk2d, chk2d_ld, 
                              chk21d, chk21d_ld, 
                              chk22d, chk22d_ld,
-                             FT, DEBUG, VERIFY, stream);
+                             FT, DEBUG, VERIFY, stream,
+                             mapping);
 
 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -596,7 +601,8 @@ magma_dgetrf_gpu(
                              chk2d, chk2d_ld, 
                              chk21d, chk21d_ld, 
                              chk22d, chk22d_ld,
-                             FT, DEBUG, VERIFY, stream);
+                             FT, DEBUG, VERIFY, stream,
+                             mapping);
             }
         }
 
