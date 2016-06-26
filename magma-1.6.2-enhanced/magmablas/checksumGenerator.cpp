@@ -190,6 +190,24 @@ void recalculateChecksum4(double * A, int lda,
 		double * chk2, int chk2_ld, 
 		magma_queue_t * streams) {
 
+
+// testing
+cublasHandle_t handle;
+cublasCreate(&handle);
+cublasSetStream(handle, streams[1]);
+
+double one = 1;
+double zero = 0;
+
+cublasOperation_t T = CUBLAS_OP_T;
+cublasOperation_t N = CUBLAS_OP_N;
+cublasDgemm(handle,
+		T, N,
+					200, 15360, 512,
+					&one, A, lda,
+					A, lda,
+					&zero, A, lda);	
+
 	for (int i = 0; i < m; i += chk_nb) {
 		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
@@ -388,41 +406,41 @@ cudaProfilerStart();
 			// gpu_time4 = magma_wtime() - gpu_time4;
 
 
-			gpu_time5 = magma_wtime();
-			for (int k = 0; k < K; k ++){
-			recalculateChecksum5(A, lda,
-						i, j, chk_nb,
-						vd, vd_ld,
-			   			chk21, chk21_ld, 
-			   			chk22, chk22_ld, 
-			   			streams);
-			}
-			gpu_time5 = magma_wtime() - gpu_time5;
+			// gpu_time5 = magma_wtime();
+			// for (int k = 0; k < K; k ++){
+			// recalculateChecksum5(A, lda,
+			// 			i, j, chk_nb,
+			// 			vd, vd_ld,
+			//    			chk21, chk21_ld, 
+			//    			chk22, chk22_ld, 
+			//    			streams);
+			// }
+			// gpu_time5 = magma_wtime() - gpu_time5;
 
 
 
-			gpu_time6 = magma_wtime();
-			for (int k = 0; k < K; k ++){
-			recalculateChecksum6(A, lda,
-						i, j, chk_nb,
-						vd, vd_ld,
-			   			chk21, chk21_ld, 
-			   			chk22, chk22_ld, 
-			   			streams);
-			}
-			gpu_time6 = magma_wtime() - gpu_time6;
+			// gpu_time6 = magma_wtime();
+			// for (int k = 0; k < K; k ++){
+			// recalculateChecksum6(A, lda,
+			// 			i, j, chk_nb,
+			// 			vd, vd_ld,
+			//    			chk21, chk21_ld, 
+			//    			chk22, chk22_ld, 
+			//    			streams);
+			// }
+			// gpu_time6 = magma_wtime() - gpu_time6;
 
 
-			gpu_time7 = magma_wtime();
-			for (int k = 0; k < K; k ++){
-			recalculateChecksum7(A, lda,
-						i, j, chk_nb,
-						vd2, vd2_ld,
-			   			chk21, chk21_ld, 
-			   			chk22, chk22_ld, 
-			   			streams);
-			}
-			gpu_time7 = magma_wtime() - gpu_time7;
+			// gpu_time7 = magma_wtime();
+			// for (int k = 0; k < K; k ++){
+			// recalculateChecksum7(A, lda,
+			// 			i, j, chk_nb,
+			// 			vd2, vd2_ld,
+			//    			chk21, chk21_ld, 
+			//    			chk22, chk22_ld, 
+			//    			streams);
+			// }
+			// gpu_time7 = magma_wtime() - gpu_time7;
 			
 
 
