@@ -248,8 +248,9 @@ void recalculateChecksum6(double * A, int lda,
 		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(MagmaTrans, MagmaTrans,
 					n, 2, chk_nb,
-					MAGMA_D_ONE, vd, vd_ld,
+					MAGMA_D_ONE, 
 					A + i, lda,
+					vd, vd_ld,
 					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2 * chk1_ld, chk1_ld);		
 	}
 	
@@ -305,8 +306,9 @@ void recalculateChecksum8(double * A, int lda,
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
 					n, 2, chk_nb,
 					//2, B + i, B,
-					MAGMA_D_ONE, vd, vd_ld,
+					MAGMA_D_ONE, 
 					A + i, lda,
+					vd, vd_ld,
 					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2 * chk1_ld, chk1_ld);		
 	}
 	
