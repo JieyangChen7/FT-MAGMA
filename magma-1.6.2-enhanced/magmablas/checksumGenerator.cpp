@@ -196,7 +196,7 @@ void recalculateChecksum4(double * A, int lda,
 					2, n, chk_nb,
 					MAGMA_D_ONE, vd, vd_ld,
 					A + i, lda,
-					MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld);		
+					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
 	}
 	
 	cudaStreamSynchronize(streams[1]);
@@ -376,28 +376,28 @@ cudaProfilerStart();
 			// gpu_time3 = magma_wtime() - gpu_time3;
 
 
-			gpu_time4 = magma_wtime();
-			for (int k = 0; k < K; k ++){
-			recalculateChecksum4(A, lda,
-						i, j, chk_nb,
-						vd2, vd2_ld,
-			   			chk1, chk1_ld, 
-			   			chk2, chk2_ld, 
-			   			streams);
-			}
-			gpu_time4 = magma_wtime() - gpu_time4;
-
-
-			// gpu_time5 = magma_wtime();
+			// gpu_time4 = magma_wtime();
 			// for (int k = 0; k < K; k ++){
-			// recalculateChecksum5(A, lda,
+			// recalculateChecksum4(A, lda,
 			// 			i, j, chk_nb,
-			// 			vd, vd_ld,
-			//    			chk21, chk21_ld, 
-			//    			chk22, chk22_ld, 
+			// 			vd2, vd2_ld,
+			//    			chk1, chk1_ld, 
+			//    			chk2, chk2_ld, 
 			//    			streams);
 			// }
-			// gpu_time5 = magma_wtime() - gpu_time5;
+			// gpu_time4 = magma_wtime() - gpu_time4;
+
+
+			gpu_time5 = magma_wtime();
+			for (int k = 0; k < K; k ++){
+			recalculateChecksum5(A, lda,
+						i, j, chk_nb,
+						vd, vd_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+			}
+			gpu_time5 = magma_wtime() - gpu_time5;
 
 
 
