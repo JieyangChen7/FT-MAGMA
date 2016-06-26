@@ -298,10 +298,10 @@ magma_dpotrf_gpu(
 	}
     
     cout << "banchmarking:" << endl;
-    int * mapping = new int[n * m];
+    int * mapping = new int[n * n];
     int mapping_ld = n;
-    benchmark(dAT, lddat,
-           n, m, nb,
+    benchmark(dA, ldda,
+           n, n, nb,
            vd, vd_ld,
            vd2, vd2_ld,
            chk1d, chk1d_ld, 
