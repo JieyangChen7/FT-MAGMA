@@ -21,10 +21,14 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
+		double * vd2, int vd2_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
+		double * chk21, int chk21_ld, 
+	    double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
-		magma_queue_t * streams) {
+		magma_queue_t * streams,
+		int * mapping) {
 
 	cudaStreamSynchronize(streams[1]);
 	cudaStreamSynchronize(streams[4]);
@@ -48,6 +52,18 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 							chk1, chk1_ld,
 							chk2, chk2_ld,
 							streams);
+
+		// AutoTuneChecksumRecal(B, ldb,
+		// 		   mem_row, mem_col, chk_nb,
+		// 		   vd, vd_ld,
+		// 		   vd2, vd2_ld,
+		// 		   chk1, chk1_ld, 
+		// 		   chk2, chk2_ld, 
+		// 		   chk21, chk21_ld, 
+		// 		   chk22, chk22_ld, 
+		// 		   streams,
+		// 		   mapping);
+
 		if (DEBUG) {
 			cudaStreamSynchronize(streams[1]);
 			cout<<"[dgemm] B before dgemm:"<<endl;
@@ -80,6 +96,18 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 							chk1, chk1_ld,
 							chk2, chk2_ld,
 							streams);
+
+		// AutoTuneChecksumRecal(A, lda,
+		// 		   mem_row, mem_col, chk_nb,
+		// 		   vd, vd_ld,
+		// 		   vd2, vd2_ld,
+		// 		   chk1, chk1_ld, 
+		// 		   chk2, chk2_ld, 
+		// 		   chk21, chk21_ld, 
+		// 		   chk22, chk22_ld, 
+		// 		   streams,
+		// 		   mapping);
+
 		if (DEBUG) {
 
 			cout<<"[dgemm] A before dgemm:"<<endl;
@@ -106,6 +134,18 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 							chk1, chk1_ld,
 							chk2, chk2_ld,
 							streams);
+
+		// AutoTuneChecksumRecal(C, ldc,
+		// 		   mem_row, mem_col, chk_nb,
+		// 		   vd, vd_ld,
+		// 		   vd2, vd2_ld,
+		// 		   chk1, chk1_ld, 
+		// 		   chk2, chk2_ld, 
+		// 		   chk21, chk21_ld, 
+		// 		   chk22, chk22_ld, 
+		// 		   streams,
+		// 		   mapping);
+
 		if (DEBUG) {
 
 			cout<<"[dgemm] C before dgemm:"<<endl;

@@ -380,6 +380,7 @@ magma_dgetrf_gpu(
                );
 
         cout << "start computation" << endl;
+        double comp_time = magma_wtime();
         for( j=0; j < s; j++ ) {
             
             // download j-th panel
@@ -417,8 +418,11 @@ magma_dgetrf_gpu(
                              nb,
                              CHK(j-1, j+1), checksum_ld,
                              vd, vd_ld,
+                             vd2, vd2_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
+                             chk21d, chk21d_ld, 
+                             chk22d, chk22d_ld, 
                              FT, DEBUG, VERIFY, stream);
 
 
@@ -440,8 +444,11 @@ magma_dgetrf_gpu(
                              CHK(j, j-1), checksum_ld,
                              CHK(j, j+1), checksum_ld,
                              vd, vd_ld,
+                             vd2, vd2_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
+                             chk21d, chk21d_ld, 
+                             chk22d, chk22d_ld,
                              FT, DEBUG, VERIFY, stream );
             }
 
@@ -511,9 +518,12 @@ magma_dgetrf_gpu(
                          nb,
                          nb,
                          CHK(j, j+1), checksum_ld,
-                        vd, vd_ld,
-                        chk1d, chk1d_ld, 
-                        chk2d, chk2d_ld, 
+                         vd, vd_ld,
+                         vd2, vd2_ld,
+                         chk1d, chk1d_ld, 
+                         chk2d, chk2d_ld, 
+                         chk21d, chk21d_ld, 
+                         chk22d, chk22d_ld,
                         FT, DEBUG, VERIFY, stream);
                 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -533,9 +543,12 @@ magma_dgetrf_gpu(
                             CHK(j, j+1), checksum_ld,
                             CHK(j+1, j), checksum_ld,
                             CHK(j+1, j+1), checksum_ld,
-                            vd, vd_ld,
-                            chk1d, chk1d_ld, 
-                            chk2d, chk2d_ld, 
+                             vd, vd_ld,
+                             vd2, vd2_ld,
+                             chk1d, chk1d_ld, 
+                             chk2d, chk2d_ld, 
+                             chk21d, chk21d_ld, 
+                             chk22d, chk22d_ld,
                             FT, DEBUG, VERIFY, stream);
 
             }
@@ -553,8 +566,11 @@ magma_dgetrf_gpu(
                              nb,
                              CHK(j, j+1), checksum_ld,
                              vd, vd_ld,
+                             vd2, vd2_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
+                             chk21d, chk21d_ld, 
+                             chk22d, chk22d_ld,
                              FT, DEBUG, VERIFY, stream);
 
 
@@ -575,11 +591,19 @@ magma_dgetrf_gpu(
                              CHK(j+1, j), checksum_ld,
                              CHK(j+1, j+1), checksum_ld,
                              vd, vd_ld,
+                             vd2, vd2_ld,
                              chk1d, chk1d_ld, 
                              chk2d, chk2d_ld, 
+                             chk21d, chk21d_ld, 
+                             chk22d, chk22d_ld,
                              FT, DEBUG, VERIFY, stream);
             }
         }
+
+        comp_time = magma_wtime() - comp_time;
+
+
+        cout << "comp_time: " << comp_time << endl;
 
         magma_int_t nb0 = min(m - s*nb, n - s*nb);
         if ( nb0 > 0 ) {

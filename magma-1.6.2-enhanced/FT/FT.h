@@ -35,8 +35,32 @@ void benchmark(double * A, int lda,
 			   double * chk2, int chk2_ld, 
 			   double * chk21, int chk21_ld, 
 			   double * chk22, int chk22_ld, 
-			   magma_queue_t * streams
-			   ) ;
+			   magma_queue_t * streams,
+			   int * mapping
+			   );
+
+void ChecksumRecalSelector(double * A, int lda,
+			   int m, int n, int chk_nb,
+			   double * vd, int vd_ld,
+			   double * vd2, int vd2_ld,
+			   double * chk1, int chk1_ld, 
+			   double * chk2, int chk2_ld, 
+			   double * chk21, int chk21_ld, 
+			   double * chk22, int chk22_ld, 
+			   magma_queue_t * streams,
+			   int select);
+
+void AutoTuneChecksumRecal(double * A, int lda,
+			   int m, int n, int chk_nb,
+			   double * vd, int vd_ld,
+			   double * vd2, int vd2_ld,
+			   double * chk1, int chk1_ld, 
+			   double * chk2, int chk2_ld, 
+			   double * chk21, int chk21_ld, 
+			   double * chk22, int chk22_ld, 
+			   magma_queue_t * streams,
+			   int * mapping
+			   );
 
 void dpotrfFT(double * A, int lda, int n, int * info,
 				double * chksum, int chksum_ld,
@@ -50,18 +74,20 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
               bool FT , bool DEBUG, bool VERIFY);
 
 void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-		int m, int n, 
-		double alpha,
-		double * A, int lda,
+		int m, int n, double alpha, double * A, int lda,
 		double * B, int ldb, 
 		int chk_nb,
 		int nb,
 		double * checksumB, int checksumB_ld,
 		double * vd, int vd_ld,
+		double * vd2, int vd2_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
+		double * chk21, int chk21_ld, 
+		double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
-		magma_queue_t * streams);
+		magma_queue_t * streams,
+		int * mapping);
 
 void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		int n, int m, 
@@ -77,10 +103,10 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * streams);
 
-void dgemmFT(magma_trans_t transA, magma_trans_t transB,
-		int m, int n, int k, 
-		double alpha, 
-		double * A, int lda,
+void dgemmFT( magma_trans_t transA, magma_trans_t transB,
+	    int m, int n, int k, 
+	    double alpha, 
+	    double * A, int lda,
 		double * B, int ldb, 
 		double beta, 
 		double * C, int ldc, 
@@ -90,10 +116,14 @@ void dgemmFT(magma_trans_t transA, magma_trans_t transB,
 		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,
 		double * vd, int vd_ld,
+		double * vd2, int vd2_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
+		double * chk21, int chk21_ld, 
+	    double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
-		magma_queue_t * streams);
+		magma_queue_t * streams,
+		int * mapping);
 
 void ErrorDetectAndCorrect(double * A, int lda, 
 		int B, int m, int n,
