@@ -402,16 +402,16 @@ cudaProfilerStart();
 
 
 
-			// gpu_time6 = magma_wtime();
-			// for (int k = 0; k < K; k ++){
-			// recalculateChecksum6(A, lda,
-			// 			i, j, chk_nb,
-			// 			vd, vd_ld,
-			//    			chk21, chk21_ld, 
-			//    			chk22, chk22_ld, 
-			//    			streams);
-			// }
-			// gpu_time6 = magma_wtime() - gpu_time6;
+			gpu_time6 = magma_wtime();
+			for (int k = 0; k < K; k ++){
+			recalculateChecksum6(A, lda,
+						i, j, chk_nb,
+						vd, vd_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+			}
+			gpu_time6 = magma_wtime() - gpu_time6;
 
 
 			gpu_time7 = magma_wtime();
