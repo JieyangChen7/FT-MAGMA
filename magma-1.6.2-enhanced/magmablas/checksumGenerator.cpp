@@ -454,15 +454,15 @@ cudaProfilerStart();
 			else if  (min_time == gpu_time8) cout << "8 ";
 			// if (gpu_time1 < gpu_time2) cout << "S ";
 			// else cout <<"C ";
-			cout << gpu_time1 << " ";
-			cout << gpu_time2 << " ";
-			cout << gpu_time3 << " ";
-			cout << gpu_time4 << " ";
-			cout << gpu_time5 << " ";
-			cout << gpu_time6 << " ";
-			cout << gpu_time7 << " ";
-			cout << gpu_time8 << " ";
-			cout << endl;
+			// cout << gpu_time1 << " ";
+			// cout << gpu_time2 << " ";
+			// cout << gpu_time3 << " ";
+			// cout << gpu_time4 << " ";
+			// cout << gpu_time5 << " ";
+			// cout << gpu_time6 << " ";
+			// cout << gpu_time7 << " ";
+			// cout << gpu_time8 << " ";
+			// cout << endl;
 		}
 		cout << endl;
 	}
