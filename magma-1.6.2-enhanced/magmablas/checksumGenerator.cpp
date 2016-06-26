@@ -192,7 +192,7 @@ void recalculateChecksum4(double * A, int lda,
 
 //	for (int i = 0; i < m; i += chk_nb) {
 	//	magmablasSetKernelStream(streams[1]);
-		magma_dgemm(MagmaTrans, MagmaNoTrans,
+		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
 					2, 15360, 512,
 					MAGMA_D_ONE, A, lda,
 					A, lda,
