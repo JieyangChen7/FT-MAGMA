@@ -298,7 +298,7 @@ magma_dgetrf_gpu(
             work_chk_ld = maxm;
             cout << "done." << endl;
 
-             cout << "allocate space for recalculated checksum on GPU......";
+             cout << "allocate space for recalculated checksum on GPU......" << m << " "<< n ;
             /* allocate space for reclaculated checksum on GPU */
             size_t chk1d_pitch = magma_roundup(2 * (n / nb) * sizeof(double), 32);
             chk1d_ld = chk1d_pitch / sizeof(double);
