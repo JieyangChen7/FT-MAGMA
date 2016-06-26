@@ -274,14 +274,14 @@ magma_dpotrf_gpu(
 
         cout << "allocate space for recalculated checksum on GPU......";
         /* allocate space for reclaculated checksum on GPU */
-        size_t chk21d_pitch = magma_roundup( m * sizeof(double), 32);
+        size_t chk21d_pitch = magma_roundup( N * sizeof(double), 32);
         chk21d_ld = chk21d_pitch / sizeof(double);
-        magma_dmalloc(&chk21d, chk21d_pitch * 2 * (n / nb));
+        magma_dmalloc(&chk21d, chk21d_pitch * 2 * (N / nb));
         
        
-        size_t chk22d_pitch = magma_roundup(m * sizeof(double), 32);
+        size_t chk22d_pitch = magma_roundup(N * sizeof(double), 32);
         chk22d_ld = chk22d_pitch / sizeof(double);
-        magma_dmalloc(&chk22d, chk22d_pitch * 2 * (n / nb));
+        magma_dmalloc(&chk22d, chk22d_pitch * 2 * (N / nb));
         cout << "done." << endl;
 
 
