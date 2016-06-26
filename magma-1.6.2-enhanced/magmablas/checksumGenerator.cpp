@@ -194,9 +194,9 @@ void recalculateChecksum4(double * A, int lda,
 		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
 					2, 15360, chk_nb,
-					MAGMA_D_ONE, vd, vd_ld,
-					A + i, lda,
-					MAGMA_D_ZERO, A + (i / chk_nb) * 2, lda);		
+					MAGMA_D_ONE, A, lda,
+					A, lda,
+					MAGMA_D_ZERO, A, lda);		
 	}
 	
 	cudaStreamSynchronize(streams[1]);
