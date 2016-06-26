@@ -196,7 +196,7 @@ void recalculateChecksum4(double * A, int lda,
 					2, 15360, chk_nb,
 					MAGMA_D_ONE, vd, vd_ld,
 					A + i, lda,
-					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
+					MAGMA_D_ZERO, A + (i / chk_nb) * 2, lda);		
 	}
 	
 	cudaStreamSynchronize(streams[1]);
