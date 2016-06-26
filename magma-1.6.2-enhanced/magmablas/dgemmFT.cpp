@@ -28,7 +28,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	    double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * streams,
-		int * mapping) {
+		int * mapping, int mapping_ld) {
 
 	cudaStreamSynchronize(streams[1]);
 	cudaStreamSynchronize(streams[4]);
@@ -62,7 +62,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		// 		   chk21, chk21_ld, 
 		// 		   chk22, chk22_ld, 
 		// 		   streams,
-		// 		   mapping);
+		// 		   mapping, mapping_ld);
 
 		if (DEBUG) {
 			cudaStreamSynchronize(streams[1]);
@@ -106,7 +106,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		// 		   chk21, chk21_ld, 
 		// 		   chk22, chk22_ld, 
 		// 		   streams,
-		// 		   mapping);
+		// 		   mapping, mapping_ld);
 
 		if (DEBUG) {
 
@@ -144,7 +144,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		// 		   chk21, chk21_ld, 
 		// 		   chk22, chk22_ld, 
 		// 		   streams,
-		// 		   mapping);
+		// 		   mapping, mapping_ld);
 
 		if (DEBUG) {
 

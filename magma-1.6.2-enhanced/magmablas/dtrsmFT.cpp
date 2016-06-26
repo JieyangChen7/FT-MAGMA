@@ -22,7 +22,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * streams,
-		int * mapping) {
+		int * mapping, int mapping_ld) {
 
 	cudaStreamSynchronize(streams[1]);
 	cudaStreamSynchronize(streams[4]);
@@ -47,7 +47,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		// 		   chk21, chk21_ld, 
 		// 		   chk22, chk22_ld, 
 		// 		   streams,
-		// 		   mapping);
+		// 		   mapping, mapping_ld);
 
 		if (DEBUG) {
 			cudaStreamSynchronize(streams[1]);
