@@ -344,7 +344,7 @@ void benchmark(double * A, int lda,
 			   double * chk21, int chk21_ld, 
 			   double * chk22, int chk22_ld, 
 			   magma_queue_t * streams,
-			   int * mapping
+			   int * mapping, int mapping_ld
 			   ) {
 
 	double gpu_time1 = 1000.0;
@@ -494,28 +494,28 @@ void benchmark(double * A, int lda,
 
 			if (min_time == gpu_time1) {
 				cout << "1 ";
-				mapping[i][j] = 1;
+				mapping[i * mapping_ld + j] = 1;
 			} else if (min_time == gpu_time2) {
 				cout << "2 ";
-				mapping[i][j] = 2;
+				mapping[i * mapping_ld + j] = 2;
 			} else if (min_time == gpu_time3) {
 				cout << "3 ";
-				mapping[i][j] = 3;
+				mapping[i * mapping_ld + j] = 3;
 			} else if (min_time == gpu_time4) {
 				cout << "4 ";
-				mapping[i][j] = 4;
+				mapping[i * mapping_ld + j] = 4;
 			} else if (min_time == gpu_time5) {
 				cout << "5 ";
-				mapping[i][j] = 5;
+				mapping[i * mapping_ld + j] = 5;
 			} else if  (min_time == gpu_time6) {
 				cout << "6 ";
-				mapping[i][j] = 6;
+				mapping[i * mapping_ld + j] = 6;
 			} else if  (min_time == gpu_time7) {
 				cout << "7 ";
-				mapping[i][j] = 7;
+				mapping[i * mapping_ld + j] = 7;
 			} else if  (min_time == gpu_time8){
 				cout << "8 ";
-				mapping[i][j] = 8;
+				mapping[i * mapping_ld + j] = 8;
 			}
 			// if (gpu_time1 < gpu_time2) cout << "S ";
 			// else cout <<"C ";
@@ -626,13 +626,13 @@ void AutoTuneChecksumRecal(double * A, int lda,
 			   double * chk21, int chk21_ld, 
 			   double * chk22, int chk22_ld, 
 			   magma_queue_t * streams,
-			   int * mapping
+			   int * mapping, int mapping_ld
 			   ){
 
 	// needs to do boundary check first
 
 
-	int i = mapping[m][n];
+	int i = mapping[m * mapping_ld + n];
 	ChecksumRecalSelector(A, lda,
 				   m, n, chk_nb,
 				   vd, vd_ld,

@@ -36,7 +36,7 @@ void benchmark(double * A, int lda,
 			   double * chk21, int chk21_ld, 
 			   double * chk22, int chk22_ld, 
 			   magma_queue_t * streams,
-			   int * mapping
+			   int * mapping, int mapping_ld
 			   );
 
 void ChecksumRecalSelector(double * A, int lda,
@@ -59,7 +59,7 @@ void AutoTuneChecksumRecal(double * A, int lda,
 			   double * chk21, int chk21_ld, 
 			   double * chk22, int chk22_ld, 
 			   magma_queue_t * streams,
-			   int * mapping
+			   int * mapping, int mapping_ld
 			   );
 
 void dpotrfFT(double * A, int lda, int n, int * info,
@@ -87,7 +87,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * streams,
-		int * mapping);
+		int * mapping, int mapping_ld);
 
 void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		int n, int m, 
@@ -123,7 +123,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	    double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * streams,
-		int * mapping);
+		int * mapping, int mapping_ld);
 
 void ErrorDetectAndCorrect(double * A, int lda, 
 		int B, int m, int n,
