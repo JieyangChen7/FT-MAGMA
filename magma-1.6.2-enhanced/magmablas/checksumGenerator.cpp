@@ -237,6 +237,7 @@ void recalculateChecksum4(double * A, int lda,
 	if (r != cudaSuccess) {
 	 	cout << "cuda sync error" << endl;
 	 	magma_queue_t newStream;
+	 	int * a = new int[10];
 	 	magma_queue_create( &newStream );
 	 	streams[1] = newStream;
 	} else {
