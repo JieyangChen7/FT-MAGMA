@@ -222,6 +222,7 @@ void recalculateChecksum4(double * A, int lda,
 	// }
 
 	// magmablasSetKernelStream(streams[1]);
+	cudaError_t r;
 	 for (int i = 0; i < m; i += chk_nb) {
 		
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
@@ -230,7 +231,7 @@ void recalculateChecksum4(double * A, int lda,
 					A + i, lda,
 					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
 
-		cudaError_t r = cudaGetLastError();
+		r = cudaGetLastError();
 		if (r != cudaSuccess) {
 	 		cout << "cuda error" << endl;
 	 	} else {
