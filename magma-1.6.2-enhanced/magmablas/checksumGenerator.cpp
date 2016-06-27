@@ -193,21 +193,21 @@ void recalculateChecksum4(double * A, int lda,
 
 
 // testing
-cublasHandle_t handle;
-cublasCreate(&handle);
-cublasSetStream(handle, streams[1]);
+// cublasHandle_t handle;
+// cublasCreate(&handle);
+// cublasSetStream(handle, streams[1]);
 
-double one = 1;
-double zero = 0;
+// double one = 1;
+// double zero = 0;
 
-cublasOperation_t T = CUBLAS_OP_T;
-cublasOperation_t N = CUBLAS_OP_N;
-cublasDgemm(handle,
-		T, N,
-					200, 15360, 512,
-					&one, A, lda,
-					A, lda,
-					&zero, A, lda);	
+// cublasOperation_t T = CUBLAS_OP_T;
+// cublasOperation_t N = CUBLAS_OP_N;
+// cublasDgemm(handle,
+// 		T, N,
+// 					200, 15360, 512,
+// 					&one, A, lda,
+// 					A, lda,
+// 					&zero, A, lda);	
 
 	for (int i = 0; i < m; i += chk_nb) {
 		magmablasSetKernelStream(streams[1]);
@@ -420,6 +420,7 @@ void benchmark(double * A, int lda,
 				   chk22, chk22_ld, 
 				   streams,
 				   4);
+			}
 			gpu_time4 = magma_wtime() - gpu_time4;
 
 
