@@ -209,8 +209,16 @@ void recalculateChecksum4(double * A, int lda,
 				&one, A, lda,
 				A, lda,
 				&zero, A, lda);	
-	if (result != CUBLAS_STATUS_SUCCESS) {
-		cout << "cublas error" << endl;
+	if (result == CUBLAS_STATUS_SUCCESS) {
+		cout << "cublas ok" << endl;
+	} else if (result == CUBLAS_STATUS_NOT_INITIALIZED) {
+		cout << "CUBLAS_STATUS_NOT_INITIALIZED" << endl;
+	} else if (result == CUBLAS_STATUS_INVALID_VALUE) {
+		cout << "CUBLAS_STATUS_INVALID_VALUE" << endl;
+	} else if (result == CUBLAS_STATUS_ARCH_MISMATCH) {
+		cout << "CUBLAS_STATUS_ARCH_MISMATCH" << endl;
+	} else if (result == CUBLAS_STATUS_EXECUTION_FAILED) {
+		cout << "CUBLAS_STATUS_EXECUTION_FAILED" << endl;
 	}
 
 	// magmablasSetKernelStream(streams[1]);
