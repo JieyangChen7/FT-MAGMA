@@ -192,31 +192,36 @@ void recalculateChecksum4(double * A, int lda,
 		magma_queue_t * streams) {
 
 
-// testing
-// cublasHandle_t handle;
-// cublasCreate(&handle);
-// cublasSetStream(handle, streams[1]);
+	// testing
+	cublasHandle_t handle;
+	cublasCreate(&handle);
+	cublasSetStream(handle, streams[1]);
 
-// double one = 1;
-// double zero = 0;
+	double one = 1;
+	double zero = 0;
 
-// cublasOperation_t T = CUBLAS_OP_T;
-// cublasOperation_t N = CUBLAS_OP_N;
-// cublasDgemm(handle,
-// 		T, N,
-// 					200, 15360, 512,
-// 					&one, A, lda,
-// 					A, lda,
-// 					&zero, A, lda);	
-	magmablasSetKernelStream(streams[1]);
-	for (int i = 0; i < m; i += chk_nb) {
-		
-		magma_dgemm(MagmaTrans, MagmaNoTrans,
-					2, n, chk_nb,
-					MAGMA_D_ONE, vd, vd_ld,
-					A + i, lda,
-					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
+	cublasOperation_t T = CUBLAS_OP_T;
+	cublasOperation_t N = CUBLAS_OP_N;
+	cublasStatus_t result;
+	result = cublasDgemm(handle,
+				T, N,
+				2, 15360, 512,
+				&one, A, lda,
+				A, lda,
+				&zero, A, lda);	
+	if (result != CUBLAS_STATUS_SUCCESS) {
+		cout << "cublas error" << endl;
 	}
+
+	// magmablasSetKernelStream(streams[1]);
+	// for (int i = 0; i < m; i += chk_nb) {
+		
+	// 	magma_dgemm(MagmaTrans, MagmaNoTrans,
+	// 				2, n, chk_nb,
+	// 				MAGMA_D_ONE, vd, vd_ld,
+	// 				A + i, lda,
+	// 				MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
+	// }
 	
 	cudaStreamSynchronize(streams[1]);
 }
