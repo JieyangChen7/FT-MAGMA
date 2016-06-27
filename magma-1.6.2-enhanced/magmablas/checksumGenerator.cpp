@@ -408,19 +408,19 @@ void benchmark(double * A, int lda,
 			gpu_time3 = magma_wtime() - gpu_time3;
 
 
-			// gpu_time4 = magma_wtime();
-			// for (int k = 0; k < K; k ++){
-			// ChecksumRecalSelector(A, lda,
-			// 	   m, n, chk_nb,
-			// 	   vd, vd_ld,
-			// 	   vd2, vd2_ld,
-			// 	   chk1, chk1_ld, 
-			// 	   chk2, chk2_ld, 
-			// 	   chk21, chk21_ld, 
-			// 	   chk22, chk22_ld, 
-			// 	   streams,
-			// 	   4);
-			// gpu_time4 = magma_wtime() - gpu_time4;
+			gpu_time4 = magma_wtime();
+			for (int k = 0; k < K; k ++){
+			ChecksumRecalSelector(A, lda,
+				   m, n, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   4);
+			gpu_time4 = magma_wtime() - gpu_time4;
 
 
 			gpu_time5 = magma_wtime();
@@ -473,20 +473,20 @@ void benchmark(double * A, int lda,
 			
 
 
-			// gpu_time8 = magma_wtime();
-			// for (int k = 0; k < K; k ++){
-			// 	ChecksumRecalSelector(A, lda,
-			// 	   m, n, chk_nb,
-			// 	   vd, vd_ld,
-			// 	   vd2, vd2_ld,
-			// 	   chk1, chk1_ld, 
-			// 	   chk2, chk2_ld, 
-			// 	   chk21, chk21_ld, 
-			// 	   chk22, chk22_ld, 
-			// 	   streams,
-			// 	   8);
-			// }
-			// gpu_time8 = magma_wtime() - gpu_time8;
+			gpu_time8 = magma_wtime();
+			for (int k = 0; k < K; k ++){
+				ChecksumRecalSelector(A, lda,
+				   m, n, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   8);
+			}
+			gpu_time8 = magma_wtime() - gpu_time8;
 
 			double min_time1 = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
 			double min_time2 = fmin(gpu_time5, fmin(gpu_time6, fmin(gpu_time7, gpu_time8)));
