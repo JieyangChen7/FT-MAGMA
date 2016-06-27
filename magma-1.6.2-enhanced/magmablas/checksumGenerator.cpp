@@ -195,7 +195,7 @@ void recalculateChecksum4(double * A, int lda,
 	// testing
 	cublasHandle_t handle;
 	cublasCreate(&handle);
-	cublasSetStream(handle, streams[1]);
+	cublasSetStream(handle, streams[2]);
 
 	double one = 1;
 	double zero = 0;
@@ -231,7 +231,10 @@ void recalculateChecksum4(double * A, int lda,
 	// 				MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
 	// }
 	
-	cudaStreamSynchronize(streams[1]);
+	 cudaError_t r = cudaStreamSynchronize(streams[2]);
+	 if (r != cudaSuccess) {
+	 	cout << "cuda sync error" << endl;
+	 }
 }
 
 
