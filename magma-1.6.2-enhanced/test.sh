@@ -1,5 +1,5 @@
 #./testing/testing_dgetrf_gpu -N 16,16
-./testing/testing_dgetrf_gpu -N 30720,30720 
+./testing/testing_dgetrf_gpu -N 20480,20480 
 
 
 # rm profile
