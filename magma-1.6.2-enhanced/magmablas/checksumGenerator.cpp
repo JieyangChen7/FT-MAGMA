@@ -220,7 +220,7 @@ void recalculateChecksum4(double * A, int lda,
 	// } else if (result == CUBLAS_STATUS_EXECUTION_FAILED) {
 	// 	cout << "CUBLAS_STATUS_EXECUTION_FAILED" << endl;
 	// }
-
+	cout << "size:" << m << "," << "n" << endl;
 	 magmablasSetKernelStream(streams[1]);
 	cudaError_t r;
 	 for (int i = 0; i < m; i += chk_nb) {
