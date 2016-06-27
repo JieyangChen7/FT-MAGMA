@@ -388,7 +388,7 @@ void benchmark(double * A, int lda,
 			gpu_time1 = magma_wtime();
 			for (int k = 0; k < K; k ++) {
 				ChecksumRecalSelector(A, lda,
-				   m, n, chk_nb,
+				   i, j, chk_nb,
 				   vd, vd_ld,
 				   vd2, vd2_ld,
 				   chk1, chk1_ld, 
@@ -404,7 +404,7 @@ void benchmark(double * A, int lda,
 			gpu_time2 = magma_wtime();
 			for (int k = 0; k < K; k ++) {
 				ChecksumRecalSelector(A, lda,
-				   m, n, chk_nb,
+				   i, j, chk_nb,
 				   vd, vd_ld,
 				   vd2, vd2_ld,
 				   chk1, chk1_ld, 
@@ -420,7 +420,7 @@ void benchmark(double * A, int lda,
 			gpu_time3 = magma_wtime();
 			for (int k = 0; k < K; k ++){
 			ChecksumRecalSelector(A, lda,
-				   m, n, chk_nb,
+				   i, j, chk_nb,
 				   vd, vd_ld,
 				   vd2, vd2_ld,
 				   chk1, chk1_ld, 
@@ -436,7 +436,7 @@ void benchmark(double * A, int lda,
 			gpu_time4 = magma_wtime();
 			for (int k = 0; k < 1; k ++){
 			ChecksumRecalSelector(A, lda,
-				   m, n, chk_nb,
+				   i, j, chk_nb,
 				   vd, vd_ld,
 				   vd2, vd2_ld,
 				   chk1, chk1_ld, 
@@ -452,7 +452,7 @@ void benchmark(double * A, int lda,
 			gpu_time5 = magma_wtime();
 			for (int k = 0; k < K; k ++){
 				ChecksumRecalSelector(A, lda,
-					   m, n, chk_nb,
+					   i, j, chk_nb,
 					   vd, vd_ld,
 					   vd2, vd2_ld,
 					   chk1, chk1_ld, 
@@ -469,7 +469,7 @@ void benchmark(double * A, int lda,
 			gpu_time6 = magma_wtime();
 			for (int k = 0; k < K; k ++){
 				ChecksumRecalSelector(A, lda,
-				   m, n, chk_nb,
+				   i, j, chk_nb,
 				   vd, vd_ld,
 				   vd2, vd2_ld,
 				   chk1, chk1_ld, 
@@ -485,7 +485,7 @@ void benchmark(double * A, int lda,
 			gpu_time7 = magma_wtime();
 			for (int k = 0; k < K; k ++){
 				ChecksumRecalSelector(A, lda,
-				   m, n, chk_nb,
+				   i, j, chk_nb,
 				   vd, vd_ld,
 				   vd2, vd2_ld,
 				   chk1, chk1_ld, 
@@ -502,7 +502,7 @@ void benchmark(double * A, int lda,
 			// gpu_time8 = magma_wtime();
 			// for (int k = 0; k < K; k ++){
 			// 	ChecksumRecalSelector(A, lda,
-			// 	   m, n, chk_nb,
+			// 	   i, j, chk_nb,
 			// 	   vd, vd_ld,
 			// 	   vd2, vd2_ld,
 			// 	   chk1, chk1_ld, 
