@@ -221,7 +221,7 @@ void recalculateChecksum4(double * A, int lda,
 	// 	cout << "CUBLAS_STATUS_EXECUTION_FAILED" << endl;
 	// }
 
-	// magmablasSetKernelStream(streams[1]);
+	 magmablasSetKernelStream(streams[1]);
 	cudaError_t r;
 	 for (int i = 0; i < m; i += chk_nb) {
 		
@@ -230,7 +230,7 @@ void recalculateChecksum4(double * A, int lda,
 					MAGMA_D_ONE, vd, vd_ld,
 					A + i, lda,
 					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
-		magmablasSetKernelStream(streams[1]);
+		cudaStreamSynchronize(streams[1]);
 		r = cudaGetLastError();
 		if (r != cudaSuccess) {
 	 		cout << i <<"cuda error" << endl;
@@ -239,7 +239,7 @@ void recalculateChecksum4(double * A, int lda,
 	 	}
 	 }
 	
-	r = cudaStreamSynchronize(streams[2]);
+	r = cudaStreamSynchronize(streams[1]);
 	 if (r != cudaSuccess) {
 	 	cout << "cuda sync error" << endl;
 	 } else {
