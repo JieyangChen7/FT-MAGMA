@@ -241,9 +241,9 @@ void recalculateChecksum4(double * A, int lda,
 	
 	r = cudaStreamSynchronize(streams[2]);
 	 if (r != cudaSuccess) {
-	 	cout << i<< "cuda sync error" << endl;
+	 	cout << "cuda sync error" << endl;
 	 } else {
-	 	cout <<i<< "sync success" << endl;
+	 	cout << "sync success" << endl;
 	 }
 }
 
