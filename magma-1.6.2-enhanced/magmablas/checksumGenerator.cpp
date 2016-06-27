@@ -230,7 +230,7 @@ void recalculateChecksum4(double * A, int lda,
 					MAGMA_D_ONE, vd, vd_ld,
 					A + i, lda,
 					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
-
+		magmablasSetKernelStream(streams[1]);
 		r = cudaGetLastError();
 		if (r != cudaSuccess) {
 	 		cout << "cuda error" << endl;
