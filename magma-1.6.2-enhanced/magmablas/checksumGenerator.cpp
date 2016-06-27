@@ -233,17 +233,17 @@ void recalculateChecksum4(double * A, int lda,
 		magmablasSetKernelStream(streams[1]);
 		r = cudaGetLastError();
 		if (r != cudaSuccess) {
-	 		cout << "cuda error" << endl;
+	 		cout << i <<"cuda error" << endl;
 	 	} else {
-	 		cout << "success" << endl;
+	 		cout << i <<"success" << endl;
 	 	}
 	 }
 	
 	r = cudaStreamSynchronize(streams[2]);
 	 if (r != cudaSuccess) {
-	 	cout << "cuda sync error" << endl;
+	 	cout << i<< "cuda sync error" << endl;
 	 } else {
-	 	cout << "sync success" << endl;
+	 	cout <<i<< "sync success" << endl;
 	 }
 }
 
