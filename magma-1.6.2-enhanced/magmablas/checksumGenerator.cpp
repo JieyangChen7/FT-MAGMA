@@ -208,9 +208,9 @@ void recalculateChecksum4(double * A, int lda,
 // 					&one, A, lda,
 // 					A, lda,
 // 					&zero, A, lda);	
-
+	magmablasSetKernelStream(streams[1]);
 	for (int i = 0; i < m; i += chk_nb) {
-		magmablasSetKernelStream(streams[1]);
+		
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
 					2, n, chk_nb,
 					MAGMA_D_ONE, vd, vd_ld,
@@ -263,8 +263,8 @@ void recalculateChecksum6(double * A, int lda,
 		double * chk2, int chk2_ld, 
 		magma_queue_t * streams) {
 
+	magmablasSetKernelStream(streams[1]);
 	for (int i = 0; i < m; i += chk_nb) {
-		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(MagmaTrans, MagmaTrans,
 					n, 2, chk_nb,
 					MAGMA_D_ONE, 
@@ -320,11 +320,10 @@ void recalculateChecksum8(double * A, int lda,
 		double * chk2, int chk2_ld, 
 		magma_queue_t * streams) {
 
+	magmablasSetKernelStream(streams[1]);
 	for (int i = 0; i < m; i += chk_nb) {
-		magmablasSetKernelStream(streams[1]);
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
 					n, 2, chk_nb,
-					//2, B + i, B,
 					MAGMA_D_ONE, 
 					A + i, lda,
 					vd, vd_ld,
@@ -474,20 +473,20 @@ void benchmark(double * A, int lda,
 			
 
 
-			gpu_time8 = magma_wtime();
-			for (int k = 0; k < K; k ++){
-				ChecksumRecalSelector(A, lda,
-				   m, n, chk_nb,
-				   vd, vd_ld,
-				   vd2, vd2_ld,
-				   chk1, chk1_ld, 
-				   chk2, chk2_ld, 
-				   chk21, chk21_ld, 
-				   chk22, chk22_ld, 
-				   streams,
-				   8);
-			}
-			gpu_time8 = magma_wtime() - gpu_time8;
+			// gpu_time8 = magma_wtime();
+			// for (int k = 0; k < K; k ++){
+			// 	ChecksumRecalSelector(A, lda,
+			// 	   m, n, chk_nb,
+			// 	   vd, vd_ld,
+			// 	   vd2, vd2_ld,
+			// 	   chk1, chk1_ld, 
+			// 	   chk2, chk2_ld, 
+			// 	   chk21, chk21_ld, 
+			// 	   chk22, chk22_ld, 
+			// 	   streams,
+			// 	   8);
+			// }
+			// gpu_time8 = magma_wtime() - gpu_time8;
 
 			double min_time1 = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
 			double min_time2 = fmin(gpu_time5, fmin(gpu_time6, fmin(gpu_time7, gpu_time8)));
