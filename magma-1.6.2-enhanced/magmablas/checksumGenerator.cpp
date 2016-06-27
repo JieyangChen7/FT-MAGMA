@@ -230,18 +230,13 @@ void recalculateChecksum4(double * A, int lda,
 					MAGMA_D_ONE, vd, vd_ld,
 					A + i, lda,
 					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
-		cudaStreamSynchronize(streams[1]);
-		r = cudaGetLastError();
-		if (r != cudaSuccess) {
-	 		cout << i <<"cuda error" << endl;
-	 	} else {
-	 		cout << i <<"success" << endl;
-	 	}
 	 }
-	
+	cudaStreamSynchronize(streams[1]);
+	r = cudaGetLastError();
 	r = cudaStreamSynchronize(streams[1]);
 	 if (r != cudaSuccess) {
 	 	cout << "cuda sync error" << endl;
+	 	magma_queue_create( &stream[1] );
 	 } else {
 	 	cout << "sync success" << endl;
 	 }
