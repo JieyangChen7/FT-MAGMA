@@ -421,7 +421,7 @@ void benchmark(double * A, int lda,
 
 
 			gpu_time4 = magma_wtime();
-			for (int k = 0; k < K; k ++){
+			for (int k = 0; k < 1; k ++){
 			ChecksumRecalSelector(A, lda,
 				   m, n, chk_nb,
 				   vd, vd_ld,
