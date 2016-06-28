@@ -635,6 +635,7 @@ void ChecksumRecalSelector(double * A, int lda,
 			   			chk22, chk22_ld, 
 			   			streams);
 					break;
+			default: cout << "selecting error" << endl;
 		}
 }
 
@@ -686,7 +687,7 @@ void benchmark(double * A, int lda,
 		for (int j = chk_nb; j < n; j += chk_nb) {
 
 			AutoTuneChecksumRecal(A, lda,
-				   m, n, chk_nb,
+				   i, j, chk_nb,
 				   vd, vd_ld,
 				   vd2, vd2_ld,
 				   chk1, chk1_ld, 
@@ -725,8 +726,6 @@ void benchmark(double * A, int lda,
 	cout << "hand tuning time: " << benchmark_time << endl;
 
 
-
-	cout << "start banchmarking:" << endl;
 	benchmark_time = magma_wtime();
 	for (int i = chk_nb; i < m; i += chk_nb) {
 
