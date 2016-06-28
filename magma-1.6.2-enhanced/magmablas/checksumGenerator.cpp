@@ -858,23 +858,23 @@ void ChecksumRecalSelector(double * A, int lda,
 			case 9: recalculateChecksum9(A, lda,
 						m, n, chk_nb,
 						vd, vd_ld,
-			   			chk21, chk21_ld, 
-			   			chk22, chk22_ld, 
+			   			chk1, chk1_ld, 
+			   			chk2, chk2_ld, 
 			   			streams);
 					break;
 		
 			case 10: recalculateChecksum10(A, lda,
 						m, n, chk_nb,
-						vd, vd_ld,
-			   			chk21, chk21_ld, 
-			   			chk22, chk22_ld, 
+						vd2, vd2_ld,
+			   			chk1, chk1_ld, 
+			   			chk2, chk2_ld, 
 			   			streams);
 					break;
 		
 
 			case 11: recalculateChecksum11(A, lda,
 						m, n, chk_nb,
-						vd2, vd2_ld,
+						vd, vd_ld,
 			   			chk21, chk21_ld, 
 			   			chk22, chk22_ld, 
 			   			streams);
