@@ -180,7 +180,7 @@ magma_dgetrf_gpu(
         }
   
         /* flags */
-        bool FT = true;
+        bool FT = false;
         bool DEBUG = false;
         bool VERIFY = true;
         double * v;
@@ -362,7 +362,7 @@ magma_dgetrf_gpu(
             cout << "done." << endl;
 
 
-        } 
+        
 
 
 
@@ -379,6 +379,7 @@ magma_dgetrf_gpu(
                chk22d, chk22d_ld, 
                stream,
                mapping, mapping_ld);
+        } 
 
         cout << "start computation" << endl;
         double comp_time = magma_wtime();
