@@ -39,6 +39,18 @@ void ChecksumRecalProfiler(double * A, int lda,
 			   int * mapping, int mapping_ld
 			   );
 
+void benchmark(double * A, int lda,
+			   int m, int n, int chk_nb,
+			   double * vd, int vd_ld,
+			   double * vd2, int vd2_ld,
+			   double * chk1, int chk1_ld, 
+			   double * chk2, int chk2_ld, 
+			   double * chk21, int chk21_ld, 
+			   double * chk22, int chk22_ld, 
+			   magma_queue_t * streams,
+			   int * mapping, int mapping_ld
+			   );
+
 void ChecksumRecalSelector(double * A, int lda,
 			   int m, int n, int chk_nb,
 			   double * vd, int vd_ld,
