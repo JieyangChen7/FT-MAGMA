@@ -385,7 +385,7 @@ magma_dgetrf_gpu(
                mapping, mapping_ld);
 
         benchmark(dAT, lddat,
-               n, nb, nb,
+               n, nb*2, nb,
                vd, vd_ld,
                vd2, vd2_ld,
                chk1d, chk1d_ld, 
