@@ -98,11 +98,10 @@ void recalculateChecksum(double * A, int lda,
 		magma_queue_t * streams) {
 
 	for (int i = 0; i < m; i += chk_nb) {
-		//magmablasSetKernelStream(streams[1]);
-		magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(streams[2]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
-		magmablasSetKernelStream(streams[2]);
+		magmablasSetKernelStream(streams[3]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
 
@@ -113,15 +112,54 @@ void recalculateChecksum(double * A, int lda,
 		// magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
 		// 		A + i + chk_nb, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) + 1, chk2_ld );
 	}
-	cudaStreamSynchronize(streams[1]);
-	
 	cudaStreamSynchronize(streams[2]);
-	// cudaStreamSynchronize(streams[3]);
-
-	// cudaStreamSynchronize(streams[4]);
-
-
+	
+	cudaStreamSynchronize(streams[3]);
+	
 }
+
+
+
+
+//recalculate column checksums
+//M: number of rows of A
+//N: numner of cols of A
+//non-col-read-A
+//col-read-B
+//non-col-write-C
+//separated - 4 streams
+void recalculateChecksum9(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb * 2) {
+		magmablasSetKernelStream(streams[1]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
+		magmablasSetKernelStream(streams[2]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+		if (i + chk_nb < m) {			
+			magmablasSetKernelStream(streams[3]);
+			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+					A + i + chk_nb, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) + 1, chk1_ld );
+			magmablasSetKernelStream(streams[4]);
+			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+					A + i + chk_nb, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) + 1, chk2_ld );
+		}
+	}
+	cudaStreamSynchronize(streams[1]);
+	cudaStreamSynchronize(streams[2]);
+	cudaStreamSynchronize(streams[3]);
+	cudaStreamSynchronize(streams[4]);
+	
+}
+
+
+
 
 
 //non-col-read-A
@@ -175,9 +213,43 @@ void recalculateChecksum3(double * A, int lda,
 	
 	cudaStreamSynchronize(streams[2]);
 	cudaStreamSynchronize(streams[3]);
-
-
 }
+
+
+//col-read-A
+//col-read-B
+//non-col-write-C
+//separated - 4 streams
+void recalculateChecksum10(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb * 2) {
+		magmablasSetKernelStream(streams[1]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
+		magmablasSetKernelStream(streams[2]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+		if (i + chk_nb < m) {
+			magmablasSetKernelStream(streams[3]);
+			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+					A + i + chk_nb, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb) + 1, chk1_ld );
+			magmablasSetKernelStream(streams[2]);
+			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+					A + i + chk_nb, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb) + 1, chk2_ld );
+		}
+	}
+	
+	cudaStreamSynchronize(streams[1]);
+	cudaStreamSynchronize(streams[2]);
+	cudaStreamSynchronize(streams[3]);
+	cudaStreamSynchronize(streams[4]);
+}
+
 
 
 //col-read-A
@@ -269,9 +341,42 @@ void recalculateChecksum5(double * A, int lda,
 	
 	cudaStreamSynchronize(streams[2]);
 	cudaStreamSynchronize(streams[3]);
-
-
 }
+
+
+//non-col-read-A
+//col-read-B
+//col-write-C
+//separated - 4 streams
+void recalculateChecksum11(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb * 2) {
+		magmablasSetKernelStream(streams[1]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, 1 );
+		magmablasSetKernelStream(streams[2]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, 1 );
+		if (i + chk_nb < m) {
+			magmablasSetKernelStream(streams[3]);
+			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+					A + i + chk_nb, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb + 1) * chk1_ld, 1 );
+			magmablasSetKernelStream(streams[4]);
+			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+					A + i + chk_nb, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb + 1) * chk2_ld, 1 );
+		}
+	}
+	cudaStreamSynchronize(streams[1]);
+	cudaStreamSynchronize(streams[2]);
+	cudaStreamSynchronize(streams[3]);
+	cudaStreamSynchronize(streams[4]);
+}
+
 
 
 //non-col-read-A
@@ -326,6 +431,41 @@ void recalculateChecksum7(double * A, int lda,
 	
 	cudaStreamSynchronize(streams[2]);
 	cudaStreamSynchronize(streams[3]);
+}
+
+
+
+//col-read-A
+//col-read-B
+//col-write-C
+//separated
+void recalculateChecksum12(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * streams) {
+
+	for (int i = 0; i < m; i += chk_nb) {
+		magmablasSetKernelStream(streams[1]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, 1 );
+		magmablasSetKernelStream(streams[2]);
+		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, 1 );
+		if (i + chk_nb < m) {
+			magmablasSetKernelStream(streams[3]);
+			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+					A + i + chk_nb, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb + 1) * chk1_ld, 1 );
+			magmablasSetKernelStream(streams[4]);
+			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
+					A + i + chk_nb, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb + 1) * chk2_ld, 1 );
+		}
+	}
+	cudaStreamSynchronize(streams[1]);
+	cudaStreamSynchronize(streams[2]);
+	cudaStreamSynchronize(streams[3]);
+	cudaStreamSynchronize(streams[4]);
 
 
 }
@@ -376,6 +516,10 @@ void ChecksumRecalProfiler(double * A, int lda,
 	double gpu_time6 = 1000.0;
 	double gpu_time7 = 1000.0;
 	double gpu_time8 = 1000.0;
+	double gpu_time9 = 1000.0;
+	double gpu_time10 = 1000.0;
+	double gpu_time11 = 1000.0;
+	double gpu_time12 = 1000.0;
 	int K = 1;
 	cudaProfilerStart();
 	for (int i = chk_nb; i < m; i += chk_nb) {
@@ -510,9 +654,73 @@ void ChecksumRecalProfiler(double * A, int lda,
 			// }
 			// gpu_time8 = magma_wtime() - gpu_time8;
 
+
+			gpu_time9 = magma_wtime();
+			for (int k = 0; k < K; k ++){
+				ChecksumRecalSelector(A, lda,
+				   i, j, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   9);
+			}
+			gpu_time9 = magma_wtime() - gpu_time9;
+
+
+			gpu_time10 = magma_wtime();
+			for (int k = 0; k < K; k ++){
+				ChecksumRecalSelector(A, lda,
+				   i, j, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   10);
+			}
+			gpu_time10 = magma_wtime() - gpu_time10;
+
+
+			gpu_time11 = magma_wtime();
+			for (int k = 0; k < K; k ++){
+				ChecksumRecalSelector(A, lda,
+				   i, j, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   11);
+			}
+			gpu_time11 = magma_wtime() - gpu_time11;
+
+			gpu_time12 = magma_wtime();
+			for (int k = 0; k < K; k ++){
+				ChecksumRecalSelector(A, lda,
+				   i, j, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   12);
+			}
+			gpu_time12 = magma_wtime() - gpu_time12;
+
 			double min_time1 = fmin(gpu_time1, fmin(gpu_time2, fmin(gpu_time3, gpu_time4)));
 			double min_time2 = fmin(gpu_time5, fmin(gpu_time6, fmin(gpu_time7, gpu_time8)));
-			double min_time = fmin(min_time1, min_time2);
+			double min_time3 = fmin(gpu_time9, fmin(gpu_time10, fmin(gpu_time11, gpu_time12)));
+			double min_time = fmin(min_time1, fmin(min_time2, min_time3));
 
 			if (min_time == gpu_time1) {
 				cout << "1 ";
@@ -538,6 +746,18 @@ void ChecksumRecalProfiler(double * A, int lda,
 			} else if  (min_time == gpu_time8){
 				cout << "8 ";
 				mapping[i * mapping_ld + j] = 8;
+			} else if (min_time == gpu_time9) {
+				cout << "9 ";
+				mapping[i * mapping_ld + j] = 9;
+			} else if  (min_time == gpu_time10) {
+				cout << "10 ";
+				mapping[i * mapping_ld + j] = 10;
+			} else if  (min_time == gpu_time11) {
+				cout << "11 ";
+				mapping[i * mapping_ld + j] = 11;
+			} else if  (min_time == gpu_time12){
+				cout << "12 ";
+				mapping[i * mapping_ld + j] = 12;
 			}
 			// if (gpu_time1 < gpu_time2) cout << "S ";
 			// else cout <<"C ";
@@ -635,6 +855,39 @@ void ChecksumRecalSelector(double * A, int lda,
 			   			chk22, chk22_ld, 
 			   			streams);
 					break;
+			case 9: recalculateChecksum9(A, lda,
+						m, n, chk_nb,
+						vd, vd_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+					break;
+		
+			case 10: recalculateChecksum10(A, lda,
+						m, n, chk_nb,
+						vd, vd_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+					break;
+		
+
+			case 11: recalculateChecksum11(A, lda,
+						m, n, chk_nb,
+						vd2, vd2_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+					break;
+			
+			case 12: recalculateChecksum12(A, lda,
+						m, n, chk_nb,
+						vd2, vd2_ld,
+			   			chk21, chk21_ld, 
+			   			chk22, chk22_ld, 
+			   			streams);
+					break;
+
 			default: cout << "selecting error" << endl;
 		}
 }
