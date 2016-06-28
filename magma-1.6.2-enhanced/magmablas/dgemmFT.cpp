@@ -45,24 +45,24 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_row = n;
 			mem_col = k;
 		}
-		// recalculateChecksum2(B, ldb,
-		// 					mem_row, mem_col,
-		// 					chk_nb,
-		// 					vd, vd_ld,
-		// 					chk1, chk1_ld,
-		// 					chk2, chk2_ld,
-		// 					streams);
+		recalculateChecksum2(B, ldb,
+							mem_row, mem_col,
+							chk_nb,
+							vd, vd_ld,
+							chk1, chk1_ld,
+							chk2, chk2_ld,
+							streams);
 
-		AutoTuneChecksumRecal(B, ldb,
-				   mem_row, mem_col, chk_nb,
-				   vd, vd_ld,
-				   vd2, vd2_ld,
-				   chk1, chk1_ld, 
-				   chk2, chk2_ld, 
-				   chk21, chk21_ld, 
-				   chk22, chk22_ld, 
-				   streams,
-				   mapping, mapping_ld);
+		// AutoTuneChecksumRecal(B, ldb,
+		// 		   mem_row, mem_col, chk_nb,
+		// 		   vd, vd_ld,
+		// 		   vd2, vd2_ld,
+		// 		   chk1, chk1_ld, 
+		// 		   chk2, chk2_ld, 
+		// 		   chk21, chk21_ld, 
+		// 		   chk22, chk22_ld, 
+		// 		   streams,
+		// 		   mapping, mapping_ld);
 
 		if (DEBUG) {
 			cudaStreamSynchronize(streams[1]);
@@ -89,24 +89,24 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_row = k;
 			mem_col = m;
 		}
-		// recalculateChecksum2(A, lda,
-		// 					mem_row, mem_col,
-		// 					chk_nb,
-		// 					vd, vd_ld,
-		// 					chk1, chk1_ld,
-		// 					chk2, chk2_ld,
-		// 					streams);
+		recalculateChecksum2(A, lda,
+							mem_row, mem_col,
+							chk_nb,
+							vd, vd_ld,
+							chk1, chk1_ld,
+							chk2, chk2_ld,
+							streams);
 
-		AutoTuneChecksumRecal(A, lda,
-				   mem_row, mem_col, chk_nb,
-				   vd, vd_ld,
-				   vd2, vd2_ld,
-				   chk1, chk1_ld, 
-				   chk2, chk2_ld, 
-				   chk21, chk21_ld, 
-				   chk22, chk22_ld, 
-				   streams,
-				   mapping, mapping_ld);
+		// AutoTuneChecksumRecal(A, lda,
+		// 		   mem_row, mem_col, chk_nb,
+		// 		   vd, vd_ld,
+		// 		   vd2, vd2_ld,
+		// 		   chk1, chk1_ld, 
+		// 		   chk2, chk2_ld, 
+		// 		   chk21, chk21_ld, 
+		// 		   chk22, chk22_ld, 
+		// 		   streams,
+		// 		   mapping, mapping_ld);
 
 		if (DEBUG) {
 
@@ -127,24 +127,24 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		mem_row = m;
 		mem_col = n;
 		
-		// recalculateChecksum2(C, ldc,
-		// 					mem_row, mem_col,
-		// 					chk_nb,
-		// 					vd, vd_ld,
-		// 					chk1, chk1_ld,
-		// 					chk2, chk2_ld,
-		// 					streams);
+		recalculateChecksum2(C, ldc,
+							mem_row, mem_col,
+							chk_nb,
+							vd, vd_ld,
+							chk1, chk1_ld,
+							chk2, chk2_ld,
+							streams);
 
-		AutoTuneChecksumRecal(C, ldc,
-				   mem_row, mem_col, chk_nb,
-				   vd, vd_ld,
-				   vd2, vd2_ld,
-				   chk1, chk1_ld, 
-				   chk2, chk2_ld, 
-				   chk21, chk21_ld, 
-				   chk22, chk22_ld, 
-				   streams,
-				   mapping, mapping_ld);
+		// AutoTuneChecksumRecal(C, ldc,
+		// 		   mem_row, mem_col, chk_nb,
+		// 		   vd, vd_ld,
+		// 		   vd2, vd2_ld,
+		// 		   chk1, chk1_ld, 
+		// 		   chk2, chk2_ld, 
+		// 		   chk21, chk21_ld, 
+		// 		   chk22, chk22_ld, 
+		// 		   streams,
+		// 		   mapping, mapping_ld);
 
 		if (DEBUG) {
 
