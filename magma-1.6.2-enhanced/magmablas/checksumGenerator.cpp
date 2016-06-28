@@ -224,7 +224,6 @@ void recalculateChecksum4(double * A, int lda,
 	 magmablasSetKernelStream(streams[1]);
 	cudaError_t r;
 	 for (int i = 0; i < m; i += chk_nb) {
-		
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
 					2, n, chk_nb,
 					MAGMA_D_ONE, vd, vd_ld,
@@ -431,20 +430,20 @@ void benchmark(double * A, int lda,
 			gpu_time3 = magma_wtime() - gpu_time3;
 
 
-			gpu_time4 = magma_wtime();
-			for (int k = 0; k < 1; k ++){
-			ChecksumRecalSelector(A, lda,
-				   i, j, chk_nb,
-				   vd, vd_ld,
-				   vd2, vd2_ld,
-				   chk1, chk1_ld, 
-				   chk2, chk2_ld, 
-				   chk21, chk21_ld, 
-				   chk22, chk22_ld, 
-				   streams,
-				   4);
-			}
-			gpu_time4 = magma_wtime() - gpu_time4;
+			// gpu_time4 = magma_wtime();
+			// for (int k = 0; k < 1; k ++){
+			// ChecksumRecalSelector(A, lda,
+			// 	   i, j, chk_nb,
+			// 	   vd, vd_ld,
+			// 	   vd2, vd2_ld,
+			// 	   chk1, chk1_ld, 
+			// 	   chk2, chk2_ld, 
+			// 	   chk21, chk21_ld, 
+			// 	   chk22, chk22_ld, 
+			// 	   streams,
+			// 	   4);
+			// }
+			// gpu_time4 = magma_wtime() - gpu_time4;
 
 
 			gpu_time5 = magma_wtime();
