@@ -30,24 +30,24 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		//verify B before use
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 		int mem_col = n;		
-		recalculateChecksum2(B, ldb,
-							mem_row, mem_col,
-							chk_nb,
-							vd, vd_ld,
-							chk1, chk1_ld,
-							chk2, chk2_ld,
-							streams);
+		// recalculateChecksum2(B, ldb,
+		// 					mem_row, mem_col,
+		// 					chk_nb,
+		// 					vd, vd_ld,
+		// 					chk1, chk1_ld,
+		// 					chk2, chk2_ld,
+		// 					streams);
 
-		// AutoTuneChecksumRecal(B, ldb,
-		// 		   mem_row, mem_col, chk_nb,
-		// 		   vd, vd_ld,
-		// 		   vd2, vd2_ld,
-		// 		   chk1, chk1_ld, 
-		// 		   chk2, chk2_ld, 
-		// 		   chk21, chk21_ld, 
-		// 		   chk22, chk22_ld, 
-		// 		   streams,
-		// 		   mapping, mapping_ld);
+		AutoTuneChecksumRecal(B, ldb,
+				   mem_row, mem_col, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   mapping, mapping_ld);
 
 		if (DEBUG) {
 			cudaStreamSynchronize(streams[1]);
