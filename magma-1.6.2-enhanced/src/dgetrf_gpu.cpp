@@ -373,16 +373,28 @@ magma_dgetrf_gpu(
         cout << "banchmarking:" << endl;
         mapping = new int[n * m];
         mapping_ld = n;
-        // benchmark(dAT, lddat,
-        //        n, m, nb,
-        //        vd, vd_ld,
-        //        vd2, vd2_ld,
-        //        chk1d, chk1d_ld, 
-        //        chk2d, chk2d_ld, 
-        //        chk21d, chk21d_ld, 
-        //        chk22d, chk22d_ld, 
-        //        stream,
-        //        mapping, mapping_ld);
+        ChecksumRecalProfiler(dAT, lddat,
+               n, m, nb,
+               vd, vd_ld,
+               vd2, vd2_ld,
+               chk1d, chk1d_ld, 
+               chk2d, chk2d_ld, 
+               chk21d, chk21d_ld, 
+               chk22d, chk22d_ld, 
+               stream,
+               mapping, mapping_ld);
+
+        benchmark(dAT, lddat,
+               n, m, nb,
+               vd, vd_ld,
+               vd2, vd2_ld,
+               chk1d, chk1d_ld, 
+               chk2d, chk2d_ld, 
+               chk21d, chk21d_ld, 
+               chk22d, chk22d_ld, 
+               stream,
+               mapping, mapping_ld);
+        
         } 
 
         cout << "start computation" << endl;

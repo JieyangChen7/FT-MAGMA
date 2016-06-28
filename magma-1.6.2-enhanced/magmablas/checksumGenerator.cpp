@@ -356,7 +356,7 @@ void recalculateChecksum8(double * A, int lda,
 }
 
 
-void benchmark(double * A, int lda,
+void ChecksumRecalProfiler(double * A, int lda,
 			   int m, int n, int chk_nb,
 			   double * vd, int vd_ld,
 			   double * vd2, int vd2_ld,
@@ -666,6 +666,90 @@ void AutoTuneChecksumRecal(double * A, int lda,
 				   streams,
 				   i);
 
+}
+
+
+void benchmark(double * A, int lda,
+			   int m, int n, int chk_nb,
+			   double * vd, int vd_ld,
+			   double * vd2, int vd2_ld,
+			   double * chk1, int chk1_ld, 
+			   double * chk2, int chk2_ld, 
+			   double * chk21, int chk21_ld, 
+			   double * chk22, int chk22_ld, 
+			   magma_queue_t * streams,
+			   int * mapping, int mapping_ld){
+	cout << "start banchmarking:" << endl;
+	double benchmark_time = magma_wtime();
+	for (int i = chk_nb; i < m; i += chk_nb) {
+
+		for (int j = chk_nb; j < n; j += chk_nb) {
+
+			AutoTuneChecksumRecal(A, lda,
+				   m, n, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   mapping, mapping_ld);
+		}
+
+	}
+	benchmark_time = magma_wtime() - benchmark_time;
+	cout << "auto tuning time: " << benchmark_time << endl;
+
+
+
+	benchmark_time = magma_wtime();
+	for (int i = chk_nb; i < m; i += chk_nb) {
+
+		for (int j = chk_nb; j < n; j += chk_nb) {
+
+			ChecksumRecalSelector(A, lda,
+				   i, j, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   2);
+		}
+
+	}
+	benchmark_time = magma_wtime() - benchmark_time;
+	cout << "hand tuning time: " << benchmark_time << endl;
+
+
+
+	cout << "start banchmarking:" << endl;
+	benchmark_time = magma_wtime();
+	for (int i = chk_nb; i < m; i += chk_nb) {
+
+		for (int j = chk_nb; j < n; j += chk_nb) {
+
+			ChecksumRecalSelector(A, lda,
+				   i, j, chk_nb,
+				   vd, vd_ld,
+				   vd2, vd2_ld,
+				   chk1, chk1_ld, 
+				   chk2, chk2_ld, 
+				   chk21, chk21_ld, 
+				   chk22, chk22_ld, 
+				   streams,
+				   1);
+		}
+
+	}
+	
+	benchmark_time = magma_wtime() - benchmark_time;
+	cout << "native time: " << benchmark_time << endl;
+
+	cout << "done benchmarking" << endl;
 }
 	
 

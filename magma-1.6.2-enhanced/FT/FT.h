@@ -27,7 +27,7 @@ void recalculateChecksum2(double * A, int lda,
 		double * chk2, int chk2_ld, 
 		magma_queue_t * streams);
 
-void benchmark(double * A, int lda,
+void ChecksumRecalProfiler(double * A, int lda,
 			   int m, int n, int chk_nb,
 			   double * vd, int vd_ld,
 			   double * vd2, int vd2_ld,
