@@ -723,7 +723,7 @@ void benchmark(double * A, int lda,
 
 	}
 	benchmark_time = magma_wtime() - benchmark_time;
-	cout << "hand tuning time: " << benchmark_time << endl;
+	cout << "naive tuning time: " << benchmark_time << endl;
 
 
 	benchmark_time = magma_wtime();
@@ -746,7 +746,7 @@ void benchmark(double * A, int lda,
 	}
 	
 	benchmark_time = magma_wtime() - benchmark_time;
-	cout << "native time: " << benchmark_time << endl;
+	cout << "hand tuning time: " << benchmark_time << endl;
 
 	cout << "done benchmarking" << endl;
 }
