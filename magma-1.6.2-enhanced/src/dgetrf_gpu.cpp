@@ -218,6 +218,10 @@ magma_dgetrf_gpu(
         double * work_chk;
         int work_chk_ld;
 
+        int * mapping;
+        int mapping_ld;
+
+
         if (FT) {
 
             /* initialize checksum vectors on CPU */
@@ -367,8 +371,8 @@ magma_dgetrf_gpu(
 
 
         cout << "banchmarking:" << endl;
-        int * mapping = new int[n * m];
-        int mapping_ld = n;
+        mapping = new int[n * m];
+        mapping_ld = n;
         benchmark(dAT, lddat,
                n, m, nb,
                vd, vd_ld,
