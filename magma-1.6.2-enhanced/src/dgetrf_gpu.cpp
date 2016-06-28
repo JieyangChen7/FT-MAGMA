@@ -385,7 +385,7 @@ magma_dgetrf_gpu(
                mapping, mapping_ld);
 
         benchmark(dAT, lddat,
-               n, m, nb,
+               n, nb, nb,
                vd, vd_ld,
                vd2, vd2_ld,
                chk1d, chk1d_ld, 
@@ -394,7 +394,7 @@ magma_dgetrf_gpu(
                chk22d, chk22d_ld, 
                stream,
                mapping, mapping_ld);
-        
+
         } 
 
         cout << "start computation" << endl;
