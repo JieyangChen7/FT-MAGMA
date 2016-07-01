@@ -1003,6 +1003,21 @@ void benchmark(double * A, int lda,
 
 	cout << "done benchmarking" << endl;
 }
+
+//check matrix A using checksums
+void ABFTCheck(double * A, int lda, 
+			   int m, int n, int chk_nb,
+			   double * checksumA, int checksumA_ld) {
+
+}
+
+//check each block of data based on last time check
+void MemoryErrorCheck(time_t * lastCheckTime, int lastCheckTime_ld, 
+					  int m, int n, int chk_nb,
+					  double * A, int lda,
+					  double * checksumA, int checksumA_ld) {
+
+}
 	
 
 
