@@ -145,7 +145,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		//this only works if A is not trans, B can be trans or not trans
 		//we can further work on this to support trans A.
 		magma_dgemm(transA, transB,
-					(m / abftEnv->nb) * 2, n, k,
+					(m / abftEnv->chk_nb) * 2, n, k,
 					alpha,
 					checksumA, checksumA_ld, B, ldb,
 					beta,

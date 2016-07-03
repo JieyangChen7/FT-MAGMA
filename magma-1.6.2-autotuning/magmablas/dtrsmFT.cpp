@@ -33,7 +33,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		AutoTuneChecksumRecal(abftEnv, B, ldb, mem_row, mem_col, stream);
 
 		if (DEBUG) {
-			cudaStreamSynchronize(streams[1]);
+			cudaStreamSynchronize(stream[1]);
 			cout<<"[trsm] recalculated checksum of B before trsm:"<<endl;
 			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col);
 			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col);
