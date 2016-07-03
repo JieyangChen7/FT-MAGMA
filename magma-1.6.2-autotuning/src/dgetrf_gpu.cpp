@@ -76,7 +76,7 @@ magma_dgetrf_gpu(
 {
     #define dAT(i_, j_) (dAT + (i_)*nb*lddat + (j_)*nb)
 
-    #define CHK(i_, j_) (checksum + (i_)*nb*checksum_ld + (j_)*2)
+    
 
     double c_one     = MAGMA_D_ONE;
     double c_neg_one = MAGMA_D_NEG_ONE;
@@ -179,221 +179,53 @@ magma_dgetrf_gpu(
             stream[1] = orig_stream;
         }
   
-        /* flags */
+        // /* flags */
         bool FT = true;
         bool DEBUG = false;
         bool VERIFY = true;
-        double * v;
-        int v_ld;
-
-        double * vd;
-        int vd_ld;
-
-        double * v2;
-        int v2_ld;
-
-        double * vd2;
-        int vd2_ld;
-
-
-        double * chk;
-        int chk_ld;
-
-        double * chk1d;
-        double * chk2d;
-        int chk1d_ld;
-        int chk2d_ld;
-
-        double * chk21d;
-        double * chk22d;
-        int chk21d_ld;
-        int chk22d_ld;
-
-        double * checksum;
-        int checksum_ld;
+    
+        ABFTEnv * abftEnv;
 
         double * dAP_chk;
         int dAP_chk_ld;
 
-        double * work_chk;
-        int work_chk_ld;
+        time_t * lastCheckTime;
+        int lastCheckTime_ld;
 
-        int * mapping;
-        int mapping_ld;
+        int * updatedCounter;
+        int updatedCounter_ld;
 
 
         if (FT) {
 
-            /* initialize checksum vectors on CPU */
-            /* v =
-             * 1 1 1 1
-             * 1 2 3 4 
-             */
-            cout << "checksum vectors initialization on CPU......"; 
-            magma_dmalloc_pinned(&v, nb * 2 * sizeof(double));
-            v_ld = 2;
-            for (int i = 0; i < nb; ++i) {
-                *(v + i * v_ld) = 1;
-            }
-            for (int i = 0; i < nb; ++i) {
-                *(v + i * v_ld + 1) = i+1;
-            }
-            if(DEBUG) {
-                cout << "checksum vector on CPU:" << endl;
-                printMatrix_host(v, v_ld, 2, nb);
-            }
-            cout << "done." << endl;
+            abftEnv = new ABFTEnv();
 
-
-
-            /* initialize checksum vectors on GPU */
-            cout << "checksum vectors initialization on GPU......";
-            size_t vd_pitch = magma_roundup(2 * sizeof(double), 32);
-            vd_ld = vd_pitch / sizeof(double);  
-            magma_dmalloc(&vd, vd_pitch * nb);
-            magma_dsetmatrix(2, nb, v, v_ld, vd, vd_ld);
-            if(DEBUG) {
-                cout << "checksum vector on GPU:" << endl;
-                printMatrix_gpu(vd, vd_ld, nb, 2);
-            }
-            cout << "done." << endl;
-
-
-
-            /* initialize checksum vectors on CPU */
-            /* v2 =
-             * 1 1 
-             * 1 2  
-             * 1 3
-             * 1 4
-             */
-            cout << "checksum vectors initialization on CPU......"; 
-            magma_dmalloc_pinned(&v2, nb * 2 * sizeof(double));
-            v2_ld = nb;
-            for (int i = 0; i < nb; ++i) {
-                *(v2 + i) = 1;
-            }
-            for (int i = 0; i < nb; ++i) {
-                *(v2 + v2_ld + i) = i+1;
-            }
-            if(DEBUG) {
-                cout << "checksum vector on CPU:" << endl;
-                printMatrix_host(v2, v2_ld, nb, 2);
-            }
-            cout << "done." << endl;
-
-
-            /* initialize checksum vectors on GPU */
-            cout << "checksum vectors initialization on GPU......";
-            size_t vd2_pitch = magma_roundup(nb * sizeof(double), 32);
-            vd2_ld = vd2_pitch / sizeof(double);  
-            magma_dmalloc(&vd2, vd2_pitch * 2);
-            magma_dsetmatrix(nb, 2, v2, v2_ld, vd2, vd2_ld);
-            if(DEBUG) {
-                cout << "checksum vector on GPU:" << endl;
-                printMatrix_gpu(vd2, vd2_ld, nb, 2);
-            }
-            cout << "done." << endl;
-
-
-            /* allocate space for update checksum on CPU */
-            cout << "allocate space for checksum of work on CPU......";
-            magma_dmalloc_pinned(&work_chk, maxm * 2 * sizeof(double));
-            work_chk_ld = maxm;
-            cout << "done." << endl;
-
-             cout << "allocate space for recalculated checksum on GPU......";
-            /* allocate space for reclaculated checksum on GPU */
-            size_t chk1d_pitch = magma_roundup(2 * (n / nb) * sizeof(double), 32);
-            chk1d_ld = chk1d_pitch / sizeof(double);
-            magma_dmalloc(&chk1d, chk1d_pitch * m);
-            
-           
-            size_t chk2d_pitch = magma_roundup(2 * (n / nb) * sizeof(double), 32);
-            chk2d_ld = chk2d_pitch / sizeof(double);
-            magma_dmalloc(&chk2d, chk2d_pitch * m);
-            cout << "done." << endl;
-
-
-
-            cout << "allocate space for recalculated checksum on GPU......";
-            /* allocate space for reclaculated checksum on GPU */
-            size_t chk21d_pitch = magma_roundup( m * sizeof(double), 32);
-            chk21d_ld = chk21d_pitch / sizeof(double);
-            magma_dmalloc(&chk21d, chk21d_pitch * 2 * (n / nb));
-            
-           
-            size_t chk22d_pitch = magma_roundup(m * sizeof(double), 32);
-            chk22d_ld = chk22d_pitch / sizeof(double);
-            magma_dmalloc(&chk22d, chk22d_pitch * 2 * (n / nb));
-            cout << "done." << endl;
-
-
+            initializeABFTEnv(abftEnv, nb, n, m, m, 2);
 
             /* initialize checksums */
             cout << "checksums initiallization......";
-            size_t checksum_pitch = magma_roundup((n / nb) * 2 * sizeof(double), 32);
-            checksum_ld = checksum_pitch / sizeof(double);
-            magma_dmalloc(&checksum, checksum_pitch * m);
-            cudaMemset2D(checksum, checksum_pitch, 0, (n / nb) * 2 * sizeof(double), m);
-            
-            initializeChecksum(dAT, lddat, n, m, nb, vd, vd_ld, v, v_ld, checksum, checksum_ld, stream);
+            initializeChecksum(abftEnv, dAT, lddat, stream);
             if(DEBUG) {
                 cout << "input matrix:" << endl;
                 printMatrix_gpu(dAT, lddat, n, m);
                 cout << "checksum matrix on GPU:" << endl;
-                printMatrix_gpu(checksum, checksum_ld, (n / nb) * 2, m);
-
-                recalculateChecksum(dAT, lddat,
-                            n, m,
-                            nb,
-                            vd, vd_ld,
-                            chk1d, chk1d_ld,
-                            chk2d, chk2d_ld,
-                            stream);
-
-                cout<<"recalculated checksum:"<<endl;
-                printMatrix_gpu(chk1d, chk1d_ld, n / nb, m);
-                printMatrix_gpu(chk2d, chk2d_ld, n / nb, m);
+                printMatrix_gpu(abftEnv->checksum, abftEnv->checksum_ld, (abftEnv->gpu_m / abftEnv-chk_nb) * 2, abftEnv->gpu_n);
             }
             cout << "done." << endl;
-
+    
             /* allocate space for checksum of dAP */
             cout << "allocate space for checksum of dAP......";
-            size_t dAP_chk_pitch = maxm * sizeof(double);
-            dAP_chk_ld = maxm;
+            size_t dAP_chk_pitch = m * sizeof(double);
+            dAP_chk_ld = m;
             magma_dmalloc(&dAP_chk, dAP_chk_pitch * 2);
             cout << "done." << endl;
 
 
-        
 
+            cout << "banchmarking:" << endl;
+            ChecksumRecalProfiler(abftEnv, dAT, lddat, stream); 
 
-
-        cout << "banchmarking:" << endl;
-        mapping = new int[n * m];
-        mapping_ld = n;
-        ChecksumRecalProfiler(dAT, lddat,
-               n, m, nb,
-               vd, vd_ld,
-               vd2, vd2_ld,
-               chk1d, chk1d_ld, 
-               chk2d, chk2d_ld, 
-               chk21d, chk21d_ld, 
-               chk22d, chk22d_ld, 
-               stream,
-               mapping, mapping_ld);
-
-        benchmark(dAT, lddat,
-               n, nb*2, nb,
-               vd, vd_ld,
-               vd2, vd2_ld,
-               chk1d, chk1d_ld, 
-               chk2d, chk2d_ld, 
-               chk21d, chk21d_ld, 
-               chk22d, chk22d_ld, 
-               stream,
-               mapping, mapping_ld);
+            benchmark(abftEnv, dAT, lddat, stream);
 
         } 
 
@@ -407,7 +239,7 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 // also transpose checksums
-                magmablas_dtranspose( 2, m-j*nb, CHK(j,j), checksum_ld, dAP_chk, dAP_chk_ld ); 
+                magmablas_dtranspose( 2, m-j*nb, CHK_T(j,j), abftEnv->checksum_ld, dAP_chk, dAP_chk_ld ); 
             }
 
             // make sure that the transpose has completed
@@ -418,7 +250,7 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 // also copy checksums to CPU
-                magma_dgetmatrix_async( m-j*nb, 2, dAP_chk, dAP_chk_ld, work_chk, work_chk_ld,
+                magma_dgetmatrix_async( m-j*nb, 2, dAP_chk, dAP_chk_ld, abftEnv->work_chk, abftEnv->work_chk_ld,
                                         stream[0]);
             }
 
@@ -432,17 +264,9 @@ magma_dgetrf_gpu(
                              n - (j+1)*nb, nb,
                              c_one, dAT(j-1,j-1), lddat,
                              dAT(j-1,j+1), lddat,
-                             nb,
-                             nb,
-                             CHK(j-1, j+1), checksum_ld,
-                             vd, vd_ld,
-                             vd2, vd2_ld,
-                             chk1d, chk1d_ld, 
-                             chk2d, chk2d_ld, 
-                             chk21d, chk21d_ld, 
-                             chk22d, chk22d_ld, 
-                             FT, DEBUG, VERIFY, stream,
-                             mapping, mapping_ld);
+                             abftEnv,
+                             CHK_T(j-1, j+1), abftEnv->checksum_ld,
+                             FT, DEBUG, VERIFY, stream);
 
 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -457,19 +281,11 @@ magma_dgetrf_gpu(
                              c_neg_one, dAT(j-1,j+1), lddat,
                                         dAT(j,  j-1), lddat,
                              c_one,     dAT(j,  j+1), lddat,
-                             nb,
-                             nb,
-                             CHK(j-1, j+1), checksum_ld,
-                             CHK(j, j-1), checksum_ld,
-                             CHK(j, j+1), checksum_ld,
-                             vd, vd_ld,
-                             vd2, vd2_ld,
-                             chk1d, chk1d_ld, 
-                             chk2d, chk2d_ld, 
-                             chk21d, chk21d_ld, 
-                             chk22d, chk22d_ld,
-                             FT, DEBUG, VERIFY, stream,
-                             mapping, mapping_ld );
+                             abftEnv,
+                             CHK_T(j-1, j+1), abftEnv->checksum_ld,
+                             CHK_T(j, j-1), abftEnv->checksum_ld,
+                             CHK_T(j, j+1), abftEnv->checksum_ld,
+                             FT, DEBUG, VERIFY, stream);
             }
 
             // do the cpu part
@@ -478,9 +294,7 @@ magma_dgetrf_gpu(
             //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
 
 
-            dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo,
-                     nb,
-                     work_chk, work_chk_ld, v, v_ld, FT, DEBUG, VERIFY);
+            dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo, FT, DEBUG, VERIFY);
 
             if ( *info == 0 && iinfo > 0 )
                 *info = iinfo + j*nb;
@@ -492,7 +306,7 @@ magma_dgetrf_gpu(
             if (FT) {
 
                 // transfer checksums back to GPU.
-                magma_dsetmatrix_async( m-j*nb, 2, work_chk, work_chk_ld, dAP_chk, dAP_chk_ld,
+                magma_dsetmatrix_async( m-j*nb, 2, abftEnv->work_chk, abftEnv->work_chk_ld, dAP_chk, dAP_chk_ld,
                                         stream[0]);
             }
 
@@ -505,7 +319,7 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 // also do row swap on checksums
-                magmablas_dlaswp( (n/nb)*2, checksum, checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
+                magmablas_dlaswp( (n/nb)*2, abftEnv->checksum, abftEnv->checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
                 if (DEBUG) {
                     cout<<"[ipiv] ipiv:"<<endl;
                     for (int i = 0; i < m; i++) {
@@ -522,7 +336,7 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 //transpose checksums back
-                magmablas_dtranspose( m-j*nb, 2, dAP_chk, dAP_chk_ld, CHK(j, j), checksum_ld);
+                magmablas_dtranspose( m-j*nb, 2, dAP_chk, dAP_chk_ld, CHK_T(j, j), abftEnv->checksum_ld);
             }
 
             // do the small non-parallel computations (next panel update)
@@ -531,21 +345,13 @@ magma_dgetrf_gpu(
                 //              nb, nb,
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
-                dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
-                         nb, nb, 
-                         c_one, dAT(j, j  ), lddat,
-                         dAT(j, j+1), lddat,
-                         nb,
-                         nb,
-                         CHK(j, j+1), checksum_ld,
-                         vd, vd_ld,
-                         vd2, vd2_ld,
-                         chk1d, chk1d_ld, 
-                         chk2d, chk2d_ld, 
-                         chk21d, chk21d_ld, 
-                         chk22d, chk22d_ld,
-                        FT, DEBUG, VERIFY, stream,
-                        mapping, mapping_ld);
+                dtrsmFT(MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
+                        nb, nb, 
+                        c_one, dAT(j, j  ), lddat,
+                        dAT(j, j+1), lddat,
+                        abftEnv,
+                        CHK_T(j, j+1), abftEnv->checksum_ld,
+                        FT, DEBUG, VERIFY, stream);
                 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
                 //              nb, m-(j+1)*nb, nb,
@@ -553,25 +359,17 @@ magma_dgetrf_gpu(
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
 
-                dgemmFT( MagmaNoTrans, MagmaNoTrans,
-                            nb, m-(j+1)*nb, nb,
-                            c_neg_one,
-                            dAT(j,   j+1), lddat,
-                            dAT(j+1, j  ), lddat,
-                            c_one,     dAT(j+1, j+1), lddat,
-                            nb,
-                            nb,
-                            CHK(j, j+1), checksum_ld,
-                            CHK(j+1, j), checksum_ld,
-                            CHK(j+1, j+1), checksum_ld,
-                             vd, vd_ld,
-                             vd2, vd2_ld,
-                             chk1d, chk1d_ld, 
-                             chk2d, chk2d_ld, 
-                             chk21d, chk21d_ld, 
-                             chk22d, chk22d_ld,
-                            FT, DEBUG, VERIFY, stream,
-                            mapping, mapping_ld);
+                dgemmFT(MagmaNoTrans, MagmaNoTrans,
+                        nb, m-(j+1)*nb, nb,
+                        c_neg_one,
+                        dAT(j,   j+1), lddat,
+                        dAT(j+1, j  ), lddat,
+                        c_one,     dAT(j+1, j+1), lddat,
+                        abftEnv,
+                        CHK_T(j, j+1), abftEnv->checksum_ld,
+                        CHK_T(j+1, j), abftEnv->checksum_ld,
+                        CHK_T(j+1, j+1), abftEnv->checksum_ld,
+                        FT, DEBUG, VERIFY, stream);
 
             }
             else if (n-s*nb > 0){
@@ -584,17 +382,9 @@ magma_dgetrf_gpu(
                              n-s*nb, nb,
                              c_one, dAT(j, j  ), lddat,
                                     dAT(j, j+1), lddat,
-                             nb,
-                             nb,
-                             CHK(j, j+1), checksum_ld,
-                             vd, vd_ld,
-                             vd2, vd2_ld,
-                             chk1d, chk1d_ld, 
-                             chk2d, chk2d_ld, 
-                             chk21d, chk21d_ld, 
-                             chk22d, chk22d_ld,
-                             FT, DEBUG, VERIFY, stream,
-                             mapping, mapping_ld);
+                             abftEnv,
+                             CHK_T(j, j+1), abftEnv->checksum_ld,
+                             FT, DEBUG, VERIFY, stream);
 
 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -608,20 +398,11 @@ magma_dgetrf_gpu(
                              c_neg_one, dAT(j,   j+1), lddat,
                                         dAT(j+1, j  ), lddat,
                              c_one,     dAT(j+1, j+1), lddat,
-                             nb,
-                             nb,
-                             CHK(j, j+1), checksum_ld,
-                             CHK(j+1, j), checksum_ld,
-                             CHK(j+1, j+1), checksum_ld,
-                             vd, vd_ld,
-                             vd2, vd2_ld,
-                             chk1d, chk1d_ld, 
-                             chk2d, chk2d_ld, 
-                             chk21d, chk21d_ld, 
-                             chk22d, chk22d_ld,
-                             FT, DEBUG, VERIFY, stream,
-                             mapping, mapping_ld);
-            }
+                             abftEnv,
+                             CHK_T(j, j+1), checksum_ld,
+                             CHK_T(j+1, j), checksum_ld,
+                             CHK_T(j+1, j+1), checksum_ld,
+                             FT, DEBUG, VERIFY, stream);
         }
 
         comp_time = magma_wtime() - comp_time;

@@ -18,10 +18,7 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * chksum2: checksum 2
  * inc2: stride between elememts in chksum2
  */
-void dpotrfFT(double * A, int lda, int n, int * info,
-				double * chksum, int chksum_ld,
-				double * v, int v_ld, 
-				bool FT , bool DEBUG, bool VERIFY) {
+void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY) {
 	
 	double one = 1;
 	double zero = 0;
@@ -75,22 +72,22 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		magma_set_lapack_numthreads(64);
 		for (int i = 0; i < n; i++) {
 			//chksum1[i] = chksum1[i] / get(A, n, n, i, i);
-			*(chksum + i*chksum_ld) = *(chksum + i*chksum_ld) / get(A, n, n, i, i);
+			*(abftEnv->work_chk + i*abftEnv->work_chk_ld) = *(abftEnv->work_chk + i*abftEnv->work_chk_ld) / get(A, n, n, i, i);
 			//(n-i-1, negone*chksum1[i], A + i*lda + i+1, 1, chksum1 + i+1, 1 );
 			int m = n-i-1;
-			double alpha = negone * (*(chksum + i * chksum_ld));
+			double alpha = negone * (*(abftEnv->work_chk + i * abftEnv->work_chk_ld));
 			int incx = 1;
-			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, chksum + (i+1) * chksum_ld, &chksum_ld );
+			blasf77_daxpy(&m, &alpha, A + i*lda + i+1, &incx, abftEnv->work_chk + (i+1) * abftEnv->work_chk_ld, &(abftEnv->work_chk_ld) );
 		}
 	
 		for (int i = 0; i < n; i++) {
 			//chksum2[i] = chksum2[i] / get(A, n, n, i, i);
-			*(chksum + i*chksum_ld + 1) = *(chksum + i*chksum_ld + 1) / get(A, n, n, i, i);
+			*(abftEnv->work_chk + i*abftEnv->work_chk_ld + 1) = *(abftEnv->work_chk + i*abftEnv->work_chk_ld + 1) / get(A, n, n, i, i);
 			//daxpy(n-i-1, negone*chksum2[i], A + i*lda + i+1, 1, chksum2 + i+1, 1 );
 			int m = n-i-1;
-			double alpha = negone *  (*(chksum + i * chksum_ld + 1));
+			double alpha = negone *  (*(abftEnv->work_chk + i * abftEnv->work_chk_ld + 1));
 			int incx = 1;
-			blasf77_daxpy(&m, &alpha, A + i * lda + i+1, &incx, chksum + 1 + (i + 1) * chksum_ld, &chksum_ld );
+			blasf77_daxpy(&m, &alpha, A + i * lda + i+1, &incx, abftEnv->work_chk + 1 + (i + 1) * abftEnv->work_chk_ld, &(abftEnv->work_chk_ld) );
 		}
 
 		

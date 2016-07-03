@@ -13,13 +13,11 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		double * A, int lda,
 		double beta,
 		double * C, int ldc,
+		ABFTEnv * ABFTEnv,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld,
-		double * chk2, int chk2_ld,
 		bool FT, bool DEBUG, bool VERIFY, 
-		magma_queue_t * streams){
+		magma_queue_t * stream){
 	
 	/*		   m				n
 	 * ******************   *********
@@ -36,15 +34,17 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		//verify A before use
 		//reclaculate checksums of A on GPU
 		
-		//magmablasSetKernelStream(streams[1]);
-		magmablasSetKernelStream(streams[2]);
-		magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
-				A, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
-		magmablasSetKernelStream(streams[3]);
-		magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
-				A, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
-		cudaStreamSynchronize(streams[2]);
-		cudaStreamSynchronize(streams[3]);
+		//magmablasSetKernelStream(stream[1]);
+		// magmablasSetKernelStream(stream[2]);
+		// magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
+		// 		A, lda, vd, vd_ld, MAGMA_D_ZERO, chk1, chk1_ld );
+		// magmablasSetKernelStream(streams[3]);
+		// magma_dgemv(MagmaTrans, n, m, MAGMA_D_ONE,
+		// 		A, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2, chk2_ld );
+		// cudaStreamSynchronize(stream[2]);
+		// cudaStreamSynchronize(stream[3]);
+
+		AutoTuneChecksumRecal(abftEnv, A, lda, n, m, stream)
 		//handle error 
 //		ErrorDetectAndCorrect(A, lda,
 //							n, n, n, 
@@ -54,10 +54,10 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 //							streams[1]);
 		
 		if (DEBUG) {
-			cudaStreamSynchronize(streams[1]);
+			cudaStreamSynchronize(stream[1]);
 			cout<<"recalculated checksum of A before dsyrk:"<<endl;
-			printMatrix_gpu(chk1, chk1_ld, 1, m);
-			printMatrix_gpu(chk2, chk2_ld, 1, m);
+			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, 1, m);
+			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, 1, m);
 		
 			cout<<"updated checksum of A before dsyrk:"<<endl;
 			printMatrix_host(checksumA, checksumA_ld, 2, m);

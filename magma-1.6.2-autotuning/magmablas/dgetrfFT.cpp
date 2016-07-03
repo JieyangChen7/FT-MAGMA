@@ -16,9 +16,7 @@ void row_swap(double * chksum, int chksum_ld, int n, int i, int j) {
 }
 
 void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
-              int nb,
-              double * chksum, int chksum_ld,
-              double * v, int v_ld,
+              ABFTEnv * abftEnv,
               bool FT , bool DEBUG, bool VERIFY) {
 
     double one = 1;
@@ -43,14 +41,14 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
                         &m, &n,
                         &one,
                         A, &lda,
-                        v, &v_ld,
+                        abftEnv->v, &(abftEnv->v_ld),
                         &zero,
                         chk1, &chk1_inc );
         blasf77_dgemv(  &N,
                         &m, &n,
                         &one,
                         A, &lda,
-                        v + 1, &v_ld,
+                        abftEnv->v + 1, &(abftEnv->v_ld),
                         &zero,
                         chk2, &chk2_inc );
 
@@ -59,7 +57,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
 			printMatrix_host(chk1, 1, m, 1);
 			printMatrix_host(chk2, 1, m, 1);
 			cout<<"[dgetrf] updated checksum on CPU before factorization:"<<endl;
-			printMatrix_host(chksum, chksum_ld, m, 2);
+			printMatrix_host(abftEnv->work_chk, abftEnv->work_chk_ld, m, 2);
 		}
 
     }
@@ -73,24 +71,24 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         for (int j = 0; j < n; j++) {
         	//swap row j with ipiv[j]
         	if (ipiv[j] != 0) {
-        		row_swap(chksum, chksum_ld, 2, j, ipiv[j]-1);
+        		row_swap(abftEnv->work_chk, abftEnv->work_chk_ld, 2, j, ipiv[j]-1);
         	}
 
         }
          for (int j = 0; j < n; j++) {
         	double Ajj = *(A + j * lda + j);
         	if (Ajj != 0) {
-        		double r = *(chksum + j) * (-1);
+        		double r = *(abftEnv->work_chk + j) * (-1);
         		int inc = 1;
                 int t = m - j - 1;
         		blasf77_daxpy(&t, &r, 
         			A + j * lda + j + 1, &inc,
-        			chksum + j + 1, &inc);
+        			abftEnv->work_chk + j + 1, &inc);
 
-				r = *(chksum + chksum_ld + j) * (-1);
+				r = *(abftEnv->work_chk + abftEnv->work_chk_ld + j) * (-1);
         		blasf77_daxpy(&t, &r, 
         			A + j * lda + j + 1, &inc,
-        			chksum + chksum_ld + j + 1, &inc);
+        			abftEnv->work_chk + abftEnv->work_chk_ld + j + 1, &inc);
         	}
         }
 
@@ -98,7 +96,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         	cout << "[dgetrf] updated matrix:" << endl;
         	printMatrix_host(A, lda,  m, n);
         	cout << "[dgetrf] updated checksum:" << endl;
-        	printMatrix_host(chksum, chksum_ld,  m, 2);
+        	printMatrix_host(abftEnv->work_chk, abftEnv->work_chk_ld,  m, 2);
         }
     }
 }

@@ -3,104 +3,104 @@
 #include "magmablas.h"
 #include "common_magma.h"
 #include <ctime>
+
+#define CHK_T(i_, j_) (abftEnv->checksum + (i_)*(abftEnv->chk_nb)*(abftEnv->checksum_ld) + (j_)*2)
+#define CHK(i_, j_) (abftEnv->checksum + (j_)*(abftEnv->chk_nb)*(abftEnv->checksum_ld) + (i_)*2)
+
+struct ABFTEnv {
+	int gpu_m;
+	int gpu_n;
+	int cpu_m;
+	int cpu_n;
+
+
+    double * v;
+    int v_ld;
+
+    double * v2;
+    int v2_ld;
+
+	double * vd;
+	int vd_ld;
+
+   	double * vd2;
+   	int vd2_ld;
+
+   	double * chk1;
+   	int chk1_ld;
+
+   	double * chk2;
+   	int chk2_ld;
+
+   	double * chk21;
+   	int chk21_ld, 
+
+   	double * chk22;
+   	int chk22_ld;
+
+   	double * work_chk;
+    int work_chk_ld;
+
+    double * checksum;
+    int checksum_ld;
+
+    int * mapping;
+    int mapping_ld;
+
+    time_t * lastCheckTime;
+    int lastCheckTime_ld;
+
+    int * updatedCounter;
+    int updatedCounter_ld;
+}
+
+
 void printMatrix_host(double * matrix_host, int ld,  int M, int N);
 void printMatrix_gpu(double * matrix_device, int matrix_ld, int M, int N);
 void printVector_host(double * vector_host, int N);
 void printVector_gpu(double * vector_device, int N) ;
 
-void initializeChecksum(double * matrix, int ld,
-                        int M, int N, int B,
-                        double * vd, int vd_ld,
-                        double * v, int v_ld,
-                        double * chksum, int chksum_ld, magma_queue_t * streams);
+void initializeChecksum(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
+
+void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
+						int gpu_m, int gpu_n,
+						int cpu_m, int cpu_n);
+
 
 void recalculateChecksum(double * A, int lda,
 		int m, int n, int chk_nb,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
-		magma_queue_t * streams);
+		magma_queue_t * stream);
 
 void recalculateChecksum2(double * A, int lda,
 		int m, int n, int chk_nb,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
 		double * chk2, int chk2_ld, 
-		magma_queue_t * streams);
+		magma_queue_t * stream);
 
-void ChecksumRecalProfiler(double * A, int lda,
-			   int m, int n, int chk_nb,
-			   double * vd, int vd_ld,
-			   double * vd2, int vd2_ld,
-			   double * chk1, int chk1_ld, 
-			   double * chk2, int chk2_ld, 
-			   double * chk21, int chk21_ld, 
-			   double * chk22, int chk22_ld, 
-			   magma_queue_t * streams,
-			   int * mapping, int mapping_ld
-			   );
+void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
 
-void benchmark(double * A, int lda,
-			   int m, int n, int chk_nb,
-			   double * vd, int vd_ld,
-			   double * vd2, int vd2_ld,
-			   double * chk1, int chk1_ld, 
-			   double * chk2, int chk2_ld, 
-			   double * chk21, int chk21_ld, 
-			   double * chk22, int chk22_ld, 
-			   magma_queue_t * streams,
-			   int * mapping, int mapping_ld
-			   );
+void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
 
-void ChecksumRecalSelector(double * A, int lda,
-			   int m, int n, int chk_nb,
-			   double * vd, int vd_ld,
-			   double * vd2, int vd2_ld,
-			   double * chk1, int chk1_ld, 
-			   double * chk2, int chk2_ld, 
-			   double * chk21, int chk21_ld, 
-			   double * chk22, int chk22_ld, 
-			   magma_queue_t * streams,
-			   int select);
+void ChecksumRecalSelector(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select);
 
-void AutoTuneChecksumRecal(double * A, int lda,
-			   int m, int n, int chk_nb,
-			   double * vd, int vd_ld,
-			   double * vd2, int vd2_ld,
-			   double * chk1, int chk1_ld, 
-			   double * chk2, int chk2_ld, 
-			   double * chk21, int chk21_ld, 
-			   double * chk22, int chk22_ld, 
-			   magma_queue_t * streams,
-			   int * mapping, int mapping_ld
-			   );
+void AutoTuneChecksumRecal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream);
 
-void dpotrfFT(double * A, int lda, int n, int * info,
-				double * chksum, int chksum_ld,
-				double * v, int v_ld, 
-				bool FT , bool DEBUG, bool VERIFY);
+void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY);
 
-void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
-			  int nb,
-              double * chksum, int chksum_ld,
-              double * v, int v_ld,
-              bool FT , bool DEBUG, bool VERIFY);
+void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info, ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY);
 
 void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
 		int m, int n, double alpha, double * A, int lda,
 		double * B, int ldb, 
-		int chk_nb,
-		int nb,
+		ABFTEnv * abftEnv,
 		double * checksumB, int checksumB_ld,
-		double * vd, int vd_ld,
-		double * vd2, int vd2_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		double * chk21, int chk21_ld, 
-		double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
-		magma_queue_t * streams,
-		int * mapping, int mapping_ld);
+		magma_queue_t * stream);
+
 
 void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		int n, int m, 
@@ -108,13 +108,11 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		double * A, int lda,
 		double beta,
 		double * C, int ldc,
+		ABFTEnv * ABFTEnv,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld,
-		double * chk2, int chk2_ld,
 		bool FT, bool DEBUG, bool VERIFY, 
-		magma_queue_t * streams);
+		magma_queue_t * stream);
 
 void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	    int m, int n, int k, 
@@ -123,20 +121,12 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		double * B, int ldb, 
 		double beta, 
 		double * C, int ldc, 
-		int chk_nb,
-		int nb,
+		ABFTEnv * abftEnv,
 		double * checksumA, int checksumA_ld,
 		double * checksumB, int checksumB_ld,
 		double * checksumC, int checksumC_ld,
-		double * vd, int vd_ld,
-		double * vd2, int vd2_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		double * chk21, int chk21_ld, 
-	    double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
-		magma_queue_t * streams,
-		int * mapping, int mapping_ld);
+		magma_queue_t * stream);
 
 void ErrorDetectAndCorrect(double * A, int lda, 
 		int B, int m, int n,

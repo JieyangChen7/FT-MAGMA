@@ -11,21 +11,13 @@ using namespace std;
 void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
 		int m, int n, double alpha, double * A, int lda,
 		double * B, int ldb, 
-		int chk_nb,
-		int nb,
+		ABFTEnv * abftEnv,
 		double * checksumB, int checksumB_ld,
-		double * vd, int vd_ld,
-		double * vd2, int vd2_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		double * chk21, int chk21_ld, 
-		double * chk22, int chk22_ld, 
 		bool FT, bool DEBUG, bool VERIFY, 
-		magma_queue_t * streams,
-		int * mapping, int mapping_ld) {
+		magma_queue_t * stream) {
 
-	cudaStreamSynchronize(streams[1]);
-	cudaStreamSynchronize(streams[4]);
+	cudaStreamSynchronize(stream[1]);
+	cudaStreamSynchronize(stream[4]);
 	if (FT && VERIFY) {
 		//verify B before use
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
@@ -38,29 +30,20 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		// 					chk2, chk2_ld,
 		// 					streams);
 
-		AutoTuneChecksumRecal(B, ldb,
-				   mem_row, mem_col, chk_nb,
-				   vd, vd_ld,
-				   vd2, vd2_ld,
-				   chk1, chk1_ld, 
-				   chk2, chk2_ld, 
-				   chk21, chk21_ld, 
-				   chk22, chk22_ld, 
-				   streams,
-				   mapping, mapping_ld);
+		AutoTuneChecksumRecal(abftEnv, B, ldb, mem_row, mem_col, stream);
 
 		if (DEBUG) {
 			cudaStreamSynchronize(streams[1]);
 			cout<<"[trsm] recalculated checksum of B before trsm:"<<endl;
-			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
-			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
+			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col);
+			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col);
 		
 			cout<<"[trsm] updated checksum of B before trsm:"<<endl;
-			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / chk_nb) * 2, mem_col);
+			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col);
 		}
 
 	}
-	magmablasSetKernelStream(streams[1]);	
+	magmablasSetKernelStream(stream[1]);	
 	//[Cholesky]MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit, MAGMA_D_ONE
 
 
@@ -72,11 +55,11 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 
 	if (FT) {
 		//update checksums
-		//magmablasSetKernelStream(streams[1]);	
+		//magmablasSetKernelStream(stream[1]);	
 		
-		magmablasSetKernelStream(streams[4]);	
+		magmablasSetKernelStream(stream[4]);	
 		magma_dtrsm(side, uplo, trans, diag,
-                    (m / nb) * 2, n,
+                    (m / abftEnv->chk_nb) * 2, n,
                     alpha, A, lda,
                     checksumB, checksumB_ld);
 
@@ -91,7 +74,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		// 					vd, vd_ld,
 		// 					chk1, chk1_ld,
 		// 					chk2, chk2_ld,
-		// 					streams);
+		// 					stream);
 		// if (DEBUG) {
 		// 	cout<<"[trsm] recalculated checksum of B after trsm:"<<endl;
 		// 	printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
