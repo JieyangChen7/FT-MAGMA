@@ -13,7 +13,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		double * A, int lda,
 		double beta,
 		double * C, int ldc,
-		ABFTEnv * ABFTEnv,
+		ABFTEnv * abftEnv,
 		double * checksumA, int checksumA_ld,
 		double * checksumC, int checksumC_ld,
 		bool FT, bool DEBUG, bool VERIFY, 
@@ -26,8 +26,8 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	 * ******************	*********
 	 */
 	
-	cudaStreamSynchronize(streams[1]);
-	cudaStreamSynchronize(streams[4]);
+	cudaStreamSynchronize(stream[1]);
+	cudaStreamSynchronize(stream[4]);
 	
 	
 	if (FT && VERIFY) {
@@ -44,7 +44,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		// cudaStreamSynchronize(stream[2]);
 		// cudaStreamSynchronize(stream[3]);
 
-		AutoTuneChecksumRecal(abftEnv, A, lda, n, m, stream)
+		AutoTuneChecksumRecal(abftEnv, A, lda, n, m, stream);
 		//handle error 
 //		ErrorDetectAndCorrect(A, lda,
 //							n, n, n, 
@@ -67,7 +67,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	}
 
 	//if (FT) {
-		magmablasSetKernelStream(streams[1]);
+		magmablasSetKernelStream(stream[1]);
 		magma_dgemm(
 				MagmaNoTrans, MagmaTrans,
 				n, n, m,
@@ -84,7 +84,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	if(FT){
 		//update checksums on GPU
 		//magmablasSetKernelStream(streams[1]);
-		magmablasSetKernelStream(streams[4]);
+		magmablasSetKernelStream(stream[4]);
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
 					2, n, m,

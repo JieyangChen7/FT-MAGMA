@@ -106,28 +106,28 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
     cout << "allocate space for recalculated checksum on GPU......";
     /* allocate space for reclaculated checksum on GPU */
-    size_t chk1d_pitch = magma_roundup(2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)) * sizeof(double), 32);
-    abftEnv->chk1d_ld = chk1d_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk1d), chk1d_pitch * (abftEnv->gpu_n));
+    size_t chk1_pitch = magma_roundup(2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)) * sizeof(double), 32);
+    abftEnv->chk1_ld = chk1_pitch / sizeof(double);
+    magma_dmalloc(&(abftEnv->chk1), chk1_pitch * (abftEnv->gpu_n));
     
    
-    size_t chk2d_pitch = magma_roundup(2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)) * sizeof(double), 32);
-    abftEnv->chk2d_ld = chk2d_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk2d), chk2d_pitch * (abftEnv->gpu_n));
+    size_t chk2_pitch = magma_roundup(2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)) * sizeof(double), 32);
+    abftEnv->chk2_ld = chk2_pitch / sizeof(double);
+    magma_dmalloc(&(abftEnv->chk2), chk2_pitch * (abftEnv->gpu_n));
     cout << "done." << endl;
 
 
 
     cout << "allocate space for recalculated checksum on GPU......";
     /* allocate space for reclaculated checksum on GPU */
-    size_t chk21d_pitch = magma_roundup( (abftEnv->gpu_n) * sizeof(double), 32);
-    abftEnv->chk21d_ld = chk21d_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk21d), chk21d_pitch * 2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)));
+    size_t chk21_pitch = magma_roundup( (abftEnv->gpu_n) * sizeof(double), 32);
+    abftEnv->chk21_ld = chk21_pitch / sizeof(double);
+    magma_dmalloc(&(abftEnv->chk21), chk21_pitch * 2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)));
     
    
-    size_t chk22d_pitch = magma_roundup((abftEnv->gpu_n) * sizeof(double), 32);
-    abftEnv->chk22d_ld = chk22d_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk22d), chk22d_pitch * 2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)));
+    size_t chk22_pitch = magma_roundup((abftEnv->gpu_n) * sizeof(double), 32);
+    abftEnv->chk22_ld = chk22_pitch / sizeof(double);
+    magma_dmalloc(&(abftEnv->chk22), chk22_pitch * 2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)));
     cout << "done." << endl;
 
 
@@ -150,8 +150,8 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
 
     cout << "auto tuning mapping initialize" << endl;
-    mapping = new int[(abftEnv->gpu_m) * (abftEnv->gpu_n)];
-    mapping_ld = abftEnv->gpu_m;
+    abftEnv->mapping = new int[(abftEnv->gpu_m) * (abftEnv->gpu_n)];
+    abftEnv->mapping_ld = abftEnv->gpu_m;
     cout << "done." << endl;
 }
 
