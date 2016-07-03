@@ -209,7 +209,7 @@ magma_dgetrf_gpu(
                 cout << "input matrix:" << endl;
                 printMatrix_gpu(dAT, lddat, n, m);
                 cout << "checksum matrix on GPU:" << endl;
-                printMatrix_gpu(abftEnv->checksum, abftEnv->checksum_ld, (abftEnv->gpu_m / abftEnv-chk_nb) * 2, abftEnv->gpu_n);
+                printMatrix_gpu(abftEnv->checksum, abftEnv->checksum_ld, (abftEnv->gpu_m / abftEnv->chk_nb) * 2, abftEnv->gpu_n);
             }
             cout << "done." << endl;
     
@@ -294,7 +294,7 @@ magma_dgetrf_gpu(
             //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
 
 
-            dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo, FT, DEBUG, VERIFY);
+            dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo, abftEnv, FT, DEBUG, VERIFY);
 
             if ( *info == 0 && iinfo > 0 )
                 *info = iinfo + j*nb;
@@ -399,11 +399,12 @@ magma_dgetrf_gpu(
                                         dAT(j+1, j  ), lddat,
                              c_one,     dAT(j+1, j+1), lddat,
                              abftEnv,
-                             CHK_T(j, j+1), checksum_ld,
-                             CHK_T(j+1, j), checksum_ld,
-                             CHK_T(j+1, j+1), checksum_ld,
+                             CHK_T(j, j+1), abftEnv->checksum_ld,
+                             CHK_T(j+1, j), abftEnv->checksum_ld,
+                             CHK_T(j+1, j+1), abftEnv->checksum_ld,
                              FT, DEBUG, VERIFY, stream);
         }
+    }
 
         comp_time = magma_wtime() - comp_time;
 
