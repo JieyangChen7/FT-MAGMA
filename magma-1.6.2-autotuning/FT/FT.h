@@ -13,6 +13,7 @@ struct ABFTEnv {
 	int cpu_m;
 	int cpu_n;
 
+	int chk_nb;
 
     double * v;
     int v_ld;
@@ -33,7 +34,7 @@ struct ABFTEnv {
    	int chk2_ld;
 
    	double * chk21;
-   	int chk21_ld, 
+   	int chk21_ld;
 
    	double * chk22;
    	int chk22_ld;
@@ -52,7 +53,7 @@ struct ABFTEnv {
 
     int * updatedCounter;
     int updatedCounter_ld;
-}
+};
 
 
 void printMatrix_host(double * matrix_host, int ld,  int M, int N);
