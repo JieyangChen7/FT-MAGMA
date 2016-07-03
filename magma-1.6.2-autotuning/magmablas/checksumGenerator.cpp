@@ -15,7 +15,7 @@ void initializeChecksum(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * 
 					2, abftEnv->gpu_n, abftEnv->chk_nb,
 					MAGMA_D_ONE, abftEnv->vd, abftEnv->vd_ld,
 					A + i, lda,
-					MAGMA_D_ZERO, abftEnv->checksum + (i / (abftEnv->chk_nb)) * 2, checksum_ld);			
+					MAGMA_D_ZERO, abftEnv->checksum + (i / (abftEnv->chk_nb)) * 2, abftEnv->checksum_ld);			
 	}
 }
 
