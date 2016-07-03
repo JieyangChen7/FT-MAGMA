@@ -150,8 +150,8 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
 
     cout << "auto tuning mapping initialize" << endl;
-    abftEnv->mapping = new int[(abftEnv->gpu_m) * (abftEnv->gpu_n)];
-    abftEnv->mapping_ld = abftEnv->gpu_m;
+    abftEnv->mapping = new int[(abftEnv->gpu_m/abftEnv->chk_nb) * (abftEnv->gpu_n/abftEnv->chk_nb)];
+    abftEnv->mapping_ld = abftEnv->gpu_m/abftEnv->chk_nb;
     cout << "done." << endl;
 }
 
@@ -678,43 +678,45 @@ void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda,
 			double min_time3 = fmin(gpu_time9, fmin(gpu_time10, fmin(gpu_time11, gpu_time12)));
 			double min_time = fmin(min_time1, fmin(min_time2, min_time3));
 
+			int best = 0;
 			if (min_time == gpu_time1) {
 				cout << "1 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 1;
+				best = 1;
 			} else if (min_time == gpu_time2) {
 				cout << "2 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 2;
+				best = 2;
 			} else if (min_time == gpu_time3) {
 				cout << "3 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 3;
+				best = 3;
 			} else if (min_time == gpu_time4) {
 				cout << "4 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 4;
+				best = 4;
 			} else if (min_time == gpu_time5) {
 				cout << "5 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 5;
+				best = 5;
 			} else if  (min_time == gpu_time6) {
 				cout << "6 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 6;
+				best = 6;
 			} else if  (min_time == gpu_time7) {
 				cout << "7 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 7;
+				best = 7;
 			} else if  (min_time == gpu_time8){
 				cout << "8 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 8;
+				best = 8;
 			} else if (min_time == gpu_time9) {
 				cout << "9 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 9;
+				best = 9;
 			} else if  (min_time == gpu_time10) {
 				cout << "10 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 10;
+				best =10;
 			} else if  (min_time == gpu_time11) {
 				cout << "11 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 11;
+				best =11;
 			} else if  (min_time == gpu_time12){
 				cout << "12 ";
-				abftEnv->mapping[i * abftEnv->mapping_ld + j] = 12;
+				best = 12;
 			}
+			abftEnv->mapping[(i / abftEnv->chk_nb) * abftEnv->mapping_ld + j /abftEnv->chk_nb] = best;
 			// if (gpu_time1 < gpu_time2) cout << "S ";
 			// else cout <<"C ";
 			// cout << gpu_time1 << " ";
@@ -845,7 +847,7 @@ void AutoTuneChecksumRecal(ABFTEnv * abftEnv, double * A, int lda, int m, int n,
 	// needs to do boundary check first
 
 
-	int i = abftEnv->mapping[m * abftEnv->mapping_ld + n];
+	int i = abftEnv->mapping[(m / abftEnv->chk_nb) * abftEnv->mapping_ld + (n / abftEnv->chk_nb)];
 	ChecksumRecalSelector(abftEnv, A, lda, m, n, streams, i);
 
 }
