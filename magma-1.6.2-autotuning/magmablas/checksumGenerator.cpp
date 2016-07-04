@@ -153,6 +153,18 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     abftEnv->mapping = new int[(abftEnv->gpu_m/abftEnv->chk_nb) * (abftEnv->gpu_n/abftEnv->chk_nb)];
     abftEnv->mapping_ld = abftEnv->gpu_m/abftEnv->chk_nb;
     cout << "done." << endl;
+
+    cout << "lastCheckTime initialize" << endl;
+    abftEnv->lastCheckTime = new time_t[(abftEnv->gpu_m/abftEnv->chk_nb) * (abftEnv->gpu_n/abftEnv->chk_nb)];
+    abftEnv->lastCheckTime_ld = abftEnv->gpu_m/abftEnv->chk_nb;
+    cout << "done." << endl;
+
+
+	cout << "updatedCounter initialize" << endl;
+    abftEnv->updatedCounter = new int[(abftEnv->gpu_m/abftEnv->chk_nb) * (abftEnv->gpu_n/abftEnv->chk_nb)];
+    abftEnv->updatedCounter_ld = abftEnv->gpu_m/abftEnv->chk_nb;
+    cout << "done." << endl;
+
 }
 
 
