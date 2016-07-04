@@ -189,12 +189,6 @@ magma_dgetrf_gpu(
         double * dAP_chk;
         int dAP_chk_ld;
 
-        time_t * lastCheckTime;
-        int lastCheckTime_ld;
-
-        int * updatedCounter;
-        int updatedCounter_ld;
-
 
         if (FT) {
 

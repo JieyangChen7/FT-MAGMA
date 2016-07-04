@@ -46,7 +46,7 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 						A, &lda,
 						abftEnv->v + 1, &(abftEnv->v_ld),
 						&zero,
-						chk2, &chk2_inc );
+						chk2, &chk2_inc ); 
 		//handle error 
 //		ErrorDetectAndCorrectHost(A, lda, n, n, n,
 //								chksum, chksum_ld,
