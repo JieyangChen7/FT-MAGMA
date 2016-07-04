@@ -165,6 +165,10 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     abftEnv->updatedCounter_ld = abftEnv->gpu_m/abftEnv->chk_nb;
     cout << "done." << endl;
 
+    //to he auto tuned later
+    abftEnv->N = 10;
+    abftEnv->T = 10;
+
 }
 
 
