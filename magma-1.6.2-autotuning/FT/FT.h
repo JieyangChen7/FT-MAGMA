@@ -93,6 +93,12 @@ void ChecksumRecalSelector(ABFTEnv * abftEnv, double * A, int lda, int m, int n,
 
 void AutoTuneChecksumRecal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream);
 
+void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * checksumA, int checksumA_ld, magma_queue_t * stream);
+
+void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
+
+bool updateCounter(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2, int count);
+
 void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY);
 
 void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info, ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY);
