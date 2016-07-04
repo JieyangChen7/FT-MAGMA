@@ -918,22 +918,44 @@ void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * ch
 }
 
 //check each block of data based on last time check
-void MemoryErrorCheck(ABFTEnv * abftEnv, 
-					  double * A, int lda, 
-					  magma_queue_t * stream) {
-	time_t T = 10;
+void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream) {
 	for (int i = 0; i < abftEnv->gpu_m/abftEnv->chk_nb; i++) {
 		for (int j = 0; j < abftEnv->gpu_n/abftEnv->chk_nb; j++) {
-			if (time(nullptr) - abftEnv->lastCheckTime > T) {
+			time_t temp = *(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i);
+			if (time(nullptr) - temp > abftEnv->T) {
 				// we should do check on block[i, j]
 				ABFTCheck(abftEnv, A + j*abftEnv->chk_nb*lda + i * bftEnv->chk_nb, lda,
 						  abftEnv->chk_nb, abftEnv->chk_nb,
 						  CHK(i, j), stream);
-
+				*(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i) = time(nullptr);
 			}
 		}
 	}
 }
+
+
+//update updating counter and check if necessary
+bool updateCounter(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2, int count) {
+	bool verify = false;
+	for (int i = row1; i <= row2; i++) {
+		for (int j = col1; j <= col2; j++) {
+			*(abftEnv->updatedCounter + j * abftEnv->updatedCounter_ld + i) += count;
+
+			int temp = *(abftEnv->updatedCounter + j * abftEnv->updatedCounter_ld + i);
+			if (temp > abftEnv->N) {
+				// we should do check on block[i, j]
+				// ABFTCheck(abftEnv, A + j*abftEnv->chk_nb*lda + i * bftEnv->chk_nb, lda,
+				// 		  abftEnv->chk_nb, abftEnv->chk_nb,
+				// 		  CHK(i, j), stream);
+				verify = true;
+				*(abftEnv->updatedCounter + j * abftEnv->updatedCounter_ld + i) = 0;
+			} 
+		}
+	}
+	return verify;
+}
+
+
 
 
 

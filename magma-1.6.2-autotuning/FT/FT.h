@@ -53,6 +53,9 @@ struct ABFTEnv {
 
     int * updatedCounter;
     int updatedCounter_ld;
+
+    time_t T;
+    int N;
 };
 
 
