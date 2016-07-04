@@ -930,7 +930,7 @@ void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * st
 				// we should do check on block[i, j]
 				ABFTCheck(abftEnv, A + j*abftEnv->chk_nb*lda + i * abftEnv->chk_nb, lda,
 						  abftEnv->chk_nb, abftEnv->chk_nb,
-						  CHK(i, j), abftEnv->checksums_ld, stream);
+						  CHK(i, j), abftEnv->checksum_ld, stream);
 				*(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i) = time(NULL);
 			}
 		}
