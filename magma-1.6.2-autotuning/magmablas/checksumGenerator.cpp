@@ -928,7 +928,7 @@ void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * st
 			time_t temp = *(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i);
 			if (time(NULL) - temp > abftEnv->T) {
 				// we should do check on block[i, j]
-				ABFTCheck(abftEnv, A + j*abftEnv->chk_nb*lda + i * bftEnv->chk_nb, lda,
+				ABFTCheck(abftEnv, A + j*abftEnv->chk_nb*lda + i * abftEnv->chk_nb, lda,
 						  abftEnv->chk_nb, abftEnv->chk_nb,
 						  CHK(i, j), stream);
 				*(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i) = time(NULL);
