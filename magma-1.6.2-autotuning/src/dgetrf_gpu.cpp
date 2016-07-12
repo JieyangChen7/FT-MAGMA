@@ -194,21 +194,20 @@ magma_dgetrf_gpu(
 
 
         if (FT) {
-
-            abftEnv = new ABFTEnv();
+             abftEnv = new ABFTEnv();
 
             initializeABFTEnv(abftEnv, nb, dAT, lddat, n, m, m, 2, stream);
     
             /* allocate space for checksum of dAP */
             cout << "allocate space for row checksum of dAP......";
-            size_t dAP_row_chk_pitch = magma_roundup(m * sizeof(double), 32）;
+            size_t dAP_row_chk_pitch = magma_roundup(m * sizeof(double), 32);
             dAP_row_chk_ld = dAP_row_chk_pitch / sizeof(double);
             magma_dmalloc(&dAP_row_chk, dAP_row_chk_pitch * 2);
             cout << "done." << endl;
 
-            allocate space for checksum of dAP 
+            //allocate space for checksum of dAP 
             cout << "allocate space for column checksum of dAP......";
-            size_t dAP_col_chk_pitch = magma_roundup((m / abftEnv->chk_nb) * 2 * sizeof(double), 32）;
+            size_t dAP_col_chk_pitch = magma_roundup((m / abftEnv->chk_nb) * 2 * sizeof(double), 32);
             dAP_col_chk_ld = dAP_col_chk_pitch / sizeof(double);
             magma_dmalloc(&dAP_col_chk, dAP_col_chk_pitch * abftEnv->chk_nb);
             cout << "done." << endl;
@@ -217,7 +216,12 @@ magma_dgetrf_gpu(
             // ChecksumRecalProfiler(abftEnv, dAT, lddat, stream); 
             // benchmark(abftEnv, dAT, lddat, stream);
 
-        } 
+
+        }
+
+           
+
+        
 
         cout << "start computation" << endl;
         double comp_time = magma_wtime();
