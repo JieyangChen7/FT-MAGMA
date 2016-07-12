@@ -57,10 +57,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
 
     if (DEBUG) {
         cout << "[dgetrf] to be updated matrix:" << endl;
-        printMatrix_host(A, lda,  m, n, -1, -1);
+        printMatrix_host(A, lda,  m, n, 4, 4);
 
         cout << "[dgetrf] to be copy matrix:" << endl;
-        printMatrix_host(cA, ldca,  m, n, -1, -1);
+        printMatrix_host(cA, ldca,  m, n, 4, 4);
     }
 
 
@@ -131,7 +131,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
 
 
         cout << "[dgetrf] before swap column checksum:" << endl;
-        printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, -1, -1);
+        printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, 2, 4);
 
         //update column checksums
         for (int j = 0; j < n; j++) {
@@ -142,7 +142,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         }
 
         cout << "[dgetrf] after swap column checksum:" << endl;
-        printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, -1, -1);
+        printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, 2, 4);
 
         for (int j = 0; j < n - 1; j++) {
             int chk_m = (m / abftEnv->chk_nb) * 2;
@@ -166,10 +166,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         	cout << "[dgetrf] updated matrix:" << endl;
         	printMatrix_host(A, lda,  m, n, -1, -1);
         	cout << "[dgetrf] updated row checksum:" << endl;
-        	printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld,  m, 2, -1, -1);
+        	printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld,  m, 2, 4, 2);
 
             cout << "[dgetrf] updated column checksum:" << endl;
-            printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, -1, -1);
+            printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, 2, 4);
         }
     }
 }
