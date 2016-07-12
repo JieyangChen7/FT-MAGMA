@@ -23,7 +23,7 @@ void init_col_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream
 void init_row_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream) {
 
 	for (int i = 0; i < abftEnv->gpu_col; i += abftEnv->chk_nb) {		
-		magma_dgemm(MagmaNoTrans, MagmaTrans,
+		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
 					abftEnv->gpu_row, 2, abftEnv->chk_nb,
 					MAGMA_D_ONE, 
 					A + i * lda, lda,
