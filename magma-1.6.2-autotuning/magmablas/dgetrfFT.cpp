@@ -133,17 +133,19 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             }
         }
 
-        for (int j = 0; j < n; j++) {
+        for (int j = 0; j < n - 1; j++) {
             int chk_m = (m / abftEnv->chk_nb) * 2;
             int chk_n = n - j - 1;
             double alpha = -1;
             int incx = 1;
+            double chk = abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld;
+            int chk_ld = abftEnv->col_hchk_ld;
 
 
             blasf77_dger(&chk_m, &chk_n, &alpha, 
                          abftEnv->col_hchk + j * abftEnv->col_hchk_ld, &incx,
                          A + lda * (j + 1) + j, &lda,
-                         abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld, &(abftEnv->col_hchk_ld));
+                         chk, &chk_ld);
         }
 
 
