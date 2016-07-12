@@ -238,7 +238,7 @@ magma_dgetrf_gpu(
                                      dAP_row_chk, dAP_row_chk_ld ); 
                 magmablas_dtranspose( nb, ((m-j*nb)/nb) * 2,
                                      ROW_CHK_T(j,j), abftEnv->row_dchk_ld, 
-                                     dAP_col_chk, dAP_col_ld ); 
+                                     dAP_col_chk, dAP_col_chk_ld ); 
             }
 
             // make sure that the transpose has completed
@@ -357,7 +357,7 @@ magma_dgetrf_gpu(
                                       dAP_row_chk, dAP_row_chk_ld, 
                                       COL_CHK_T(j, j), abftEnv->col_dchk_ld);
                 magmablas_dtranspose( ((m-j*nb)/nb) * 2, nb,
-                                      dAP_col_chk, dAP_col_ld,
+                                      dAP_col_chk, dAP_col_chk_ld,
                                       ROW_CHK_T(j,j), abftEnv->row_dchk_ld);
             }
 
