@@ -138,7 +138,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             int chk_n = n - j - 1;
             double alpha = -1;
             int incx = 1;
-            double chk = abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld;
+            double * chk = abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld;
             int chk_ld = abftEnv->col_hchk_ld;
 
 
