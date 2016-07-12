@@ -141,6 +141,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             double * chk = abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld;
             int chk_ld = abftEnv->col_hchk_ld;
 
+            cout << "[" << j << "]:" << chk_ld << endl;
 
             blasf77_dger(&chk_m, &chk_n, &alpha, 
                          abftEnv->col_hchk + j * abftEnv->col_hchk_ld, &incx,
