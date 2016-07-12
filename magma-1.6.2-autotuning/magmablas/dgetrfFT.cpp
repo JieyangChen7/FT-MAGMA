@@ -58,6 +58,9 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
     if (DEBUG) {
         cout << "[dgetrf] to be updated matrix:" << endl;
         printMatrix_host(A, lda,  m, n, -1, -1);
+
+         cout << "[dgetrf] to be copy matrix:" << endl;
+        printMatrix_host(cA, ldca,  m, n, -1, -1);
     }
 
 
