@@ -15,7 +15,7 @@ void swap_row_chk(double * chksum, int chksum_ld, int n, int i, int j) {
 	}
 }
 
-void swap_col_chk(double A, int lda, double * chksum, int chksum_ld, int n, int i, int j) {
+void swap_col_chk(double * A, int lda, double * chksum, int chksum_ld, int n, int i, int j) {
     int origin_block = i / abftEnv->chk_nb;
     int target_block = j / abftEnv->chk_nb;
 
@@ -26,17 +26,17 @@ void swap_col_chk(double A, int lda, double * chksum, int chksum_ld, int n, int 
         double origin_element = A + k * lda + i;
         double target_element = A + k * lda + j;
 
-        chksum + k * chksum_ld + origin_block * 2 -= origin_element;
-        chksum + k * chksum_ld + origin_block * 2 += target_element;
+        *(chksum + k * chksum_ld + origin_block * 2) -= origin_element;
+        *(chksum + k * chksum_ld + origin_block * 2) += target_element;
 
-        chksum + k * chksum_ld + target_block * 2 -= target_element;
-        chksum + k * chksum_ld + target_block * 2 += origin_element;
+        *(chksum + k * chksum_ld + target_block * 2) -= target_element;
+        *(chksum + k * chksum_ld + target_block * 2) += origin_element;
 
-        chksum + k * chksum_ld + origin_block * 2 + 1 -= origin_element * (origin_block_pos + 1);
-        chksum + k * chksum_ld + origin_block * 2 + 1 += target_element * (target_block_pos + 1);
+        *(chksum + k * chksum_ld + origin_block * 2 + 1) -= origin_element * (origin_block_pos + 1);
+        *(chksum + k * chksum_ld + origin_block * 2 + 1) += target_element * (target_block_pos + 1);
 
-        chksum + k * chksum_ld + target_block * 2 + 1 -= target_element * (target_block_pos + 1);
-        chksum + k * chksum_ld + target_block * 2 + 1 += origin_element * (origin_block_pos + 1);
+        *(chksum + k * chksum_ld + target_block * 2 + 1) -= target_element * (target_block_pos + 1);
+        *(chksum + k * chksum_ld + target_block * 2 + 1) += origin_element * (origin_block_pos + 1);
 
     }
 }
@@ -138,13 +138,12 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             int chk_n = n - j - 1;
             double alpha = -1;
             int incx = 1;
-            int incy = lda;
 
 
             blasf77_dger(&chk_m, &chk_n, &alpha, 
-                         abftEnv->col_hchk + j * abftEnv->col_hchk_ld, incx,
-                         A + lda * (j + 1) + j, lda,
-                         abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld, abftEnv->col_hchk_ld);
+                         abftEnv->col_hchk + j * abftEnv->col_hchk_ld, &incx,
+                         A + lda * (j + 1) + j, &lda,
+                         abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld, &(abftEnv->col_hchk_ld));
         }
 
 
