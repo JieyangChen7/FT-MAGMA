@@ -15,7 +15,7 @@ void swap_row_chk(double * chksum, int chksum_ld, int n, int i, int j) {
 	}
 }
 
-void swap_col_chk(double * A, int lda, double * chksum, int chksum_ld, int n, int i, int j) {
+void swap_col_chk(ABFTEnv * abftEnv, double * A, int lda, double * chksum, int chksum_ld, int n, int i, int j) {
     int origin_block = i / abftEnv->chk_nb;
     int target_block = j / abftEnv->chk_nb;
 
@@ -129,7 +129,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         for (int j = 0; j < n; j++) {
             //swap row j with ipiv[j]
             if (ipiv[j] != 0) {
-                swap_col_chk(cA, ldca, abftEnv->col_hchk, abftEnv->col_hchk_ld, abftEnv->chk_nb, j, ipiv[j]-1);
+                swap_col_chk(abftEnv, cA, ldca, abftEnv->col_hchk, abftEnv->col_hchk_ld, abftEnv->chk_nb, j, ipiv[j]-1);
             }
         }
 
