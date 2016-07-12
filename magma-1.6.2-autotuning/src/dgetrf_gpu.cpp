@@ -186,8 +186,11 @@ magma_dgetrf_gpu(
     
         ABFTEnv * abftEnv;
 
-        double * dAP_chk;
-        int dAP_chk_ld;
+        double * dAP_col_chk;
+        int dAP_col_chk_ld;
+
+        double * dAP_row_chk;
+        int dAP_row_chk_ld;
 
 
         if (FT) {
@@ -195,31 +198,24 @@ magma_dgetrf_gpu(
             abftEnv = new ABFTEnv();
 
             initializeABFTEnv(abftEnv, nb, n, m, m, 2);
-
-            /* initialize checksums */
-            cout << "checksums initiallization......";
-            initializeChecksum(abftEnv, dAT, lddat, stream);
-            if(DEBUG) {
-                cout << "input matrix:" << endl;
-                printMatrix_gpu(dAT, lddat, n, m);
-                cout << "checksum matrix on GPU:" << endl;
-                printMatrix_gpu(abftEnv->checksum, abftEnv->checksum_ld, (abftEnv->gpu_m / abftEnv->chk_nb) * 2, abftEnv->gpu_n);
-            }
-            cout << "done." << endl;
     
             /* allocate space for checksum of dAP */
-            cout << "allocate space for checksum of dAP......";
-            size_t dAP_chk_pitch = m * sizeof(double);
-            dAP_chk_ld = m;
-            magma_dmalloc(&dAP_chk, dAP_chk_pitch * 2);
+            cout << "allocate space for column checksum of dAP......";
+            size_t dAP_col_chk_pitch = magma_roundup（m * sizeof(double), 32）;
+            dAP_col_chk_ld = dAP_col_chk_pitch / sizeof(double);
+            magma_dmalloc(&dAP_col_chk, dAP_col_chk_pitch * 2);
             cout << "done." << endl;
 
+            /* allocate space for checksum of dAP */
+            cout << "allocate space for row checksum of dAP......";
+            size_t dAP_row_chk_pitch = magma_roundup（(m / abftEnv->chk_nb) * 2 * sizeof(double), 32）;
+            dAP_row_chk_ld = dAP_row_chk_pitch / sizeof(double);
+            magma_dmalloc(&dAP_row_chk, abftEnv->chk_nb);
+            cout << "done." << endl;
 
-
-            cout << "banchmarking:" << endl;
-            ChecksumRecalProfiler(abftEnv, dAT, lddat, stream); 
-
-            benchmark(abftEnv, dAT, lddat, stream);
+            // cout << "banchmarking:" << endl;
+            // ChecksumRecalProfiler(abftEnv, dAT, lddat, stream); 
+            // benchmark(abftEnv, dAT, lddat, stream);
 
         } 
 

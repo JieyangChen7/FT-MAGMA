@@ -8,29 +8,46 @@ using namespace std;
 //initialize checksum
 //M: number of rows
 //N: numner of cols
-void initializeChecksum(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream) {
+void init_col_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream) {
 
-	for (int i = 0; i < abftEnv->gpu_m; i += abftEnv->chk_nb) {		
+	for (int i = 0; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {		
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-					2, abftEnv->gpu_n, abftEnv->chk_nb,
+					2, abftEnv->gpu_col, abftEnv->chk_nb,
 					MAGMA_D_ONE, abftEnv->vd, abftEnv->vd_ld,
 					A + i, lda,
-					MAGMA_D_ZERO, abftEnv->checksum + (i / (abftEnv->chk_nb)) * 2, abftEnv->checksum_ld);			
+					MAGMA_D_ZERO, COL_CHK(i / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld);			
 	}
 }
 
 
-void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
-						int gpu_m, int gpu_n,
-						int cpu_m, int cpu_n) {
+void init_row_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream) {
+
+	for (int i = 0; i < abftEnv->gpu_col; i += abftEnv->chk_nb) {		
+		magma_dgemm(MagmaNoTrans, MagmaTrans,
+					abftEnv->gpu_row, 2, abftEnv->chk_nb,
+					MAGMA_D_ONE, abftEnv->vd2, abftEnv->vd2_ld,
+					A + i * lda, lda,
+					MAGMA_D_ZERO, ROW_CHK(0, i / abftEnv->chk_nb), abftEnv->row_dchk_ld);			
+	}
+}
+
+
+
+
+void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb, 
+						double * A, int lda,
+						int gpu_row, int gpu_col,
+						int cpu_row, int cpu_col) {
 
 
 	bool DEBUG = false;
+
 	abftEnv->chk_nb = chk_nb;
-	abftEnv->gpu_m = gpu_m;
-	abftEnv->gpu_n = gpu_n;
-	abftEnv->cpu_m = cpu_m;
-	abftEnv->cpu_n = cpu_n;
+
+	abftEnv->gpu_row = gpu_row;
+	abftEnv->gpu_col = gpu_col;
+	abftEnv->cpu_row = cpu_row;
+	abftEnv->cpu_col = cpu_col;
 
 	/* initialize checksum vectors on CPU */
     /* v =
@@ -48,7 +65,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     }
     if(DEBUG) {
         cout << "checksum vector on CPU:" << endl;
-        printMatrix_host(abftEnv->v, abftEnv->v_ld, 2, abftEnv->chk_nb);
+        printMatrix_host(abftEnv->v, abftEnv->v_ld, 2, abftEnv->chk_nb, -1, -1);
     }
     cout << "done." << endl;
 
@@ -70,7 +87,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     }
     if(DEBUG) {
         cout << "checksum vector on CPU:" << endl;
-        printMatrix_host(abftEnv->v2, abftEnv->v2_ld, abftEnv->chk_nb, 2);
+        printMatrix_host(abftEnv->v2, abftEnv->v2_ld, abftEnv->chk_nb, 2, -1, -1);
     }
     cout << "done." << endl;
 
@@ -84,7 +101,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     				 abftEnv->vd, abftEnv->vd_ld);
     if(DEBUG) {
         cout << "checksum vector on GPU:" << endl;
-        printMatrix_gpu(abftEnv->vd, abftEnv->vd_ld, abftEnv->chk_nb, 2);
+        printMatrix_gpu(abftEnv->vd, abftEnv->vd_ld, abftEnv->chk_nb, 2, -1, -1);
     }
     cout << "done." << endl;
 
@@ -99,70 +116,110 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     				 abftEnv->vd2, abftEnv->vd2_ld);
     if(DEBUG) {
         cout << "checksum vector on GPU:" << endl;
-        printMatrix_gpu(abftEnv->vd2, abftEnv->vd2_ld, abftEnv->chk_nb, 2);
+        printMatrix_gpu(abftEnv->vd2, abftEnv->vd2_ld, abftEnv->chk_nb, 2, -1, -1);
     }
     cout << "done." << endl;
 
 
     cout << "allocate space for recalculated checksum on GPU......";
     /* allocate space for reclaculated checksum on GPU */
-    size_t chk1_pitch = magma_roundup(2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)) * sizeof(double), 32);
+    size_t chk1_pitch = magma_roundup(2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)) * sizeof(double), 32);
     abftEnv->chk1_ld = chk1_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk1), chk1_pitch * (abftEnv->gpu_n));
+    magma_dmalloc(&(abftEnv->chk1), chk1_pitch * (abftEnv->gpu_col));
     
    
-    size_t chk2_pitch = magma_roundup(2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)) * sizeof(double), 32);
+    size_t chk2_pitch = magma_roundup(2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)) * sizeof(double), 32);
     abftEnv->chk2_ld = chk2_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk2), chk2_pitch * (abftEnv->gpu_n));
+    magma_dmalloc(&(abftEnv->chk2), chk2_pitch * (abftEnv->gpu_col));
     cout << "done." << endl;
 
 
 
     cout << "allocate space for recalculated checksum on GPU......";
     /* allocate space for reclaculated checksum on GPU */
-    size_t chk21_pitch = magma_roundup( (abftEnv->gpu_n) * sizeof(double), 32);
+    size_t chk21_pitch = magma_roundup( (abftEnv->gpu_col) * sizeof(double), 32);
     abftEnv->chk21_ld = chk21_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk21), chk21_pitch * 2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)));
+    magma_dmalloc(&(abftEnv->chk21), chk21_pitch * 2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)));
     
    
-    size_t chk22_pitch = magma_roundup((abftEnv->gpu_n) * sizeof(double), 32);
+    size_t chk22_pitch = magma_roundup((abftEnv->gpu_col) * sizeof(double), 32);
     abftEnv->chk22_ld = chk22_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk22), chk22_pitch * 2 * ((abftEnv->gpu_m) / (abftEnv->chk_nb)));
+    magma_dmalloc(&(abftEnv->chk22), chk22_pitch * 2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)));
     cout << "done." << endl;
 
 
 
-    /* allocate space for update checksum on CPU */
-    cout << "allocate space for checksum on CPU......";
-    magma_dmalloc_pinned(&(abftEnv->work_chk), (abftEnv->cpu_m) * cpu_n * sizeof(double));
-    abftEnv->work_chk_ld = abftEnv->cpu_m;
+    /* allocate space for update column checksum on CPU */
+    cout << "allocate space for column checksum on CPU......";
+    magma_dmalloc_pinned(&(abftEnv->col_hchk), (cpu_row / chk_nb) * cpu_col * sizeof(double));
+    abftEnv->col_hchk_ld = cpu_row / chk_nb;
     cout << "done." << endl;
 
+    /* allocate space for update column checksum on CPU */
+    cout << "allocate space for row checksum on CPU......";
+    magma_dmalloc_pinned(&(abftEnv->row_hchk), cpu_row * (cpu_col / chk_nb) * sizeof(double));
+    abftEnv->row_hchk_ld = cpu_row;
+    cout << "done." << endl;
 
     
     /* allocate space for update checksum on GPU */
-    cout << "allocate space for checksum on GPU......";
-    size_t checksum_pitch = magma_roundup(((abftEnv->gpu_m) / (abftEnv->chk_nb)) * 2 * sizeof(double), 32);
-    abftEnv->checksum_ld = checksum_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->checksum), checksum_pitch * (abftEnv->gpu_n));
+    cout << "allocate space for column checksums on GPU......";
+    size_t col_dchk_pitch = magma_roundup((gpu_row / chk_nb) * 2 * sizeof(double), 32);
+    abftEnv->col_dchk_ld = col_dchk_pitch / sizeof(double);
+    magma_dmalloc(&(abftEnv->col_dchk), col_dchk_pitch * gpu_col);
     //cudaMemset2D(checksum, checksum_pitch, 0, (n / nb) * 2 * sizeof(double), m);
     cout << "done." << endl;
 
 
+    /* allocate space for update checksum on GPU */
+    cout << "allocate space for row checksums on GPU......";
+    size_t row_dchk_pitch = magma_roundup(gpu_row * sizeof(double), 32);
+    abftEnv->row_dchk_ld = row_dchk_pitch / sizeof(double);
+    magma_dmalloc(&(abftEnv->row_dchk), row_dchk_pitch * (gpu_col / chk_nb) * 2);
+    //cudaMemset2D(checksum, checksum_pitch, 0, (n / nb) * 2 * sizeof(double), m);
+    cout << "done." << endl;
+
+    /* initialize checksums */
+    cout << "column checksums initiallization......";
+    init_col_chk(abftEnv, A, lda, stream);
+    cout << "done." << endl;
+
+    cout << "row checksums initiallization......";
+    init_row_chk(abftEnv, A, lda, stream);
+    cout << "done." << endl;
+
+    if (DEBUG) {
+    	cout << "input matrix:" << endl;
+        printMatrix_gpu(dAT, lddat, n, m);
+        cout << "column checksum matrix on GPU:" << endl;
+        printMatrix_gpu(abftEnv->col_dchk, abftEnv->col_dchk_ld,
+        	 			(abftEnv->gpu_row / abftEnv->chk_nb) * 2, abftEnv->gpu_col, 
+        	 			2, chk_nb);
+        cout << "row checksum matrix on GPU:" << endl;
+        printMatrix_gpu(abftEnv->row_dchk, abftEnv->row_dchk_ld,
+        	 			abftEnv->gpu_row, (abftEnv->gpu_col / abftEnv->chk_nb) * 2, 
+        	 			chk_nb, 2);
+    }
+
+
+
+
+
+
     cout << "auto tuning mapping initialize" << endl;
-    abftEnv->mapping = new int[(abftEnv->gpu_m/abftEnv->chk_nb) * (abftEnv->gpu_n/abftEnv->chk_nb)];
-    abftEnv->mapping_ld = abftEnv->gpu_m/abftEnv->chk_nb;
+    abftEnv->mapping = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
+    abftEnv->mapping_ld = abftEnv->gpu_row/abftEnv->chk_nb;
     cout << "done." << endl;
 
     cout << "lastCheckTime initialize" << endl;
-    abftEnv->lastCheckTime = new time_t[(abftEnv->gpu_m/abftEnv->chk_nb) * (abftEnv->gpu_n/abftEnv->chk_nb)];
-    abftEnv->lastCheckTime_ld = abftEnv->gpu_m/abftEnv->chk_nb;
+    abftEnv->lastCheckTime = new time_t[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
+    abftEnv->lastCheckTime_ld = abftEnv->gpu_row/abftEnv->chk_nb;
     cout << "done." << endl;
 
 
 	cout << "updatedCounter initialize" << endl;
-    abftEnv->updatedCounter = new int[(abftEnv->gpu_m/abftEnv->chk_nb) * (abftEnv->gpu_n/abftEnv->chk_nb)];
-    abftEnv->updatedCounter_ld = abftEnv->gpu_m/abftEnv->chk_nb;
+    abftEnv->updatedCounter = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
+    abftEnv->updatedCounter_ld = abftEnv->gpu_row/abftEnv->chk_nb;
     cout << "done." << endl;
 
     //to he auto tuned later
@@ -602,9 +659,9 @@ void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda,
 	double gpu_time12 = 1000.0;
 	int K = 1;
 	cudaProfilerStart();
-	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_m; i += abftEnv->chk_nb) {
+	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 		cout << "[" << i << "]:	";
-		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_n; j += abftEnv->chk_nb) {
+		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 			gpu_time1 = magma_wtime();
 			for (int k = 0; k < K; k ++) {
 				ChecksumRecalSelector(abftEnv, A, lda, i, j, stream, 1);
@@ -872,9 +929,9 @@ void AutoTuneChecksumRecal(ABFTEnv * abftEnv, double * A, int lda, int m, int n,
 void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 	cout << "start banchmarking:" << endl;
 	double benchmark_time = magma_wtime();
-	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_m; i += abftEnv->chk_nb) {
+	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 
-		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_n; j += abftEnv->chk_nb) {
+		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
 			AutoTuneChecksumRecal(abftEnv, A, lda, i, j, stream);
 		}
@@ -886,9 +943,9 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 
 
 	benchmark_time = magma_wtime();
-	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_m; i += abftEnv->chk_nb) {
+	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 
-		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_n; j += abftEnv->chk_nb) {
+		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
 			ChecksumRecalSelector(abftEnv, A, lda, i, j, stream, 2);
 		}
@@ -899,9 +956,9 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 
 
 	benchmark_time = magma_wtime();
-	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_m; i += abftEnv->chk_nb) {
+	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 
-		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_n; j += abftEnv->chk_nb) {
+		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
 			ChecksumRecalSelector(abftEnv, A, lda, i, j, stream, 1);
 		}
@@ -923,8 +980,8 @@ void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * ch
 
 //check each block of data based on last time check
 void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream) {
-	for (int i = 0; i < abftEnv->gpu_m/abftEnv->chk_nb; i++) {
-		for (int j = 0; j < abftEnv->gpu_n/abftEnv->chk_nb; j++) {
+	for (int i = 0; i < abftEnv->gpu_row/abftEnv->chk_nb; i++) {
+		for (int j = 0; j < abftEnv->gpu_col/abftEnv->chk_nb; j++) {
 			time_t temp = *(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i);
 			if (time(NULL) - temp > abftEnv->T) {
 				// we should do check on block[i, j]
