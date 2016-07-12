@@ -23,8 +23,8 @@ void swap_col_chk(double * A, int lda, double * chksum, int chksum_ld, int n, in
     int target_block_pos = j % abftEnv->chk_nb;
 
     for (int k = 0; k < n; k++) {
-        double origin_element = A + k * lda + i;
-        double target_element = A + k * lda + j;
+        double origin_element = *(A + k * lda + i);
+        double target_element = *(A + k * lda + j);
 
         *(chksum + k * chksum_ld + origin_block * 2) -= origin_element;
         *(chksum + k * chksum_ld + origin_block * 2) += target_element;
