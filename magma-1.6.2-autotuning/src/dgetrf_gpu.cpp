@@ -206,7 +206,7 @@ magma_dgetrf_gpu(
             magma_dmalloc(&dAP_row_chk, dAP_row_chk_pitch * 2);
             cout << "done." << endl;
 
-             allocate space for checksum of dAP 
+            allocate space for checksum of dAP 
             cout << "allocate space for column checksum of dAP......";
             size_t dAP_col_chk_pitch = magma_roundup（(m / abftEnv->chk_nb) * 2 * sizeof(double), 32）;
             dAP_col_chk_ld = dAP_col_chk_pitch / sizeof(double);
