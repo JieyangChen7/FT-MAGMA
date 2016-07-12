@@ -236,6 +236,9 @@ magma_dgetrf_gpu(
                 magmablas_dtranspose( 2, m-j*nb,
                                      COL_CHK_T(j,j), abftEnv->col_dchk_ld, 
                                      dAP_row_chk, dAP_row_chk_ld ); 
+                magmablas_dtranspose( nb, ((m-j*nb)/nb) * 2,
+                                     ROW_CHK_T(j,j), abftEnv->row_dchk_ld, 
+                                     dAP_col_chk, dAP_row_col_ld ); 
             }
 
             // make sure that the transpose has completed
@@ -249,6 +252,11 @@ magma_dgetrf_gpu(
                 magma_dgetmatrix_async( m-j*nb, 2, 
                                         dAP_row_chk, dAP_row_chk_ld, 
                                         abftEnv->row_hchk, abftEnv->row_hchk_ld,
+                                        stream[0]);
+
+                magma_dgetmatrix_async( ((m-j*nb)/nb) * 2, nb, 
+                                        dAP_col_chk, dAP_col_chk_ld, 
+                                        abftEnv->col_hchk, abftEnv->col_hchk_ld,
                                         stream[0]);
             }
 
@@ -309,6 +317,10 @@ magma_dgetrf_gpu(
                                         abftEnv->row_hchk, abftEnv->row_hchk_ld, 
                                         dAP_row_chk, dAP_row_chk_ld,
                                         stream[0]);
+                magma_dsetmatrix_async( ((m-j*nb)/nb) * 2, nb, 
+                                        abftEnv->col_hchk, abftEnv->col_hchk_ld,
+                                        dAP_col_chk, dAP_col_chk_ld, 
+                                        stream[0]);
             }
 
 
@@ -344,6 +356,9 @@ magma_dgetrf_gpu(
                 magmablas_dtranspose( m-j*nb, 2, 
                                       dAP_row_chk, dAP_row_chk_ld, 
                                       COL_CHK_T(j, j), abftEnv->col_dchk_ld);
+                magmablas_dtranspose( ((m-j*nb)/nb) * 2, nb,
+                                      dAP_col_chk, dAP_row_col_ld,
+                                      ROW_CHK_T(j,j), abftEnv->row_dchk_ld);
             }
 
             // do the small non-parallel computations (next panel update)
