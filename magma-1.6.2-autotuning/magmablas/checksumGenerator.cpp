@@ -37,10 +37,11 @@ void init_row_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream
 void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb, 
 						double * A, int lda,
 						int gpu_row, int gpu_col,
-						int cpu_row, int cpu_col) {
+						int cpu_row, int cpu_col,
+						magma_queue_t * stream) {
 
 
-	bool DEBUG = false;
+	bool DEBUG = true;
 
 	abftEnv->chk_nb = chk_nb;
 
@@ -190,7 +191,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
     if (DEBUG) {
     	cout << "input matrix:" << endl;
-        printMatrix_gpu(dAT, lddat, n, m);
+        printMatrix_gpu(dAT, lddat, n, m, 4, 4);
         cout << "column checksum matrix on GPU:" << endl;
         printMatrix_gpu(abftEnv->col_dchk, abftEnv->col_dchk_ld,
         	 			(abftEnv->gpu_row / abftEnv->chk_nb) * 2, abftEnv->gpu_col, 
@@ -987,7 +988,7 @@ void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * st
 				// we should do check on block[i, j]
 				ABFTCheck(abftEnv, A + j*abftEnv->chk_nb*lda + i * abftEnv->chk_nb, lda,
 						  abftEnv->chk_nb, abftEnv->chk_nb,
-						  CHK(i, j), abftEnv->checksum_ld, stream);
+						  COL_CHK(i, j), abftEnv->col_dchk_ld, stream);
 				*(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i) = time(NULL);
 			}
 		}

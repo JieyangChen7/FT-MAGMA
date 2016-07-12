@@ -51,7 +51,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			cudaStreamSynchronize(stream[1]);
 			cout<<"[dgemm] B before dgemm:"<<endl;
 
-			printMatrix_gpu(B, ldb, mem_row, mem_col);
+			printMatrix_gpu(B, ldb, mem_row, mem_col, -1, -1);
 
 
 			cout<<"[dgemm] recalculated checksum of B before dgemm:"<<endl;
@@ -86,7 +86,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 			cout<<"[dgemm] A before dgemm:"<<endl;
 
-			printMatrix_gpu(A, lda, mem_row, mem_col);
+			printMatrix_gpu(A, lda, mem_row, mem_col, -1, -1);
 
 			cout<<"[dgemm] recalculated checksum of A before dgemm:"<<endl;
 			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
@@ -115,7 +115,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 			cout<<"[dgemm] C before dgemm:"<<endl;
 
-			printMatrix_gpu(C, ldc, mem_row, mem_col);
+			printMatrix_gpu(C, ldc, mem_row, mem_col, -1, -1);
 
 			cout<<"[dgemm] recalculated checksum of C before dgemm:"<<endl;
 			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
