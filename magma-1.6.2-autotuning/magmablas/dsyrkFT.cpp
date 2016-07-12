@@ -56,11 +56,11 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		if (DEBUG) {
 			cudaStreamSynchronize(stream[1]);
 			cout<<"recalculated checksum of A before dsyrk:"<<endl;
-			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, 1, m);
-			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, 1, m);
+			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, 1, m, -1, -1);
+			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, 1, m, -1, -1);
 		
 			cout<<"updated checksum of A before dsyrk:"<<endl;
-			printMatrix_host(checksumA, checksumA_ld, 2, m);
+			printMatrix_host(checksumA, checksumA_ld, 2, m, -1, -1);
 		}
 		
 		

@@ -200,17 +200,17 @@ magma_dgetrf_gpu(
             initializeABFTEnv(abftEnv, nb, n, m, m, 2);
     
             /* allocate space for checksum of dAP */
-            cout << "allocate space for column checksum of dAP......";
-            size_t dAP_col_chk_pitch = magma_roundup（m * sizeof(double), 32）;
-            dAP_col_chk_ld = dAP_col_chk_pitch / sizeof(double);
-            magma_dmalloc(&dAP_col_chk, dAP_col_chk_pitch * 2);
+            cout << "allocate space for row checksum of dAP......";
+            size_t dAP_row_chk_pitch = magma_roundup（m * sizeof(double), 32）;
+            dAP_row_chk_ld = dAP_row_chk_pitch / sizeof(double);
+            magma_dmalloc(&dAP_row_chk, dAP_row_chk_pitch * 2);
             cout << "done." << endl;
 
             /* allocate space for checksum of dAP */
-            cout << "allocate space for row checksum of dAP......";
-            size_t dAP_row_chk_pitch = magma_roundup（(m / abftEnv->chk_nb) * 2 * sizeof(double), 32）;
-            dAP_row_chk_ld = dAP_row_chk_pitch / sizeof(double);
-            magma_dmalloc(&dAP_row_chk, abftEnv->chk_nb);
+            cout << "allocate space for column checksum of dAP......";
+            size_t dAP_col_chk_pitch = magma_roundup（(m / abftEnv->chk_nb) * 2 * sizeof(double), 32）;
+            dAP_col_chk_ld = dAP_col_chk_pitch / sizeof(double);
+            magma_dmalloc(&dAP_col_chk, dAP_col_chk_pitch * abftEnv->chk_nb);
             cout << "done." << endl;
 
             // cout << "banchmarking:" << endl;
@@ -229,7 +229,9 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 // also transpose checksums
-                magmablas_dtranspose( 2, m-j*nb, CHK_T(j,j), abftEnv->checksum_ld, dAP_chk, dAP_chk_ld ); 
+                magmablas_dtranspose( 2, m-j*nb,
+                                     COL_CHK_T(j,j), abftEnv->col_dchk_ld, 
+                                     dAP_row_chk, dAP_row_chk_ld ); 
             }
 
             // make sure that the transpose has completed
@@ -240,7 +242,9 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 // also copy checksums to CPU
-                magma_dgetmatrix_async( m-j*nb, 2, dAP_chk, dAP_chk_ld, abftEnv->work_chk, abftEnv->work_chk_ld,
+                magma_dgetmatrix_async( m-j*nb, 2, 
+                                        dAP_row_chk, dAP_row_chk_ld, 
+                                        abftEnv->row_hchk, abftEnv->row_hchk_ld,
                                         stream[0]);
             }
 
@@ -250,13 +254,13 @@ magma_dgetrf_gpu(
                 //              c_one, dAT(j-1,j-1), lddat,
                 //                     dAT(j-1,j+1), lddat );
 
-                VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j - 1, j - 1, 1);
+                //VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j - 1, j - 1, 1);
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n - (j+1)*nb, nb,
                              c_one, dAT(j-1,j-1), lddat,
                              dAT(j-1,j+1), lddat,
                              abftEnv,
-                             CHK_T(j-1, j+1), abftEnv->checksum_ld,
+                             COL_CHK_T(j-1, j+1), abftEnv->col_dchk_ld,
                              FT, DEBUG, VERIFY, stream);
 
 
@@ -266,16 +270,16 @@ magma_dgetrf_gpu(
                 //                         dAT(j,  j-1), lddat,
                 //              c_one,     dAT(j,  j+1), lddat );
 
-                 VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j, m / nb - 1, 1);
+                 //VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j, m / nb - 1, 1);
                  dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-j*nb, nb,
                              c_neg_one, dAT(j-1,j+1), lddat,
                                         dAT(j,  j-1), lddat,
                              c_one,     dAT(j,  j+1), lddat,
                              abftEnv,
-                             CHK_T(j-1, j+1), abftEnv->checksum_ld,
-                             CHK_T(j, j-1), abftEnv->checksum_ld,
-                             CHK_T(j, j+1), abftEnv->checksum_ld,
+                             COL_CHK_T(j-1, j+1), abftEnv->col_dchk_ld,
+                             COL_CHK_T(j, j-1), abftEnv->col_dchk_ld,
+                             COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
                              FT, DEBUG, VERIFY, stream);
             }
 
@@ -284,7 +288,7 @@ magma_dgetrf_gpu(
             magma_queue_sync( stream[0] );
             //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
 
-            VERIFY = updateCounter(abftEnv, j, j, j, m / nb - 1, 1);
+            //VERIFY = updateCounter(abftEnv, j, j, j, m / nb - 1, 1);
             dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo, abftEnv, FT, DEBUG, VERIFY);
 
             if ( *info == 0 && iinfo > 0 )
@@ -297,7 +301,9 @@ magma_dgetrf_gpu(
             if (FT) {
 
                 // transfer checksums back to GPU.
-                magma_dsetmatrix_async( m-j*nb, 2, abftEnv->work_chk, abftEnv->work_chk_ld, dAP_chk, dAP_chk_ld,
+                magma_dsetmatrix_async( m-j*nb, 2, 
+                                        abftEnv->row_hchk, abftEnv->row_hchk_ld, 
+                                        dAP_row_chk, dAP_row_chk_ld,
                                         stream[0]);
             }
 
@@ -310,7 +316,11 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 // also do row swap on checksums
-                magmablas_dlaswp( (n/nb)*2, abftEnv->checksum, abftEnv->checksum_ld, j*nb + 1, j*nb + nb, ipiv, 1 );
+                magmablas_dlaswp( (n/nb)*2, 
+                                  abftEnv->col_dchk, abftEnv->col_dchk_ld, 
+                                  j*nb + 1, j*nb + nb, 
+                                  ipiv, 1 );
+
                 if (DEBUG) {
                     cout<<"[ipiv] ipiv:"<<endl;
                     for (int i = 0; i < m; i++) {
@@ -327,7 +337,9 @@ magma_dgetrf_gpu(
 
             if (FT) {
                 //transpose checksums back
-                magmablas_dtranspose( m-j*nb, 2, dAP_chk, dAP_chk_ld, CHK_T(j, j), abftEnv->checksum_ld);
+                magmablas_dtranspose( m-j*nb, 2, 
+                                      dAP_row_chk, dAP_row_chk_ld, 
+                                      COL_CHK_T(j, j), abftEnv->col_dchk_ld);
             }
 
             // do the small non-parallel computations (next panel update)
@@ -337,13 +349,13 @@ magma_dgetrf_gpu(
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
 
-                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
+                //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
                 dtrsmFT(MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                         nb, nb, 
                         c_one, dAT(j, j  ), lddat,
                         dAT(j, j+1), lddat,
                         abftEnv,
-                        CHK_T(j, j+1), abftEnv->checksum_ld,
+                        COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
                         FT, DEBUG, VERIFY, stream);
                 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -352,7 +364,7 @@ magma_dgetrf_gpu(
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
 
-                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
+                //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
                 dgemmFT(MagmaNoTrans, MagmaNoTrans,
                         nb, m-(j+1)*nb, nb,
                         c_neg_one,
@@ -360,9 +372,9 @@ magma_dgetrf_gpu(
                         dAT(j+1, j  ), lddat,
                         c_one,     dAT(j+1, j+1), lddat,
                         abftEnv,
-                        CHK_T(j, j+1), abftEnv->checksum_ld,
-                        CHK_T(j+1, j), abftEnv->checksum_ld,
-                        CHK_T(j+1, j+1), abftEnv->checksum_ld,
+                        COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+                        COL_CHK_T(j+1, j), abftEnv->col_dchk_ld,
+                        COL_CHK_T(j+1, j+1), abftEnv->col_dchk_ld,
                         FT, DEBUG, VERIFY, stream);
 
             }
@@ -371,13 +383,13 @@ magma_dgetrf_gpu(
                 //              n-s*nb, nb,
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
-                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
+                //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n-s*nb, nb,
                              c_one, dAT(j, j  ), lddat,
                                     dAT(j, j+1), lddat,
                              abftEnv,
-                             CHK_T(j, j+1), abftEnv->checksum_ld,
+                             COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
                              FT, DEBUG, VERIFY, stream);
 
 
@@ -386,19 +398,19 @@ magma_dgetrf_gpu(
                 //              c_neg_one, dAT(j,   j+1), lddat,
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
-                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
+                //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
                 dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-(j+1)*nb, nb,
                              c_neg_one, dAT(j,   j+1), lddat,
                                         dAT(j+1, j  ), lddat,
                              c_one,     dAT(j+1, j+1), lddat,
                              abftEnv,
-                             CHK_T(j, j+1), abftEnv->checksum_ld,
-                             CHK_T(j+1, j), abftEnv->checksum_ld,
-                             CHK_T(j+1, j+1), abftEnv->checksum_ld,
+                             COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+                             COL_CHK_T(j+1, j), abftEnv->col_dchk_ld,
+                             COL_CHK_T(j+1, j+1), abftEnv->col_dchk_ld,
                              FT, DEBUG, VERIFY, stream);
         }
-        MemoryErrorCheck(abftEnv, dAT, lddat, stream);
+        //MemoryErrorCheck(abftEnv, dAT, lddat, stream);
     }
 
         comp_time = magma_wtime() - comp_time;

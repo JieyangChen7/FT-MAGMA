@@ -35,11 +35,11 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		if (DEBUG) {
 			cudaStreamSynchronize(stream[1]);
 			cout<<"[trsm] recalculated checksum of B before trsm:"<<endl;
-			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col);
-			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col);
+			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
+			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
 		
 			cout<<"[trsm] updated checksum of B before trsm:"<<endl;
-			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col);
+			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
 		}
 
 	}

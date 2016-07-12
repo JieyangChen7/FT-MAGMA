@@ -160,17 +160,17 @@ magma_dpotrf_gpu(
 	if (FT) {
 		abftEnv = new ABFTEnv();
 
-        initializeABFTEnv(abftEnv, nb, n, n, 2, nb);
+        initializeABFTEnv(abftEnv, nb, dA, ldda, n, n, 2, nb);
 		
-        cout << "checksums initiallization......";
-		initializeChecksum(abftEnv, dA, ldda, stream);
-        cout << "done." << endl;
+  //       cout << "checksums initiallization......";
+		// initializeChecksum(abftEnv, dA, ldda, stream);
+  //       cout << "done." << endl;
 
-        cout << "banchmarking:" << endl;
-        ChecksumRecalProfiler(abftEnv, dA, ldda, stream); 
+        // cout << "banchmarking:" << endl;
+        // ChecksumRecalProfiler(abftEnv, dA, ldda, stream); 
 
 
-        benchmark(abftEnv, dA, ldda, stream);
+        // benchmark(abftEnv, dA, ldda, stream);
 		
 	}
 
@@ -252,8 +252,8 @@ magma_dpotrf_gpu(
                             MAGMA_D_ONE,
                             dA(j, j), ldda,
                             abftEnv,
-							CHK(j / abftEnv->chk_nb, 0), abftEnv->checksum_ld, 
-							CHK(j / abftEnv->chk_nb, j), abftEnv->checksum_ld,
+							COL_CHK(j / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld, 
+							COL_CHK(j / abftEnv->chk_nb, j), abftEnv->col_dchk_ld,
 							FT, DEBUG, VERIFY,
                             stream);
 					
@@ -266,8 +266,8 @@ magma_dpotrf_gpu(
                                         work,     jb, stream[0] );
                 if (FT) {
                 magma_dgetmatrix_async( 2, jb,
-                						CHK(j / abftEnv->chk_nb, j), abftEnv->checksum_ld,
-                                        abftEnv->work_chk, abftEnv->work_chk_ld, stream[0] );
+                						COL_CHK(j / abftEnv->chk_nb, j), abftEnv->col_dchk_ld,
+                                        abftEnv->col_hchk, abftEnv->col_hchk_ld, stream[0] );
                 }
                            
                 if ( (j+jb) < n && j > 0) {	
@@ -280,9 +280,9 @@ magma_dpotrf_gpu(
                             MAGMA_D_ONE,
                             dA(j+jb, j), ldda, 
                             abftEnv,
-                			CHK(j / abftEnv->chk_nb + 1, 0), abftEnv->checksum_ld,
-                			CHK(j / abftEnv->chk_nb, 0), abftEnv->checksum_ld,
-                			CHK(j / abftEnv->chk_nb + 1, j), abftEnv->checksum_ld,
+                			COL_CHK(j / abftEnv->chk_nb + 1, 0), abftEnv->col_dchk_ld,
+                			COL_CHK(j / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld,
+                			COL_CHK(j / abftEnv->chk_nb + 1, j), abftEnv->col_dchk_ld,
                 			FT, DEBUG, VERIFY,
                             stream);
                 	
@@ -299,9 +299,9 @@ magma_dpotrf_gpu(
                                         dA(j, j), ldda, stream[1] );
                 if (FT) {
                 	magma_dsetmatrix_async( 2, jb,
-                                        abftEnv->work_chk, abftEnv->work_chk_ld, 
-                                        CHK(j / abftEnv->chk_nb, j), abftEnv->checksum_ld,
-                                        stream[1] );
+                                            abftEnv->col_hchk, abftEnv->col_hchk_ld, 
+                                            COL_CHK(j / abftEnv->chk_nb, j), abftEnv->col_dchk_ld,
+                                            stream[1] );
                 }
                 
 //                if (*info != 0) {
@@ -315,7 +315,7 @@ magma_dpotrf_gpu(
                             dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                             abftEnv,
-                			CHK(j / abftEnv->chk_nb + 1, j), abftEnv->checksum_ld,
+                			COL_CHK(j / abftEnv->chk_nb + 1, j), abftEnv->col_dchk_ld,
                 			FT, DEBUG, VERIFY, 
                             stream);
                 }

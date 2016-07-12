@@ -25,7 +25,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
 
     if (DEBUG) {
         cout << "[dgetrf] to be updated matrix:" << endl;
-        printMatrix_host(A, lda,  m, n);
+        printMatrix_host(A, lda,  m, n, -1, -1);
     }
 
 
@@ -54,10 +54,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
 
         if (DEBUG) {
 			cout<<"[dgetrf] recalcuated checksum on CPU before factorization:"<<endl;
-			printMatrix_host(chk1, 1, m, 1);
-			printMatrix_host(chk2, 1, m, 1);
+			printMatrix_host(chk1, 1, m, 1, -1, -1);
+			printMatrix_host(chk2, 1, m, 1, -1, -1);
 			cout<<"[dgetrf] updated checksum on CPU before factorization:"<<endl;
-			printMatrix_host(abftEnv->work_chk, abftEnv->work_chk_ld, m, 2);
+			printMatrix_host(abftEnv->work_chk, abftEnv->work_chk_ld, m, 2, -1, -1);
 		}
 
     }
@@ -71,32 +71,32 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         for (int j = 0; j < n; j++) {
         	//swap row j with ipiv[j]
         	if (ipiv[j] != 0) {
-        		row_swap(abftEnv->work_chk, abftEnv->work_chk_ld, 2, j, ipiv[j]-1);
+        		row_swap(abftEnv->row_hchk, abftEnv->row_hchk_ld, 2, j, ipiv[j]-1);
         	}
 
         }
          for (int j = 0; j < n; j++) {
         	double Ajj = *(A + j * lda + j);
         	if (Ajj != 0) {
-        		double r = *(abftEnv->work_chk + j) * (-1);
+        		double r = *(abftEnv->row_hchk + j) * (-1);
         		int inc = 1;
                 int t = m - j - 1;
         		blasf77_daxpy(&t, &r, 
         			A + j * lda + j + 1, &inc,
-        			abftEnv->work_chk + j + 1, &inc);
+        			abftEnv->row_chhk + j + 1, &inc);
 
-				r = *(abftEnv->work_chk + abftEnv->work_chk_ld + j) * (-1);
+				r = *(abftEnv->row_chhk + abftEnv->row_hchk_ld + j) * (-1);
         		blasf77_daxpy(&t, &r, 
         			A + j * lda + j + 1, &inc,
-        			abftEnv->work_chk + abftEnv->work_chk_ld + j + 1, &inc);
+        			abftEnv->row_chhk + abftEnv->row_hchk_ld + j + 1, &inc);
         	}
         }
 
         if (DEBUG) {
         	cout << "[dgetrf] updated matrix:" << endl;
-        	printMatrix_host(A, lda,  m, n);
+        	printMatrix_host(A, lda,  m, n, -1, -1);
         	cout << "[dgetrf] updated checksum:" << endl;
-        	printMatrix_host(abftEnv->work_chk, abftEnv->work_chk_ld,  m, 2);
+        	printMatrix_host(abftEnv->row_chhk, abftEnv->row_hchk_ld,  m, 2, -1, -1);
         }
     }
 }
