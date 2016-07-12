@@ -185,13 +185,13 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     init_col_chk(abftEnv, A, lda, stream);
     cout << "done." << endl;
 
-    cout << "row checksums initiallization......";
+    cout << "row checksums initillization......";
     init_row_chk(abftEnv, A, lda, stream);
     cout << "done." << endl;
 
     if (DEBUG) {
     	cout << "input matrix:" << endl;
-        printMatrix_gpu(dAT, lddat, n, m, 4, 4);
+        printMatrix_gpu(A, lda, m, n, 4, 4);
         cout << "column checksum matrix on GPU:" << endl;
         printMatrix_gpu(abftEnv->col_dchk, abftEnv->col_dchk_ld,
         	 			(abftEnv->gpu_row / abftEnv->chk_nb) * 2, abftEnv->gpu_col, 
