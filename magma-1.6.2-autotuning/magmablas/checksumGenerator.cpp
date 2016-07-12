@@ -154,13 +154,13 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
     /* allocate space for update column checksum on CPU */
     cout << "allocate space for column checksum on CPU......";
-    magma_dmalloc_pinned(&(abftEnv->col_hchk), (cpu_row / chk_nb) * cpu_col * sizeof(double));
-    abftEnv->col_hchk_ld = cpu_row / chk_nb;
+    magma_dmalloc_pinned(&(abftEnv->col_hchk), (cpu_row / chk_nb) * 2 * cpu_col * sizeof(double));
+    abftEnv->col_hchk_ld = (cpu_row / chk_nb) * 2;
     cout << "done." << endl;
 
     /* allocate space for update column checksum on CPU */
     cout << "allocate space for row checksum on CPU......";
-    magma_dmalloc_pinned(&(abftEnv->row_hchk), cpu_row * (cpu_col / chk_nb) * sizeof(double));
+    magma_dmalloc_pinned(&(abftEnv->row_hchk), cpu_row * (cpu_col / chk_nb) * 2 * sizeof(double));
     abftEnv->row_hchk_ld = cpu_row;
     cout << "done." << endl;
 
