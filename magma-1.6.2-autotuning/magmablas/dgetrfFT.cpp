@@ -49,10 +49,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
     double zero = 0;
     double negone = -1;
 
-    double * cA = new double[m * n];
-    int ldca = m;
+    double * cA = new double[lda * n];
+    int ldca = lda;
 
-    memcpy(cA, A, m*n*sizeof(double));
+    memcpy(cA, A, lda*n*sizeof(double));
 
 
     if (DEBUG) {
