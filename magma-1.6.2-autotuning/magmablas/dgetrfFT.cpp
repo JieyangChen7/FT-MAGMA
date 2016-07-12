@@ -7,12 +7,38 @@ using namespace std;
 //m: number of row
 //n: number of col
 
-void row_swap(double * chksum, int chksum_ld, int n, int i, int j) {
+void swap_row_chk(double * chksum, int chksum_ld, int n, int i, int j) {
 	for (int k = 0; k < n; k++) {
 		double temp = *(chksum + k * chksum_ld + i);
 		*(chksum + k * chksum_ld + i) = *(chksum + k * chksum_ld + j);
 		*(chksum + k * chksum_ld + j) = temp;
 	}
+}
+
+void swap_col_chk(double A, int lda, double * chksum, int chksum_ld, int n, int i, int j) {
+    int origin_block = i / abftEnv->chk_nb;
+    int target_block = j / abftEnv->chk_nb;
+
+    int origin_block_pos = i % abftEnv->chk_nb;
+    int target_block_pos = j % abftEnv->chk_nb;
+
+    for (int k = 0; k < n; k++) {
+        double origin_element = A + k * lda + i;
+        double target_element = A + k * lda + j;
+
+        chksum + k * chksum_ld + origin_block * 2 -= origin_element;
+        chksum + k * chksum_ld + origin_block * 2 += target_element;
+
+        chksum + k * chksum_ld + target_block * 2 -= target_element;
+        chksum + k * chksum_ld + target_block * 2 += origin_element;
+
+        chksum + k * chksum_ld + origin_block * 2 + 1 -= origin_element * (origin_block_pos + 1);
+        chksum + k * chksum_ld + origin_block * 2 + 1 += target_element * (target_block_pos + 1);
+
+        chksum + k * chksum_ld + target_block * 2 + 1 -= target_element * (target_block_pos + 1);
+        chksum + k * chksum_ld + target_block * 2 + 1 += origin_element * (origin_block_pos + 1);
+
+    }
 }
 
 void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
@@ -23,10 +49,17 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
     double zero = 0;
     double negone = -1;
 
+    double * cA = new double[m * n];
+    int ldca = m;
+
+    memcpy(cA, A, m*n*sizeof(double));
+
+
     if (DEBUG) {
         cout << "[dgetrf] to be updated matrix:" << endl;
         printMatrix_host(A, lda,  m, n, -1, -1);
     }
+
 
 
     if (FT & VERIFY) {
@@ -67,11 +100,11 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
     lapackf77_dgetrf( &m, &n, A, &lda, ipiv, info);
     
     if (FT) {
-        //update checksums
+        //update row checksums
         for (int j = 0; j < n; j++) {
         	//swap row j with ipiv[j]
         	if (ipiv[j] != 0) {
-        		row_swap(abftEnv->row_hchk, abftEnv->row_hchk_ld, 2, j, ipiv[j]-1);
+        		swap_row_chk(abftEnv->row_hchk, abftEnv->row_hchk_ld, 2, j, ipiv[j]-1);
         	}
 
         }
@@ -92,11 +125,38 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         	}
         }
 
+        //update column checksums
+        for (int j = 0; j < n; j++) {
+            //swap row j with ipiv[j]
+            if (ipiv[j] != 0) {
+                swap_col_chk(cA, ldca, abftEnv->col_hchk, abftEnv->col_hchk_ld, abftEnv->chk_nb, j, ipiv[j]-1);
+            }
+        }
+
+        for (int j = 0; j < n; j++) {
+            int chk_m = (m / abftEnv->chk_nb) * 2;
+            int chk_n = n - j - 1;
+            double alpha = -1;
+            int incx = 1;
+            int incy = lda;
+
+
+            blasf77_dger(&chk_m, &chk_n, &alpha, 
+                         abftEnv->col_hchk + j * abftEnv->col_hchk_ld, incx,
+                         A + lda * (j + 1) + j, lda,
+                         abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld, abftEnv->col_hchk_ld);
+        }
+
+
+
         if (DEBUG) {
         	cout << "[dgetrf] updated matrix:" << endl;
         	printMatrix_host(A, lda,  m, n, -1, -1);
-        	cout << "[dgetrf] updated checksum:" << endl;
+        	cout << "[dgetrf] updated row checksum:" << endl;
         	printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld,  m, 2, -1, -1);
+
+            cout << "[dgetrf] updated column checksum:" << endl;
+            printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, -1, -1);
         }
     }
 }
