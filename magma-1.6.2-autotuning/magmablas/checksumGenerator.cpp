@@ -25,9 +25,11 @@ void init_row_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream
 	for (int i = 0; i < abftEnv->gpu_col; i += abftEnv->chk_nb) {		
 		magma_dgemm(MagmaNoTrans, MagmaTrans,
 					abftEnv->gpu_row, 2, abftEnv->chk_nb,
-					MAGMA_D_ONE, abftEnv->vd2, abftEnv->vd2_ld,
+					MAGMA_D_ONE, 
 					A + i * lda, lda,
-					MAGMA_D_ZERO, ROW_CHK(0, i / abftEnv->chk_nb), abftEnv->row_dchk_ld);			
+					abftEnv->vd2, abftEnv->vd2_ld,
+					MAGMA_D_ZERO, 
+					ROW_CHK(0, i / abftEnv->chk_nb), abftEnv->row_dchk_ld);			
 	}
 }
 
@@ -102,7 +104,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     				 abftEnv->vd, abftEnv->vd_ld);
     if(DEBUG) {
         cout << "checksum vector on GPU:" << endl;
-        printMatrix_gpu(abftEnv->vd, abftEnv->vd_ld, abftEnv->chk_nb, 2, -1, -1);
+        printMatrix_gpu(abftEnv->vd, abftEnv->vd_ld, 2, abftEnv->chk_nb, -1, -1);
     }
     cout << "done." << endl;
 
