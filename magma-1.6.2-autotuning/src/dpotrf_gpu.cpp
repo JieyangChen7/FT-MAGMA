@@ -281,8 +281,11 @@ magma_dpotrf_gpu(
                             dA(j+jb, j), ldda, 
                             abftEnv,
                 			COL_CHK(j / abftEnv->chk_nb + 1, 0), abftEnv->col_dchk_ld,
+                            ROW_CHK(j / abftEnv->chk_nb + 1, 0), abftEnv->row_dchk_ld,
                 			COL_CHK(j / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld,
-                			COL_CHK(j / abftEnv->chk_nb + 1, j), abftEnv->col_dchk_ld,
+                            ROW_CHK(j / abftEnv->chk_nb, 0), abftEnv->row_dchk_ld,
+                			COL_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->col_dchk_ld,
+                            ROW_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->row_dchk_ld,
                 			FT, DEBUG, VERIFY,
                             stream);
                 	
@@ -315,7 +318,10 @@ magma_dpotrf_gpu(
                             dA(j,    j), ldda,
                 			dA(j+jb, j), ldda,
                             abftEnv,
-                			COL_CHK(j / abftEnv->chk_nb + 1, j), abftEnv->col_dchk_ld,
+                            COL_CHK(j/abftEnv->chk_nb, j/abftEnv->chk_nb), abftEnv->col_dchk_ld,
+                            ROW_CHK(j/abftEnv->chk_nb, j/abftEnv->chk_nb), abftEnv->row_dchk_ld,
+                			COL_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->col_dchk_ld,
+                            ROW_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->row_dchk_ld,
                 			FT, DEBUG, VERIFY, 
                             stream);
                 }

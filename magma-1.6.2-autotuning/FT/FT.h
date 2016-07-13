@@ -135,7 +135,10 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		int m, int n, double alpha, double * A, int lda,
 		double * B, int ldb, 
 		ABFTEnv * abftEnv,
-		double * checksumB, int checksumB_ld,
+		double * col_chkA, int col_chkA_ld,
+		double * row_chkA, int row_chkA_ld,
+		double * col_chkB, int col_chkB_ld,
+		double * row_chkB, int row_chkB_ld,
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * stream);
 
@@ -160,9 +163,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		double beta, 
 		double * C, int ldc, 
 		ABFTEnv * abftEnv,
-		double * checksumA, int checksumA_ld,
-		double * checksumB, int checksumB_ld,
-		double * checksumC, int checksumC_ld,
+		double * col_chkA, int col_chkA_ld,
+		double * row_chkA, int row_chkA_ld,
+		double * col_chkB, int col_chkB_ld,
+		double * row_chkB, int row_chkB_ld,
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * stream);
 
