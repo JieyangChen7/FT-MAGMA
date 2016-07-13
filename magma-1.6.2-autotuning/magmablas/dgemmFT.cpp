@@ -163,8 +163,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 					beta,
 					row_chkC, row_chkC_ld );
 
-		cudaStreamSynchronize(streams[1]);
-		cudaStreamSynchronize(streams[4]);
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
 
 		// mem_row = m;
 		// mem_col = n;
