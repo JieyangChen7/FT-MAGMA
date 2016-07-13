@@ -132,6 +132,22 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 		
 	}
+
+
+	cout<<"[dgemm] C before dgemm:"<<endl;
+
+ 	printMatrix_gpu(C, ldc, mem_row, mem_col, 4, 4);
+
+// 	cout<<"[dgemm] recalculated checksum of C after dgemm:"<<endl;
+// 	printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
+// 	printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
+
+	cout<<"[dgemm] updated column checksum of C before dgemm:"<<endl;
+	printMatrix_gpu(col_chkC, col_chkC_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+
+	cout<<"[dgemm] updated row checksum of C before dgemm:"<<endl;
+	printMatrix_gpu(row_chkC, row_chkC_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
+
 	
 	magmablasSetKernelStream(stream[1]);
 	//[Cholesky] MagmaNoTrans, MagmaTrans, MAGMA_D_ONE * (-1)， MAGMA_D_ONE
@@ -178,7 +194,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		// 					streams);
 		// if (DEBUG) {
 
-		 	cout<<"[dgemm] C before dgemm:"<<endl;
+		 	cout<<"[dgemm] C after dgemm:"<<endl;
 
 		 	printMatrix_gpu(C, ldc, mem_row, mem_col, 4, 4);
 
