@@ -167,6 +167,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		double * row_chkA, int row_chkA_ld,
 		double * col_chkB, int col_chkB_ld,
 		double * row_chkB, int row_chkB_ld,
+		double * col_chkC, int col_chkC_ld,
+		double * row_chkC, int row_chkC_ld,
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * stream);
 
