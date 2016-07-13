@@ -166,7 +166,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         cout << "[dgetrf] after swap column checksum:" << endl;
         printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, 2, 4);
 
-        for (int j = 0; j < n - 1; j++) {
+        for (int j = 0; j < n; j++) {
             int chk_m = (m / abftEnv->chk_nb) * 2;
             int chk_n = n - j - 1;
             double negone = -1;
