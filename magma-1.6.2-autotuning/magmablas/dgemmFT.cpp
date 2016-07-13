@@ -133,7 +133,9 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 	}
 
-
+	mem_row = m;
+	mem_col = n;
+	
 	cout<<"[dgemm] C before dgemm:"<<endl;
 
  	printMatrix_gpu(C, ldc, mem_row, mem_col, 4, 4);
