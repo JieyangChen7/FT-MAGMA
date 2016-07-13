@@ -156,7 +156,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             //swap row j with ipiv[j]
             if (ipiv[j] != 0) {
                 swap_col_chk(abftEnv, cA, ldca, abftEnv->col_hchk, abftEnv->col_hchk_ld, abftEnv->chk_nb, j, ipiv[j]-1);
-                swap_row_chk(cA, ldaa, n, j, ipiv[j]-1);
+                swap_row_chk(cA, ldca, n, j, ipiv[j]-1);
             }
         }
 
