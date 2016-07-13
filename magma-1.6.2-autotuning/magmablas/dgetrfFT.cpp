@@ -44,10 +44,10 @@ void swap_col_chk(ABFTEnv * abftEnv, double * A, int lda, double * chksum, int c
         *(chksum + k * chksum_ld + target_block * 2) += origin_element;
 
         *(chksum + k * chksum_ld + origin_block * 2 + 1) -= origin_element * (origin_block_pos + 1);
-        *(chksum + k * chksum_ld + origin_block * 2 + 1) += target_element * (target_block_pos + 1);
+        *(chksum + k * chksum_ld + origin_block * 2 + 1) += target_element * (origin_block_pos + 1);
 
         *(chksum + k * chksum_ld + target_block * 2 + 1) -= target_element * (target_block_pos + 1);
-        *(chksum + k * chksum_ld + target_block * 2 + 1) += origin_element * (origin_block_pos + 1);
+        *(chksum + k * chksum_ld + target_block * 2 + 1) += origin_element * (target_block_pos + 1);
 
         
 
