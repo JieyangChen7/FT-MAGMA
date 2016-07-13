@@ -166,8 +166,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		cudaStreamSynchronize(stream[1]);
 		cudaStreamSynchronize(stream[4]);
 
-		// mem_row = m;
-		// mem_col = n;
+		mem_row = m;
+		mem_col = n;
 		
 		// recalculateChecksum(C, ldc,
 		// 					mem_row, mem_col,

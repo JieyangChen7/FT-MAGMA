@@ -82,7 +82,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		// 	cout<<"[trsm] recalculated checksum of B after trsm:"<<endl;
 		// 	printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
 		// 	printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
-			
+			cout<<"[trsm] updated B after trsm:"<<endl;
 			printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
 
 			cout<<"[trsm] updated column checksum of B after trsm:"<<endl;
