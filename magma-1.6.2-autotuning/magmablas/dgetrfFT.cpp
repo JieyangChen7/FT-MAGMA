@@ -63,7 +63,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
     double one = 1;
     double zero = 0;
     double negone = -1;
-
+    swap_row_chk(A, lda, n, 0, 6);
+    swap_row_chk(A, lda, n, 1, 11);
+    swap_row_chk(A, lda, n, 2, 6);
+    swap_row_chk(A, lda, n, 3, 14);
     double * cA = new double[lda * n];
     int ldca = lda;
 
