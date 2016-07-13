@@ -191,7 +191,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
 
         if (DEBUG) {
         	cout << "[dgetrf] updated matrix:" << endl;
-        	printMatrix_host(A, lda,  m, n, -1, -1);
+        	printMatrix_host(A, lda,  m, n, 4, 4);
         	cout << "[dgetrf] updated row checksum:" << endl;
         	printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld,  m, 2, 4, 2);
 
