@@ -174,8 +174,9 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             double * chk = abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld;
             int chk_ld = abftEnv->col_hchk_ld;
 
-            cout << "[" << j << "]:" << chk_ld << endl;
+            cout << "[" << j << "]:" << scalar << endl;
 
+            
             double scalar = 1/(*(A + lda * j + j));
             blasf77_dscal(&chk_m, &scalar, abftEnv->col_hchk + j * abftEnv->col_hchk_ld, &incx);
             blasf77_dger(&chk_m, &chk_n, &negone, 
