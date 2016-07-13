@@ -180,7 +180,7 @@ magma_dgetrf_gpu(
         }
   
         // /* flags */
-        bool FT = true;
+        bool FT = false;
         bool DEBUG = true;
         bool VERIFY = false;
     
@@ -328,6 +328,14 @@ magma_dgetrf_gpu(
                 ipiv[i] += j*nb;
             }
 
+            if (DEBUG) {
+                    cout<<"[ipiv] ipiv:"<<endl;
+                    for (int i = 0; i < m; i++) {
+                        cout << ipiv[i] << " ";
+                    }
+                    cout << endl;
+            }
+
             magmablas_dlaswp( n, dAT, lddat, j*nb + 1, j*nb + nb, ipiv, 1 );
 
             if (FT) {
@@ -336,15 +344,6 @@ magma_dgetrf_gpu(
                                   abftEnv->col_dchk, abftEnv->col_dchk_ld, 
                                   j*nb + 1, j*nb + nb, 
                                   ipiv, 1 );
-
-                if (DEBUG) {
-                    cout<<"[ipiv] ipiv:"<<endl;
-                    for (int i = 0; i < m; i++) {
-                        cout << ipiv[i] << " ";
-                    }
-                    cout << endl;
-                }
-
             }
 
             magma_queue_sync( stream[0] );
