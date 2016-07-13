@@ -42,7 +42,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
 		
 			cout<<"[trsm] updated checksum of B before trsm:"<<endl;
-			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
+			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
 		}
 
 	}
@@ -66,11 +66,11 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
                     alpha, A, lda,
                     col_chkB, col_chkB_ld);
 
-		// cudaStreamSynchronize(streams[1]);
-		// cudaStreamSynchronize(streams[4]);
+		cudaStreamSynchronize(streams[1]);
+		cudaStreamSynchronize(streams[4]);
 		// //verify B before use
-		// int mem_row = m; // number of row and col of B stored in memory(no trans operation)
-		// int mem_col = n;		
+		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
+		int mem_col = n;		
 		// recalculateChecksum(B, ldb,
 		// 					mem_row, mem_col,
 		// 					chk_nb,
@@ -86,7 +86,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 			printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
 
 			cout<<"[trsm] updated column checksum of B after trsm:"<<endl;
-			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / chk_nb) * 2, mem_col, 2, 4);
+			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 		// }
 	}
 }

@@ -62,7 +62,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
 		
 			cout<<"[dgemm] updated checksum of B before dgemm:"<<endl;
-			printMatrix_gpu(checksumB, checksumB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
+			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
 		}
 
 
@@ -96,7 +96,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
 		
 			cout<<"[dgemm] updated checksum of A before dgemm:"<<endl;
-			printMatrix_gpu(checksumA, checksumA_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
+			printMatrix_gpu(col_chkA, col_chkA_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
 		}
 
 
@@ -125,7 +125,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
 		
 			cout<<"[dgemm] updated checksum of C before dgemm:"<<endl;
-			printMatrix_gpu(checksumC, checksumC_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
+			printMatrix_gpu(col_chkC, col_chkC_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
 		}
 
 
@@ -163,8 +163,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 					beta,
 					row_chkC, row_chkC_ld );
 
-		// cudaStreamSynchronize(streams[1]);
-		// cudaStreamSynchronize(streams[4]);
+		cudaStreamSynchronize(streams[1]);
+		cudaStreamSynchronize(streams[4]);
 
 		// mem_row = m;
 		// mem_col = n;
@@ -187,10 +187,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		// 	printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
 		
 			cout<<"[dgemm] updated column checksum of C after dgemm:"<<endl;
-			printMatrix_gpu(col_chkC, col_chkC_ld, (mem_row / chk_nb) * 2, mem_col, 2, 4);
+			printMatrix_gpu(col_chkC, col_chkC_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 
 			cout<<"[dgemm] updated row checksum of C after dgemm:"<<endl;
-			printMatrix_gpu(row_chkC, row_chkC_ld, mem_row, (mem_col / chk_nb) * 2, 4, 2);
+			printMatrix_gpu(row_chkC, row_chkC_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
 		// }
 
 
