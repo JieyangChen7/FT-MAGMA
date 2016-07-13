@@ -63,10 +63,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
     double one = 1;
     double zero = 0;
     double negone = -1;
-    swap_row_chk(A, lda, n, 0, 6);
-    swap_row_chk(A, lda, n, 1, 11);
-    swap_row_chk(A, lda, n, 2, 6);
-    swap_row_chk(A, lda, n, 3, 14);
+    // swap_row_chk(A, lda, n, 0, 6);
+    // swap_row_chk(A, lda, n, 1, 11);
+    // swap_row_chk(A, lda, n, 2, 6);
+    // swap_row_chk(A, lda, n, 3, 14);
     double * cA = new double[lda * n];
     int ldca = lda;
 
@@ -179,8 +179,8 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
 
             double scalar = 1/(*(A + lda * j + j));
 
-             cout << "[" << j << "]:" << scalar << endl;
-            //blasf77_dscal(&chk_m, &scalar, abftEnv->col_hchk + j * abftEnv->col_hchk_ld, &incx);
+            // cout << "[" << j << "]:" << scalar << endl;
+            blasf77_dscal(&chk_m, &scalar, abftEnv->col_hchk + j * abftEnv->col_hchk_ld, &incx);
             blasf77_dger(&chk_m, &chk_n, &negone, 
                          abftEnv->col_hchk + j * abftEnv->col_hchk_ld, &incx,
                          A + lda * (j + 1) + j, &lda,
