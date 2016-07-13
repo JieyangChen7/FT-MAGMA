@@ -16,15 +16,26 @@ void swap_row_chk(double * chksum, int chksum_ld, int n, int i, int j) {
 }
 
 void swap_col_chk(ABFTEnv * abftEnv, double * A, int lda, double * chksum, int chksum_ld, int n, int i, int j) {
+
+    cout << i << "<->" << j << endl;
+
     int origin_block = i / abftEnv->chk_nb;
     int target_block = j / abftEnv->chk_nb;
+
+    cout << "origin_block:" << origin_block << endl;
+    cout << "target_block:" << target_block << endl;
 
     int origin_block_pos = i % abftEnv->chk_nb;
     int target_block_pos = j % abftEnv->chk_nb;
 
+    cout << "origin_block_pos:" << origin_block_pos << endl;
+    cout << "target_block_pos:" << target_block_pos << endl;
+
     for (int k = 0; k < n; k++) {
         double origin_element = *(A + k * lda + i);
         double target_element = *(A + k * lda + j);
+
+        cout << origin_element << "<->" << target_element << "  ";
 
         *(chksum + k * chksum_ld + origin_block * 2) -= origin_element;
         *(chksum + k * chksum_ld + origin_block * 2) += target_element;
@@ -38,9 +49,11 @@ void swap_col_chk(ABFTEnv * abftEnv, double * A, int lda, double * chksum, int c
         *(chksum + k * chksum_ld + target_block * 2 + 1) -= target_element * (target_block_pos + 1);
         *(chksum + k * chksum_ld + target_block * 2 + 1) += origin_element * (origin_block_pos + 1);
 
-        swap_row_chk(A, lda, n, i, j);
+        
 
     }
+
+    cout << endl;
 }
 
 void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
@@ -143,6 +156,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             //swap row j with ipiv[j]
             if (ipiv[j] != 0) {
                 swap_col_chk(abftEnv, cA, ldca, abftEnv->col_hchk, abftEnv->col_hchk_ld, abftEnv->chk_nb, j, ipiv[j]-1);
+                swap_row_chk(cA, ldaa, n, j, ipiv[j]-1);
             }
         }
 
