@@ -103,11 +103,14 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
     
     lapackf77_dgetrf( &m, &n, A, &lda, ipiv, info);
     
+
+
     if (FT) {
         //update row checksums
         for (int j = 0; j < n; j++) {
         	//swap row j with ipiv[j]
         	if (ipiv[j] != 0) {
+                cout << j << "<->" << ipiv[j] << endl;
         		swap_row_chk(abftEnv->row_hchk, abftEnv->row_hchk_ld, 2, j, ipiv[j]-1);
         	}
 

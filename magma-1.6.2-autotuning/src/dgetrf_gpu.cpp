@@ -180,7 +180,7 @@ magma_dgetrf_gpu(
         }
   
         // /* flags */
-        bool FT = false;
+        bool FT = true;
         bool DEBUG = true;
         bool VERIFY = false;
     
