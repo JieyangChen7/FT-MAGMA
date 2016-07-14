@@ -17,25 +17,25 @@ void swap_row_chk(double * chksum, int chksum_ld, int n, int i, int j) {
 
 void swap_col_chk(ABFTEnv * abftEnv, double * A, int lda, double * chksum, int chksum_ld, int n, int i, int j) {
 
-    cout << i << "<->" << j << endl;
+    //cout << i << "<->" << j << endl;
 
     int origin_block = i / abftEnv->chk_nb;
     int target_block = j / abftEnv->chk_nb;
 
-    cout << "origin_block:" << origin_block << endl;
-    cout << "target_block:" << target_block << endl;
+    //cout << "origin_block:" << origin_block << endl;
+    //cout << "target_block:" << target_block << endl;
 
     int origin_block_pos = i % abftEnv->chk_nb;
     int target_block_pos = j % abftEnv->chk_nb;
 
-    cout << "origin_block_pos:" << origin_block_pos << endl;
-    cout << "target_block_pos:" << target_block_pos << endl;
+    //cout << "origin_block_pos:" << origin_block_pos << endl;
+    //cout << "target_block_pos:" << target_block_pos << endl;
 
     for (int k = 0; k < n; k++) {
         double origin_element = *(A + k * lda + i);
         double target_element = *(A + k * lda + j);
 
-        cout << origin_element << "<->" << target_element << "  ";
+        //cout << origin_element << "<->" << target_element << "  ";
 
         *(chksum + k * chksum_ld + origin_block * 2) -= origin_element;
         *(chksum + k * chksum_ld + origin_block * 2) += target_element;

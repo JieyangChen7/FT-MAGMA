@@ -16,7 +16,7 @@ void row_recal_1(double * A, int lda,
 		double * chk2, int chk2_ld, 
 		magma_queue_t * stream) {
 
-	for (int i = 0; i < m; i += chk_nb) {
+	for (int i = 0; i < n; i += chk_nb) {
 		magmablasSetKernelStream(stream[2]);
 		magma_dgemv(MagmaNoTrans, m, chk_nb, MAGMA_D_ONE,
 				A + i * lda, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, chk1_ld );

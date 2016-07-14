@@ -87,8 +87,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		mem_row = m;
 		mem_col = n;
 		
-		at_col_chk_recal(abftEnv, A, lda, mem_row, mem_col, stream);
-		at_row_chk_recal(abftEnv, A, lda, mem_row, mem_col, stream);
+		at_col_chk_recal(abftEnv, C, lda, mem_row, mem_col, stream);
+		at_row_chk_recal(abftEnv, C, lda, mem_row, mem_col, stream);
 
 		if (DEBUG) {
 
@@ -203,8 +203,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		mem_row = m;
 		mem_col = n;
 		
-		at_col_chk_recal(abftEnv, A, lda, mem_row, mem_col, stream);
-		at_row_chk_recal(abftEnv, A, lda, mem_row, mem_col, stream);
+		at_col_chk_recal(abftEnv, C, lda, mem_row, mem_col, stream);
+		at_row_chk_recal(abftEnv, C, lda, mem_row, mem_col, stream);
 
 		if (DEBUG) {
 
