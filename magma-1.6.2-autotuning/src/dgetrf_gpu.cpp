@@ -212,6 +212,11 @@ magma_dgetrf_gpu(
             magma_dmalloc(&dAP_col_chk, dAP_col_chk_pitch * abftEnv->chk_nb);
             cout << "done." << endl;
 
+            at_row_chk_recal(abftEnv, dAT, lddat, n, m, stream);
+            cout<<"row checksum of input matrix using chk_recal:"<<endl;
+            printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, n, m / abftEnv->chk_nb, 4, 1);
+            printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, n, m / abftEnv->chk_nb, 4, 1);
+
             // cout << "banchmarking:" << endl;
             // ChecksumRecalProfiler(abftEnv, dAT, lddat, stream); 
             // benchmark(abftEnv, dAT, lddat, stream);

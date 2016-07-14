@@ -202,6 +202,8 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
         printMatrix_gpu(abftEnv->row_dchk, abftEnv->row_dchk_ld,
         	 			abftEnv->gpu_row, (abftEnv->gpu_col / abftEnv->chk_nb) * 2, 
         	 			chk_nb, 2);
+
+       
     }
 
 
