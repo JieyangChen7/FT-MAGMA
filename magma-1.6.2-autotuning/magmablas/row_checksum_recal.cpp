@@ -18,10 +18,10 @@ void row_recal_1(double * A, int lda,
 
 	for (int i = 0; i < m; i += chk_nb) {
 		magmablasSetKernelStream(stream[2]);
-		magma_dgemv(MagmaNoTrans, chk_nb, m, MAGMA_D_ONE,
+		magma_dgemv(MagmaNoTrans, m, chk_nb, MAGMA_D_ONE,
 				A + i * lda, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, chk1_ld );
 		magmablasSetKernelStream(stream[3]);
-		magma_dgemv(MagmaNoTrans, chk_nb, n, MAGMA_D_ONE,
+		magma_dgemv(MagmaNoTrans, m, chk_nb, MAGMA_D_ONE,
 				A + i * lda, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, chk2_ld );
 	}
 	cudaStreamSynchronize(stream[2]);
