@@ -397,6 +397,14 @@ magma_dgetrf_gpu(
                 //              c_one,     dAT(j+1, j+1), lddat );
 
                 //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
+
+
+                at_row_chk_recal(abftEnv, dAT(j+1, j+1), lddat, nb, m-(j+1)*nb, stream);
+                cout<<"row checksum of C matrix using chk_recal:"<<endl;
+                printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, nb, (m-(j+1)*nb) / abftEnv->chk_nb, 4, 1);
+                printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, nb, (m-(j+1)*nb) / abftEnv->chk_nb, 4, 1);
+
+
                 dgemmFT(MagmaNoTrans, MagmaNoTrans,
                         nb, m-(j+1)*nb, nb,
                         c_neg_one,
