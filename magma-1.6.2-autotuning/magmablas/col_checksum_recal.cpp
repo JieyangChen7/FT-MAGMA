@@ -376,7 +376,7 @@ void chk_recal_11(double * A, int lda,
 //col-read-B
 //col-write-C
 //combined
-void recalculateChecksum12(double * A, int lda,
+void chk_recal_12(double * A, int lda,
 		int m, int n, int chk_nb,
 		double * vd, int vd_ld,
 		double * chk1, int chk1_ld, 
@@ -548,7 +548,7 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			AutoTuneChecksumRecal(abftEnv, A, lda, i, j, stream);
+			at_col_chk_recal(abftEnv, A, lda, i, j, stream);
 		}
 
 	}
@@ -562,7 +562,7 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			ChecksumRecalSelector(abftEnv, A, lda, i, j, stream, 2);
+			col_chk_recal_select(abftEnv, A, lda, i, j, stream, 2);
 		}
 
 	}
@@ -575,7 +575,7 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			ChecksumRecalSelector(abftEnv, A, lda, i, j, stream, 1);
+			col_chk_recal_select(abftEnv, A, lda, i, j, stream, 1);
 		}
 
 	}
