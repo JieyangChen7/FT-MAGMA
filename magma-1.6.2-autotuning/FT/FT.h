@@ -99,27 +99,17 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 						magma_queue_t * stream);
 
 
-void recalculateChecksum(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream);
-
-void recalculateChecksum2(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream);
-
 void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
 
 void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
 
-void ChecksumRecalSelector(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select);
+void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select);
 
-void AutoTuneChecksumRecal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream);
+void row_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select)
+
+void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream);
+
+void at_row_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream)
 
 void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * checksumA, int checksumA_ld, magma_queue_t * stream);
 

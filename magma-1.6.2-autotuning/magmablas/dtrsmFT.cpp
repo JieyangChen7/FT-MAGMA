@@ -24,25 +24,21 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 	if (FT && VERIFY) {
 		//verify B before use
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
-		int mem_col = n;		
-		// recalculateChecksum2(B, ldb,
-		// 					mem_row, mem_col,
-		// 					chk_nb,
-		// 					vd, vd_ld,
-		// 					chk1, chk1_ld,
-		// 					chk2, chk2_ld,
-		// 					streams);
+		int mem_col = n;
 
-		AutoTuneChecksumRecal(abftEnv, B, ldb, mem_row, mem_col, stream);
+		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col, stream);
 
 		if (DEBUG) {
+			cout<<"[trsm] updated B before trsm:"<<endl;
+			printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
+
 			cudaStreamSynchronize(stream[1]);
-			cout<<"[trsm] recalculated checksum of B before trsm:"<<endl;
-			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
-			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, -1, -1);
+			cout<<"[trsm] recalculated column checksum of B before trsm:"<<endl;
+			printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
+			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
 		
-			cout<<"[trsm] updated checksum of B before trsm:"<<endl;
-			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, -1, -1);
+			cout<<"[trsm] updated column checksum of B before trsm:"<<endl;
+			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 		}
 
 	}
@@ -68,25 +64,23 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 
 		cudaStreamSynchronize(stream[1]);
 		cudaStreamSynchronize(stream[4]);
-		// //verify B before use
+		
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 		int mem_col = n;		
-		// recalculateChecksum(B, ldb,
-		// 					mem_row, mem_col,
-		// 					chk_nb,
-		// 					vd, vd_ld,
-		// 					chk1, chk1_ld,
-		// 					chk2, chk2_ld,
-		// 					stream);
-		// if (DEBUG) {
-		// 	cout<<"[trsm] recalculated checksum of B after trsm:"<<endl;
-		// 	printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col);
-		// 	printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col);
+					
+		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col, stream);
+		
+		if (DEBUG) {
 			cout<<"[trsm] updated B after trsm:"<<endl;
 			printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
 
+			cout<<"[trsm] recalculated checksum of B after trsm:"<<endl;
+			printMatrix_gpu(chk1, chk1_ld, mem_row / chk_nb, mem_col, 1, 4);
+			printMatrix_gpu(chk2, chk2_ld, mem_row / chk_nb, mem_col, 1, 4);
+			
+
 			cout<<"[trsm] updated column checksum of B after trsm:"<<endl;
 			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
-		// }
+		}
 	}
 }

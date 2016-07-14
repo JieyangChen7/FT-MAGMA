@@ -77,8 +77,8 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         cout << "[dgetrf] to be updated matrix:" << endl;
         printMatrix_host(A, lda,  m, n, 4, 4);
 
-        cout << "[dgetrf] to be copy matrix:" << endl;
-        printMatrix_host(cA, ldca,  m, n, 4, 4);
+        // cout << "[dgetrf] to be copy matrix:" << endl;
+        // printMatrix_host(cA, ldca,  m, n, 4, 4);
     }
 
 
@@ -128,7 +128,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         for (int j = 0; j < n; j++) {
         	//swap row j with ipiv[j]
         	if (ipiv[j] != 0) {
-                cout << j << "<->" << ipiv[j] << endl;
+                //cout << j << "<->" << ipiv[j] << endl;
         		swap_row_chk(abftEnv->row_hchk, abftEnv->row_hchk_ld, 2, j, ipiv[j]-1);
         	}
 
