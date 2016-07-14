@@ -105,11 +105,11 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
 
 void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select);
 
-void row_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select)
+void row_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select);
 
 void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream);
 
-void at_row_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream)
+void at_row_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream);
 
 void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * checksumA, int checksumA_ld, magma_queue_t * stream);
 

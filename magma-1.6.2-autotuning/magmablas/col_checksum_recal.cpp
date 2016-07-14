@@ -1,6 +1,6 @@
 #include "FT.h"
 #include <iostream>
-
+using namespace std;
 
 //recalculate column checksums
 //M: number of rows of A
