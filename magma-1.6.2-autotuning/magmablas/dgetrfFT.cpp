@@ -128,7 +128,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         for (int j = 0; j < n; j++) {
         	//swap row j with ipiv[j]
         	if (ipiv[j] != 0) {
-                //cout << j << "<->" << ipiv[j] << endl;
+                cout << j << "<->" << ipiv[j] << endl;
         		swap_row_chk(abftEnv->row_hchk, abftEnv->row_hchk_ld, 2, j, ipiv[j]-1);
         	}
 
