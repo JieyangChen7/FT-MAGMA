@@ -588,7 +588,7 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 
 //check matrix A using checksums
 void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * checksumA, int checksumA_ld, magma_queue_t * stream) {
-	AutoTuneChecksumRecal(abftEnv, A, lda, m, n, stream);
+	at_col_chk_recal(abftEnv, A, lda, m, n, stream);
 	//do check here
 
 }
