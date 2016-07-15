@@ -349,7 +349,7 @@ magma_dgetrf_gpu(
                     
                     if (ipiv[i] != 0) { //switch i and ipiv[i]
                         int j = ipiv[i];
-                        real_effect[i] = j
+                        real_effect[i] = j;
                         real_effect[j - 1] =  i + 1;
                     }
                 }
