@@ -23,10 +23,10 @@ void row_recal_1(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
 		magmablasSetKernelStream(abftEnv->stream[2]);
 		magma_dgemv(MagmaNoTrans, 
-					m, chk_nb, 
+					m, abftEnv->chk_nb, 
 					MAGMA_D_ONE,
 					A + i * lda, lda, 
-					vd + 1, vd_ld, 
+					abftEnv->vd + 1, abftEnv->vd_ld, 
 					MAGMA_D_ZERO, 
 					abftEnv->chk22 + (i / abftEnv->chk_nb) * abftEnv->chk22_ld, 1 );
 	}
@@ -69,7 +69,7 @@ void row_recal_2(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 						m, abftEnv->chk_nb, 
 						MAGMA_D_ONE,
 						A + (i + abftEnv->chk_nb) * lda, lda, 
-						vd, vd_ld, 
+						abftEnv->vd, abftEnv->vd_ld, 
 						MAGMA_D_ZERO, 
 						abftEnv->chk21 + ((i / abftEnv->chk_nb) + 1) * abftEnv->chk21_ld, 1 );
 
