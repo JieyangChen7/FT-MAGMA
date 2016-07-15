@@ -339,12 +339,13 @@ magma_dgetrf_gpu(
                 ipiv[i] += j*nb;
             }
 
-            if (DEBUG) {
-                    // cout<<"[ipiv] ipiv:"<<endl;
-                    // for (int i = 0; i < m; i++) {
-                    //     cout << ipiv[i] << " ";
-                    // }
-                    // cout << endl;
+            if (FT) {
+                cout<<"[ipiv] ipiv:"<<endl;
+                for (int i = 0; i < n; i++) {
+                    cout << ipiv[i] << " ";
+                }
+                cout << endl;
+
             }
 
             magmablas_dlaswp( n, dAT, lddat, j*nb + 1, j*nb + nb, ipiv, 1 );

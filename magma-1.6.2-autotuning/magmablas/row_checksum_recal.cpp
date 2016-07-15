@@ -29,6 +29,42 @@ void row_recal_1(double * A, int lda,
 }
 
 
+//recalculate column checksums
+//M: number of rows of A
+//N: numner of cols of A
+//non-col-read-A
+//col-read-B
+//non-col-write-C
+//separated － 4 steams
+void row_recal_2(double * A, int lda,
+		int m, int n, int chk_nb,
+		double * vd, int vd_ld,
+		double * chk1, int chk1_ld, 
+		double * chk2, int chk2_ld, 
+		magma_queue_t * stream) {
+
+	for (int i = 0; i < n; i += chk_nb * 2) {
+		magmablasSetKernelStream(stream[1]);
+		magma_dgemv(MagmaNoTrans, m, chk_nb, MAGMA_D_ONE,
+				A + i * lda, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, 1 );
+		magmablasSetKernelStream(stream[2]);
+		magma_dgemv(MagmaNoTrans, m, chk_nb, MAGMA_D_ONE,
+				A + i * lda, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, 1 );
+		if (i + chk_nb < n) {
+			magmablasSetKernelStream(stream[3]);
+			magma_dgemv(MagmaNoTrans, m, chk_nb, MAGMA_D_ONE,
+				A + (i + chk_nb) * lda, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + ((i / chk_nb) + 1) * chk1_ld, 1 );
+			magmablasSetKernelStream(stream[4]);
+			magma_dgemv(MagmaNoTrans, m, chk_nb, MAGMA_D_ONE,
+				A + (i + chk_nb) * lda, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + ((i / chk_nb) + 1) * chk2_ld, 1 );
+		}
+	}
+	cudaStreamSynchronize(stream[1]);
+	cudaStreamSynchronize(stream[2]);
+	cudaStreamSynchronize(stream[3]);
+	cudaStreamSynchronize(stream[4]);
+}
+
 
 
 

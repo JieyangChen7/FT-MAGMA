@@ -8,7 +8,7 @@ using namespace std;
 //initialize checksum
 //M: number of rows
 //N: numner of cols
-void init_col_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream) {
+void init_col_chk(ABFTEnv * abftEnv, double * A, int lda) {
 
 	for (int i = 0; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {		
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
@@ -20,7 +20,7 @@ void init_col_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream
 }
 
 
-void init_row_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream) {
+void init_row_chk(ABFTEnv * abftEnv, double * A, int lda) {
 
 	for (int i = 0; i < abftEnv->gpu_col; i += abftEnv->chk_nb) {		
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
@@ -51,6 +51,8 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 	abftEnv->gpu_col = gpu_col;
 	abftEnv->cpu_row = cpu_row;
 	abftEnv->cpu_col = cpu_col;
+
+	abftEnv->stream = stream;
 
 	/* initialize checksum vectors on CPU */
     /* v =
@@ -184,11 +186,11 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
     /* initialize checksums */
     cout << "column checksums initiallization......";
-    init_col_chk(abftEnv, A, lda, stream);
+    init_col_chk(abftEnv, A, lda);
     cout << "done." << endl;
 
     cout << "row checksums initiallization......";
-    init_row_chk(abftEnv, A, lda, stream);
+    init_row_chk(abftEnv, A, lda);
     cout << "done." << endl;
 
     if (DEBUG) {

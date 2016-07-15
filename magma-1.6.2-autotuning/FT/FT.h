@@ -65,6 +65,9 @@ struct ABFTEnv {
     double * row_dchk;
     int row_dchk_ld;
 
+    /* CUDA streams for computation */
+    magma_queue_t * stream;
+
     /* performance autotuning result */
     int * mapping;
     int mapping_ld;
@@ -89,8 +92,8 @@ void printMatrix_gpu(double * matrix_device, int matrix_ld, int M, int N, int ro
 void printVector_host(double * vector_host, int N);
 void printVector_gpu(double * vector_device, int N) ;
 
-void init_col_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
-void init_row_chk(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
+void init_col_chk(ABFTEnv * abftEnv, double * A, int lda);
+void init_row_chk(ABFTEnv * abftEnv, double * A, int lda);
 
 void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb, 
 						double * A, int lda,
