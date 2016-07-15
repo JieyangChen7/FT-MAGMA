@@ -347,9 +347,11 @@ magma_dgetrf_gpu(
                 cout<<"[ipiv] ipiv:"<<endl;
                 for (int i = 0; i < m; i++) {
                     if (ipiv[i] != 0) { //switch i and ipiv[i]
-                        int j = ipiv[i];
-                        // real_effect[i] = j;
-                        // real_effect[j - 1] =  i + 1;
+                        int j = ipiv[i] - 1;
+                        cout << "j=" << j << endl;
+                        int temp = real_effect[i];
+                        real_effect[i] = real_effect[j];
+                        real_effect[j] =  temp;
                     }
                 }
                  
