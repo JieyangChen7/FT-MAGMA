@@ -19,7 +19,7 @@ void chk_recal_1(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 					A + i, lda,
 					abftEnv->vd, abftEnv->vd_ld, 
 					MAGMA_D_ZERO, 
-					abftEnv0>chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
+					abftEnv->chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
 
 		magmablasSetKernelStream(abftEnv->stream[2]);
 		magma_dgemv(MagmaTrans, 
@@ -65,7 +65,7 @@ void chk_recal_2(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 					MAGMA_D_ZERO, 
 					abftEnv->chk2 + (i / abftEnv->chk_nb), abftEnv->chk2_ld );
 
-		if (i + chk_nb < m) {			
+		if (i + abftEnv->chk_nb < m) {			
 			magmablasSetKernelStream(stream[3]);
 			magma_dgemv(MagmaTrans, 
 						abftEnv->chk_nb, n, 
@@ -148,7 +148,7 @@ void chk_recal_4(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 					MAGMA_D_ZERO, 
 					abftEnv->chk2 + (i / abftEnv->chk_nb), abftEnv->chk2_ld );
 
-		if (i + chk_nb < m) {
+		if (i + abftEnv->chk_nb < m) {
 			magmablasSetKernelStream(abftEnv->stream[3]);
 			magma_dgemv(MagmaTrans, 
 						abftEnv->chk_nb, n, 
@@ -315,7 +315,7 @@ void chk_recal_8(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 					MAGMA_D_ZERO, 
 					abftEnv->chk22 + (i / abftEnv->chk_nb) * abftEnv->chk22_ld, 1 );
 
-		if (i + chk_nb < m) {
+		if (i + abftEnv->chk_nb < m) {
 			magmablasSetKernelStream(abftEnv->stream[3]);
 			magma_dgemv(MagmaTrans, 
 						abftEnv->chk_nb, n, 
