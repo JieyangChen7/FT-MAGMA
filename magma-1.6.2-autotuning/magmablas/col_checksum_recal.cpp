@@ -9,24 +9,29 @@ using namespace std;
 //col-read-B
 //non-col-write-C
 //separated
-void chk_recal_1(ABFTEnv * abftEnv, 
-				double * A, int lda,
-				int m, int n, int chk_nb,
-				double * vd, int vd_ld,
-				double * chk1, int chk1_ld, 
-				double * chk2, int chk2_ld, 
-				magma_queue_t * stream) {
+void chk_recal_1(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 
-	for (int i = 0; i < m; i += chk_nb) {
-		magmablasSetKernelStream(stream[2]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
-		magmablasSetKernelStream(stream[3]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+	for (int i = 0; i < m; i += abftEnv->chk_nb) {
+		magmablasSetKernelStream(abftEnv->stream[1]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda,
+					abftEnv->vd, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv0>chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
+
+		magmablasSetKernelStream(abftEnv->stream[2]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd + 1, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk2 + (i / abftEnv->chk_nb), abftEnv->chk2_ld );
 	}
-	cudaStreamSynchronize(stream[2]);
-	cudaStreamSynchronize(stream[3]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
 }
 
 
@@ -39,27 +44,45 @@ void chk_recal_1(ABFTEnv * abftEnv,
 //col-read-B
 //non-col-write-C
 //separated - 4 stream
-void chk_recal_2(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_2(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 
-	for (int i = 0; i < m; i += chk_nb * 2) {
-		magmablasSetKernelStream(stream[1]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
-		magmablasSetKernelStream(stream[2]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+	for (int i = 0; i < m; i += abftEnv->chk_nb * 2) {
+		magmablasSetKernelStream(abftEnv->stream[1]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
+
+		magmablasSetKernelStream(abftEnv->stream[2]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd + 1, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk2 + (i / abftEnv->chk_nb), abftEnv->chk2_ld );
+
 		if (i + chk_nb < m) {			
 			magmablasSetKernelStream(stream[3]);
-			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-					A + i + chk_nb, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) + 1, chk1_ld );
+			magma_dgemv(MagmaTrans, 
+						abftEnv->chk_nb, n, 
+						MAGMA_D_ONE,
+						A + i + abftEnv->chk_nb, lda, 
+						abftEnv->vd, abftEnv->vd_ld, 
+						MAGMA_D_ZERO, 
+						abftEnv->chk1 + (i / abftEnv->chk_nb) + 1, abftEnv->chk1_ld );
+
 			magmablasSetKernelStream(stream[4]);
-			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-					A + i + chk_nb, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) + 1, chk2_ld );
+			magma_dgemv(MagmaTrans, 
+						abftEnv->chk_nb, n, 
+						MAGMA_D_ONE,
+						A + i + abftEnv->chk_nb, lda, 
+						abftEnv->vd + 1, abftEnv->vd_ld, 
+						MAGMA_D_ZERO, 
+						abftEnv->chk2 + (i / abftEnv->chk_nb) + 1, abftEnv->chk2_ld );
 		}
 	}
 	cudaStreamSynchronize(stream[1]);
@@ -74,86 +97,112 @@ void chk_recal_2(double * A, int lda,
 //col-read-B
 //non-col-write-C
 //separated
-void chk_recal_3(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_3(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
-	for (int i = 0; i < m; i += chk_nb) {
-		//magmablasSetKernelStream(stream[1]);
-		magmablasSetKernelStream(stream[2]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
-		magmablasSetKernelStream(stream[3]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd+ vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+	for (int i = 0; i < m; i += abftEnv->chk_nb) {
+		magmablasSetKernelStream(abftEnv->stream[1]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd2, 1, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
+
+		magmablasSetKernelStream(abftEnv->stream[2]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd2 + abftEnv->vd2_ld, 1, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk2 + (i / abftEnv->chk_nb), abftEnv->chk2_ld );
 	}
-	//cudaStreamSynchronize(stream[1]);
 	
-	cudaStreamSynchronize(stream[2]);
-	cudaStreamSynchronize(stream[3]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
 }
 
 //col-read-A
 //col-read-B
 //non-col-write-C
 //separated - 4 stream
-void chk_recal_4(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_4(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
-	for (int i = 0; i < m; i += chk_nb * 2) {
-		magmablasSetKernelStream(stream[1]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
-		magmablasSetKernelStream(stream[2]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+	for (int i = 0; i < m; i += abftEnv->chk_nb * 2) {
+		magmablasSetKernelStream(abftEnv->stream[1]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd2, 1, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
+
+		magmablasSetKernelStream(abftEnv->stream[2]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd2 + abftEnv->vd2_ld, 1, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk2 + (i / abftEnv->chk_nb), abftEnv->chk2_ld );
+
 		if (i + chk_nb < m) {
-			magmablasSetKernelStream(stream[3]);
-			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-					A + i + chk_nb, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb) + 1, chk1_ld );
-			magmablasSetKernelStream(stream[2]);
-			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-					A + i + chk_nb, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb) + 1, chk2_ld );
+			magmablasSetKernelStream(abftEnv->stream[3]);
+			magma_dgemv(MagmaTrans, 
+						abftEnv->chk_nb, n, 
+						MAGMA_D_ONE,
+						A + i + abftEnv->chk_nb, lda, 
+						abftEnv->vd2, 1, 
+						MAGMA_D_ZERO, 
+						abftEnv->chk1 + (i / abftEnv->chk_nb) + 1, abftEnv->chk1_ld );
+
+			magmablasSetKernelStream(abftEnv->stream[4]);
+			magma_dgemv(MagmaTrans, 
+						abftEnv->chk_nb, n, 
+						MAGMA_D_ONE,
+						A + i + abftEnv->chk_nb, lda, 
+						abftEnv->vd2 + abftEnv->vd2_ld, 1, 
+						MAGMA_D_ZERO, 
+						abftEnv->chk2 + (i / abftEnv->chk_nb) + 1, abftEnv->chk2_ld );
 		}
 	}
 	
-	cudaStreamSynchronize(stream[1]);
-	cudaStreamSynchronize(stream[2]);
-	cudaStreamSynchronize(stream[3]);
-	cudaStreamSynchronize(stream[4]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
+	cudaStreamSynchronize(abftEnv->stream[3]);
+	cudaStreamSynchronize(abftEnv->stream[4]);
 }
 
 //non-col-read-A
 //col-read-B
 //col-write-C
 //separated
-void chk_recal_5(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_5(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
-	for (int i = 0; i < m; i += chk_nb) {
-		//magmablasSetKernelStream(stream[1]);
-		magmablasSetKernelStream(stream[2]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, 1 );
-		magmablasSetKernelStream(stream[3]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, 1 );
+	for (int i = 0; i < m; i += abftEnv->chk_nb) {
+		magmablasSetKernelStream(abftEnv->stream[1]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk21 + (i / abftEnv->chk_nb) * abftEnv->chk21_ld, 1 );
+
+		magmablasSetKernelStream(abftEnv->stream[2]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd + 1, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk22 + (i / abftEnv->chk_nb) * abftEnv->chk22_ld, 1 );
 	}
-	//cudaStreamSynchronize(stream[1]);
 	
-	cudaStreamSynchronize(stream[2]);
-	cudaStreamSynchronize(stream[3]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
 }
 
 
@@ -161,33 +210,51 @@ void chk_recal_5(double * A, int lda,
 //col-read-B
 //col-write-C
 //separated - 4 stream
-void chk_recal_6(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_6(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 
-	for (int i = 0; i < m; i += chk_nb * 2) {
-		magmablasSetKernelStream(stream[1]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, 1 );
-		magmablasSetKernelStream(stream[2]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, 1 );
-		if (i + chk_nb < m) {
-			magmablasSetKernelStream(stream[3]);
-			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-					A + i + chk_nb, lda, vd, vd_ld, MAGMA_D_ZERO, chk1 + (i / chk_nb + 1) * chk1_ld, 1 );
-			magmablasSetKernelStream(stream[4]);
-			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-					A + i + chk_nb, lda, vd + 1, vd_ld, MAGMA_D_ZERO, chk2 + (i / chk_nb + 1) * chk2_ld, 1 );
+	for (int i = 0; i < m; i += abftEnv->chk_nb * 2) {
+		magmablasSetKernelStream(abftEnv->stream[1]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk21 + (i / abftEnv->chk_nb) * abftEnv->chk21_ld, 1 );
+
+		magmablasSetKernelStream(abftEnv->stream[2]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd + 1, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk22 + (i / abftEnv->chk_nb) * abftEnv->chk22_ld, 1 );
+
+		if (i + abftEnv->chk_nb < m) {
+			magmablasSetKernelStream(abftEnv->stream[3]);
+			magma_dgemv(MagmaTrans, 
+						abftEnv->chk_nb, n, 
+						MAGMA_D_ONE,
+						A + i + abftEnv->chk_nb, lda, 
+						abftEnv->vd, abftEnv->vd_ld, 
+						MAGMA_D_ZERO, 
+						abftEnv->chk21 + (i / abftEnv->chk_nb + 1) * abftEnv->chk21_ld, 1 );
+
+			magmablasSetKernelStream(abftEnv->stream[4]);
+			magma_dgemv(MagmaTrans, 
+						abftEnv->chk_nb, n, 
+						MAGMA_D_ONE,
+						A + i + abftEnv->chk_nb, lda, 
+						abftEnv->vd + 1, abftEnv->vd_ld, 
+						MAGMA_D_ZERO, 
+						abftEnv->chk22 + (i / abftEnv->chk_nb + 1) * abftEnv->chk22_ld, 1 );
 		}
 	}
-	cudaStreamSynchronize(stream[1]);
-	cudaStreamSynchronize(stream[2]);
-	cudaStreamSynchronize(stream[3]);
-	cudaStreamSynchronize(stream[4]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
+	cudaStreamSynchronize(abftEnv->stream[3]);
+	cudaStreamSynchronize(abftEnv->stream[4]);
 }
 
 
@@ -195,26 +262,30 @@ void chk_recal_6(double * A, int lda,
 //col-read-B
 //col-write-C
 //separated
-void chk_recal_7(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_7(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 
-	for (int i = 0; i < m; i += chk_nb) {
-		//magmablasSetKernelStream(stream[1]);
-		magmablasSetKernelStream(stream[2]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, 1 );
-		magmablasSetKernelStream(stream[3]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, 1 );
+	for (int i = 0; i < m; i += abftEnv->chk_nb) {
+		magmablasSetKernelStream(abftEnv->stream[1]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd2, 1, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk21 + (i / abftEnv->chk_nb) * abftEnv->chk21_ld, 1 );
+
+		magmablasSetKernelStream(abftEnv->stream[2]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd2 + abftEnv->vd2_ld, 1, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk22 + (i / abftEnv->chk_nb) * abftEnv->chk22_ld, 1 );
 	}
-	//cudaStreamSynchronize(stream[1]);
 	
-	cudaStreamSynchronize(stream[2]);
-	cudaStreamSynchronize(stream[3]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
 }
 
 
@@ -222,34 +293,52 @@ void chk_recal_7(double * A, int lda,
 //col-read-A
 //col-read-B
 //col-write-C
-//separated
-void chk_recal_8(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+//separated - 4 streams
+void chk_recal_8(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
-	for (int i = 0; i < m; i += chk_nb) {
-		magmablasSetKernelStream(stream[1]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb) * chk1_ld, 1 );
-		magmablasSetKernelStream(stream[2]);
-		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb) * chk2_ld, 1 );
+	for (int i = 0; i < m; i += abftEnv->chk_nb) {
+		magmablasSetKernelStream(abftEnv->stream[1]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd2, 1, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk21 + (i / abftEnv->chk_nb) * abftEnv->chk21_ld, 1 );
+
+		magmablasSetKernelStream(abftEnv->stream[2]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd2 + vd2_ld, 1, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk22 + (i / abftEnv->chk_nb) * abftEnv->chk22_ld, 1 );
+
 		if (i + chk_nb < m) {
-			magmablasSetKernelStream(stream[3]);
-			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-					A + i + chk_nb, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb + 1) * chk1_ld, 1 );
-			magmablasSetKernelStream(stream[4]);
-			magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-					A + i + chk_nb, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb + 1) * chk2_ld, 1 );
+			magmablasSetKernelStream(abftEnv->stream[3]);
+			magma_dgemv(MagmaTrans, 
+						abftEnv->chk_nb, n, 
+						MAGMA_D_ONE,
+						A + i + abftEnv->chk_nb, lda, 
+						abftEnv->vd2, 1, 
+						MAGMA_D_ZERO, 
+						abftEnv->chk21 + (i / abftEnv->chk_nb + 1) * abftEnv->chk21_ld, 1 );
+
+			magmablasSetKernelStream(abftEnv->stream[4]);
+			magma_dgemv(MagmaTrans, 
+						abftEnv->chk_nb, n, 
+						MAGMA_D_ONE,
+						A + i + abftEnv->chk_nb, lda, 
+						abftEnv->vd2 + abftEnv->vd2_ld, 1,
+						MAGMA_D_ZERO, 
+						abftEnv->chk22 + (i / abftEnv->chk_nb + 1) * abftEnv->chk22_ld, 1 );
 		}
 	}
-	cudaStreamSynchronize(stream[1]);
-	cudaStreamSynchronize(stream[2]);
-	cudaStreamSynchronize(stream[3]);
-	cudaStreamSynchronize(stream[4]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
+	cudaStreamSynchronize(abftEnv->stream[3]);
+	cudaStreamSynchronize(abftEnv->stream[4]);
 
 
 }
@@ -260,23 +349,20 @@ void chk_recal_8(double * A, int lda,
 //col-read-B
 //non-col-write-C
 //combined
-void chk_recal_9(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_9(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
-	for (int i = 0; i < m; i += chk_nb) {
-		magmablasSetKernelStream(stream[1]);
+	magmablasSetKernelStream(abftEnv->stream[1]);
+	for (int i = 0; i < m; i += abftEnv->chk_nb) {
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-					2, n, chk_nb,
-					MAGMA_D_ONE, vd, vd_ld,
+					2, n, abftEnv->chk_nb,
+					MAGMA_D_ONE, 
+					abftEnv->vd, abftEnv->vd_ld,
 					A + i, lda,
-					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
+					MAGMA_D_ZERO, 
+					abftEnv->chk1 + (i / abftEnv->chk_nb) * 2, abftEnv->chk1_ld);		
 	}
 	
-	cudaStreamSynchronize(stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
 }
 
 
@@ -285,12 +371,7 @@ void chk_recal_9(double * A, int lda,
 //col-read-B
 //non-col-write-C
 //combined
-void chk_recal_10(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_10(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
 
 	// testing
@@ -322,23 +403,25 @@ void chk_recal_10(double * A, int lda,
 	// 	cout << "CUBLAS_STATUS_EXECUTION_FAILED" << endl;
 	// }
 	cout << "size:" << m << "," << n << endl;
-	 magmablasSetKernelStream(stream[1]);
+	 magmablasSetKernelStream(abftEnv->stream[1]);
 	cudaError_t r;
-	 for (int i = 0; i < m; i += chk_nb) {
+	 for (int i = 0; i < m; i += abftEnv->chk_nb) {
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
-					2, n, chk_nb,
-					MAGMA_D_ONE, vd, vd_ld,
+					2, n, abftEnv->chk_nb,
+					MAGMA_D_ONE, 
+					abftEnv->vd2, abftEnv->vd2_ld,
 					A + i, lda,
-					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2, chk1_ld);		
+					MAGMA_D_ZERO, 
+					abftEnv->chk1 + (i / abftEnv->chk_nb) * 2, abftEnv->chk1_ld);		
 	 }
-	cudaStreamSynchronize(stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
 	r = cudaGetLastError();
-	r = cudaStreamSynchronize(stream[1]);
+	r = cudaStreamSynchronize(abftEnv->stream[1]);
 	if (r != cudaSuccess) {
 	 	cout << "cuda sync error" << endl;
 	 	magma_queue_t newStream;
 	 	magma_queue_create( &newStream );
-	 	stream[1] = newStream;
+	 	abftEnv->stream[1] = newStream;
 	} else {
 	 	cout << "sync success" << endl;
 	}
@@ -353,53 +436,44 @@ void chk_recal_10(double * A, int lda,
 //col-read-B
 //col-write-C
 //combined
-void chk_recal_11(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_11(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
-	magmablasSetKernelStream(stream[1]);
-	for (int i = 0; i < m; i += chk_nb) {
+	magmablasSetKernelStream(abftEnv->stream[1]);
+	for (int i = 0; i < m; i += abftEnv->chk_nb) {
 		magma_dgemm(MagmaTrans, MagmaTrans,
-					n, 2, chk_nb,
+					n, 2, abftEnv->chk_nb,
 					MAGMA_D_ONE, 
 					A + i, lda,
-					vd, vd_ld,
-					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2 * chk1_ld, chk1_ld);		
+					abftEnv->vd, abftEnv->vd_ld,
+					MAGMA_D_ZERO, 
+					abftEnv->chk21 + (i / abftEnv->chk_nb) * 2 * abftEnv->chk21_ld, abftEnv->chk21_ld);		
 	}
 	
-	cudaStreamSynchronize(stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
 }
 
 //col-read-A
 //col-read-B
 //col-write-C
 //combined
-void chk_recal_12(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_12(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
-	magmablasSetKernelStream(stream[1]);
-	for (int i = 0; i < m; i += chk_nb) {
+	magmablasSetKernelStream(abftEnv->stream[1]);
+	for (int i = 0; i < m; i += abftEnv->chk_nb) {
 		magma_dgemm(MagmaTrans, MagmaNoTrans,
-					n, 2, chk_nb,
+					n, 2, abftEnv->chk_nb,
 					MAGMA_D_ONE, 
 					A + i, lda,
-					vd, vd_ld,
-					MAGMA_D_ZERO, chk1 + (i / chk_nb) * 2 * chk1_ld, chk1_ld);		
+					abftEnv->vd2, abftEnv->vd2_ld,
+					MAGMA_D_ZERO, 
+					abftEnv->chk21 + (i / abftEnv->chk_nb) * 2 * abftEnv->chk21_ld, abftEnv->chk21_ld);		
 	}
 	
-	cudaStreamSynchronize(stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[1]);
 }
 
 
-void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda, 
-						   magma_queue_t * stream) {
+void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda) {
 
 	double gpu_time = 0.0;
 	double min_time = 1000;
@@ -412,7 +486,7 @@ void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda,
 			for (int c = 0; c < num_choice; c++) {
 				gpu_time = magma_wtime();
 				for (int t = 0; t < num_test; t++) {
-					col_chk_recal_select(abftEnv, A, lda, i, j, stream, c);
+					col_chk_recal_select(abftEnv, A, lda, i, j, c);
 				}
 				gpu_time = magma_wtime() - gpu_time;
 				if (min_time > gpu_time) {
@@ -427,103 +501,43 @@ void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda,
 	}
 }
 
-void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select) {
+void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, int select) {
 
 		switch(select) {
-			case 1: chk_recal_1(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd, abftEnv->vd_ld,
-			   			abftEnv->chk1, abftEnv->chk1_ld, 
-			   			abftEnv->chk2, abftEnv->chk2_ld, 
-			   			stream);
+			case 1: chk_recal_1(abftEnv, A, lda, m, n);
 					break;
 
-			case 2:	chk_recal_2(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd, abftEnv->vd_ld,
-			   			abftEnv->chk1, abftEnv->chk1_ld, 
-			   			abftEnv->chk2, abftEnv->chk2_ld, 
-			   			stream);
+			case 2:	chk_recal_2(abftEnv, A, lda, m, n);
 					break;
 
-			case 3: chk_recal_3(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd2, abftEnv->vd2_ld,
-			   			abftEnv->chk1, abftEnv->chk1_ld, 
-			   			abftEnv->chk2, abftEnv->chk2_ld, 
-			   			stream);
+			case 3: chk_recal_3(abftEnv, A, lda, m, n);
 					break;
 
-			case 4: chk_recal_4(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd2, abftEnv->vd2_ld,
-			   			abftEnv->chk1, abftEnv->chk1_ld, 
-			   			abftEnv->chk2, abftEnv->chk2_ld, 
-			   			stream);
+			case 4: chk_recal_4(abftEnv, A, lda, m, n);
 					break;
 
-			case 5: chk_recal_5(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd, abftEnv->vd_ld,
-			   			abftEnv->chk21, abftEnv->chk21_ld, 
-			   			abftEnv->chk22, abftEnv->chk22_ld, 
-			   			stream);
+			case 5: chk_recal_5(abftEnv, A, lda, m, n);
 					break;
 		
-			case 6: chk_recal_6(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd, abftEnv->vd_ld,
-			   			abftEnv->chk21, abftEnv->chk21_ld, 
-			   			abftEnv->chk22, abftEnv->chk22_ld, 
-			   			stream);
+			case 6: chk_recal_6(abftEnv, A, lda, m, n);
 					break;
 		
-
-			case 7: chk_recal_7(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd2, abftEnv->vd2_ld,
-			   			abftEnv->chk21, abftEnv->chk21_ld, 
-			   			abftEnv->chk22, abftEnv->chk22_ld, 
-			   			stream);
+			case 7: chk_recal_7(abftEnv, A, lda, m, n);
 					break;
 			
-			case 8: chk_recal_8(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd2, abftEnv->vd2_ld,
-			   			abftEnv->chk21, abftEnv->chk21_ld, 
-			   			abftEnv->chk22, abftEnv->chk22_ld, 
-			   			stream);
+			case 8: chk_recal_8(abftEnv, A, lda, m, n);
 					break;
-			case 9: chk_recal_9(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd, abftEnv->vd_ld,
-			   			abftEnv->chk1, abftEnv->chk1_ld, 
-			   			abftEnv->chk2, abftEnv->chk2_ld, 
-			   			stream);
+
+			case 9: chk_recal_9(abftEnv, A, lda, m, n);
 					break;
 		
-			case 10: chk_recal_10(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd2, abftEnv->vd2_ld,
-			   			abftEnv->chk1, abftEnv->chk1_ld, 
-			   			abftEnv->chk2, abftEnv->chk2_ld, 
-			   			stream);
+			case 10: chk_recal_10(abftEnv, A, lda, m, n);
 					break;
 		
-			case 11: chk_recal_11(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd, abftEnv->vd_ld,
-			   			abftEnv->chk21, abftEnv->chk21_ld, 
-			   			abftEnv->chk22, abftEnv->chk22_ld, 
-			   			stream);
+			case 11: chk_recal_11(abftEnv, A, lda, m, n);
 					break;
 			
-			case 12: chk_recal_12(A, lda,
-						m, n, abftEnv->chk_nb,
-						abftEnv->vd2, abftEnv->vd2_ld,
-			   			abftEnv->chk21, abftEnv->chk21_ld, 
-			   			abftEnv->chk22, abftEnv->chk22_ld, 
-			   			stream);
+			case 12: chk_recal_12(abftEnv, A, lda, m, n);
 					break;
 
 			default: cout << "selecting error" << endl;
@@ -531,25 +545,25 @@ void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, 
 }
 
 
-void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream){
+void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 
 	// needs to do boundary check first
 
 
 	//int i = abftEnv->mapping[(m / abftEnv->chk_nb) * abftEnv->mapping_ld + (n / abftEnv->chk_nb)];
-	col_chk_recal_select(abftEnv, A, lda, m, n, stream, 1);
+	col_chk_recal_select(abftEnv, A, lda, m, n, 1);
 
 }
 
 
-void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
+void benchmark(ABFTEnv * abftEnv, double * A, int lda){
 	cout << "start banchmarking:" << endl;
 	double benchmark_time = magma_wtime();
 	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			at_col_chk_recal(abftEnv, A, lda, i, j, stream);
+			at_col_chk_recal(abftEnv, A, lda, i, j);
 		}
 
 	}
@@ -563,7 +577,7 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			col_chk_recal_select(abftEnv, A, lda, i, j, stream, 2);
+			col_chk_recal_select(abftEnv, A, lda, i, j, 2);
 		}
 
 	}
@@ -576,7 +590,7 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			col_chk_recal_select(abftEnv, A, lda, i, j, stream, 1);
+			col_chk_recal_select(abftEnv, A, lda, i, j, 1);
 		}
 
 	}
@@ -588,8 +602,8 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream){
 }
 
 //check matrix A using checksums
-void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * checksumA, int checksumA_ld, magma_queue_t * stream) {
-	at_col_chk_recal(abftEnv, A, lda, m, n, stream);
+void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * checksumA, int checksumA_ld) {
+	at_col_chk_recal(abftEnv, A, lda, m, n);
 	//do check here
 
 }

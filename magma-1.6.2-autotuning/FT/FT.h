@@ -104,19 +104,19 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
 void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
 
-void benchmark(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
+void benchmark(ABFTEnv * abftEnv, double * A, int lda);
 
-void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select);
+void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, int select);
 
-void row_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select);
+void row_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, int select);
 
-void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream);
+void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n);
 
-void at_row_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream);
+void at_row_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n);
 
-void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * checksumA, int checksumA_ld, magma_queue_t * stream);
+void ABFTCheck(ABFTEnv * abftEnv, double * A, int lda, int m, int n, double * checksumA, int checksumA_ld);
 
-void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
+void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda);
 
 bool updateCounter(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2, int count);
 

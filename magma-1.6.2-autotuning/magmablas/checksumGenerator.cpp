@@ -238,7 +238,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
 
 //check each block of data based on last time check
-void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream) {
+void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda) {
 	for (int i = 0; i < abftEnv->gpu_row/abftEnv->chk_nb; i++) {
 		for (int j = 0; j < abftEnv->gpu_col/abftEnv->chk_nb; j++) {
 			time_t temp = *(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i);
@@ -246,7 +246,7 @@ void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * st
 				// we should do check on block[i, j]
 				ABFTCheck(abftEnv, A + j*abftEnv->chk_nb*lda + i * abftEnv->chk_nb, lda,
 						  abftEnv->chk_nb, abftEnv->chk_nb,
-						  COL_CHK(i, j), abftEnv->col_dchk_ld, stream);
+						  COL_CHK(i, j), abftEnv->col_dchk_ld);
 				*(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i) = time(NULL);
 			}
 		}

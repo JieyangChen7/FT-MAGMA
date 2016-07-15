@@ -26,7 +26,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 		int mem_col = n;
 
-		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col, stream);
+		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
 		if (DEBUG) {
 			cout<<"[trsm] updated B before trsm:"<<endl;
@@ -68,7 +68,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 		int mem_col = n;		
 					
-		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col, stream);
+		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 		
 		if (DEBUG) {
 			cout<<"[trsm] updated B after trsm:"<<endl;
