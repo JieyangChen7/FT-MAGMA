@@ -17,8 +17,29 @@ using namespace std;
 
 void row_chk_swap(ABFTEnv * abftEnv, double * A, int lda, int * real_effect) {
     for (int i = 0; i < abftEnv->gpu_col; i++) {
-        if (real_effect[i] != i + 1){ //needs adjust
-            int block = i / 
+        if (real_effect[i] != i + 1){ //needs adjustment
+            int j = real_effect[i];
+            int origin_block = i / abftEnv->chk_nb;
+            int target_block = j / abftEnv->chk_nb;
+            int origin_block_pos = i % abftEnv->chk_nb;
+            int target_block_pos = j % abftEnv->chk_nb;
+
+            magma_daxpy(abftEnv->gpu_row, MAGMA_D_NEG_ONE,
+            A + i * lda, 1,
+            abftEnv->row_dchk + origin_block * 2 * abftEnv->row_dchk_ld, 1 );
+
+            magma_daxpy(abftEnv->gpu_row, MAGMA_D_ONE,
+            A + j * lda, 1,
+            abftEnv->row_dchk + origin_block * 2 * abftEnv->row_dchk_ld, 1 );
+
+            magma_daxpy(abftEnv->gpu_row, (origin_block_pos + 1) * (-1),
+            A + i * lda, 1,
+            abftEnv->row_dchk + (origin_block * 2 + 1) * abftEnv->row_dchk_ld, 1 );
+
+            magma_daxpy(abftEnv->gpu_row, origin_block_pos + 1,
+            A + j * lda, 1,
+            abftEnv->row_dchk + (origin_block * 2 + 1) * abftEnv->row_dchk_ld, 1 );
+
         } 
     }
 }
@@ -352,7 +373,7 @@ magma_dgetrf_gpu(
             if (FT) {
                 int * real_effect = new int[m];
                 for (int i = 0; i < m; i++) {
-                    real_effect[i] = i + 1;
+                    real_effect[i] = i;
                 }
                 cout<<"[ipiv] ipiv:"<<endl;
                 for( i=j*nb; i < j*nb + nb; ++i ) {
@@ -375,7 +396,7 @@ magma_dgetrf_gpu(
                     cout << real_effect[i] << " ";
                 }
                 cout << endl; 
-
+                row_chk_swap(abftEnv, dAT, lddat, real_effect);
 
             }
 
