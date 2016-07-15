@@ -9,12 +9,13 @@ using namespace std;
 //col-read-B
 //non-col-write-C
 //separated
-void chk_recal_1(double * A, int lda,
-		int m, int n, int chk_nb,
-		double * vd, int vd_ld,
-		double * chk1, int chk1_ld, 
-		double * chk2, int chk2_ld, 
-		magma_queue_t * stream) {
+void chk_recal_1(ABFTEnv * abftEnv, 
+				double * A, int lda,
+				int m, int n, int chk_nb,
+				double * vd, int vd_ld,
+				double * chk1, int chk1_ld, 
+				double * chk2, int chk2_ld, 
+				magma_queue_t * stream) {
 
 	for (int i = 0; i < m; i += chk_nb) {
 		magmablasSetKernelStream(stream[2]);
@@ -87,7 +88,7 @@ void chk_recal_3(double * A, int lda,
 				A + i, lda, vd, 1, MAGMA_D_ZERO, chk1 + (i / chk_nb), chk1_ld );
 		magmablasSetKernelStream(stream[3]);
 		magma_dgemv(MagmaTrans, chk_nb, n, MAGMA_D_ONE,
-				A + i, lda, vd + vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
+				A + i, lda, vd+ vd_ld, 1, MAGMA_D_ZERO, chk2 + (i / chk_nb), chk2_ld );
 	}
 	//cudaStreamSynchronize(stream[1]);
 	

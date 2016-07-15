@@ -14,6 +14,16 @@
 
 using namespace std;
 
+
+void row_chk_swap(ABFTEnv * abftEnv, double * A, int lda, int * real_effect) {
+    for (int i = 0; i < abftEnv->gpu_col; i++) {
+        if (real_effect[i] != i + 1){ //needs adjust
+            int block = i / 
+        } 
+    }
+}
+
+
 /**
     Purpose
     -------
@@ -345,7 +355,7 @@ magma_dgetrf_gpu(
                     real_effect[i] = i + 1;
                 }
                 cout<<"[ipiv] ipiv:"<<endl;
-                for (int i = 0; i < m; i++) {
+                for( i=j*nb; i < j*nb + nb; ++i ) {
                     if (ipiv[i] != 0) { //switch i and ipiv[i]
                         int j = ipiv[i] - 1;
                         //cout << "j=" << j << endl;

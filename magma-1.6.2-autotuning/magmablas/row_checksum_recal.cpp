@@ -68,6 +68,9 @@ void row_recal_2(double * A, int lda,
 
 
 
+
+
+
 void row_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, magma_queue_t * stream, int select) {
 	switch(select) {
 			case 1: row_recal_1(A, lda,
