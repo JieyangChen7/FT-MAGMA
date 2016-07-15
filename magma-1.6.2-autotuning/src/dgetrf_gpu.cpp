@@ -227,7 +227,7 @@ magma_dgetrf_gpu(
         if (FT) {
              abftEnv = new ABFTEnv();
 
-            initializeABFTEnv(abftEnv, nb, dAT, lddat, n, m, m, nb, stream);
+            initializeABFTEnv(abftEnv, nb, dAT, lddat, n, m, m, nb);
     
             /* allocate space for checksum of dAP */
             cout << "allocate space for row checksum of dAP......";
@@ -243,7 +243,7 @@ magma_dgetrf_gpu(
             magma_dmalloc(&dAP_col_chk, dAP_col_chk_pitch * abftEnv->chk_nb);
             cout << "done." << endl;
 
-            at_row_chk_recal(abftEnv, dAT, lddat, n, m, stream);
+            at_row_chk_recal(abftEnv, dAT, lddat, n, m);
             cout<<"row checksum of input matrix using chk_recal:"<<endl;
             printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, n, m / abftEnv->chk_nb, 4, 1);
             printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, n, m / abftEnv->chk_nb, 4, 1);
@@ -376,7 +376,7 @@ magma_dgetrf_gpu(
                     real_effect[i] = i;
                 }
                 cout<<"[ipiv] ipiv:"<<endl;
-                for( i=j*nb; i < j*nb + nb; ++i ) {
+                for(int i=j*nb; i < j*nb + nb; ++i ) {
                     if (ipiv[i] != 0) { //switch i and ipiv[i]
                         int j = ipiv[i] - 1;
                         //cout << "j=" << j << endl;
@@ -452,10 +452,10 @@ magma_dgetrf_gpu(
                 //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
 
 
-                at_row_chk_recal(abftEnv, dAT(j+1, j+1), lddat, nb, m-(j+1)*nb, stream);
-                cout<<"row checksum of C matrix using chk_recal:"<<endl;
-                printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, nb, (m-(j+1)*nb) / abftEnv->chk_nb, 4, 1);
-                printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, nb, (m-(j+1)*nb) / abftEnv->chk_nb, 4, 1);
+                // at_row_chk_recal(abftEnv, dAT(j+1, j+1), lddat, nb, m-(j+1)*nb);
+                // cout<<"row checksum of C matrix using chk_recal:"<<endl;
+                // printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, nb, (m-(j+1)*nb) / abftEnv->chk_nb, 4, 1);
+                // printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, nb, (m-(j+1)*nb) / abftEnv->chk_nb, 4, 1);
 
 
                 dgemmFT(MagmaNoTrans, MagmaNoTrans,
