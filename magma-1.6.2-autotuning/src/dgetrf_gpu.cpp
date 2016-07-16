@@ -260,6 +260,7 @@ magma_dgetrf_gpu(
         
 
         cout << "start computation" << endl;
+        cout << "nb=" << nb <<  endl;
         double comp_time = magma_wtime();
         for( j=0; j < s; j++ ) {
             cout << "j=" << j << endl;
