@@ -160,7 +160,7 @@ magma_dpotrf_gpu(
 	if (FT) {
 		abftEnv = new ABFTEnv();
 
-        initializeABFTEnv(abftEnv, nb, dA, ldda, n, n, 2, nb, stream);
+        initializeABFTEnv(abftEnv, nb, dA, ldda, n, n, 2, nb, stream, DEBUG);
 		
   //       cout << "checksums initiallization......";
 		// initializeChecksum(abftEnv, dA, ldda, stream);
