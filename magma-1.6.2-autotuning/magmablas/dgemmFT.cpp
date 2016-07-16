@@ -74,11 +74,11 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 		at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
-		ErrorDetectAndCorrect(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkB, col_chkB_ld,
-        					  abftEnv->chk1, abftEnv->chk1_ld,
-        					  abftEnv->chk2, abftEnv->chk2_ld,
-        					  abftEnv->stream[1]);
+		// ErrorDetectAndCorrect(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+  //       					  col_chkB, col_chkB_ld,
+  //       					  abftEnv->chk1, abftEnv->chk1_ld,
+  //       					  abftEnv->chk2, abftEnv->chk2_ld,
+  //       					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 
@@ -208,11 +208,11 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		}
 		
 		at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
-		ErrorDetectAndCorrect(C, ldb, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkB, col_chkB_ld,
-        					  abftEnv->chk1, abftEnv->chk1_ld,
-        					  abftEnv->chk2, abftEnv->chk2_ld,
-        					  abftEnv->stream[1]);
+		// ErrorDetectAndCorrect(C, ldb, abftEnv->chk_nb, mem_row, mem_col,
+  //       					  col_chkB, col_chkB_ld,
+  //       					  abftEnv->chk1, abftEnv->chk1_ld,
+  //       					  abftEnv->chk2, abftEnv->chk2_ld,
+  //       					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 
