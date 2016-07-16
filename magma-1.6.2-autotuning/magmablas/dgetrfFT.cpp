@@ -128,7 +128,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         for (int j = 0; j < n; j++) {
         	//swap row j with ipiv[j]
         	if (ipiv[j] != 0) {
-                cout << j << "<->" << ipiv[j] << endl;
+                //cout << j << "<->" << ipiv[j] << endl;
         		swap_row_chk(abftEnv->row_hchk, abftEnv->row_hchk_ld, 2, j, ipiv[j]-1);
         	}
 
@@ -150,9 +150,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         	}
         }
 
-
-        cout << "[dgetrf] before swap column checksum:" << endl;
-        printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, 2, 4);
+        if (DEBUG) {
+            cout << "[dgetrf] before swap column checksum:" << endl;
+            printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, 2, 4);
+        }
 
         //update column checksums
         for (int j = 0; j < n; j++) {
@@ -163,8 +164,10 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             }
         }
 
-        cout << "[dgetrf] after swap column checksum:" << endl;
-        printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, 2, 4);
+        if (DEBUG) {
+            cout << "[dgetrf] after swap column checksum:" << endl;
+            printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, 2, 4);
+        }
 
         for (int j = 0; j < n; j++) {
             int chk_m = (m / abftEnv->chk_nb) * 2;

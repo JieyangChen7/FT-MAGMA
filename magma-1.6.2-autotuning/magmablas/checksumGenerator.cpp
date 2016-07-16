@@ -40,10 +40,8 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 						double * A, int lda,
 						int gpu_row, int gpu_col,
 						int cpu_row, int cpu_col,
-						magma_queue_t * stream) {
-
-
-	bool DEBUG = true;
+						magma_queue_t * stream,
+						bool DEBUG) {
 
 	abftEnv->chk_nb = chk_nb;
 

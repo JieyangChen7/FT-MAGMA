@@ -66,7 +66,7 @@ void ErrorDetectAndCorrect(double * A, int lda, int B, int m, int n,
 		double * checksum2_recal, int checksum2_recal_ld, 
 		cudaStream_t stream) 
 {
-	printf("ErrorDetectAndCorrect called \n");
+	//printf("ErrorDetectAndCorrect called \n");
 	//error threshold 
 	double E = 1e-10;
 	

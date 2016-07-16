@@ -212,7 +212,7 @@ magma_dgetrf_gpu(
   
         // /* flags */
         bool FT = true;
-        bool DEBUG = true;
+        bool DEBUG = false;
         bool VERIFY = true;
     
         ABFTEnv * abftEnv;
@@ -243,10 +243,10 @@ magma_dgetrf_gpu(
             magma_dmalloc(&dAP_col_chk, dAP_col_chk_pitch * abftEnv->chk_nb);
             cout << "done." << endl;
 
-            at_row_chk_recal(abftEnv, dAT, lddat, n, m);
-            cout<<"row checksum of input matrix using chk_recal:"<<endl;
-            printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, n, m / abftEnv->chk_nb, 4, 1);
-            printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, n, m / abftEnv->chk_nb, 4, 1);
+            // at_row_chk_recal(abftEnv, dAT, lddat, n, m);
+            // cout<<"row checksum of input matrix using chk_recal:"<<endl;
+            // printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, n, m / abftEnv->chk_nb, 4, 1);
+            // printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, n, m / abftEnv->chk_nb, 4, 1);
 
             // cout << "banchmarking:" << endl;
             // ChecksumRecalProfiler(abftEnv, dAT, lddat, stream); 
@@ -375,7 +375,7 @@ magma_dgetrf_gpu(
                 for (int i = 0; i < m; i++) {
                     real_effect[i] = i;
                 }
-                cout<<"[ipiv] ipiv:"<<endl;
+                //cout<<"[ipiv] ipiv:"<<endl;
                 for(int i=j*nb; i < j*nb + nb; ++i ) {
                     if (ipiv[i] != 0) { //switch i and ipiv[i]
                         int j = ipiv[i] - 1;
@@ -386,16 +386,17 @@ magma_dgetrf_gpu(
                     }
                 }
                  
+                if (DEBUG) {
+                    for (int i = 0; i < m; i++) {
+                        cout << ipiv[i] << " ";
+                    }
+                    cout << endl;  
 
-                for (int i = 0; i < m; i++) {
-                    cout << ipiv[i] << " ";
+                    for (int i = 0; i < m; i++) {
+                        cout << real_effect[i] << " ";
+                    }
+                    cout << endl; 
                 }
-                cout << endl;  
-
-                for (int i = 0; i < m; i++) {
-                    cout << real_effect[i] << " ";
-                }
-                cout << endl; 
                 row_chk_swap(abftEnv, dAT, lddat, real_effect);
 
             }
