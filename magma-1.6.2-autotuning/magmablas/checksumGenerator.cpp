@@ -205,6 +205,12 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
         	 			abftEnv->gpu_row, (abftEnv->gpu_col / abftEnv->chk_nb) * 2, 
         	 			chk_nb, 2);
 
+        at_col_chk_recal(abftEnv, A, lda, gpu_row, gpu_col);
+        ErrorDetectAndCorrect(A, lda, chk_nb, gpu_row, gpu_col,
+        					  abftEnv->col_dchk, abftEnv->col_dchk_ld,
+        					  abftEnv->col_chk1, abftEnv->col_chk1_ld,
+        					  abftEnv->col_chk2, abftEnv->col_chk2_ld,
+        					  stream);
        
     }
 
