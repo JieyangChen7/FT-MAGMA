@@ -168,10 +168,11 @@ void col_debug(double * A, int lda, int B, int m, int n,
 				double r2 = *(chk2_host + j * (m/B) + i + 1);
 
 				if (abs(u1-r1) > 1e-10) {
-					printf("error1\n" );
+
+					printf("%d,%d,%f-%ferror1\n", i, j, u1, r1 );
 				}
 				if (abs(u2-r2) > 1e-10) {
-					printf("error2\n" );
+					printf("%d,%d,%f-%ferror2\n", i, j, u2, r2);
 				}
 			}
 		}
