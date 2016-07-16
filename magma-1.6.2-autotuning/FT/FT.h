@@ -166,7 +166,14 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * stream);
 
-void ErrorDetectAndCorrect(double * A, int lda, 
+void col_detect_correct(double * A, int lda, 
+		int B, int m, int n,
+		double * checksum_update, int checksum_update_ld,
+		double * checksum1_recal, int checksum1_recal_ld,
+		double * checksum2_recal, int checksum2_recal_ld, 
+		cudaStream_t stream);
+
+void row_detect_correct(double * A, int lda, 
 		int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
 		double * checksum1_recal, int checksum1_recal_ld,
