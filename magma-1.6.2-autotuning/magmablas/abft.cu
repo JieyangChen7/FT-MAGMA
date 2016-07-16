@@ -168,10 +168,10 @@ void col_debug(double * A, int lda, int B, int m, int n,
 				double r2 = *(chk2_host + j * (m/B) + i + 1);
 
 				if (abs(u1-r1) > 1e-10) {
-					cout << "error1" << end;
+					printf("error1\n" );
 				}
 				if (abs(u2-r2) > 1e-10) {
-					cout << "error2" << end;
+					printf("error2\n" );
 				}
 			}
 		}
