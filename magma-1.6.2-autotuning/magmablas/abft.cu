@@ -146,7 +146,36 @@ void row_detect_correct(double * A, int lda, int B, int m, int n,
 }
 
 
+void col_debug(double * A, int lda, int B, int m, int n,
+		double * checksum_update, int checksum_update_ld,
+		double * checksum1_recal, int checksum1_recal_ld,
+		double * checksum2_recal, int checksum2_recal_ld, 
+		cudaStream_t stream) {
 
+		double * update_host = new double[(m/B)*2 * n]();
+		double * chk1_host = new double[(m/B) * n]();
+		double * chk2_host = new double[(m/B) * n]();
+
+		magma_dgetmatrix(m/B)*2, n, checksum_update, checksum_update_ld, update_host, (m/B)*2);
+		magma_dgetmatrix(m/B), n, checksum1_recal, checksum1_recal_ld, chk1_host, (m/B));
+		magma_dgetmatrix(m/B), n, checksum2_recal, checksum2_recal_ld, chk2_host, (m/B));
+
+		for (int i = 0; i < m/B; i++) {
+			for (int j =0 ; j < n; j++) {
+				double u1 = *(update_host + j * (m/B)*2 + i);
+				double u2 = *(update_host + j * (m/B)*2 + i + 1);
+				double r1 = *(chk1_host + j * (m/B) + i + 1);
+				double r2 = *(chk2_host + j * (m/B) + i + 1);
+
+				if (abs(u1-r1) > 1e-10) {
+					cout << "error1" << end;
+				}
+				if (abs(u2-r2) > 1e-10) {
+					cout << "error2" << end;
+				}
+			}
+		}
+}
 
 
 
