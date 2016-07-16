@@ -180,6 +180,12 @@ void row_detect_correct(double * A, int lda,
 		double * checksum2_recal, int checksum2_recal_ld, 
 		cudaStream_t stream);
 
+void col_debug(double * A, int lda, int B, int m, int n,
+		double * checksum_update, int checksum_update_ld,
+		double * checksum1_recal, int checksum1_recal_ld,
+		double * checksum2_recal, int checksum2_recal_ld, 
+		cudaStream_t stream);
+
 void ErrorDetectAndCorrectHost(double * A, int lda, 
 		int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
