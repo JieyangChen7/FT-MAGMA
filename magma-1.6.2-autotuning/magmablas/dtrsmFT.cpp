@@ -21,7 +21,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 
 	cudaStreamSynchronize(stream[1]);
 	cudaStreamSynchronize(stream[4]);
-	if (FT && VERIFY) {
+	if (VERIFY) {
 		//verify B before use
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 		int mem_col = n;
@@ -67,6 +67,10 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
                     (m / abftEnv->chk_nb) * 2, n,
                     alpha, A, lda,
                     col_chkB, col_chkB_ld);
+	}
+
+	
+	if (VERIFY) {
 
 		cudaStreamSynchronize(stream[1]);
 		cudaStreamSynchronize(stream[4]);
