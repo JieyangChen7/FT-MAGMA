@@ -203,7 +203,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
      //    	 			abftEnv->gpu_row, (abftEnv->gpu_col / abftEnv->chk_nb) * 2, 
      //    	 			chk_nb, 2);
 
-    	for (int col = chk_nk; col < gpu_col; col += chk_nb) {
+    	for (int col = chk_nb; col < gpu_col; col += chk_nb) {
     		for (int row = chk_nb; row < gpu_row; row += chk_nb) {
     			cout << "size: " << row << "-" << col << endl;
     			at_col_chk_recal(abftEnv, A, lda, row, col);
