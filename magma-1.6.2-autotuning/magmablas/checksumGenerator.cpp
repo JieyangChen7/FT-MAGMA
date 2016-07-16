@@ -210,7 +210,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
         					  abftEnv->col_dchk, abftEnv->col_dchk_ld,
         					  abftEnv->chk1, abftEnv->chk1_ld,
         					  abftEnv->chk2, abftEnv->chk2_ld,
-        					  stream);
+        					  stream[1]);
        
     }
 
