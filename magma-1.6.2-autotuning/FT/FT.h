@@ -99,8 +99,8 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 						double * A, int lda,
 						int gpu_row, int gpu_col,
 						int cpu_row, int cpu_col,
-						magma_queue_t * stream，
-						DEBUG);
+						magma_queue_t * stream,
+						bool DEBUG);
 
 
 void ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
