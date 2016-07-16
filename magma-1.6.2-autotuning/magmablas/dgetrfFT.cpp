@@ -48,12 +48,7 @@ void swap_col_chk(ABFTEnv * abftEnv, double * A, int lda, double * chksum, int c
 
         *(chksum + k * chksum_ld + target_block * 2 + 1) -= target_element * (target_block_pos + 1);
         *(chksum + k * chksum_ld + target_block * 2 + 1) += origin_element * (target_block_pos + 1);
-
-        
-
     }
-
-    cout << endl;
 }
 
 void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
