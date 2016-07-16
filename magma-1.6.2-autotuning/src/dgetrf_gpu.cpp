@@ -212,7 +212,7 @@ magma_dgetrf_gpu(
   
         // /* flags */
         bool FT = true;
-        bool DEBUG = false;
+        bool DEBUG = true;
         bool VERIFY = true;
     
         ABFTEnv * abftEnv;
