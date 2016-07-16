@@ -115,11 +115,11 @@ void col_detect_correct(double * A, int lda, int B, int m, int n,
 	//error threshold 
 	double E = 1e-10;
 	
-/*	col_detect_correct_kernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(A, lda, B, E,
+	col_detect_correct_kernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(A, lda, B, E,
 					checksum_update, checksum_update_ld,
 					checksum1_recal, checksum1_recal_ld,
 					checksum2_recal, checksum2_recal_ld);
-					*/
+					
 }
 
 
@@ -137,12 +137,12 @@ void row_detect_correct(double * A, int lda, int B, int m, int n,
 	//printf("row_detect_correct called \n");
 	//error threshold 
 	double E = 1e-10;
-	/*
+	
 	row_detect_correct_kernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(A, lda, B, E,
 					checksum_update, checksum_update_ld,
 					checksum1_recal, checksum1_recal_ld,
 					checksum2_recal, checksum2_recal_ld);
-					*/
+					
 }
 
 
