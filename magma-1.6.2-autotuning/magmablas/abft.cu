@@ -169,10 +169,10 @@ void col_debug(double * A, int lda, int B, int m, int n,
 				//if (i < 16 && j < 16) {
 				if (fabs(u1-r1) > 1e-10) {
 
-					printf("%d,%d,%f-%ferror1\n", i, j, u1, r1 );
+					printf("%d,%d,%f-%f(%f)=%ferror1\n", i, j, u1, r1, u1 - r1, fabs(u1-r1) );
 				}
 				if (fabs(u2-r2) > 1e-10) {
-					printf("%d,%d,%f-%ferror2\n", i, j, u2, r2);
+					printf("%d,%d,%f-%f(%f)=%ferror2\n", i, j, u2, r2, u2 - r2, fabs(u2-r2));
 				}
 				//}
 			}
