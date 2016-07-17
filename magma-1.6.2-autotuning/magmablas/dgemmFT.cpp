@@ -24,7 +24,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		double * row_chkC, int row_chkC_ld,
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * stream) {
-
+cout << "gemm" << endl;
 	cudaStreamSynchronize(stream[1]);
 	cudaStreamSynchronize(stream[4]);
 
