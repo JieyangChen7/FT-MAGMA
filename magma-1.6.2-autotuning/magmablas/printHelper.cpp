@@ -11,7 +11,7 @@ using namespace std;
 void printMatrix_host(double * matrix_host, int ld,  int M, int N, int row_block, int col_block) {
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
-			cout.width(10);
+			cout.width(20);
 			cout.setf(ios::left);
 			cout << matrix_host[j * ld + i];
 			if (col_block != -1 && (j + 1) % col_block == 0) {
