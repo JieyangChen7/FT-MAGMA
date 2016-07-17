@@ -3,7 +3,9 @@
 #bdz K40c - 33000
 #bdz C2050 - 18000
 #tardis M2075 - 28000
-./testing/testing_dgetrf_gpu -N 10240,10240
+#./testing/testing_dgetrf_gpu -N 10240,10240
+
+./testing/testing_dpotrf_gpu -N 10240,10240
 
 
 # rm profile
