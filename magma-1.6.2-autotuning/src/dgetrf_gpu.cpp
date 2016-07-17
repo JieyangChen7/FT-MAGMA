@@ -458,7 +458,7 @@ magma_dgetrf_gpu(
             //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
             //int mem_col = nb;
             magma_queue_sync( stream[1] );
-            at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
+            //at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
 
             col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
