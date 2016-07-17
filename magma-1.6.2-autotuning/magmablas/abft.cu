@@ -151,7 +151,7 @@ void col_debug(double * A, int lda, int B, int m, int n,
 		double * checksum1_recal, int checksum1_recal_ld,
 		double * checksum2_recal, int checksum2_recal_ld, 
 		cudaStream_t stream) {
-
+		
 		double * update_host = new double[(m/B)*2 * n]();
 		double * chk1_host = new double[(m/B) * n]();
 		double * chk2_host = new double[(m/B) * n]();

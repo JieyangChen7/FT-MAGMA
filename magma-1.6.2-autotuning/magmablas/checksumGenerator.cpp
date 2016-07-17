@@ -207,18 +207,18 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     		for (int row = chk_nb; row < gpu_row; row += chk_nb) {
     			cout << "size: " << row << "-" << col << endl;
     			at_col_chk_recal(abftEnv, A, lda, row, col);
-		        col_detect_correct(A, lda, chk_nb, row, col,
+		        col_debug(A, lda, chk_nb, row, col,
 		        					  abftEnv->col_dchk, abftEnv->col_dchk_ld,
 		        					  abftEnv->chk1, abftEnv->chk1_ld,
 		        					  abftEnv->chk2, abftEnv->chk2_ld,
 		        					  stream[1]);
 
-		        at_row_chk_recal(abftEnv, A, lda, row, col);
-		        row_detect_correct(A, lda, chk_nb, row, col,
-		        					  abftEnv->row_dchk, abftEnv->row_dchk_ld,
-		        					  abftEnv->chk21, abftEnv->chk21_ld,
-		        					  abftEnv->chk22, abftEnv->chk22_ld,
-		        					  stream[1]);
+		        // at_row_chk_recal(abftEnv, A, lda, row, col);
+		        // col_debug(A, lda, chk_nb, row, col,
+		        // 					  abftEnv->row_dchk, abftEnv->row_dchk_ld,
+		        // 					  abftEnv->chk21, abftEnv->chk21_ld,
+		        // 					  abftEnv->chk22, abftEnv->chk22_ld,
+		        // 					  stream[1]);
     		}
     	}
 
