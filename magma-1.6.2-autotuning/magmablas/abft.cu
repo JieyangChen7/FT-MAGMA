@@ -152,6 +152,7 @@ void col_debug(double * A, int lda, int B, int m, int n,
 		double * checksum2_recal, int checksum2_recal_ld, 
 		cudaStream_t stream) {
 
+		double E = 1e-5;
 		double * update_host = new double[(m/B)*2 * n]();
 		double * chk1_host = new double[(m/B) * n]();
 		double * chk2_host = new double[(m/B) * n]();
@@ -167,11 +168,11 @@ void col_debug(double * A, int lda, int B, int m, int n,
 				double r1 = *(chk1_host + j * (m/B) + i);
 				double r2 = *(chk2_host + j * (m/B) + i);
 				//if (i < 16 && j < 16) {
-				if (fabs(u1-r1) > 1e-10) {
+				if (fabs(u1-r1) > E) {
 
 					printf("%d,%d,%f-%f(%f)=%ferror1\n", i, j, u1, r1, u1 - r1, fabs(u1-r1) );
 				}
-				if (fabs(u2-r2) > 1e-10) {
+				if (fabs(u2-r2) > E) {
 					printf("%d,%d,%f-%f(%f)=%ferror2\n", i, j, u2, r2, u2 - r2, fabs(u2-r2));
 				}
 				//}
