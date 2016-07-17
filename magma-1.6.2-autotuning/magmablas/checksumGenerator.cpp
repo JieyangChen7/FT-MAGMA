@@ -219,18 +219,18 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 		        // 					  abftEnv->chk21, abftEnv->chk21_ld,
 		        // 					  abftEnv->chk22, abftEnv->chk22_ld,
 		        // 					  stream[1]);
-		        cout << "update chk:" << endl;
-		        printMatrix_gpu(abftEnv->col_dchk, abftEnv->col_dchk_ld,
-        	 			16, 16, 
-        	 			chk_nb, 2);
-		        cout << "chk1:" << endl;
-		        printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld,
-        	 			16, 16, 
-        	 			chk_nb, 2);
-		        cout << "chk2:" << endl;
-		        printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld,
-        	 			16, 16, 
-        	 			chk_nb, 2);
+		        // cout << "update chk:" << endl;
+		        // printMatrix_gpu(abftEnv->col_dchk, abftEnv->col_dchk_ld,
+        	 // 			16, 16, 
+        	 // 			chk_nb, 2);
+		        // cout << "chk1:" << endl;
+		        // printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld,
+        	 // 			16, 16, 
+        	 // 			chk_nb, 2);
+		        // cout << "chk2:" << endl;
+		        // printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld,
+        	 // 			16, 16, 
+        	 // 			chk_nb, 2);
     		}
     	}
 
