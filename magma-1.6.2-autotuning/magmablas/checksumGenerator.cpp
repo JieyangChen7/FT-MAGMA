@@ -64,7 +64,8 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
         *((abftEnv->v) + i * (abftEnv->v_ld)) = 1;
     }
     for (int i = 0; i < (abftEnv->chk_nb); ++i) {
-        *((abftEnv->v) + i * (abftEnv->v_ld) + 1) = i+1;
+        //*((abftEnv->v) + i * (abftEnv->v_ld) + 1) = i+1;
+         *((abftEnv->v) + i * (abftEnv->v_ld) + 1) = 1;
     }
     if(DEBUG) {
         cout << "checksum vector on CPU:" << endl;
