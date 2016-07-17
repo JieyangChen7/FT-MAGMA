@@ -5,7 +5,7 @@
 #tardis M2075 - 28000
 #./testing/testing_dgetrf_gpu -N 10240,10240
 
-./testing/testing_dpotrf_gpu -N 10240,10240
+./testing/testing_dpotrf_gpu -N 5120,5120
 
 
 # rm profile
