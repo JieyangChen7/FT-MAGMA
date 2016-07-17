@@ -1,6 +1,7 @@
 #include "magma.h"
-#include"FT.h"
-#include<iostream>
+#include "FT.h"
+#include <iostream>
+#include <iomanip>
 using namespace std;
 //printing tools
 //int n = 4;
