@@ -253,7 +253,7 @@ magma_dpotrf_gpu(
                             dA(j, j), ldda,
                             abftEnv,
 							COL_CHK(j / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld, 
-							COL_CHK(j / abftEnv->chk_nb, j), abftEnv->col_dchk_ld,
+							COL_CHK(j / abftEnv->chk_nb, j / abftEnv->chk_nb), abftEnv->col_dchk_ld,
 							FT, DEBUG, VERIFY,
                             stream);
 					
