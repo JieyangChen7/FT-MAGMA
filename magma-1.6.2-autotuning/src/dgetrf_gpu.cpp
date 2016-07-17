@@ -140,7 +140,7 @@ magma_dgetrf_gpu(
     nb     = magma_get_dgetrf_nb(m);
 
     /* debug use only */
-    nb = 32;
+    //nb = 32;
 
     s      = mindim / nb;
 
