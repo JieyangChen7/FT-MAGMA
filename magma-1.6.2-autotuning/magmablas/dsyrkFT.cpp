@@ -60,7 +60,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 			printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, 1, m, -1, -1);
 		
 			cout<<"updated checksum of A before dsyrk:"<<endl;
-			printMatrix_host(checksumA, checksumA_ld, 2, m, -1, -1);
+			printMatrix_gpu(checksumA, checksumA_ld, 2, m, -1, -1);
 		}
 		
 		
