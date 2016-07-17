@@ -5,6 +5,7 @@
 */
 #include "FT.h"
 #include "common_magma.h"
+#include <stdlib.h>
 
 
 __global__ void
@@ -222,5 +223,14 @@ void ErrorDetectAndCorrectHost(double * A, int lda, int B, int m, int n,
 		
 	}
 }
+
+void MatrixGenerator(double * A, int lda, int m, int n) {
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			*(A + j * lda + i) = rand()%10;
+		}
+	}
+}
+
 
 
