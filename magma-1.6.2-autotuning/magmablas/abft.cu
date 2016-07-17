@@ -162,8 +162,8 @@ void col_debug(double * A, int lda, int B, int m, int n,
 
 		for (int i = 0; i < m/B; i++) {
 			for (int j =0 ; j < n; j++) {
-				double u1 = *(update_host + j * (m/B)*2 + i);
-				double u2 = *(update_host + j * (m/B)*2 + i + 1);
+				double u1 = *(update_host + j * (m/B)*2 + i * 2);
+				double u2 = *(update_host + j * (m/B)*2 + i * 2 + 1);
 				double r1 = *(chk1_host + j * (m/B) + i);
 				double r2 = *(chk2_host + j * (m/B) + i);
 				if (i < 16 && j < 16) {
