@@ -248,7 +248,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
         // 					  abftEnv->chk22, abftEnv->chk22_ld,
         // 					  stream[1]);
        
-//    }
+    }
 
 
 
