@@ -15,7 +15,7 @@ void printMatrix_host(double * matrix_host, int ld,  int M, int N, int row_block
 			cout.width(20);
 			cout.setf(ios::left);
 			setprecision(20);
-			cout << matrix_host[j * ld + i];
+			cout << setprecision(20) << matrix_host[j * ld + i];
 			if (col_block != -1 && (j + 1) % col_block == 0) {
 				cout << "	";
 			}
