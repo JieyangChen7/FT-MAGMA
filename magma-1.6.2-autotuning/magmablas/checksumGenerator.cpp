@@ -231,8 +231,8 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 		        // printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld,
         	 // 			16, 16, 
         	 // 			chk_nb, 2);
-    		}
-    	}
+    //		}
+    //	}
 
         // at_col_chk_recal(abftEnv, A, lda, gpu_row, gpu_col);
         // col_detect_correct(A, lda, chk_nb, gpu_row, gpu_col,
