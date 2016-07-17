@@ -12,7 +12,7 @@ using namespace std;
 void chk_recal_1(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 
 	for (int i = 0; i < m; i += abftEnv->chk_nb) {
-		//magmablasSetKernelStream(abftEnv->stream[1]);
+		magmablasSetKernelStream(abftEnv->stream[1]);
 		magma_dgemv(MagmaTrans, 
 					abftEnv->chk_nb, n, 
 					MAGMA_D_ONE,
@@ -21,7 +21,7 @@ void chk_recal_1(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 					MAGMA_D_ZERO, 
 					abftEnv->chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
 
-		//magmablasSetKernelStream(abftEnv->stream[2]);
+		magmablasSetKernelStream(abftEnv->stream[2]);
 		magma_dgemv(MagmaTrans, 
 					abftEnv->chk_nb, n, 
 					MAGMA_D_ONE,
@@ -31,7 +31,7 @@ void chk_recal_1(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 					abftEnv->chk2 + (i / abftEnv->chk_nb), abftEnv->chk2_ld );
 	}
 	cudaStreamSynchronize(abftEnv->stream[1]);
-	//cudaStreamSynchronize(abftEnv->stream[2]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
 }
 
 
