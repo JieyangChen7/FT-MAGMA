@@ -246,7 +246,7 @@ void CholeskyGenerator(double * A, int lda, int n) {
 	double zero = 0;
 
 	blasf77_dgemm(  &N, &T,
-                    &n, &n, &k,
+                    &n, &n, &n,
                     &one,
                     L, &n,
                     L, &n,
