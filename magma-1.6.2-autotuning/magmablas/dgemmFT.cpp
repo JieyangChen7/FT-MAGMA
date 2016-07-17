@@ -159,13 +159,13 @@ cout << "gemm" << endl;
 					col_chkC, col_chkC_ld );
 
 		//we can further work on this to support trans A.
-		magma_dgemm(transA, transB,
-					m , (n / abftEnv->chk_nb) * 2, k,
-					alpha,
-					A, lda,
-					row_chkB, row_chkB_ld,
-					beta,
-					row_chkC, row_chkC_ld );
+		// magma_dgemm(transA, transB,
+		// 			m , (n / abftEnv->chk_nb) * 2, k,
+		// 			alpha,
+		// 			A, lda,
+		// 			row_chkB, row_chkB_ld,
+		// 			beta,
+		// 			row_chkC, row_chkC_ld );
 	}
 
 
