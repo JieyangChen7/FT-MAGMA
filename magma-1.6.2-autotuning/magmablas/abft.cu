@@ -163,6 +163,8 @@ void col_debug(double * A, int lda, int B, int m, int n,
 		magma_dgetmatrix((m/B), n, checksum1_recal, checksum1_recal_ld, chk1_host, (m/B));
 		magma_dgetmatrix((m/B), n, checksum2_recal, checksum2_recal_ld, chk2_host, (m/B));
 
+		printMatrix_gpu(A, lda, 16, 16, 4, 4);
+
 		for (int i = 0; i < m/B; i++) {
 			for (int j =0 ; j < n; j++) {
 				double u1 = *(update_host + j * (m/B)*2 + i * 2);
