@@ -203,15 +203,15 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
      //    	 			abftEnv->gpu_row, (abftEnv->gpu_col / abftEnv->chk_nb) * 2, 
      //    	 			chk_nb, 2);
 
-    	for (int col = chk_nb; col < gpu_col; col += chk_nb) {
-    		for (int row = chk_nb; row < gpu_row; row += chk_nb) {
-    			cout << "size: " << row << "-" << col << endl;
-    			at_col_chk_recal(abftEnv, A, lda, row, col);
-		        col_debug(A, lda, chk_nb, row, col,
-		        					  abftEnv->col_dchk, abftEnv->col_dchk_ld,
-		        					  abftEnv->chk1, abftEnv->chk1_ld,
-		        					  abftEnv->chk2, abftEnv->chk2_ld,
-		        					  stream[1]);
+    	// for (int col = chk_nb; col < gpu_col; col += chk_nb) {
+    	// 	for (int row = chk_nb; row < gpu_row; row += chk_nb) {
+    	// 		cout << "size: " << row << "-" << col << endl;
+    	// 		at_col_chk_recal(abftEnv, A, lda, row, col);
+		   //      col_debug(A, lda, chk_nb, row, col,
+		   //      					  abftEnv->col_dchk, abftEnv->col_dchk_ld,
+		   //      					  abftEnv->chk1, abftEnv->chk1_ld,
+		   //      					  abftEnv->chk2, abftEnv->chk2_ld,
+		   //      					  stream[1]);
 
 		        // at_row_chk_recal(abftEnv, A, lda, row, col);
 		        // col_debug(A, lda, chk_nb, row, col,
