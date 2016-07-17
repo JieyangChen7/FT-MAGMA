@@ -169,15 +169,15 @@ void col_debug(double * A, int lda, int B, int m, int n,
 				double u2 = *(update_host + j * (m/B)*2 + i * 2 + 1);
 				double r1 = *(chk1_host + j * (m/B) + i);
 				double r2 = *(chk2_host + j * (m/B) + i);
-				//if (i < 16 && j < 16) {
+			if (i < 16 && j < 16) {
 				if (fabs(u1-r1) > E) {
 
-					printf("%d,%d,%f-%f(%f)=%ferror1\n", i, j, u1, r1, u1 - r1, fabs(u1-r1) );
+					printf("%d,%d,%f10.10-%f10.10=%f10.10(%f)error1\n", i, j, u1, r1, u1 - r1, fabs(u1-r1) );
 				}
 				if (fabs(u2-r2) > E) {
 					printf("%d,%d,%f-%f(%f)=%ferror2\n", i, j, u2, r2, u2 - r2, fabs(u2-r2));
 				}
-				//}
+			}
 			}
 		}
 		delete [] update_host;
