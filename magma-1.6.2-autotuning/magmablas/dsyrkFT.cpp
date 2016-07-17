@@ -25,7 +25,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	 * *				* 	*		*
 	 * ******************	*********
 	 */
-	
+	cout << "syrk" << endl;
 	cudaStreamSynchronize(stream[1]);
 	cudaStreamSynchronize(stream[4]);
 	
