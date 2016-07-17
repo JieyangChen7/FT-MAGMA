@@ -504,7 +504,7 @@ magma_dgetrf_gpu(
 
 
 
-//             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
+             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
 
 
 // ////////
