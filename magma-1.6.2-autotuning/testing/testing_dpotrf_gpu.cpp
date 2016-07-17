@@ -58,10 +58,10 @@ int main( int argc, char** argv)
             TESTING_MALLOC_DEV( d_A, double, ldda*N );
             
             /* Initialize the matrix */
-            //lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
-            //magma_dmake_hpd( N, h_A, lda );
-            //lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
-            CholeskyGenerator (h_A, lda, N);
+            lapackf77_dlarnv( &ione, ISEED, &n2, h_A );
+            magma_dmake_hpd( N, h_A, lda );
+            lapackf77_dlacpy( MagmaUpperLowerStr, &N, &N, h_A, &lda, h_R, &lda );
+            //CholeskyGenerator (h_A, lda, N);
             magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
             
             /* ====================================================================
