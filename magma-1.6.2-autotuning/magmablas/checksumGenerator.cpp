@@ -193,12 +193,12 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     cout << "done." << endl;
 
     if (true) {
-    	// cout << "input matrix:" << endl;
-     //    printMatrix_gpu(A, lda, gpu_row, gpu_col, 4, 4);
-     //    cout << "column checksum matrix on GPU:" << endl;
-     //    printMatrix_gpu(abftEnv->col_dchk, abftEnv->col_dchk_ld,
-     //    	 			(abftEnv->gpu_row / abftEnv->chk_nb) * 2, abftEnv->gpu_col, 
-     //    	 			2, chk_nb);
+    	cout << "input matrix:" << endl;
+        printMatrix_gpu(A, lda, gpu_row, gpu_col, 4, 4);
+        cout << "column checksum matrix on GPU:" << endl;
+        printMatrix_gpu(abftEnv->col_dchk, abftEnv->col_dchk_ld,
+        	 			(abftEnv->gpu_row / abftEnv->chk_nb) * 2, abftEnv->gpu_col, 
+        	 			2, chk_nb);
      //    cout << "row checksum matrix on GPU:" << endl;
      //    printMatrix_gpu(abftEnv->row_dchk, abftEnv->row_dchk_ld,
      //    	 			abftEnv->gpu_row, (abftEnv->gpu_col / abftEnv->chk_nb) * 2, 
