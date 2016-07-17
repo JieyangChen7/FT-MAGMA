@@ -265,9 +265,9 @@ magma_dpotrf_gpu(
                                         dA(j, j), ldda,
                                         work,     jb, stream[0] );
                 if (FT) {
-                magma_dgetmatrix_async( 2, jb,
-                						COL_CHK(j / abftEnv->chk_nb, j), abftEnv->col_dchk_ld,
-                                        abftEnv->col_hchk, abftEnv->col_hchk_ld, stream[0] );
+                    magma_dgetmatrix_async( 2, jb,
+                    						COL_CHK(j / abftEnv->chk_nb, j / abftEnv->chk_nb), abftEnv->col_dchk_ld,
+                                            abftEnv->col_hchk, abftEnv->col_hchk_ld, stream[0] );
                 }
                            
                 if ( (j+jb) < n && j > 0) {	
@@ -303,7 +303,7 @@ magma_dpotrf_gpu(
                 if (FT) {
                 	magma_dsetmatrix_async( 2, jb,
                                             abftEnv->col_hchk, abftEnv->col_hchk_ld, 
-                                            COL_CHK(j / abftEnv->chk_nb, j), abftEnv->col_dchk_ld,
+                                            COL_CHK(j / abftEnv->chk_nb, j / abftEnv->chk_nb), abftEnv->col_dchk_ld,
                                             stream[1] );
                 }
                 
