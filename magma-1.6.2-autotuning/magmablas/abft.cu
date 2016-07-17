@@ -225,7 +225,7 @@ void ErrorDetectAndCorrectHost(double * A, int lda, int B, int m, int n,
 	}
 }
 
-void MatrixGenerator(double * A, int lda, int m, int n) {
+void LowerGenerator(double * A, int lda, int m, int n) {
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
 			if (j <= i) {
@@ -237,9 +237,21 @@ void MatrixGenerator(double * A, int lda, int m, int n) {
 	}
 }
 
+void UpperGenerator(double * A, int lda, int m, int n) {
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			if (j >= i) {
+				*(A + j * lda + i) = rand()/1.0 + 1;
+			} else {
+				*(A + j * lda + i) = 0.0;
+			}
+		}
+	}
+}
+
 void CholeskyGenerator(double * A, int lda, int n) {
 	double * L = new double[n * n];
-	MatrixGenerator(L, n, n, n);
+	LowerGenerator(L, n, n, n);
 	char N = 'N';
 	char T = 'T';
 	double one = 1;
@@ -254,6 +266,28 @@ void CholeskyGenerator(double * A, int lda, int n) {
                     A, &lda );
 
 }
+
+
+void LUGenerator(double * A, int lda, int n) {
+	double * L = new double[n * n];
+	LowerGenerator(L, n, n, n);
+	double * U = new double[n * n];
+	UpperGenerator(U, n, n, n);
+	char N = 'N';
+	char T = 'T';
+	double one = 1;
+	double zero = 0;
+
+	blasf77_dgemm(  &N, &T,
+                    &n, &n, &n,
+                    &one,
+                    L, &n,
+                    U, &n,
+                    &zero,
+                    A, &lda );
+
+}
+
 
 
 
