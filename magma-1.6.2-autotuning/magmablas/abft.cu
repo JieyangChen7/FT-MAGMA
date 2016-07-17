@@ -119,6 +119,8 @@ void col_detect_correct(double * A, int lda, int B, int m, int n,
 					checksum_update, checksum_update_ld,
 					checksum1_recal, checksum1_recal_ld,
 					checksum2_recal, checksum2_recal_ld);
+
+	cudaStreamSynchronize(stream);
 					
 }
 
