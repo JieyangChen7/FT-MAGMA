@@ -119,7 +119,7 @@ magma_dpotrf_gpu(
     nb = magma_get_dpotrf_nb(n);
 
     //** debug **//
-     nb = 4;
+     nb = 32;
         
         
     if (MAGMA_SUCCESS != magma_dmalloc_pinned( &work, nb*nb )) {
@@ -297,11 +297,9 @@ magma_dpotrf_gpu(
                 //magma_set_lapack_numthreads(64);
                 dpotrfFT(work, nb, nb, info, abftEnv, FT, DEBUG, VERIFY);
                                 
-                cout << "potrf4" << endl;
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
-                cout << "potrf5" << endl;
                 if (FT) {
                 	magma_dsetmatrix_async( 2, jb,
                                             abftEnv->col_hchk, abftEnv->col_hchk_ld, 
@@ -314,8 +312,7 @@ magma_dpotrf_gpu(
 //                    break;
 //                }
 //                
-                if ( (j+jb) < n) {        
-                cout << "potrf6" << endl;  	
+                if ( (j+jb) < n) {          	
                 	dtrsmFT( MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
                             (n-j-jb), jb, MAGMA_D_ONE,
                             dA(j,    j), ldda,

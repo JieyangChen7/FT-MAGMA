@@ -61,12 +61,11 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 //			printMatrix_host(chksum, chksum_ld, 2, n);
 //		}
 	}
-	cout << "potrf1" << endl;
+	
 	//do Choleksy factorization
 	magma_set_lapack_numthreads(1);
 	char uplo = 'L';
 	lapackf77_dpotrf(&uplo, &n, A, &n, info);
-	cout << "potrf2" << endl;
 	if (FT) {
 		//update checksum1 and checksum2
 
@@ -94,6 +93,4 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 		
 		
 	}
-
-	cout << "potrf3" << endl;
 }
