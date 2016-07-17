@@ -167,11 +167,11 @@ void col_debug(double * A, int lda, int B, int m, int n,
 				double r1 = *(chk1_host + j * (m/B) + i);
 				double r2 = *(chk2_host + j * (m/B) + i);
 				//if (i < 16 && j < 16) {
-				if (abs(u1-r1) > 1e-10) {
+				if (fabs(u1-r1) > 1e-10) {
 
 					printf("%d,%d,%f-%ferror1\n", i, j, u1, r1 );
 				}
-				if (abs(u2-r2) > 1e-10) {
+				if (fabs(u2-r2) > 1e-10) {
 					printf("%d,%d,%f-%ferror2\n", i, j, u2, r2);
 				}
 				//}
