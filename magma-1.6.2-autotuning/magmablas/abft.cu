@@ -42,14 +42,14 @@ col_detect_correct_kernel(double * A, int lda, int B, double E,
 		printf("[col check]error detected:%f---%d \n",d1,loc);
 		
 		//the sum of the rest correct number except the error one
-		double sum = 0.0;
-		for (int i = 0; i < B; i++) {
-			if (i != loc) {
-				sum +=	*(A + i); 
-			}
-		}
-		//correct the error
-		*(A + loc) = *checksum_update - sum;
+	//	double sum = 0.0;
+	//	for (int i = 0; i < B; i++) {
+	//		if (i != loc) {
+	//			sum +=	*(A + i); 
+	//		}
+	//	}
+	//	//correct the error
+	//	*(A + loc) = *checksum_update - sum;
 	}
 }
 
