@@ -174,7 +174,7 @@ magma_dpotrf_gpu(
 		
 	}
     cout << "init complete" << endl;
-    
+    cout << "nb=" << nb << endl;
     if (0) {
     //if ((nb <= 1) || (nb >= n)) {
         /* Use unblocked code. */
