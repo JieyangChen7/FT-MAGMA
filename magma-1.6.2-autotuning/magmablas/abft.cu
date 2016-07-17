@@ -229,7 +229,7 @@ void MatrixGenerator(double * A, int lda, int m, int n) {
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
 			if (j <= i) {
-				*(A + j * lda + i) = rand()%20;
+				*(A + j * lda + i) = rand()%20 + 1;
 			} else {
 				*(A + j * lda + i) = 0.0;
 			}
