@@ -148,7 +148,7 @@ magma_dpotrf_gpu(
     
 
     //variables for FT
-    bool FT = true;
+    bool FT = false;
     bool DEBUG = false;
     bool VERIFY = false;
     ABFTEnv * abftEnv;
