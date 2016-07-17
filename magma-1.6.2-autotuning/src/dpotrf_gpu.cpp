@@ -119,7 +119,7 @@ magma_dpotrf_gpu(
     nb = magma_get_dpotrf_nb(n);
 
     //** debug **//
-    // nb = 4;
+     nb = 4;
         
         
     if (MAGMA_SUCCESS != magma_dmalloc_pinned( &work, nb*nb )) {
@@ -149,7 +149,7 @@ magma_dpotrf_gpu(
 
     //variables for FT
     bool FT = true;
-    bool DEBUG = false;
+    bool DEBUG = true;
 
     ABFTEnv * abftEnv;
     abftEnv = new ABFTEnv();
