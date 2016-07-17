@@ -314,7 +314,8 @@ magma_dpotrf_gpu(
 //                    break;
 //                }
 //                
-                if ( (j+jb) < n) {          	
+                if ( (j+jb) < n) {        
+                cout << "potrf6" << endl;  	
                 	dtrsmFT( MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
                             (n-j-jb), jb, MAGMA_D_ONE,
                             dA(j,    j), ldda,
