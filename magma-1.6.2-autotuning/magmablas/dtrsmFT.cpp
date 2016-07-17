@@ -25,7 +25,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		//verify B before use
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 		int mem_col = n;
-		cout << "trsm verify"
+		cout << "trsm verify" << endl;
 		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
 		col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
