@@ -173,7 +173,7 @@ magma_dpotrf_gpu(
         // benchmark(abftEnv, dA, ldda, stream);
 		
 	}
-
+    cout << "init complete" << endl;
     
     if (0) {
     //if ((nb <= 1) || (nb >= n)) {
