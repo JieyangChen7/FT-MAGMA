@@ -223,9 +223,9 @@ magma_dgetrf_gpu(
         double * dAP_row_chk;
         int dAP_row_chk_ld;
 
-
+        abftEnv = new ABFTEnv();
         if (FT) {
-             abftEnv = new ABFTEnv();
+             //abftEnv = new ABFTEnv();
 
             initializeABFTEnv(abftEnv, nb, dAT, lddat, n, m, m, nb, stream, DEBUG);
     
