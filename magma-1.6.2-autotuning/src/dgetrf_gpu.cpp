@@ -401,27 +401,27 @@ magma_dgetrf_gpu(
                // row_chk_swap(abftEnv, dAT, lddat, real_effect);
 
             }
-if ( s > (j+1) ) {
-////////
-            cout << "before" << endl;
-            int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
-            int mem_col = nb;
+// if ( s > (j+1) ) {
+// ////////
+//             cout << "before" << endl;
+//             int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
+//             int mem_col = nb;
 
-        at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
+//         at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
 
-        col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                              COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                              abftEnv->chk1, abftEnv->chk1_ld,
-                              abftEnv->chk2, abftEnv->chk2_ld,
-                              abftEnv->stream[1]);
+//         col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                               COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                               abftEnv->chk1, abftEnv->chk1_ld,
+//                               abftEnv->chk2, abftEnv->chk2_ld,
+//                               abftEnv->stream[1]);
 
-        col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                              COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                              abftEnv->chk1, abftEnv->chk1_ld,
-                              abftEnv->chk2, abftEnv->chk2_ld,
-                              abftEnv->stream[1]);
-}
-////////
+//         col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                               COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                               abftEnv->chk1, abftEnv->chk1_ld,
+//                               abftEnv->chk2, abftEnv->chk2_ld,
+//                               abftEnv->stream[1]);
+// }
+// ////////
             magmablas_dlaswp( n, dAT, lddat, j*nb + 1, j*nb + nb, ipiv, 1 );
 
             if (FT) {
@@ -431,103 +431,103 @@ if ( s > (j+1) ) {
                                   j*nb + 1, j*nb + nb, 
                                   ipiv, 1 );
             }
-if ( s > (j+1) ) {
+// if ( s > (j+1) ) {
 
-////////
-           cout << "after" << endl;
-            //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
-            //int mem_col = nb;
-            magma_queue_sync( stream[1] );
-            at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
+// ////////
+//            cout << "after" << endl;
+//             //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
+//             //int mem_col = nb;
+//             magma_queue_sync( stream[1] );
+//             at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
 
-            col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                                  abftEnv->chk1, abftEnv->chk1_ld,
-                                  abftEnv->chk2, abftEnv->chk2_ld,
-                                  abftEnv->stream[1]);
+//             col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                                   abftEnv->chk1, abftEnv->chk1_ld,
+//                                   abftEnv->chk2, abftEnv->chk2_ld,
+//                                   abftEnv->stream[1]);
 
-            col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                              abftEnv->chk1, abftEnv->chk1_ld,
-                              abftEnv->chk2, abftEnv->chk2_ld,
-                              abftEnv->stream[1]); 
+//             col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                               abftEnv->chk1, abftEnv->chk1_ld,
+//                               abftEnv->chk2, abftEnv->chk2_ld,
+//                               abftEnv->stream[1]); 
 
-////////
-////////
-           cout << "after2" << endl;
-            //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
-            //int mem_col = nb;
-            magma_queue_sync( stream[1] );
-            magma_queue_sync( stream[2] );
-            magma_queue_sync( stream[3] );
-            //at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
+// ////////
+// ////////
+//            cout << "after2" << endl;
+//             //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
+//             //int mem_col = nb;
+//             magma_queue_sync( stream[1] );
+//             magma_queue_sync( stream[2] );
+//             magma_queue_sync( stream[3] );
+//             //at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
 
-            col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                                  abftEnv->chk1, abftEnv->chk1_ld,
-                                  abftEnv->chk2, abftEnv->chk2_ld,
-                                  abftEnv->stream[1]);
+//             col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                                   abftEnv->chk1, abftEnv->chk1_ld,
+//                                   abftEnv->chk2, abftEnv->chk2_ld,
+//                                   abftEnv->stream[1]);
 
-            col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                              abftEnv->chk1, abftEnv->chk1_ld,
-                              abftEnv->chk2, abftEnv->chk2_ld,
-                              abftEnv->stream[1]); 
+//             col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                               abftEnv->chk1, abftEnv->chk1_ld,
+//                               abftEnv->chk2, abftEnv->chk2_ld,
+//                               abftEnv->stream[1]); 
 
-////////
-
-
-
-
-            magma_queue_sync( stream[0] );
-
-////////
-           cout << "after3" << endl;
-            //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
-            //int mem_col = nb;
-            magma_queue_sync( stream[1] );
-            at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
-
-            col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                                  abftEnv->chk1, abftEnv->chk1_ld,
-                                  abftEnv->chk2, abftEnv->chk2_ld,
-                                  abftEnv->stream[1]);
-
-            col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                              abftEnv->chk1, abftEnv->chk1_ld,
-                              abftEnv->chk2, abftEnv->chk2_ld,
-                              abftEnv->stream[1]); 
-
-////////
+// ////////
 
 
 
-            magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
+
+//             magma_queue_sync( stream[0] );
+
+// ////////
+//            cout << "after3" << endl;
+//             //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
+//             //int mem_col = nb;
+//             magma_queue_sync( stream[1] );
+//             at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
+
+//             col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                                   abftEnv->chk1, abftEnv->chk1_ld,
+//                                   abftEnv->chk2, abftEnv->chk2_ld,
+//                                   abftEnv->stream[1]);
+
+//             col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                               abftEnv->chk1, abftEnv->chk1_ld,
+//                               abftEnv->chk2, abftEnv->chk2_ld,
+//                               abftEnv->stream[1]); 
+
+// ////////
 
 
-////////
-           cout << "after4" << endl;
-            //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
-            //int mem_col = nb;
-            magma_queue_sync( stream[1] );
-            at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
 
-            col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                                  abftEnv->chk1, abftEnv->chk1_ld,
-                                  abftEnv->chk2, abftEnv->chk2_ld,
-                                  abftEnv->stream[1]);
+//             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
 
-            col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                              abftEnv->chk1, abftEnv->chk1_ld,
-                              abftEnv->chk2, abftEnv->chk2_ld,
-                              abftEnv->stream[1]); 
 
-////////
-}
+// ////////
+//            cout << "after4" << endl;
+//             //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
+//             //int mem_col = nb;
+//             magma_queue_sync( stream[1] );
+//             at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
+
+//             col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                                   abftEnv->chk1, abftEnv->chk1_ld,
+//                                   abftEnv->chk2, abftEnv->chk2_ld,
+//                                   abftEnv->stream[1]);
+
+//             col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                               abftEnv->chk1, abftEnv->chk1_ld,
+//                               abftEnv->chk2, abftEnv->chk2_ld,
+//                               abftEnv->stream[1]); 
+
+// ////////
+// }
 
 
             if (FT) {
@@ -539,29 +539,29 @@ if ( s > (j+1) ) {
                                       dAP_col_chk, dAP_col_chk_ld,
                                       ROW_CHK_T(j,j), abftEnv->row_dchk_ld);
             }
-if ( s > (j+1) ) {
-////////
-           cout << "after5" << endl;
-            //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
-            //int mem_col = nb;
-            magma_queue_sync( stream[1] );
-            at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
+// if ( s > (j+1) ) {
+// ////////
+//            cout << "after5" << endl;
+//             //int mem_row = nb; // number of row and col of B stored in memory(no trans operation)
+//             //int mem_col = nb;
+//             magma_queue_sync( stream[1] );
+//             at_col_chk_recal(abftEnv, dAT(j, j+1), lddat, nb, nb);
 
-            col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                                  abftEnv->chk1, abftEnv->chk1_ld,
-                                  abftEnv->chk2, abftEnv->chk2_ld,
-                                  abftEnv->stream[1]);
+//             col_detect_correct(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                                   abftEnv->chk1, abftEnv->chk1_ld,
+//                                   abftEnv->chk2, abftEnv->chk2_ld,
+//                                   abftEnv->stream[1]);
 
-            col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
-                                  COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
-                              abftEnv->chk1, abftEnv->chk1_ld,
-                              abftEnv->chk2, abftEnv->chk2_ld,
-                              abftEnv->stream[1]); 
+//             col_debug(dAT(j, j+1), lddat, abftEnv->chk_nb, nb, nb,
+//                                   COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
+//                               abftEnv->chk1, abftEnv->chk1_ld,
+//                               abftEnv->chk2, abftEnv->chk2_ld,
+//                               abftEnv->stream[1]); 
 
-////////
+// ////////
 
-}
+// }
 
             // do the small non-parallel computations (next panel update)
             if ( s > (j+1) ) {
