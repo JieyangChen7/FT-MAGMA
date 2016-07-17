@@ -150,7 +150,7 @@ magma_dpotrf_gpu(
     //variables for FT
     bool FT = true;
     bool DEBUG = true;
-
+    bool VERIFY = true;
     ABFTEnv * abftEnv;
     abftEnv = new ABFTEnv();
 
@@ -238,7 +238,7 @@ magma_dpotrf_gpu(
                 //  for non-positive-definiteness. Computing MIN
                 //jb = min(nb, (n-j));
             	int k = 5;
-            	bool VERIFY = false;
+            	
             	if (j % k == 0) {
             		//VERIFY = true;
             	}

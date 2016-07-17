@@ -57,7 +57,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 	}
 	magmablasSetKernelStream(stream[1]);	
 	//[Cholesky]MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit, MAGMA_D_ONE
-	printMatrix_gpu(B, ldb, 16, 16, 4, 4);
+	//printMatrix_gpu(B, ldb, 16, 16, 4, 4);
 
 	magma_dtrsm(side, uplo, trans, diag,
 				m, n,
