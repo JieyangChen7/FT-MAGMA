@@ -192,7 +192,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     init_row_chk(abftEnv, A, lda);
     cout << "done." << endl;
 
-    if (true) {
+    if (DEBUG) {
     	cout << "input matrix:" << endl;
         printMatrix_gpu(A, lda, gpu_row, gpu_col, 4, 4);
         cout << "column checksum matrix on GPU:" << endl;
