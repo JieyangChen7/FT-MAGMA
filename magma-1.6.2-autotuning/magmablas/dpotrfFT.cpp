@@ -94,4 +94,6 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 		
 		
 	}
+
+	cout << "potrf3" << endl;
 }

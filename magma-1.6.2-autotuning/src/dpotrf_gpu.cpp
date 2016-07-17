@@ -297,9 +297,11 @@ magma_dpotrf_gpu(
                 //magma_set_lapack_numthreads(64);
                 dpotrfFT(work, nb, nb, info, abftEnv, FT, DEBUG, VERIFY);
                                 
+                cout << "potrf4" << endl;
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, stream[1] );
+                cout << "potrf5" << endl;
                 if (FT) {
                 	magma_dsetmatrix_async( 2, jb,
                                             abftEnv->col_hchk, abftEnv->col_hchk_ld, 
