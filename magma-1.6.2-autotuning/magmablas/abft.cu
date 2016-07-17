@@ -178,6 +178,9 @@ void col_debug(double * A, int lda, int B, int m, int n,
 				//}
 			}
 		}
+		delete [] update_host;
+		delete [] chk1_host;
+		delete [] chk2_host;
 }
 
 
