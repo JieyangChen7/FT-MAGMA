@@ -220,17 +220,25 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		if (transB == MagmaNoTrans) {
 			mem_row = k;
 			mem_col = n;
-		} else if (transB == MagmaTrans) {
-			mem_row = n;
-			mem_col = k;
-		}
-		
-		//at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
+			//at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 		// row_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
   //       					  row_chkB, row_chkB_ld,
   //       					  abftEnv->chk21, abftEnv->chk21_ld,
   //       					  abftEnv->chk22, abftEnv->chk22_ld,
-  //       					  abftEnv->stream[1]);
+  //       					 
+		} else if (transB == MagmaTrans) {
+			mem_row = n;
+			mem_col = k;
+			at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
+
+			col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+        					  col_chkB, col_chkB_ld,
+        					  abftEnv->chk1, abftEnv->chk1_ld,
+        					  abftEnv->chk2, abftEnv->chk2_ld,
+        					  abftEnv->stream[1]);
+		}
+		
+		 abftEnv->stream[1]);
 
 		if (DEBUG) {
 
