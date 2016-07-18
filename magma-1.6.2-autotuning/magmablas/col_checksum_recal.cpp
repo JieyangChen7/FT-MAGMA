@@ -21,7 +21,7 @@ void chk_recal_1(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 					MAGMA_D_ZERO, 
 					abftEnv->chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
 
-		magmablasSetKernelStream(abftEnv->stream[2]);
+		magmablasSetKernelStream(abftEnv->stream[1]);
 		magma_dgemv(MagmaTrans, 
 					abftEnv->chk_nb, n, 
 					MAGMA_D_ONE,
