@@ -69,22 +69,22 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_col = n;
 			at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
-			row_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
-        					  row_chkB, row_chkB_ld,
-        					  abftEnv->chk21, abftEnv->chk21_ld,
-        					  abftEnv->chk22, abftEnv->chk22_ld,
-        					  abftEnv->stream[1]);
+			//row_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+        					  // row_chkB, row_chkB_ld,
+        					  // abftEnv->chk21, abftEnv->chk21_ld,
+        					  // abftEnv->chk22, abftEnv->chk22_ld,
+        					  // abftEnv->stream[1]);
 
 		} else if (transB == MagmaTrans) {
 			mem_row = n;
 			mem_col = k;
 			at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
-			col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkB, col_chkB_ld,
-        					  abftEnv->chk1, abftEnv->chk1_ld,
-        					  abftEnv->chk2, abftEnv->chk2_ld,
-        					  abftEnv->stream[1]);
+			// col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+   //      					  col_chkB, col_chkB_ld,
+   //      					  abftEnv->chk1, abftEnv->chk1_ld,
+   //      					  abftEnv->chk2, abftEnv->chk2_ld,
+   //      					  abftEnv->stream[1]);
 		}
 		
 		
@@ -195,11 +195,11 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 		at_col_chk_recal(abftEnv, A, lda, mem_row, mem_col);
 
-		col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkA, col_chkA_ld,
-        					  abftEnv->chk1, abftEnv->chk1_ld,
-        					  abftEnv->chk2, abftEnv->chk2_ld,
-        					  abftEnv->stream[1]);
+		// col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
+  //       					  col_chkA, col_chkA_ld,
+  //       					  abftEnv->chk1, abftEnv->chk1_ld,
+  //       					  abftEnv->chk2, abftEnv->chk2_ld,
+  //       					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 
@@ -225,7 +225,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_col = k;
 		}
 		
-		at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
+		//at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 		// row_detect_correct(C, ldb, abftEnv->chk_nb, mem_row, mem_col,
   //       					  row_chkB, row_chkB_ld,
   //       					  abftEnv->chk21, abftEnv->chk21_ld,
@@ -252,11 +252,11 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 		at_col_chk_recal(abftEnv, C, lda, mem_row, mem_col);
 
-		col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkC, col_chkC_ld,
-        					  abftEnv->chk1, abftEnv->chk1_ld,
-        					  abftEnv->chk2, abftEnv->chk2_ld,
-        					  abftEnv->stream[1]);
+		// col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+  //       					  col_chkC, col_chkC_ld,
+  //       					  abftEnv->chk1, abftEnv->chk1_ld,
+  //       					  abftEnv->chk2, abftEnv->chk2_ld,
+  //       					  abftEnv->stream[1]);
 
 		at_row_chk_recal(abftEnv, C, lda, mem_row, mem_col);
 
