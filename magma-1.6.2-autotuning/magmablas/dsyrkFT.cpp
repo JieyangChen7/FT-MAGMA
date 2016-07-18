@@ -51,7 +51,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 							checksumA, checksumA_ld, 
 							abftEnv->chk1, abftEnv->chk1_ld, 
 							abftEnv->chk2, abftEnv->chk2_ld,
-							streams[1]);
+							stream[1]);
 		
 		if (DEBUG) {
 			cudaStreamSynchronize(stream[1]);
