@@ -46,11 +46,11 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 
 		at_col_chk_recal(abftEnv, A, lda, n, m);
 		//handle error 
-		ErrorDetectAndCorrect(A, lda,
-							n, n, n, 
+		col_detect_correct(A, lda,
+							abftEnv->chk_nb, n, m, 
 							checksumA, checksumA_ld, 
-							chk1, chk1_ld, 
-							chk2, chk2_ld,
+							abftEnv->chk1, abftEnv->chk1_ld, 
+							abftEnv->chk2, abftEnv->chk2_ld,
 							streams[1]);
 		
 		if (DEBUG) {
