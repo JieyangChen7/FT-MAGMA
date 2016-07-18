@@ -398,7 +398,7 @@ magma_dgetrf_gpu(
                     }
                     cout << endl; 
                 }
-               // row_chk_swap(abftEnv, dAT, lddat, real_effect);
+                row_chk_swap(abftEnv, dAT, lddat, real_effect);
 
             }
 
