@@ -43,11 +43,11 @@ cout << "gemm" << endl;
 		
 		at_col_chk_recal(abftEnv, A, lda, mem_row, mem_col);
 
-		// col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  col_chkA, col_chkA_ld,
-  //       					  abftEnv->chk1, abftEnv->chk1_ld,
-  //       					  abftEnv->chk2, abftEnv->chk2_ld,
-  //       					  abftEnv->stream[1]);
+		col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
+        					  col_chkA, col_chkA_ld,
+        					  abftEnv->chk1, abftEnv->chk1_ld,
+        					  abftEnv->chk2, abftEnv->chk2_ld,
+        					  abftEnv->stream[1]);
 		if (DEBUG) {
 
 			cout<<"[dgemm] A before dgemm:"<<endl;
@@ -100,11 +100,11 @@ cout << "gemm" << endl;
 		
 		at_col_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		// col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  col_chkC, col_chkC_ld,
-  //       					  abftEnv->chk1, abftEnv->chk1_ld,
-  //       					  abftEnv->chk2, abftEnv->chk2_ld,
-  //       					  abftEnv->stream[1]);
+		col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+        					  col_chkC, col_chkC_ld,
+        					  abftEnv->chk1, abftEnv->chk1_ld,
+        					  abftEnv->chk2, abftEnv->chk2_ld,
+        					  abftEnv->stream[1]);
 
 		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
@@ -186,11 +186,11 @@ cout << "gemm" << endl;
 		
 		at_col_chk_recal(abftEnv, A, lda, mem_row, mem_col);
 
-		// col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  col_chkA, col_chkA_ld,
-  //       					  abftEnv->chk1, abftEnv->chk1_ld,
-  //       					  abftEnv->chk2, abftEnv->chk2_ld,
-  //       					  abftEnv->stream[1]);
+		col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
+        					  col_chkA, col_chkA_ld,
+        					  abftEnv->chk1, abftEnv->chk1_ld,
+        					  abftEnv->chk2, abftEnv->chk2_ld,
+        					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 
@@ -243,11 +243,11 @@ cout << "gemm" << endl;
 		
 		at_col_chk_recal(abftEnv, C, lda, mem_row, mem_col);
 
-		// col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  col_chkC, col_chkC_ld,
-  //       					  abftEnv->chk1, abftEnv->chk1_ld,
-  //       					  abftEnv->chk2, abftEnv->chk2_ld,
-  //       					  abftEnv->stream[1]);
+		col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+        					  col_chkC, col_chkC_ld,
+        					  abftEnv->chk1, abftEnv->chk1_ld,
+        					  abftEnv->chk2, abftEnv->chk2_ld,
+        					  abftEnv->stream[1]);
 
 		at_row_chk_recal(abftEnv, C, lda, mem_row, mem_col);
 

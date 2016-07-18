@@ -46,12 +46,12 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 
 		at_col_chk_recal(abftEnv, A, lda, n, m);
 		//handle error 
-//		ErrorDetectAndCorrect(A, lda,
-//							n, n, n, 
-//							checksumA, checksumA_ld, 
-//							chk1, chk1_ld, 
-//							chk2, chk2_ld,
-//							streams[1]);
+		ErrorDetectAndCorrect(A, lda,
+							n, n, n, 
+							checksumA, checksumA_ld, 
+							chk1, chk1_ld, 
+							chk2, chk2_ld,
+							streams[1]);
 		
 		if (DEBUG) {
 			cudaStreamSynchronize(stream[1]);
