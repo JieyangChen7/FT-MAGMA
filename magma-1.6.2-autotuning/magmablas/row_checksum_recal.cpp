@@ -21,7 +21,7 @@ void row_recal_1(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 					MAGMA_D_ZERO, 
 					abftEnv->chk21 + (i / abftEnv->chk_nb) * abftEnv->chk21_ld, 1 );
 
-		magmablasSetKernelStream(abftEnv->stream[1]);
+		magmablasSetKernelStream(abftEnv->stream[2]);
 		magma_dgemv(MagmaNoTrans, 
 					m, abftEnv->chk_nb, 
 					MAGMA_D_ONE,
@@ -31,7 +31,7 @@ void row_recal_1(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 					abftEnv->chk22 + (i / abftEnv->chk_nb) * abftEnv->chk22_ld, 1 );
 	}
 	cudaStreamSynchronize(abftEnv->stream[1]);
-	//cudaStreamSynchronize(abftEnv->stream[2]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
 }
 
 
