@@ -44,7 +44,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		// cudaStreamSynchronize(stream[2]);
 		// cudaStreamSynchronize(stream[3]);
 
-		at_col_chk_recal(abftEnv, A, lda, n, m);
+		//at_col_chk_recal(abftEnv, A, lda, n, m);
 		//handle error 
 		// col_detect_correct(A, lda,
 		// 					abftEnv->chk_nb, n, m, 
