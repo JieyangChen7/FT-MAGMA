@@ -172,7 +172,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             double * chk = abftEnv->col_hchk + (j + 1) * abftEnv->col_hchk_ld;
             int chk_ld = abftEnv->col_hchk_ld;
 
-           
+            cout << "chk_ld=" << chk_ld << endl;
 
 
             double scalar = 1/(*(A + lda * j + j));
