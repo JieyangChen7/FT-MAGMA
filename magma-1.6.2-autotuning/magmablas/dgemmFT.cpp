@@ -117,11 +117,11 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  row_chkC, row_chkC_ld,
-  //       					  abftEnv->chk21, abftEnv->chk21_ld,
-  //       					  abftEnv->chk22, abftEnv->chk22_ld,
-  //       					  abftEnv->stream[1]);
+		row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+        					  row_chkC, row_chkC_ld,
+        					  abftEnv->chk21, abftEnv->chk21_ld,
+        					  abftEnv->chk22, abftEnv->chk22_ld,
+        					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 
