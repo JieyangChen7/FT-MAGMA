@@ -115,7 +115,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->chk2, abftEnv->chk2_ld,
         					  abftEnv->stream[1]);
 
-		//at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
+		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
 		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
   //       					  row_chkC, row_chkC_ld,
