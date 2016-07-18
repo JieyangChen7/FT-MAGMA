@@ -160,12 +160,12 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		//magmablasSetKernelStream(streams[4]);
 		//this only works if A is not trans, B can be trans or not trans
 		//we can further work on this to support trans A.
-		// magma_dgemm(transA, transB,
-		// 			(m / abftEnv->chk_nb) * 2, n, k,
-		// 			alpha,
-		// 			col_chkA, col_chkA_ld, B, ldb,
-		// 			beta,
-		// 			col_chkC, col_chkC_ld );
+		magma_dgemm(transA, transB,
+					(m / abftEnv->chk_nb) * 2, n, k,
+					alpha,
+					col_chkA, col_chkA_ld, B, ldb,
+					beta,
+					col_chkC, col_chkC_ld );
 
 		//we can further work on this to support trans A.
 		// magma_dgemm(transA, transB,
