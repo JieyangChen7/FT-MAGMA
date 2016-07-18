@@ -225,6 +225,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
   //       					  row_chkB, row_chkB_ld,
   //       					  abftEnv->chk21, abftEnv->chk21_ld,
   //       					  abftEnv->chk22, abftEnv->chk22_ld,
+//			 					abftEnv->stream[1]);
   //       					 
 		} else if (transB == MagmaTrans) {
 			mem_row = n;
@@ -238,7 +239,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->stream[1]);
 		}
 		
-		 abftEnv->stream[1]);
+		
 
 		if (DEBUG) {
 
