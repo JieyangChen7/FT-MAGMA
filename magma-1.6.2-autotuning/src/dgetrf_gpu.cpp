@@ -140,7 +140,7 @@ magma_dgetrf_gpu(
     nb     = magma_get_dgetrf_nb(m);
 
     /* debug use only */
-    //nb = 32;
+    nb = 4;
 
     s      = mindim / nb;
 
@@ -212,7 +212,7 @@ magma_dgetrf_gpu(
   
         // /* flags */
         bool FT = true;
-        bool DEBUG = false;
+        bool DEBUG = trues;
         bool VERIFY = true;
     
         ABFTEnv * abftEnv;
