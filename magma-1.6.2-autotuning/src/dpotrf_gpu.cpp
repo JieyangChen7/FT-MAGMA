@@ -153,7 +153,7 @@ magma_dpotrf_gpu(
     bool VERIFY = true;
     ABFTEnv * abftEnv;
     abftEnv = new ABFTEnv();
-    initializeABFTEnv(abftEnv, nb, dA, ldda, n, n, nb, nb, stream, DEBUG);
+    initializeABFTEnv(abftEnv, nb, dA, ldda, n, n, nb, nb, stream, 1, DEBUG);
 
 
 

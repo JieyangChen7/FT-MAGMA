@@ -13,6 +13,14 @@
 
 struct ABFTEnv {
 
+	/* mode */
+	/* 1 ... Cholesky Decomposition
+	 * 2 ... LU Decomposition
+	 * 3 ... QR Decomposition
+	 */
+	int mode;
+
+
 	/* checksum encoding unit, by defualt = nb */
 	int chk_nb;
 
@@ -102,6 +110,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 						int gpu_row, int gpu_col,
 						int cpu_row, int cpu_col,
 						magma_queue_t * stream,
+						int mode, 
 						bool DEBUG);
 
 
