@@ -194,7 +194,8 @@ magma_dgeqrf_gpu(
             }
 
             magma_queue_sync( stream[1] );
-            lapackf77_dgeqrf(&rows, &ib, work(i), &ldwork, tau+i, hwork, &lhwork, info);
+            //lapackf77_dgeqrf(&rows, &ib, work(i), &ldwork, tau+i, hwork, &lhwork, info);
+            dgeqrfFT(rows, ib, work(i), ldwork, tau+i, hwork, lhwork, info);
             /* Form the triangular factor of the block reflector
                H = H(i) H(i+1) . . . H(i+ib-1) */
             lapackf77_dlarft( MagmaForwardStr, MagmaColumnwiseStr,
