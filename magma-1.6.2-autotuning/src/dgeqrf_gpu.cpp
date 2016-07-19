@@ -11,6 +11,8 @@
 #include <iostream>
 #include "FT.h"    
 
+using namespace std;
+
 /* ////////////////////////////////////////////////////////////////////////////
    -- Auxiliary function: 'a' is pointer to the current panel holding the
       Householder vectors for the QR factorization of the panel. This routine
