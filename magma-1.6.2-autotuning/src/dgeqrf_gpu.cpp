@@ -8,7 +8,7 @@
        @generated from zgeqrf_gpu.cpp normal z -> d, Fri Jan 30 19:00:15 2015
 */
 #include "common_magma.h"
-#include <iostream>
+//#include <iostream>
 #include "FT.h"    
 
 using namespace std;
