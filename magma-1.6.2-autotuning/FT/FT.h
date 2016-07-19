@@ -1,8 +1,8 @@
-#include "magma.h"
-#include "magma_lapack.h"
-#include "magmablas.h"
-#include "common_magma.h"
-#include  "time.h"
+// #include "magma.h"
+// #include "magma_lapack.h"
+// #include "magmablas.h"
+// #include "common_magma.h"
+// #include  "time.h"
 
 /* i and j are block number */
 #define COL_CHK_T(i_, j_) (abftEnv->col_dchk + (i_)*(abftEnv->chk_nb)*(abftEnv->col_dchk_ld) + (j_)*2)
