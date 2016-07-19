@@ -11,7 +11,7 @@
 //#include <iostream>
 #include "FT.h"    
 
-using namespace std;
+//using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////////
    -- Auxiliary function: 'a' is pointer to the current panel holding the

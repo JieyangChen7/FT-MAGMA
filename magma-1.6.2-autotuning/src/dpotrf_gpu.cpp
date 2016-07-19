@@ -14,7 +14,7 @@
 #include "papi.h"
 
 
-//using namespace std;
+using namespace std;
 
 #define PRECISION_d
 
