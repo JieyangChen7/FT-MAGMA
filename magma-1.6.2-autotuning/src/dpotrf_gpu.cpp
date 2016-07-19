@@ -9,13 +9,7 @@
        @generated from zpotrf_gpu.cpp normal z -> d, Fri Jan 30 19:00:13 2015
 */
 #include "common_magma.h"
-#include<iostream>
-
-
-//#include"dpotrfFT.h"
-//#include"dtrsmFT.h"
-//#include"dsyrkFT.h"
-//#include"dgemmFT.h"
+#include <iostream>
 #include "FT.h"
 #include "papi.h"
 
