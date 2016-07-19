@@ -10,7 +10,7 @@
 */
 #include "common_magma.h"
 #include <iostream>
-//#include "FT.h"       
+#include "FT.h"       
 
 using namespace std;
 
