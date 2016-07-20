@@ -20,7 +20,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 	cout << "[DGEQRF] TAU after factorization" << endl;
 	for (int i = 0; i < n; i++)
-		cout << tau[i] << "\t"
+		cout << tau[i] << "\t";
 	cout << endl;
 
 
