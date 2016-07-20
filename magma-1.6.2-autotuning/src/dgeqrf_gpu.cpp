@@ -8,7 +8,7 @@
        @generated from zgeqrf_gpu.cpp normal z -> d, Fri Jan 30 19:00:15 2015
 */
 #include "common_magma.h"
-//#include <iostream>
+#include <iostream>
 #include "FT.h"    
 
 using namespace std;
@@ -142,7 +142,7 @@ magma_dgeqrf_gpu(
         *info = -1;
     } else if (n < 0) {
         *info = -2;
- //   } else if (ldda < max(1,m)) {
+    } else if (ldda < max(1,m)) {
         *info = -4;
     }
     if (*info != 0) {
@@ -150,7 +150,7 @@ magma_dgeqrf_gpu(
         return *info;
     }
 
- //   k = minmn = min(m,n);
+    k = minmn = min(m,n);
     if (k == 0)
         return *info;
 
