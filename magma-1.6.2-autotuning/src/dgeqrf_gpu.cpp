@@ -155,7 +155,7 @@ magma_dgeqrf_gpu(
         return *info;
 
     nb = magma_get_dgeqrf_nb(m);
-
+    nb = 4;
     lwork  = (m + n + nb)*nb;
     lhwork = lwork - m*nb;
 
