@@ -17,10 +17,10 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		printMatrix_host(A, lda, m, n, 4, 4);
 
 		cout << "[DGEQRF] column checksum before factorization" << endl;
-		printMatrix_host(col_hchk, col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
+		printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
 
 		cout << "[DGEQRF] row checksum before factorization" << endl;
-		printMatrix_host(row_hchk, row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
+		printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
 
 	}
 
@@ -41,7 +41,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 			lapackf77_dlarf(&L, &pm, &pn,
                          	A + i * lda + i, &pincv,
                          	tau + i,
-                         	row_hchk, row_hchk_ld,
+                         	abftEnv->row_hchk, abftEnv->row_hchk_ld,
                          	work );
 		}
 	}
@@ -56,10 +56,10 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		cout << endl;
 
 		cout << "[DGEQRF] column checksum after factorization" << endl;
-		printMatrix_host(col_hchk, col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
+		printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
 
 		cout << "[DGEQRF] row checksum after factorization" << endl;
-		printMatrix_host(row_hchk, row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
+		printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
 	}
 
 

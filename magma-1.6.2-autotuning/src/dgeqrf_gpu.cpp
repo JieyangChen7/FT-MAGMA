@@ -195,6 +195,12 @@ magma_dgeqrf_gpu(
             magma_dgetmatrix_async( rows, ib,
                                     dA(i,i),  ldda,
                                     work(i), ldwork, stream[1] );
+            if (FT) {
+                //transfer checksums to CPU
+                magma_dgetmatrix_async( rows / abftEnv->chk_nb, ib,
+                                        ROW_CHK(i, i),  abftEnv->row_dchk_ld,
+                                        abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
+            }
             if (i > 0) {
                 /* Apply H' to A(i:m,i+2*ib:n) from the left */
                 cols = n-old_i-2*old_ib;
@@ -223,6 +229,12 @@ magma_dgeqrf_gpu(
             magma_queue_sync( stream[0] );
             dsplit_diag_block(ib, work(i), ldwork, ut);
             magma_dsetmatrix( rows, ib, work(i), ldwork, dA(i,i), ldda );
+            if (FT) {
+                //transfer checksums to GPU
+                magma_dgetmatrix_async( rows / abftEnv->chk_nb, ib,
+                                        abftEnv->row_hchk, abftEnv->row_hchk_ld, 
+                                        ROW_CHK(i, i),  abftEnv->row_dchk_ld, stream[1] );
+            }
 
             if (i + ib < n) {
                 /* Send the triangular factor T to the GPU */
