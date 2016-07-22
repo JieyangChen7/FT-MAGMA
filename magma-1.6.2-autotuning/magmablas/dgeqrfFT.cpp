@@ -51,31 +51,31 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 
 			//update column checksums
-			double c = -1 * (*(tau + i) * Aii);
-			
-			*(abftEnv->col_hchk + i) /= c;
-			*(abftEnv->col_hchk + i + 1) /= c;
+			double c = 1 / (-1 * (*(tau + i) * Aii));
+			int p2n = (m / abftEnv->chk_nb) * 2;
+			int pincx = 1;
+			blasf77_dscal(&p2n, &c, abftEnv->col_hchk + i * abftEnv->col_hchk_ld, &pincx);
 
 			//construct v with column checksums
-			double * v = new double[m + 2];
-			int j = 0;
-			while (j < i) {
-				v[j] = 0.0;
-				j++;
-			}
-			v[j] = 1; //j = i
-			j++;
-			while (j < m) {
-				v[j] = *(A + i * lda + j);
-				j++;
-			}
-			v[j] = *(abftEnv->col_hchk + i);
-			v[j + 1] = *(abftEnv->col_hchk + i + 1);
+			// double * v = new double[m + 2];
+			// int j = 0;
+			// while (j < i) {
+			// 	v[j] = 0.0;
+			// 	j++;
+			// }
+			// v[j] = 1; //j = i
+			// j++;
+			// while (j < m) {
+			// 	v[j] = *(A + i * lda + j);
+			// 	j++;
+			// }
+			// v[j] = *(abftEnv->col_hchk + i);
+			// v[j + 1] = *(abftEnv->col_hchk + i + 1);
 
-			cout << "[DGEQRF] v[" << i << "]:";
-			for (int k = 0; k < m + 2; k++)
-				cout << v[k] << "\t";
-			cout << endl;
+			// cout << "[DGEQRF] v[" << i << "]:";
+			// for (int k = 0; k < m + 2; k++)
+			// 	cout << v[k] << "\t";
+			// cout << endl;
 
 		}
 
