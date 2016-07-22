@@ -64,7 +64,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 			v[j] = *(abftEnv->row_hchk + i);
 			v[j + 1] = *(abftEnv->row_hchk + i + 1);
 
-			cout << "[DGEQRF] v[" << i << "]:"  
+			cout << "[DGEQRF] v[" << i << "]:";
 			for (int k = 0; k < m + 2; k++)
 				cout << tau[k] << "\t";
 			cout << endl;
