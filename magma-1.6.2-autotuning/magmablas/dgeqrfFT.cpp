@@ -31,6 +31,8 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		char L = 'L';
 
 		for (int i = 0; i < k; i++) {
+
+			//update row checksums
 			double Aii = *(A + i * lda + i);
 			*(A + i * lda + i) = 1;
 
@@ -45,7 +47,12 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
                          	work );
 			*(A + i * lda + i) = Aii;
 
+
+
+
+			//update column checksums
 			double c = -1 * (*(tau + i) * Aii);
+			
 			*(abftEnv->col_hchk + i) /= c;
 			*(abftEnv->col_hchk + i + 1) /= c;
 
