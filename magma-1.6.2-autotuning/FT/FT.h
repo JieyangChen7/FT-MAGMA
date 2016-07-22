@@ -136,7 +136,8 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 
 void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info, ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY);
 
-void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, int lwork, int *info );
+void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, int lwork, int * info, ABFTEnv * abftEnv, 
+				bool FT , bool DEBUG, bool VERIFY);
 
 void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
 		int m, int n, double alpha, double * A, int lda,

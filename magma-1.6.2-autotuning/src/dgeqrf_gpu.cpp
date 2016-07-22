@@ -174,6 +174,18 @@ magma_dgeqrf_gpu(
     ldwork = m;
     lddwork= n;
 
+    /* flags */
+    bool FT = true;
+    bool DEBUG = false;
+    bool VERIFY = true;
+
+    ABFTEnv * abftEnv = new ABFTEnv();
+
+    if (FT) {
+        initializeABFTEnv(abftEnv, nb, dA, ldda, m, n, m, nb, stream, 3, DEBUG);
+    }
+
+
     if ( (nb > 1) && (nb < k) ) {
         /* Use blocked code initially */
         old_i = 0; old_ib = nb;
@@ -199,7 +211,7 @@ magma_dgeqrf_gpu(
 
             magma_queue_sync( stream[1] );
             //lapackf77_dgeqrf(&rows, &ib, work(i), &ldwork, tau+i, hwork, &lhwork, info);
-            dgeqrfFT(rows, ib, work(i), ldwork, tau+i, hwork, lhwork, info);
+            dgeqrfFT(rows, ib, work(i), ldwork, tau+i, hwork, lhwork, info, abftEnv, FT, DEBUG, VERIFY);
             /* Form the triangular factor of the block reflector
                H = H(i) H(i+1) . . . H(i+ib-1) */
             lapackf77_dlarft( MagmaForwardStr, MagmaColumnwiseStr,
