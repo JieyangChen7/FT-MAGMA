@@ -57,6 +57,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 				j++;
 			}
 			v[j] = 1; //j = i
+			j++;
 			while (j < m) {
 				v[j] = *(A + i * lda + j);
 				j++;
