@@ -41,8 +41,9 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 			lapackf77_dlarf(&L, &pm, &pn,
                          	A + i * lda + i, &pincv,
                          	tau + i,
-                         	abftEnv->row_hchk, abftEnv->row_hchk_ld,
+                         	abftEnv->row_hchk, &(abftEnv->row_hchk_ld),
                          	work );
+			*(A + i * lda + i) = Aii;
 		}
 	}
 

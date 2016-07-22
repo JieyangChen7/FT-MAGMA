@@ -210,7 +210,7 @@ magma_dgetrf_gpu(
             stream[1] = orig_stream;
         }
   
-        // /* flags */
+        /* flags */
         bool FT = true;
         bool DEBUG = false;
         bool VERIFY = true;
