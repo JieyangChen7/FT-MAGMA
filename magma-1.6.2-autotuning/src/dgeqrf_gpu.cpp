@@ -197,7 +197,7 @@ magma_dgeqrf_gpu(
                                     work(i), ldwork, stream[1] );
             if (FT) {
                 //transfer checksums to CPU
-                magma_dgetmatrix_async( rows / abftEnv->chk_nb, ib,
+                magma_dgetmatrix_async( (rows / abftEnv->chk_nb) * 2, ib,
                                         ROW_CHK(i, i),  abftEnv->row_dchk_ld,
                                         abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
             }
@@ -231,7 +231,7 @@ magma_dgeqrf_gpu(
             magma_dsetmatrix( rows, ib, work(i), ldwork, dA(i,i), ldda );
             if (FT) {
                 //transfer checksums to GPU
-                magma_dgetmatrix_async( rows / abftEnv->chk_nb, ib,
+                magma_dgetmatrix_async( (rows / abftEnv->chk_nb) * 2, ib,
                                         abftEnv->row_hchk, abftEnv->row_hchk_ld, 
                                         ROW_CHK(i, i),  abftEnv->row_dchk_ld, stream[1] );
             }
