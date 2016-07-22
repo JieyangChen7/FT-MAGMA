@@ -46,8 +46,8 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 			*(A + i * lda + i) = Aii;
 
 			double c = -1 * (*(tau + i) * Aii);
-			*(abftEnv->row_hchk + i) /= c;
-			*(abftEnv->row_hchk + i + 1) /= c;
+			*(abftEnv->col_hchk + i) /= c;
+			*(abftEnv->col_hchk + i + 1) /= c;
 
 			//construct v with column checksums
 			double * v = new double[m + 2];
@@ -62,8 +62,8 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 				v[j] = *(A + i * lda + j);
 				j++;
 			}
-			v[j] = *(abftEnv->row_hchk + i);
-			v[j + 1] = *(abftEnv->row_hchk + i + 1);
+			v[j] = *(abftEnv->col_hchk + i);
+			v[j + 1] = *(abftEnv->col_hchk + i + 1);
 
 			cout << "[DGEQRF] v[" << i << "]:";
 			for (int k = 0; k < m + 2; k++)
