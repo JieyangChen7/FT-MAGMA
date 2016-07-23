@@ -179,10 +179,54 @@ magma_dgeqrf_gpu(
     bool DEBUG = true;
     bool VERIFY = true;
 
+    double * dT_col_chk;
+    int dT_col_chk_ld;
+
+    double * dT_row_chk;
+    int dT_row_chk_ld;
+
+    double * dwork_col_chk;
+    int dwork_col_chk_ld;
+
+    double * dwork_row_chk;
+    int dwork_row_chk_ld;
+
+
+
     ABFTEnv * abftEnv = new ABFTEnv();
 
     if (FT) {
         initializeABFTEnv(abftEnv, nb, dA, ldda, m, n, m, nb, stream, 3, DEBUG);
+
+        /* allocate space for checksum of dT */
+        cout << "allocate space for row checksum of dT......";
+        size_t dT_row_chk_pitch = magma_roundup(nb * sizeof(double), 32);
+        dT_row_chk_ld = dT_row_chk_pitch / sizeof(double);
+        magma_dmalloc(&dT_row_chk, dT_row_chk_pitch * 2);
+        cout << "done." << endl;
+
+        //allocate space for checksum of dAP 
+        cout << "allocate space for column checksum of dT......";
+        size_t dT_col_chk_pitch = magma_roundup(2 * sizeof(double), 32);
+        dT_col_chk_ld = dT_col_chk_pitch / sizeof(double);
+        magma_dmalloc(&dT_col_chk, dT_col_chk_pitch * nb);
+        cout << "done." << endl;
+
+
+        /* allocate space for checksum of dT */
+        cout << "allocate space for row checksum of dwork......";
+        size_t dwork_row_chk_pitch = magma_roundup(n * sizeof(double), 32);
+        dwork_row_chk_ld = dwork_row_chk_pitch / sizeof(double);
+        magma_dmalloc(&dwork_row_chk, dT_row_chk_pitch * 2);
+        cout << "done." << endl;
+
+        //allocate space for checksum of dAP 
+        cout << "allocate space for column checksum of dwork......";
+        size_t dwork_col_chk_pitch = magma_roundup((n / abftEnv->chk_nb) * 2 * sizeof(double), 32);
+        dwork_col_chk_ld = dwork_col_chk_pitch / sizeof(double);
+        magma_dmalloc(&dwork_col_chk, dwork_col_chk_pitch * nb);
+        cout << "done." << endl;
+
     }
 
 
@@ -233,6 +277,7 @@ magma_dgeqrf_gpu(
             dsplit_diag_block(ib, work(i), ldwork, ut);
             magma_dsetmatrix( rows, ib, work(i), ldwork, dA(i,i), ldda );
             if (FT) {
+
                 //transfer checksums to GPU
                 magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
                                         abftEnv->row_hchk, abftEnv->row_hchk_ld, 
@@ -245,13 +290,39 @@ magma_dgeqrf_gpu(
             if (i + ib < n) {
                 /* Send the triangular factor T to the GPU */
                 magma_dsetmatrix( ib, ib, hwork, ib, dT(i), nb );
+                magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                    2, abftEnv->chk_nb, abftEnv->chk_nb,
+                    MAGMA_D_ONE, 
+                    abftEnv->vd, abftEnv->vd_ld,
+                    dT(i), nb,
+                    MAGMA_D_ZERO, 
+                    dT_col_chk, dT_col_chk_ld);  
+
+                magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                    abftEnv->chk_nb, 2, abftEnv->chk_nb,
+                    MAGMA_D_ONE, 
+                    dT(i), nb,
+                    abftEnv->vd2, abftEnv->vd2_ld,
+                    MAGMA_D_ZERO, 
+                    dT_row_chk, dT_row_chk_ld);     
+
 
                 if (i+nb < k-nb) {
                     /* Apply H' to A(i:m,i+ib:i+2*ib) from the left */
-                    magma_dlarfb_gpu( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
-                                      rows, ib, ib,
-                                      dA(i, i   ), ldda, dT(i),  nb,
-                                      dA(i, i+ib), ldda, dd_ref(0), lddwork);
+                    dlarfbFT( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
+                              rows, ib, ib,
+                              dA(i, i   ), ldda, dT(i),  nb,
+                              dA(i, i+ib), ldda, dd_ref(0), lddwork,
+                              abftEnv,
+                              COL_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld,
+                              ROW_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld,
+                              dT_col_chk, dT_col_chk_ld,
+                              dT_row_chk, dT_row_chk_ld,
+                              COL_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb + i), abftEnv->col_dchk_ld,
+                              ROW_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb + i), abftEnv->row_dchk_ld,
+                              dwork_col_chk, dwork_col_chk_ld,
+                              dwork_row_chk, dwork_row_chk_ld,
+                              FT, DEBUG, VERIFY, stream);
                 }
                 else {
                     cols = n-i-ib;
