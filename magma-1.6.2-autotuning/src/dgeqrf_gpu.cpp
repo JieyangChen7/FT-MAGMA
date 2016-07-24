@@ -307,8 +307,25 @@ magma_dgeqrf_gpu(
                     abftEnv->vd2, abftEnv->vd2_ld,
                     MAGMA_D_ZERO, 
                     dT_row_chk, dT_row_chk_ld);     
-                
-                /* calucate the row/col checksums for dT*/
+
+                /* calucate the row/col checksums for dV*/
+                for (int k = i; k < m; k += nb) {
+                    magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                        2, abftEnv->chk_nb, abftEnv->chk_nb,
+                        MAGMA_D_ONE, 
+                        abftEnv->vd, abftEnv->vd_ld,
+                        dA(k, i   ), ldda,
+                        MAGMA_D_ZERO, 
+                        COL_CHK(k / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld);  
+
+                    magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                        abftEnv->chk_nb, 2, abftEnv->chk_nb,
+                        MAGMA_D_ONE, 
+                        dA(k, i   ), ldda,
+                        abftEnv->vd2, abftEnv->vd2_ld,
+                        MAGMA_D_ZERO, 
+                        ROW_CHK(k / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld);     
+                }
 
                 if (i+nb < k-nb) {
                     /* Apply H' to A(i:m,i+ib:i+2*ib) from the left */
