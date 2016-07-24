@@ -587,7 +587,7 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda){
 	benchmark_time = magma_wtime();
 	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 
-		for (int j = abftEnv->chk_nb; j <=abftEnv->chk_nb; j += abftEnv->chk_nb) {
+		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
 			col_chk_recal_select(abftEnv, A, lda, i, j, 15);
 		}
@@ -600,7 +600,7 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda){
 	benchmark_time = magma_wtime();
 	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 
-		for (int j = abftEnv->chk_nb; j <=abftEnv->chk_nb; j += abftEnv->chk_nb) {
+		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
 			col_chk_recal_select(abftEnv, A, lda, i, j, 1);
 		}
@@ -614,7 +614,7 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda){
 	benchmark_time = magma_wtime();
 	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 
-		for (int j = abftEnv->chk_nb; j <=abftEnv->chk_nb; j += abftEnv->chk_nb) {
+		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
 			col_chk_recal_select(abftEnv, A, lda, i, j, 5);
 		}
