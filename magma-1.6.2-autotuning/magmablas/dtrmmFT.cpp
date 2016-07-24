@@ -22,7 +22,7 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 	if (VERIFY) {
 		mem_row = n;
 		mem_col = n;
-		at_col_chk_recal(abftEnv, A, ldda, mem_row, mem_col);
+		at_col_chk_recal(abftEnv, dA, ldda, mem_row, mem_col);
 
 
 		if (DEBUG) {
@@ -85,7 +85,7 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 	if (VERIFY) {
 		mem_row = n;
 		mem_col = n;
-		at_col_chk_recal(abftEnv, A, ldda, mem_row, mem_col);
+		at_col_chk_recal(abftEnv, dA, ldda, mem_row, mem_col);
 
 
 		if (DEBUG) {

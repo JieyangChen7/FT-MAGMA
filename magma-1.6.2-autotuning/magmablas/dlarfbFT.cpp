@@ -108,7 +108,7 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
         dtrmmFT( MagmaRight, uplo, transt, MagmaNonUnit,
                 n, k,
                 c_one, dT(0,0),  lddt,
-                dwork(0), ldwork，
+                dwork(0), ldwork,
                 abftEnv,
                 col_chkT, col_chkT_ld,  
 			    row_chkT, row_chkT_ld,
