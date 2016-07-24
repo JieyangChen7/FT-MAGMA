@@ -40,14 +40,15 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_row = k;
 			mem_col = m;
 		}
-		
+		cout << "gemm1" << endl;
 		at_col_chk_recal(abftEnv, A, lda, mem_row, mem_col);
-
+		cout << "gemm2" << endl;
 		col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
         					  col_chkA, col_chkA_ld,
         					  abftEnv->chk1, abftEnv->chk1_ld,
         					  abftEnv->chk2, abftEnv->chk2_ld,
         					  abftEnv->stream[1]);
+		cout << "gemm3" << endl;
 		if (DEBUG) {
 
 			cout<<"[dgemm] A before dgemm:"<<endl;
