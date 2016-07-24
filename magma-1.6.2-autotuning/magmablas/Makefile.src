@@ -183,6 +183,8 @@ DSRC = \
 	dtrsmFT.cpp \
 	dsyrkFT.cpp \
 	dgemmFT.cpp \
+	dlarfbFT.cpp \
+	dtrmmFT.cpp \
 	abft.cu 	
 	
 SSRC = \
