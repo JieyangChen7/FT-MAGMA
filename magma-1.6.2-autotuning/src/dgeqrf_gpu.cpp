@@ -290,6 +290,8 @@ magma_dgeqrf_gpu(
             if (i + ib < n) {
                 /* Send the triangular factor T to the GPU */
                 magma_dsetmatrix( ib, ib, hwork, ib, dT(i), nb );
+
+                /* calucate the row/col checksums for dT*/
                 magma_dgemm(MagmaNoTrans, MagmaNoTrans,
                     2, abftEnv->chk_nb, abftEnv->chk_nb,
                     MAGMA_D_ONE, 
@@ -305,7 +307,8 @@ magma_dgeqrf_gpu(
                     abftEnv->vd2, abftEnv->vd2_ld,
                     MAGMA_D_ZERO, 
                     dT_row_chk, dT_row_chk_ld);     
-
+                
+                /* calucate the row/col checksums for dT*/
 
                 if (i+nb < k-nb) {
                     /* Apply H' to A(i:m,i+ib:i+2*ib) from the left */
