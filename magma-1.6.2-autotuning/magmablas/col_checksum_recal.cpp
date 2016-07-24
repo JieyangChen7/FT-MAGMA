@@ -21,7 +21,7 @@ void chk_recal_1(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 					MAGMA_D_ZERO, 
 					abftEnv->chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
 
-		magmablasSetKernelStream(abftEnv->stream[1]);
+		magmablasSetKernelStream(abftEnv->stream[2]);
 		magma_dgemv(MagmaTrans, 
 					abftEnv->chk_nb, n, 
 					MAGMA_D_ONE,
@@ -29,6 +29,31 @@ void chk_recal_1(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 					abftEnv->vd + 1, abftEnv->vd_ld, 
 					MAGMA_D_ZERO, 
 					abftEnv->chk2 + (i / abftEnv->chk_nb), abftEnv->chk2_ld );
+	}
+	cudaStreamSynchronize(abftEnv->stream[1]);
+	cudaStreamSynchronize(abftEnv->stream[2]);
+}
+
+void chk_recal_1_5(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
+
+	for (int i = 0; i < m; i += abftEnv->chk_nb) {
+		magmablasSetKernelStream(abftEnv->stream[1]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda,
+					abftEnv->vd, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk1 + (i / abftEnv->chk_nb), abftEnv->chk1_ld );
+
+		magmablasSetKernelStream(abftEnv->stream[2]);
+		magma_dgemv(MagmaTrans, 
+					abftEnv->chk_nb, n, 
+					MAGMA_D_ONE,
+					A + i, lda, 
+					abftEnv->vd + 1, abftEnv->vd_ld, 
+					MAGMA_D_ZERO, 
+					abftEnv->chk1 + (i / abftEnv->chk_nb) + 1, abftEnv->chk1_ld );
 	}
 	cudaStreamSynchronize(abftEnv->stream[1]);
 	cudaStreamSynchronize(abftEnv->stream[2]);
@@ -428,10 +453,6 @@ void chk_recal_10(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 }
 
 
-
-
-
-
 //non-col-read-A
 //col-read-B
 //col-write-C
@@ -506,40 +527,30 @@ void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, 
 		switch(select) {
 			case 1: chk_recal_1(abftEnv, A, lda, m, n);
 					break;
-
 			case 2:	chk_recal_2(abftEnv, A, lda, m, n);
 					break;
-
 			case 3: chk_recal_3(abftEnv, A, lda, m, n);
 					break;
-
 			case 4: chk_recal_4(abftEnv, A, lda, m, n);
 					break;
-
 			case 5: chk_recal_5(abftEnv, A, lda, m, n);
-					break;
-		
+					break;	
 			case 6: chk_recal_6(abftEnv, A, lda, m, n);
-					break;
-		
+					break;	
 			case 7: chk_recal_7(abftEnv, A, lda, m, n);
-					break;
-			
+					break;		
 			case 8: chk_recal_8(abftEnv, A, lda, m, n);
 					break;
-
 			case 9: chk_recal_9(abftEnv, A, lda, m, n);
-					break;
-		
+					break;	
 			case 10: chk_recal_10(abftEnv, A, lda, m, n);
-					break;
-		
+					break;	
 			case 11: chk_recal_11(abftEnv, A, lda, m, n);
-					break;
-			
+					break;		
 			case 12: chk_recal_12(abftEnv, A, lda, m, n);
 					break;
-
+			case 15: chk_recal_1_5(abftEnv, A, lda, m, n);
+			break;
 			default: cout << "selecting error" << endl;
 		}
 }
@@ -548,8 +559,6 @@ void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, 
 void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 
 	// needs to do boundary check first
-
-
 	//int i = abftEnv->mapping[(m / abftEnv->chk_nb) * abftEnv->mapping_ld + (n / abftEnv->chk_nb)];
 	col_chk_recal_select(abftEnv, A, lda, m, n, 1);
 
@@ -558,17 +567,20 @@ void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 
 void benchmark(ABFTEnv * abftEnv, double * A, int lda){
 	cout << "start banchmarking:" << endl;
-	double benchmark_time = magma_wtime();
-	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
+	double benchmark_time = 0;
 
-		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
+	
+	// benchmark_time = magma_wtime();
+	// for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 
-			at_col_chk_recal(abftEnv, A, lda, i, j);
-		}
+	// 	for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-	}
-	benchmark_time = magma_wtime() - benchmark_time;
-	cout << "auto tuning time: " << benchmark_time << endl;
+	// 		at_col_chk_recal(abftEnv, A, lda, i, j);
+	// 	}
+
+	// }
+	// benchmark_time = magma_wtime() - benchmark_time;
+	// cout << "auto tuning time: " << benchmark_time << endl;
 
 
 
@@ -577,12 +589,12 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda){
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			col_chk_recal_select(abftEnv, A, lda, i, j, 2);
+			col_chk_recal_select(abftEnv, A, lda, i, j, 15);
 		}
 
 	}
 	benchmark_time = magma_wtime() - benchmark_time;
-	cout << "naive tuning time: " << benchmark_time << endl;
+	cout << "same location time: " << benchmark_time << endl;
 
 
 	benchmark_time = magma_wtime();
@@ -594,9 +606,11 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda){
 		}
 
 	}
-	
 	benchmark_time = magma_wtime() - benchmark_time;
-	cout << "hand tuning time: " << benchmark_time << endl;
+	cout << "diff location time: " << benchmark_time << endl;
+
+
+
 
 	cout << "done benchmarking" << endl;
 }
