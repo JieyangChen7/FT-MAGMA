@@ -167,9 +167,12 @@ magma_dgeqrf_gpu(
     ut = hwork+nb*(n);
     memset( ut, 0, nb*nb*sizeof(double));
 
-    magma_queue_t stream[2];
+    magma_queue_t stream[5];
     magma_queue_create( &stream[0] );
     magma_queue_create( &stream[1] );
+    magma_queue_create( &stream[2] );
+    magma_queue_create( &stream[3] );
+    magma_queue_create( &stream[4] );
 
     ldwork = m;
     lddwork= n;
