@@ -61,7 +61,7 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 
 
 	//update column checksum
-	dtrmmFT( side, uplo, trans, diag,
+	magma_dtrmm( side, uplo, trans, diag,
              (m / abftEnv->chk_nb) * 2, n,
              alpha, dA, ldda,
              col_chkB, col_chkB_ld);
@@ -75,7 +75,7 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 				0,
 				row_chkB, row_chkB_ld );
 
-	dtrmmFT( side, uplo, trans, diag,
+	magma_dtrmm( side, uplo, trans, diag,
                 m, n,
                 alpha, dA,  ldda,
                 dB, lddb);
