@@ -332,9 +332,9 @@ magma_dgeqrf_gpu(
                         ROW_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld);     
                 }
 
-                cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n, nb);
-                cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n, 2);
-                cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2, nb);
+                cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
+                cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
+                cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
 
                 if (i+nb < k-nb) {
                     /* Apply H' to A(i:m,i+ib:i+2*ib) from the left */
