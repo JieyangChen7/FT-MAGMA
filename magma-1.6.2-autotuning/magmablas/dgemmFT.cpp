@@ -72,8 +72,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 				cout<<"[DGEMM-BEFORE] recalculated row checksum of A:"<<endl;
 				printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, mem_row , mem_col / abftEnv->chk_nb, 4, 1);
 				printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, mem_row , mem_col / abftEnv->chk_nb, 4, 1);	
-				cout<<"[DGEMM-BEFORE] updated column checksum of A:"<<endl;
-				printMatrix_gpu(col_chkA, col_chkA_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
+				cout<<"[DGEMM-BEFORE] updated row checksum of A:"<<endl;
+				printMatrix_gpu(row_chkA, row_chkA_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
 			}
 
 		}
@@ -123,7 +123,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 				printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
 				printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);	
 				cout<<"[DGEMM-BEFORE] updated column checksum of B:"<<endl;
-				printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+				printMatrix_gpu(row_chkB, row_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 			}
 		}
 		
@@ -268,7 +268,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 				printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, mem_row , mem_col / abftEnv->chk_nb, 4, 1);
 				printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, mem_row , mem_col / abftEnv->chk_nb, 4, 1);	
 				cout<<"[DGEMM-AFTER] updated column checksum of A:"<<endl;
-				printMatrix_gpu(col_chkA, col_chkA_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
+				printMatrix_gpu(row_chkA, row_chkA_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
 			}
 
 		}
@@ -318,7 +318,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 				printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
 				printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);	
 				cout<<"[DGEMM-AFTER] updated column checksum of B:"<<endl;
-				printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+				printMatrix_gpu(row_chkB, row_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 			}
 		}
 		
