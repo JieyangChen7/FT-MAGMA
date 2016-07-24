@@ -611,6 +611,59 @@ void benchmark(ABFTEnv * abftEnv, double * A, int lda){
 
 
 
+benchmark_time = magma_wtime();
+	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
+
+		for (int j = abftEnv->chk_nb; j <=abftEnv->chk_nb; j += abftEnv->chk_nb) {
+
+			col_chk_recal_select(abftEnv, A, lda, i, j, 15);
+		}
+
+	}
+	benchmark_time = magma_wtime() - benchmark_time;
+	cout << "same location time: " << benchmark_time << endl;
+
+
+	benchmark_time = magma_wtime();
+	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
+
+		for (int j = abftEnv->chk_nb; j <=abftEnv->chk_nb; j += abftEnv->chk_nb) {
+
+			col_chk_recal_select(abftEnv, A, lda, i, j, 1);
+		}
+
+	}
+	benchmark_time = magma_wtime() - benchmark_time;
+	cout << "diff location time: " << benchmark_time << endl;
+
+
+
+benchmark_time = magma_wtime();
+	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
+
+		for (int j = abftEnv->chk_nb; j <=abftEnv->chk_nb; j += abftEnv->chk_nb) {
+
+			col_chk_recal_select(abftEnv, A, lda, i, j, 15);
+		}
+
+	}
+	benchmark_time = magma_wtime() - benchmark_time;
+	cout << "same location time: " << benchmark_time << endl;
+
+
+	benchmark_time = magma_wtime();
+	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
+
+		for (int j = abftEnv->chk_nb; j <=abftEnv->chk_nb; j += abftEnv->chk_nb) {
+
+			col_chk_recal_select(abftEnv, A, lda, i, j, 1);
+		}
+
+	}
+	benchmark_time = magma_wtime() - benchmark_time;
+	cout << "diff location time: " << benchmark_time << endl;
+
+
 
 	cout << "done benchmarking" << endl;
 }
