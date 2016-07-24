@@ -31,11 +31,6 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	int mem_row = 0; // number of row and col of B stored in memory(no trans operation)
 	int mem_col = 0;
 
-	if (DEBUG) {
-		cout<<"[DGEMM-BEFORE] matrix A:"<<endl;
-		printMatrix_gpu(A, lda, mem_row, mem_col, 4, 4);
-	}
-
 	if (VERIFY) {
 
 		// number of row and col of A stored in memory(no trans operation)
@@ -51,6 +46,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->stream[1]);
 
 			if (DEBUG) {
+				cout<<"[DGEMM-BEFORE] matrix A:"<<endl;
+				printMatrix_gpu(A, lda, mem_row, mem_col, 4, 4);
 				cout<<"[DGEMM-BEFORE] recalculated column checksum of A:"<<endl;
 				printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
 				printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
@@ -70,6 +67,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->stream[1]);
 
 			if (DEBUG) {
+				cout<<"[DGEMM-BEFORE] matrix A:"<<endl;
+				printMatrix_gpu(A, lda, mem_row, mem_col, 4, 4);
 				cout<<"[DGEMM-BEFORE] recalculated row checksum of A:"<<endl;
 				printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, mem_row , mem_col / abftEnv->chk_nb, 4, 1);
 				printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, mem_row , mem_col / abftEnv->chk_nb, 4, 1);	
@@ -83,8 +82,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 						
 		//verify B before use
-		cout<<"[DGEMM-BEFORE] matrix B:"<<endl;
-		printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
+		
 
 		if (transB == MagmaNoTrans) {
 			mem_row = k;
@@ -98,6 +96,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->stream[1]);
 
 			if (DEBUG) {
+				cout<<"[DGEMM-BEFORE] matrix B:"<<endl;
+				printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
 				cout<<"[DGEMM-BEFORE] recalculated row checksum of B:"<<endl;
 				printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, mem_row, mem_col / abftEnv->chk_nb, 4, 1);
 				printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, mem_row, mem_col / abftEnv->chk_nb, 4, 1);	
@@ -117,6 +117,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->stream[1]);
 
 			if (DEBUG) {
+				cout<<"[DGEMM-BEFORE] matrix B:"<<endl;
+				printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
 				cout<<"[DGEMM-BEFORE] recalculated column checksum of B:"<<endl;
 				printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
 				printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);	
@@ -239,6 +241,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->stream[1]);
 
 			if (DEBUG) {
+				cout<<"[DGEMM-BEFORE] matrix A:"<<endl;
+				printMatrix_gpu(A, lda, mem_row, mem_col, 4, 4);
 				cout<<"[DGEMM-AFTER] recalculated column checksum of A:"<<endl;
 				printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
 				printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
@@ -258,6 +262,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->stream[1]);
 
 			if (DEBUG) {
+				cout<<"[DGEMM-BEFORE] matrix A:"<<endl;
+				printMatrix_gpu(A, lda, mem_row, mem_col, 4, 4);
 				cout<<"[DGEMM-AFTER] recalculated row checksum of A:"<<endl;
 				printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, mem_row , mem_col / abftEnv->chk_nb, 4, 1);
 				printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, mem_row , mem_col / abftEnv->chk_nb, 4, 1);	
@@ -271,8 +277,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 						
 		//verify B before use
-		cout<<"[DGEMM-AFTER] matrix B:"<<endl;
-		printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
+		
 
 		if (transB == MagmaNoTrans) {
 			mem_row = k;
@@ -286,6 +291,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->stream[1]);
 
 			if (DEBUG) {
+				cout<<"[DGEMM-AFTER] matrix B:"<<endl;
+				printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
 				cout<<"[DGEMM-AFTER] recalculated row checksum of B:"<<endl;
 				printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, mem_row, mem_col / abftEnv->chk_nb, 4, 1);
 				printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, mem_row, mem_col / abftEnv->chk_nb, 4, 1);	
@@ -305,6 +312,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->stream[1]);
 
 			if (DEBUG) {
+				cout<<"[DGEMM-AFTER] matrix B:"<<endl;
+				printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
 				cout<<"[DGEMM-AFTER] recalculated column checksum of B:"<<endl;
 				printMatrix_gpu(abftEnv->chk1, abftEnv->chk1_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);
 				printMatrix_gpu(abftEnv->chk2, abftEnv->chk2_ld, mem_row / abftEnv->chk_nb, mem_col, 1, 4);	
