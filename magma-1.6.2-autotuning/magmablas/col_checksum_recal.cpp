@@ -53,7 +53,7 @@ void chk_recal_1_5(ABFTEnv * abftEnv, double * A, int lda,int m, int n) {
 					A + i, lda, 
 					abftEnv->vd + 1, abftEnv->vd_ld, 
 					MAGMA_D_ZERO, 
-					abftEnv->chk2 + (i / abftEnv->chk_nb), abftEnv->chk2_ld );
+					abftEnv->chk1 + (i / abftEnv->chk_nb) + 1, abftEnv->chk1_ld );
 	}
 	cudaStreamSynchronize(abftEnv->stream[1]);
 	cudaStreamSynchronize(abftEnv->stream[2]);
