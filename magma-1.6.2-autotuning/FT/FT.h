@@ -45,17 +45,11 @@ struct ABFTEnv {
    	int vd2_ld;
 
    	/* space allocated for checksum verification */
-   	double * chk1;
-   	int chk1_ld;
+   	double * hrz_recal_chk;
+   	int hrz_recal_chk_ld;
 
-   	double * chk2;
-   	int chk2_ld;
-
-   	double * chk21;
-   	int chk21_ld;
-
-   	double * chk22;
-   	int chk22_ld;
+   	double * vrt_recal_chk;
+   	int vrt_recal_chk_ld;
 
    	/* column checksums on CPU */
    	double * col_hchk;

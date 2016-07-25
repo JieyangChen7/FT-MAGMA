@@ -130,30 +130,14 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
     cout << "allocate space for recalculated checksum on GPU......";
     /* allocate space for reclaculated checksum on GPU */
-    size_t chk1_pitch = magma_roundup(2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)) * sizeof(double), 32);
-    abftEnv->chk1_ld = chk1_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk1), chk1_pitch * (abftEnv->gpu_col));
+    size_t hrz_recal_chk_pitch = magma_roundup(2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)) * sizeof(double), 32);
+    abftEnv->hrz_recal_chk_ld = hrz_recal_chk_pitch / sizeof(double);
+    magma_dmalloc(&(abftEnv->hrz_recal_chk), hrz_recal_chk_pitch * (abftEnv->gpu_col));
     
-   
-    size_t chk2_pitch = magma_roundup(2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)) * sizeof(double), 32);
-    abftEnv->chk2_ld = chk2_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk2), chk2_pitch * (abftEnv->gpu_col));
-    cout << "done." << endl;
-
-
-
-    cout << "allocate space for recalculated checksum on GPU......";
-    /* allocate space for reclaculated checksum on GPU */
-    size_t chk21_pitch = magma_roundup( (abftEnv->gpu_col) * sizeof(double), 32);
-    abftEnv->chk21_ld = chk21_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk21), chk21_pitch * 2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)));
-    
-   
-    size_t chk22_pitch = magma_roundup((abftEnv->gpu_col) * sizeof(double), 32);
-    abftEnv->chk22_ld = chk22_pitch / sizeof(double);
-    magma_dmalloc(&(abftEnv->chk22), chk22_pitch * 2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)));
-    cout << "done." << endl;
-
+    size_t vrt_recal_chk_pitch = magma_roundup( (abftEnv->gpu_col) * sizeof(double), 32);
+    abftEnv->vrt_recal_chk_ld = vrt_recal_chk_pitch / sizeof(double);
+    magma_dmalloc(&(abftEnv->vrt_recal_chk), vrt_recal_chk_pitch * 2 * ((abftEnv->gpu_row) / (abftEnv->chk_nb)));
+	cout << "done." << endl;
 
 
     /* allocate space for update column checksum on CPU */
