@@ -61,18 +61,17 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
      * 1 2 3 4 
      */
     cout << "checksum vectors initialization on CPU......"; 
-    magma_dmalloc_pinned(&(abftEnv->v), (abftEnv->chk_nb) * 2 * sizeof(double));
-    abftEnv->v_ld = 2;
+    magma_dmalloc_pinned(&(abftEnv->hrz_v), (abftEnv->chk_nb) * 2 * sizeof(double));
+    abftEnv->hrz_v_ld = 2;
     for (int i = 0; i < (abftEnv->chk_nb); ++i) {
-        *((abftEnv->v) + i * (abftEnv->v_ld)) = 1;
+        *((abftEnv->hrz_v) + i * (abftEnv->_hrz_v_ld)) = 1;
     }
     for (int i = 0; i < (abftEnv->chk_nb); ++i) {
-        //*((abftEnv->v) + i * (abftEnv->v_ld) + 1) = i+1;
-         *((abftEnv->v) + i * (abftEnv->v_ld) + 1) = 1 + i;
+         *((abftEnv->hrz_v) + i * (abftEnv->hrz_v_ld) + 1) = 1 + i;
     }
     if(DEBUG) {
         cout << "checksum vector on CPU:" << endl;
-        printMatrix_host(abftEnv->v, abftEnv->v_ld, 2, abftEnv->chk_nb, -1, -1);
+        printMatrix_host(abftEnv->hrz_v, abftEnv->hrz_v_ld, 2, abftEnv->chk_nb, -1, -1);
     }
     cout << "done." << endl;
 
@@ -84,46 +83,46 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
      * 1 4
      */
     cout << "checksum vectors initialization on CPU......"; 
-    magma_dmalloc_pinned(&(abftEnv->v2), (abftEnv->chk_nb) * 2 * sizeof(double));
-    abftEnv->v2_ld = abftEnv->chk_nb;
+    magma_dmalloc_pinned(&(abftEnv->vrt_v), (abftEnv->chk_nb) * 2 * sizeof(double));
+    abftEnv->vrt_v_ld = abftEnv->chk_nb;
     for (int i = 0; i < (abftEnv->chk_nb); ++i) {
-        *((abftEnv->v2) + i) = 1;
+        *((abftEnv->vrt_v) + i) = 1;
     }
     for (int i = 0; i < (abftEnv->chk_nb); ++i) {
-        *((abftEnv->v2) + (abftEnv->v2_ld) + i) = i+1;
+        *((abftEnv->vrt_v) + (abftEnv->vrt_v_ld) + i) = i+1;
     }
     if(DEBUG) {
         cout << "checksum vector on CPU:" << endl;
-        printMatrix_host(abftEnv->v2, abftEnv->v2_ld, abftEnv->chk_nb, 2, -1, -1);
+        printMatrix_host(abftEnv->vrt_v, abftEnv->vrt_v_ld, abftEnv->chk_nb, 2, -1, -1);
     }
     cout << "done." << endl;
 
     /* initialize checksum vectors on GPU */
     cout << "checksum vectors initialization on GPU......";
-    size_t vd_pitch = magma_roundup(2 * sizeof(double), 32);
-    abftEnv->vd_ld = vd_pitch / sizeof(double);  
-    magma_dmalloc(&(abftEnv->vd), vd_pitch * (abftEnv->chk_nb));
+    size_t hrz_vd_pitch = magma_roundup(2 * sizeof(double), 32);
+    abftEnv->hrz_vd_ld = hrz_vd_pitch / sizeof(double);  
+    magma_dmalloc(&(abftEnv->hrz_vd), hrz_vd_pitch * (abftEnv->chk_nb));
     magma_dsetmatrix(2, abftEnv->chk_nb, 
-    				 abftEnv->v, abftEnv->v_ld,
-    				 abftEnv->vd, abftEnv->vd_ld);
+    				 abftEnv->hrz_v, abftEnv->hrz_v_ld,
+    				 abftEnv->hrz_vd, abftEnv->hrz_vd_ld);
     if(DEBUG) {
         cout << "checksum vector on GPU:" << endl;
-        printMatrix_gpu(abftEnv->vd, abftEnv->vd_ld, 2, abftEnv->chk_nb, -1, -1);
+        printMatrix_gpu(abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 2, abftEnv->chk_nb, -1, -1);
     }
     cout << "done." << endl;
 
 
     /* initialize checksum vectors on GPU */
     cout << "checksum vectors initialization on GPU......";
-    size_t vd2_pitch = magma_roundup((abftEnv->chk_nb) * sizeof(double), 32);
-    abftEnv->vd2_ld = vd2_pitch / sizeof(double);  
-    magma_dmalloc(&(abftEnv->vd2), vd2_pitch * 2);
+    size_t vrt_vd_pitch = magma_roundup((abftEnv->chk_nb) * sizeof(double), 32);
+    abftEnv->vrt_vd_ld = vrt_vd_pitch / sizeof(double);  
+    magma_dmalloc(&(abftEnv->vrt_vd), vrt_vd_pitch * 2);
     magma_dsetmatrix(abftEnv->chk_nb, 2,
-    				 abftEnv->v2, abftEnv->v2_ld, 
-    				 abftEnv->vd2, abftEnv->vd2_ld);
+    				 abftEnv->vrt_v, abftEnv->vrt_v_ld, 
+    				 abftEnv->vrt_vd, abftEnv->vrt_vd_ld);
     if(DEBUG) {
         cout << "checksum vector on GPU:" << endl;
-        printMatrix_gpu(abftEnv->vd2, abftEnv->vd2_ld, abftEnv->chk_nb, 2, -1, -1);
+        printMatrix_gpu(abftEnv->vrt_vd, abftEnv->vrt_vd_ld, abftEnv->chk_nb, 2, -1, -1);
     }
     cout << "done." << endl;
 

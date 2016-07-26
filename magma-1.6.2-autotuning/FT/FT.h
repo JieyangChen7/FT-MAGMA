@@ -1,4 +1,4 @@
-#include "magma.h"
+include "magma.h"
 #include "magma_lapack.h"
 #include "magmablas.h"
 #include "common_magma.h"
@@ -31,18 +31,18 @@ struct ABFTEnv {
 	int cpu_col;
 
 	/* checksum vector on CPU */
-    double * v;
-    int v_ld;
+    double * hrz_v;
+    int hrz_v_ld;
 
-    double * v2;
-    int v2_ld;
+    double * vrt_v;
+    int vrt_v_ld;
 
     /* checksum vector on GPU */
-	double * vd;
-	int vd_ld;
+	double * hrz_vd;
+	int hrz_vd_ld;
 
-   	double * vd2;
-   	int vd2_ld;
+   	double * vrt_vd;
+   	int vrt_vd_ld;
 
    	/* space allocated for checksum verification */
    	double * hrz_recal_chk;
