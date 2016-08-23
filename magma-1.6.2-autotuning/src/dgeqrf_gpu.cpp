@@ -230,7 +230,8 @@ magma_dgeqrf_gpu(
         magma_dmalloc(&dwork_col_chk, dwork_col_chk_pitch * nb);
         cout << "done." << endl;
 
-        benchmark(abftEnv, dA, ldda);
+        col_benchmark(abftEnv, dA, ldda);
+        row_benchmark(abftEnv, dA, ldda);
 
     }
 
