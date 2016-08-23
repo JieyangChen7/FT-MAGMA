@@ -248,8 +248,10 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
 
     cout << "auto tuning mapping initialize" << endl;
-    abftEnv->mapping = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
-    abftEnv->mapping_ld = abftEnv->gpu_row/abftEnv->chk_nb;
+    abftEnv->col_mapping = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
+    abftEnv->col_mapping_ld = abftEnv->gpu_row/abftEnv->chk_nb;
+    abftEnv->row_mapping = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
+    abftEnv->row_mapping_ld = abftEnv->gpu_row/abftEnv->chk_nb;
     cout << "done." << endl;
 
     cout << "lastCheckTime initialize" << endl;

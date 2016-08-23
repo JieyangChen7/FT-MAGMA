@@ -71,8 +71,12 @@ struct ABFTEnv {
     magma_queue_t * stream;
 
     /* performance autotuning result */
-    int * mapping;
-    int mapping_ld;
+    int * col_mapping;
+    int col_mapping_ld;
+
+	int * row_mapping;
+    int row_mapping_ld;
+
 
     /* record the last time a block is checked */
     time_t * lastCheckTime;
