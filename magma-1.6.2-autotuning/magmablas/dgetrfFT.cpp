@@ -91,14 +91,14 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
                         &m, &n,
                         &one,
                         A, &lda,
-                        abftEnv->v, &(abftEnv->v_ld),
+                        abftEnv->hrz_v, &(abftEnv->hrz_v_ld),
                         &zero,
                         chk1, &chk1_inc );
         blasf77_dgemv(  &N,
                         &m, &n,
                         &one,
                         A, &lda,
-                        abftEnv->v + 1, &(abftEnv->v_ld),
+                        abftEnv->hrz_v + 1, &(abftEnv->hrz_v_ld),
                         &zero,
                         chk2, &chk2_inc );
 
