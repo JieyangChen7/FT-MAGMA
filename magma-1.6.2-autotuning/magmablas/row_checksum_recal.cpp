@@ -40,8 +40,8 @@ void row_checksum_kernel_ncns2(int m, int n, int chk_nb,
 
 
 void row_chk_recal_1(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_ncns2(m, n, 
-						  A, lda, abftEnv->chk_nb,
+	row_checksum_kernel_ncns2(m, n, abftEnv->chk_nb,
+						  A, lda, 
 						  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
 						  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
 						  abftEnv->stream);
@@ -109,8 +109,8 @@ void row_checksum_kernel_ncns4(int m, int n, int chk_nb,
 
 
 void row_chk_recal_2(ABFTEnv * abftEnv, double * A, int lda,int m, int n){
-	row_checksum_kernel_ncns4(m, n, 
-						  A, lda, abftEnv->chk_nb,
+	row_checksum_kernel_ncns4(m, n, abftEnv->chk_nb,
+						  A, lda, 
 						  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
 						  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
 						  abftEnv->stream);
@@ -153,7 +153,7 @@ void row_checksum_kernel_ccns2(int m, int n, int chk_nb,
 }
 
 void row_chk_recal_3(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_ccns2(m, n, chk_nb, 
+	row_checksum_kernel_ccns2(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->vrt_vd, abftEnv->vrt_vd_ld, 
 						  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
@@ -218,7 +218,7 @@ void row_checksum_kernel_ccns4(int m, int n, int chk_nb,
 
 
 void row_chk_recal_4(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_ccns4(m, n, chk_nb, 
+	row_checksum_kernel_ccns4(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->vrt_vd, abftEnv->vrt_vd_ld, 
 						  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
@@ -261,7 +261,7 @@ void row_checksum_kernel_nccs2(int m, int n, int chk_nb,
 }
 
 void row_chk_recal_5(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_nccs2(m, n, chk_nb, 
+	row_checksum_kernel_nccs2(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
 						  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, 
@@ -326,7 +326,7 @@ void row_checksum_kernel_nccs4(int m, int n, int chk_nb,
 
 
 void row_chk_recal_6(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_nccs2(m, n, chk_nb, 
+	row_checksum_kernel_nccs2(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
 						  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, 
@@ -368,7 +368,7 @@ void row_checksum_kernel_cccs2(int m, int n, int chk_nb,
 }
 
 void row_chk_recal_7(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_cccs2(m, n, chk_nb, 
+	row_checksum_kernel_cccs2(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->vrt_vd, abftEnv->vrt_vd_ld, 
 						  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, 
@@ -435,7 +435,7 @@ void row_checksum_kernel_cccs4(int m, int n, int chk_nb,
 }
 
 void row_chk_recal_8(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_cccs4(m, n, chk_nb, 
+	row_checksum_kernel_cccs4(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->vrt_vd, abftEnv->vrt_vd_ld, 
 						  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, 
@@ -468,7 +468,7 @@ void row_checksum_kernel_ncnc1(int m, int n, int chk_nb,
 
 
 void row_chk_recal_9(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_ncnc1(m, n, chk_nb, 
+	row_checksum_kernel_ncnc1(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
 						  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
@@ -544,7 +544,7 @@ void row_checksum_kernel_ccnc1(int m, int n, int chk_nb,
 
 
 void row_chk_recal_10(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_ccnc1(m, n, chk_nb, 
+	row_checksum_kernel_ccnc1(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->vrt_vd, abftEnv->vrt_vd_ld, 
 						  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
@@ -578,7 +578,7 @@ void row_checksum_kernel_nccc1(int m, int n, int chk_nb,
 
 
 void row_chk_recal_11(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_nccc1(m, n, chk_nb, 
+	row_checksum_kernel_nccc1(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
 						  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, 
@@ -611,7 +611,7 @@ void row_checksum_kernel_cccc1(int m, int n, int chk_nb,
 
 
 void row_chk_recal_12(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-	row_checksum_kernel_cccc1(m, n, chk_nb, 
+	row_checksum_kernel_cccc1(m, n, abftEnv->chk_nb, 
 						  A, lda, 
 						  abftEnv->vrt_vd, abftEnv->vrt_vd_ld, 
 						  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, 
