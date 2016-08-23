@@ -13,7 +13,7 @@ void init_col_chk(ABFTEnv * abftEnv, double * A, int lda) {
 	for (int i = 0; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {		
 		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
 					2, abftEnv->gpu_col, abftEnv->chk_nb,
-					MAGMA_D_ONE, abftEnv->vd, abftEnv->vd_ld,
+					MAGMA_D_ONE, abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
 					A + i, lda,
 					MAGMA_D_ZERO, COL_CHK(i / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld);			
 	}
@@ -27,7 +27,7 @@ void init_row_chk(ABFTEnv * abftEnv, double * A, int lda) {
 					abftEnv->gpu_row, 2, abftEnv->chk_nb,
 					MAGMA_D_ONE, 
 					A + i * lda, lda,
-					abftEnv->vd2, abftEnv->vd2_ld,
+					abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
 					MAGMA_D_ZERO, 
 					ROW_CHK(0, i / abftEnv->chk_nb), abftEnv->row_dchk_ld);			
 	}
@@ -64,7 +64,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     magma_dmalloc_pinned(&(abftEnv->hrz_v), (abftEnv->chk_nb) * 2 * sizeof(double));
     abftEnv->hrz_v_ld = 2;
     for (int i = 0; i < (abftEnv->chk_nb); ++i) {
-        *((abftEnv->hrz_v) + i * (abftEnv->_hrz_v_ld)) = 1;
+        *((abftEnv->hrz_v) + i * (abftEnv->hrz_v_ld)) = 1;
     }
     for (int i = 0; i < (abftEnv->chk_nb); ++i) {
          *((abftEnv->hrz_v) + i * (abftEnv->hrz_v_ld) + 1) = 1 + i;

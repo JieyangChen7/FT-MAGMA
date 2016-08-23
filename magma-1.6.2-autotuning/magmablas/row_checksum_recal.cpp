@@ -27,7 +27,7 @@ void row_checksum_kernel_ncns2(int m, int n, int chk_nb,
 
 		magmablasSetKernelStream(stream[2]);
 		magma_dgemv(MagmaNoTrans, 
-					chk_nb, n, 
+					m, chk_nb,  
 					MAGMA_D_ONE,
 					A + i * lda, lda, 
 					hrz_vd + 1, hrz_vd_ld, 
@@ -248,7 +248,7 @@ void row_checksum_kernel_nccs2(int m, int n, int chk_nb,
 
 		magmablasSetKernelStream(stream[2]);
 		magma_dgemv(MagmaNoTrans, 
-					m, chk_nb 
+					m, chk_nb, 
 					MAGMA_D_ONE,
 					A + i * lda, lda, 
 					hrz_vd + 1, hrz_vd_ld, 
@@ -282,7 +282,7 @@ void row_checksum_kernel_nccs4(int m, int n, int chk_nb,
 	for (int i = 0; i < n; i += chk_nb * 2) {
 		magmablasSetKernelStream(stream[1]);
 		magma_dgemv(MagmaNoTrans, 
-					m, chk_nb
+					m, chk_nb,
 					MAGMA_D_ONE,
 					A + i * lda, lda, 
 					hrz_vd, hrz_vd_ld, 
@@ -291,7 +291,7 @@ void row_checksum_kernel_nccs4(int m, int n, int chk_nb,
 
 		magmablasSetKernelStream(stream[2]);
 		magma_dgemv(MagmaNoTrans, 
-					m, chk_nb 
+					m, chk_nb, 
 					MAGMA_D_ONE,
 					A + i * lda, lda, 
 					hrz_vd + 1, hrz_vd_ld, 
@@ -301,7 +301,7 @@ void row_checksum_kernel_nccs4(int m, int n, int chk_nb,
 		if (i + chk_nb < n) {
 			magmablasSetKernelStream(stream[3]);
 			magma_dgemv(MagmaNoTrans, 
-						m, chk_nb
+						m, chk_nb,
 						MAGMA_D_ONE,
 						A + (i + chk_nb) * lda, lda, 
 						hrz_vd, hrz_vd_ld, 
@@ -310,7 +310,7 @@ void row_checksum_kernel_nccs4(int m, int n, int chk_nb,
 
 			magmablasSetKernelStream(stream[4]);
 			magma_dgemv(MagmaNoTrans, 
-						m, chk_nb
+						m, chk_nb,
 						MAGMA_D_ONE,
 						A + (i + chk_nb) * lda, lda, 
 						hrz_vd + 1, hrz_vd_ld, 
@@ -346,7 +346,7 @@ void row_checksum_kernel_cccs2(int m, int n, int chk_nb,
 	for (int i = 0; i < n; i += chk_nb) {
 		magmablasSetKernelStream(stream[1]);
 		magma_dgemv(MagmaNoTrans, 
-					m, chk_nb
+					m, chk_nb,
 					MAGMA_D_ONE,
 					A + i * lda, lda, 
 					vrt_vd, 1, 
@@ -355,7 +355,7 @@ void row_checksum_kernel_cccs2(int m, int n, int chk_nb,
 
 		magmablasSetKernelStream(stream[2]);
 		magma_dgemv(MagmaNoTrans, 
-					m, chk_nb
+					m, chk_nb,
 					MAGMA_D_ONE,
 					A + i * lda, lda, 
 					vrt_vd + vrt_vd_ld, 1, 
@@ -390,7 +390,7 @@ void row_checksum_kernel_cccs4(int m, int n, int chk_nb,
 	for (int i = 0; i < n; i += chk_nb) {
 		magmablasSetKernelStream(stream[1]);
 		magma_dgemv(MagmaNoTrans, 
-					m, chk_nb 
+					m, chk_nb, 
 					MAGMA_D_ONE,
 					A + i * lda, lda, 
 					vrt_vd, 1, 
@@ -399,7 +399,7 @@ void row_checksum_kernel_cccs4(int m, int n, int chk_nb,
 
 		magmablasSetKernelStream(stream[2]);
 		magma_dgemv(MagmaNoTrans, 
-					m, chk_nb 
+					m, chk_nb, 
 					MAGMA_D_ONE,
 					A + i * lda, lda, 
 					vrt_vd + vrt_vd_ld, 1, 
@@ -409,7 +409,7 @@ void row_checksum_kernel_cccs4(int m, int n, int chk_nb,
 		if (i + chk_nb < n) {
 			magmablasSetKernelStream(stream[3]);
 			magma_dgemv(MagmaNoTrans, 
-						m, chk_nb
+						m, chk_nb,
 						MAGMA_D_ONE,
 						A + (i + chk_nb) * lda, lda, 
 						vrt_vd, 1, 
@@ -418,7 +418,7 @@ void row_checksum_kernel_cccs4(int m, int n, int chk_nb,
 
 			magmablasSetKernelStream(stream[4]);
 			magma_dgemv(MagmaNoTrans, 
-						m, chk_nb
+						m, chk_nb,
 						MAGMA_D_ONE,
 						A + (i + chk_nb) * lda, lda, 
 						vrt_vd + vrt_vd_ld, 1,
@@ -641,7 +641,7 @@ void row_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda) {
 				}
 			}
 			cout << min_choice << "	";
-			abftEnv->row_mapping[(i / abftEnv->chk_nb) * abftEnv->rwo_mapping_ld + j /abftEnv->chk_nb] = min_choice;
+			abftEnv->row_mapping[(i / abftEnv->chk_nb) * abftEnv->row_mapping_ld + j /abftEnv->chk_nb] = min_choice;
 		}
 		cout << endl;
 	}
