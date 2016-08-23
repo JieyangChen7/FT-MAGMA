@@ -280,9 +280,9 @@ void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda) {
 			time_t temp = *(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i);
 			if (time(NULL) - temp > abftEnv->T) {
 				// we should do check on block[i, j]
-				ABFTCheck(abftEnv, A + j*abftEnv->chk_nb*lda + i * abftEnv->chk_nb, lda,
-						  abftEnv->chk_nb, abftEnv->chk_nb,
-						  COL_CHK(i, j), abftEnv->col_dchk_ld);
+				// ABFTCheck(abftEnv, A + j*abftEnv->chk_nb*lda + i * abftEnv->chk_nb, lda,
+				// 		  abftEnv->chk_nb, abftEnv->chk_nb,
+				// 		  COL_CHK(i, j), abftEnv->col_dchk_ld);
 				*(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i) = time(NULL);
 			}
 		}
