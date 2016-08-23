@@ -674,8 +674,6 @@ void row_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, 
 					break;		
 			case 12: row_chk_recal_12(abftEnv, A, lda, m, n);
 					break;
-			case 15: row_chk_recal_1_5(abftEnv, A, lda, m, n);
-			break;
 			default: cout << "selecting error" << endl;
 		}
 }
