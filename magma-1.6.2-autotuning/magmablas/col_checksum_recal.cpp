@@ -11,7 +11,7 @@ using namespace std;
 //separated
 void col_checksum_kernel_ncns2(int m, int n, int chk_nb, 
 						   double * A, int lda, 
-						   int hrz_vd, int hrz_vd_ld, 
+						   double * hrz_vd, int hrz_vd_ld, 
 						   double * hrz_chk, int hrz_chk_ld, 
 						   magma_queue_t * stream) {
 
@@ -57,7 +57,7 @@ void col_chk_recal_1(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //separated - 4 stream
 void col_checksum_kernel_ncns4(int m, int n, int chk_nb, 
 						   double * A, int lda,
-						   int hrz_vd, int hrz_vd_ld,
+						   double * hrz_vd, int hrz_vd_ld,
 						   double * hrz_chk, int hrz_chk_ld,
 						   magma_queue_t * stream) {
 
@@ -124,7 +124,7 @@ void col_chk_recal_2(ABFTEnv * abftEnv, double * A, int lda,int m, int n){
 //separated 
 void col_checksum_kernel_ccns2(int m, int n, int chk_nb, 
 						   double * A, int lda, 
-						   int vrt_vd, int vrt_vd_ld, 
+						   double * vrt_vd, int vrt_vd_ld, 
 						   double * hrz_chk, int hrz_chk_ld, 
 						   magma_queue_t * stream) {
 
@@ -166,7 +166,7 @@ void col_chk_recal_3(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //separated - 4 stream
 void col_checksum_kernel_ccns4(int m, int n, int chk_nb, 
 						   double * A, int lda, 
-						   int vrt_vd, int vrt_vd_ld, 
+						   double * vrt_vd, int vrt_vd_ld, 
 						   double * hrz_chk, int hrz_chk_ld, 
 						   magma_queue_t * stream) {
 
@@ -232,7 +232,7 @@ void col_chk_recal_4(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //separated
 void col_checksum_kernel_nccs2(int m, int n, int chk_nb, 
 			   	 		   double * A, int lda, 
-			     		   int hrz_vd, int hrz_vd_ld, 
+			     		   double * hrz_vd, int hrz_vd_ld, 
 			     		   double * vrt_chk, int vrt_chk_ld, 
 			     		   magma_queue_t * stream) {
 
@@ -275,7 +275,7 @@ void col_chk_recal_5(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //separated - 4 stream
 void col_checksum_kernel_nccs4(int m, int n, int chk_nb, 
 			   	 		   double * A, int lda, 
-			     		   int hrz_vd, int hrz_vd_ld, 
+			     		   double * hrz_vd, int hrz_vd_ld, 
 			     		   double * vrt_chk, int vrt_chk_ld, 
 			     		   magma_queue_t * stream) {
 
@@ -339,7 +339,7 @@ void col_chk_recal_6(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //separated
 void col_checksum_kernel_cccs2(int m, int n, int chk_nb, 
 			   	 		   double * A, int lda, 
-			     		   int vrt_vd, int vrt_vd_ld, 
+			     		   double * vrt_vd, int vrt_vd_ld, 
 			     		   double * vrt_chk, int vrt_chk_ld, 
 			     		   magma_queue_t * stream) {
 
@@ -383,7 +383,7 @@ void col_chk_recal_7(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //separated - 4 streams
 void col_checksum_kernel_cccs4(int m, int n, int chk_nb, 
 			   	 		   double * A, int lda, 
-			     		   int vrt_vd, int vrt_vd_ld, 
+			     		   double * vrt_vd, int vrt_vd_ld, 
 			     		   double * vrt_chk, int vrt_chk_ld, 
 			     		   magma_queue_t * stream) {
 
@@ -448,7 +448,7 @@ void col_chk_recal_8(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //combined
 void col_checksum_kernel_ncnc1(int m, int n, int chk_nb, 
 			   	 		   double * A, int lda, 
-			     		   int hrz_vd, int hrz_vd_ld, 
+			     		   double * hrz_vd, int hrz_vd_ld, 
 			     		   double * hrz_chk, int hrz_chk_ld, 
 			     		   magma_queue_t * stream) {
 
@@ -482,7 +482,7 @@ void col_chk_recal_9(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //combined
 void col_checksum_kernel_ccnc1(int m, int n, int chk_nb, 
 			   	 		   double * A, int lda, 
-			     		   int vrt_vd, int vrt_vd_ld, 
+			     		   double * vrt_vd, int vrt_vd_ld, 
 			     		   double * hrz_chk, int hrz_chk_ld, 
 			     		   magma_queue_t * stream) {
 
@@ -558,7 +558,7 @@ void col_chk_recal_10(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //combined
 void col_checksum_kernel_nccc1(int m, int n, int chk_nb, 
 			   	 		   double * A, int lda, 
-			     		   int hrz_vd, int hrz_vd_ld, 
+			     		   double * hrz_vd, int hrz_vd_ld, 
 			     		   double * vrt_chk, int vrt_chk_ld, 
 			     		   magma_queue_t * stream) {
 
@@ -591,7 +591,7 @@ void col_chk_recal_11(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 //combined
 void col_checksum_kernel_cccc1(int m, int n, int chk_nb, 
 			   	 		   double * A, int lda, 
-			     		   int vrt_vd, int vrt_vd_ld, 
+			     		   double * vrt_vd, int vrt_vd_ld, 
 			     		   double * vrt_chk, int vrt_chk_ld, 
 			     		   magma_queue_t * stream) {
 
