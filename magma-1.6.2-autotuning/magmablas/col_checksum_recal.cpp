@@ -688,7 +688,7 @@ void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 }
 
 
-void benchmark(ABFTEnv * abftEnv, double * A, int lda){
+void col_benchmark(ABFTEnv * abftEnv, double * A, int lda){
 	cout << "start banchmarking:" << endl;
 	double benchmark_time = 0;
 
