@@ -12,8 +12,7 @@
 __global__ void
 col_detect_correct_kernel(double * A, int lda, int B, double E,
 				double * checksum_update, int checksum_update_ld,
-				double * checksum1_recal, int checksum1_recal_ld,
-				double * checksum2_recal, int checksum2_recal_ld)
+				double * hrz_recal_chk, int hrz_recal_chk_ld)
 {
     //determin the block to process
 	A = A + blockIdx.x * B + blockIdx.y * B * lda;
@@ -22,8 +21,8 @@ col_detect_correct_kernel(double * A, int lda, int B, double E,
 	
 	
     checksum_update = checksum_update + blockIdx.x * 2  + blockIdx.y * B * checksum_update_ld;
-    checksum1_recal = checksum1_recal + blockIdx.x + blockIdx.y * B * checksum1_recal_ld;
-    checksum2_recal = checksum2_recal + blockIdx.x + blockIdx.y * B * checksum2_recal_ld;
+    hrz_recal_chk = hrz_recal_chk + blockIdx.x * 2+ blockIdx.y * B * hrz_recal_chk_ld;
+
     
     
     //printf("block:%f---blockx=%d, blocky=%d \n",*checksum2_recal,blockIdx.x,blockIdx.y);
@@ -31,11 +30,10 @@ col_detect_correct_kernel(double * A, int lda, int B, double E,
     //determine the specific colum to process
     A = A + threadIdx.x * lda;
     checksum_update = checksum_update + threadIdx.x * checksum_update_ld;
-	checksum1_recal = checksum1_recal + threadIdx.x * checksum1_recal_ld;
-	checksum2_recal = checksum2_recal + threadIdx.x * checksum2_recal_ld;
+	hrz_recal_chk = hrz_recal_chk + threadIdx.x * hrz_recal_chk_ld;
 	
-	double d1 = (*checksum_update) - (*checksum1_recal);
-	double d2 = (*(checksum_update + 1)) - (*checksum2_recal);
+	double d1 = (*checksum_update) - (*hrz_recal_chk);
+	double d2 = (*(checksum_update + 1)) - (*hrz_recal_chk + 1);
 	
 	//error detected
 	if(fabs(d1) > E) {
@@ -59,8 +57,7 @@ col_detect_correct_kernel(double * A, int lda, int B, double E,
 __global__ void
 row_detect_correct_kernel(double * A, int lda, int B, double E,
 				double * checksum_update, int checksum_update_ld,
-				double * checksum1_recal, int checksum1_recal_ld,
-				double * checksum2_recal, int checksum2_recal_ld)
+				double * vrt_recal_chk, int vrt_recal_chk_ld)
 {
     //determin the block to process
 	A = A + blockIdx.x * B + blockIdx.y * B * lda;
@@ -69,8 +66,7 @@ row_detect_correct_kernel(double * A, int lda, int B, double E,
 	
 	
     checksum_update = checksum_update + blockIdx.x * B + blockIdx.y * 2 * checksum_update_ld;
-    checksum1_recal = checksum1_recal + blockIdx.x * B + blockIdx.y * checksum1_recal_ld;
-    checksum2_recal = checksum2_recal + blockIdx.x * B + blockIdx.y * checksum2_recal_ld;
+    vrt_recal_chk = vrt_recal_chk + blockIdx.x * B + blockIdx.y * 2 * vrt_recal_chk_ld;
     
     
     //printf("block:%f---blockx=%d, blocky=%d \n",*checksum2_recal,blockIdx.x,blockIdx.y);
@@ -78,11 +74,10 @@ row_detect_correct_kernel(double * A, int lda, int B, double E,
     //determine the specific colum to process
     A = A + threadIdx.x;
     checksum_update = checksum_update + threadIdx.x;
-	checksum1_recal = checksum1_recal + threadIdx.x;
-	checksum2_recal = checksum2_recal + threadIdx.x;
+	vrt_recal_chk = vrt_recal_chk + threadIdx.x;
 	
-	double d1 = (*checksum_update) - (*checksum1_recal);
-	double d2 = (*(checksum_update + checksum_update_ld)) - (*checksum2_recal);
+	double d1 = (*checksum_update) - (*vrt_recal_chk);
+	double d2 = (*(checksum_update + checksum_update_ld)) - (*(vrt_recal_chk + vrt_recal_chk_ld));
 	
 	//error detected
 	if(fabs(d1) > E) {
@@ -109,8 +104,7 @@ row_detect_correct_kernel(double * A, int lda, int B, double E,
  */
 void col_detect_correct(double * A, int lda, int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
-		double * checksum1_recal, int checksum1_recal_ld,
-		double * checksum2_recal, int checksum2_recal_ld, 
+		double * hrz_recal_chk, int hrz_recal_chk_ld,
 		cudaStream_t stream) 
 {
 	printf("col_detect_correct called \n");
@@ -119,8 +113,7 @@ void col_detect_correct(double * A, int lda, int B, int m, int n,
 	
 	col_detect_correct_kernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(A, lda, B, E,
 					checksum_update, checksum_update_ld,
-					checksum1_recal, checksum1_recal_ld,
-					checksum2_recal, checksum2_recal_ld);
+					hrz_recal_chk, hrz_recal_chk_ld);
 
 	cudaStreamSynchronize(stream);
 					
@@ -134,8 +127,7 @@ void col_detect_correct(double * A, int lda, int B, int m, int n,
  */
 void row_detect_correct(double * A, int lda, int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
-		double * checksum1_recal, int checksum1_recal_ld,
-		double * checksum2_recal, int checksum2_recal_ld, 
+		double * vrt_recal_chk, int vrt_recal_chk_ld,
 		cudaStream_t stream) 
 {
 	printf("row_detect_correct called \n");
@@ -144,8 +136,7 @@ void row_detect_correct(double * A, int lda, int B, int m, int n,
 	
 	row_detect_correct_kernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(A, lda, B, E,
 					checksum_update, checksum_update_ld,
-					checksum1_recal, checksum1_recal_ld,
-					checksum2_recal, checksum2_recal_ld);
+					vrt_recal_chk, vrt_recal_chk_ld);
 					
 }
 

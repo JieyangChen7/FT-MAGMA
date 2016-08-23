@@ -76,9 +76,6 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         // printMatrix_host(cA, ldca,  m, n, 4, 4);
     }
 
-    cout<<"[dgetrf1] updated checksum on CPU before factorization:"<<endl;
-        printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m, 2, -1, -1);
-
     if (FT & VERIFY) {
     	char N = 'N';
         double * chk1 = new double[m];

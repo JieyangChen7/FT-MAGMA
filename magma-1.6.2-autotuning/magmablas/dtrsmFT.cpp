@@ -30,8 +30,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 
 		col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
         					  col_chkB, col_chkB_ld,
-        					  abftEnv->chk1, abftEnv->chk1_ld,
-        					  abftEnv->chk2, abftEnv->chk2_ld,
+        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
         					  abftEnv->stream[1]);
 
 		// col_debug(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
@@ -88,8 +87,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 		col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
         					  col_chkB, col_chkB_ld,
-        					  abftEnv->chk1, abftEnv->chk1_ld,
-        					  abftEnv->chk2, abftEnv->chk2_ld,
+        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
         					  abftEnv->stream[1]);
 		
 		if (DEBUG) {

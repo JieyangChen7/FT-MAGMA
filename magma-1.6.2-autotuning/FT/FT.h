@@ -217,15 +217,13 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
 void col_detect_correct(double * A, int lda, 
 		int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
-		double * checksum1_recal, int checksum1_recal_ld,
-		double * checksum2_recal, int checksum2_recal_ld, 
+		double * hrz_recal_chk, int hrz_recal_chk_ld,
 		cudaStream_t stream);
 
 void row_detect_correct(double * A, int lda, 
 		int B, int m, int n,
 		double * checksum_update, int checksum_update_ld,
-		double * checksum1_recal, int checksum1_recal_ld,
-		double * checksum2_recal, int checksum2_recal_ld, 
+		double * vrt_recal_chk, int vrt_recal_chk_ld,
 		cudaStream_t stream);
 
 void col_debug(double * A, int lda, int B, int m, int n,
