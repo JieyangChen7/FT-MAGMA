@@ -295,8 +295,8 @@ void MemoryErrorCheck(ABFTEnv * abftEnv, double * A, int lda) {
 
 //update updating counter and check if necessary
 bool updateCounter(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2, int count) {
-	cout<<"Counter before"<<endl;
-	printMatrix_host_int(abftEnv->updatedCounter, abftEnv->updatedCounter_ld, abftEnv->gpu_row /abftEnv->chk_nb, abftEnv->gpu_col /abftEnv->chk_nb, -1, -1);
+	// cout<<"Counter before"<<endl;
+	// printMatrix_host_int(abftEnv->updatedCounter, abftEnv->updatedCounter_ld, abftEnv->gpu_row /abftEnv->chk_nb, abftEnv->gpu_col /abftEnv->chk_nb, -1, -1);
 	bool verify = false;
 	for (int i = row1; i <= row2; i++) {
 		for (int j = col1; j <= col2; j++) {
@@ -314,8 +314,8 @@ bool updateCounter(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2, in
 		}
 	}
 
-	cout<<"Counter after"<<endl;
-	printMatrix_host_int(abftEnv->updatedCounter, abftEnv->updatedCounter_ld, abftEnv->gpu_row /abftEnv->chk_nb, abftEnv->gpu_col /abftEnv->chk_nb, -1, -1);
+	// cout<<"Counter after"<<endl;
+	// printMatrix_host_int(abftEnv->updatedCounter, abftEnv->updatedCounter_ld, abftEnv->gpu_row /abftEnv->chk_nb, abftEnv->gpu_col /abftEnv->chk_nb, -1, -1);
 	return verify;
 }
 
