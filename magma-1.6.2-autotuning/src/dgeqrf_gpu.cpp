@@ -263,7 +263,9 @@ magma_dgeqrf_gpu(
                 //                   dT(old_i), nb,
                 //                   dA(old_i, old_i+2*old_ib), ldda, 
                 //                   dd_ref(0),    lddwork);
-
+                cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
+                cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
+                cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
                  dlarfbFT( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
                            m-old_i, cols, old_ib,
                               dA(old_i, old_i         ), ldda, 
