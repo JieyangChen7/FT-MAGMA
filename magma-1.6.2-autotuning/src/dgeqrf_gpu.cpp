@@ -271,11 +271,11 @@ magma_dgeqrf_gpu(
             magma_queue_sync( stream[1] );
 
 
-            cout << "[out] column checksum before factorization" << endl;
-            printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (rows / abftEnv->chk_nb) * 2, ib, 2, 4);
+            // cout << "[out] column checksum before factorization" << endl;
+            // printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (rows / abftEnv->chk_nb) * 2, ib, 2, 4);
 
-            cout << "[out] row checksum before factorization" << endl;
-            printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, rows , (ib / abftEnv->chk_nb) * 2, 4, 2);
+            // cout << "[out] row checksum before factorization" << endl;
+            // printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, rows , (ib / abftEnv->chk_nb) * 2, 4, 2);
 
 
 
