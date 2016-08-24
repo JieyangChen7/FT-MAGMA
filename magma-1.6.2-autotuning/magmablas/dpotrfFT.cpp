@@ -23,7 +23,7 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 	double one = 1;
 	double zero = 0;
 	double negone = -1;
-	cout << "potrf" << endl;
+	//cout << "potrf" << endl;
 	
 	if (FT && VERIFY) {
 		magma_set_lapack_numthreads(16);

@@ -18,7 +18,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		double * row_chkB, int row_chkB_ld,
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * stream) {
-	cout << "trsm" << endl;
+	//cout << "trsm" << endl;
 	cudaStreamSynchronize(stream[1]);
 	cudaStreamSynchronize(stream[4]);
 	if (VERIFY) {

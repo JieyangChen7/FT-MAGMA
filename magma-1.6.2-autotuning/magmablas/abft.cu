@@ -107,7 +107,7 @@ void col_detect_correct(double * A, int lda, int B, int m, int n,
 		double * hrz_recal_chk, int hrz_recal_chk_ld,
 		cudaStream_t stream) 
 {
-	printf("col_detect_correct called \n");
+	//printf("col_detect_correct called \n");
 	//error threshold 
 	double E = 1e-5;
 	
@@ -130,7 +130,7 @@ void row_detect_correct(double * A, int lda, int B, int m, int n,
 		double * vrt_recal_chk, int vrt_recal_chk_ld,
 		cudaStream_t stream) 
 {
-	printf("row_detect_correct called \n");
+	//printf("row_detect_correct called \n");
 	//error threshold 
 	double E = 1e-5;
 	
