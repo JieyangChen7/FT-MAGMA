@@ -267,7 +267,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 	cout << "updatedCounter initialize" << endl;
     abftEnv->updatedCounter = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
     abftEnv->updatedCounter_ld = abftEnv->gpu_row/abftEnv->chk_nb;
-    for ()
+    memset(abftEnv->updatedCounter, 0,(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb) * sizeof(double) );
     cout << "done." << endl;
 
     //to he auto tuned later
