@@ -55,10 +55,10 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 		
 		if (DEBUG) {
 			cout<<"[DPOTRF-BEFORE]recalcuated checksum on CPU before factorization:"<<endl;
-			printMatrix_host(chk1, 1, 1, n);
-			printMatrix_host(chk2, 1, 1, n);
+			printMatrix_host(chk1, 1, 1, n, -1, -1);
+			printMatrix_host(chk2, 1, 1, n, -1, -1);
 			cout<<"[DPOTRF-BEFORE]updated checksum on CPU before factorization:"<<endl;
-			printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, 2, n);
+			printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, 2, n, -1, -1);
 		}
 	}
 	
