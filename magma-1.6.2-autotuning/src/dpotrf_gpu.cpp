@@ -263,7 +263,7 @@ magma_dpotrf_gpu(
                 }
                            
                 if ( (j+jb) < n && j > 0) {	
-                    VERIFY = updateCounter(abftEnv,j / nb + 1, m / nb - 1, j / nb, j / nb, 1);
+                    VERIFY = updateCounter(abftEnv,j / nb + 1, n / nb - 1, j / nb, j / nb, 1);
                 	dgemmFT( MagmaNoTrans, MagmaTrans,
                             (n-j-jb), jb, j, 
                             MAGMA_D_ONE * (-1),
@@ -307,7 +307,7 @@ magma_dpotrf_gpu(
 //                
                 if ( (j+jb) < n) {  
 
-                    VERIFY = updateCounter(abftEnv, j / nb + 1, m / nb - 1, j / nb, j / nb, 1);
+                    VERIFY = updateCounter(abftEnv, j / nb + 1, n / nb - 1, j / nb, j / nb, 1);
                 	dtrsmFT( MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
                             (n-j-jb), jb, MAGMA_D_ONE,
                             dA(j,    j), ldda,
