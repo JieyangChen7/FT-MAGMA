@@ -341,10 +341,7 @@ magma_dgetrf_gpu(
             magma_queue_sync( stream[0] );
             //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
 
-            cout<<"[out] updated checksum on CPU before factorization:"<<endl;
-            printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, rows, 2, -1, -1);
-
-            //VERIFY = updateCounter(abftEnv, j, j, j, m / nb - 1, 1);
+            VERIFY = updateCounter(abftEnv, j, j, j, m / nb - 1, 1);
             dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo, abftEnv, FT, DEBUG, VERIFY);
 
             if ( *info == 0 && iinfo > 0 )
