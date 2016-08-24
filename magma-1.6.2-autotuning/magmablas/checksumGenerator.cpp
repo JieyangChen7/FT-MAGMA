@@ -179,8 +179,6 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     init_row_chk(abftEnv, A, lda);
     cout << "done." << endl;
 
-    abftEnv->N = 2;
-
 
     if (DEBUG) {
     	cout << "input matrix:" << endl;
@@ -267,7 +265,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 	cout << "updatedCounter initialize" << endl;
     abftEnv->updatedCounter = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
     abftEnv->updatedCounter_ld = abftEnv->gpu_row/abftEnv->chk_nb;
-    memset(abftEnv->updatedCounter, 0,(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb) * sizeof(double) );
+    memset(abftEnv->updatedCounter, 0,(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb) * sizeof(int) );
     cout << "done." << endl;
 
     //to he auto tuned later
