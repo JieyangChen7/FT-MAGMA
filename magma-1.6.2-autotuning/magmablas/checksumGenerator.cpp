@@ -4,6 +4,7 @@
 #include <cmath>
 #include "cuda_profiler_api.h"
 #include "cublas_v2.h"
+#include <cstring>
 using namespace std;
 //initialize checksum
 //M: number of rows
@@ -266,7 +267,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 	cout << "updatedCounter initialize" << endl;
     abftEnv->updatedCounter = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
     abftEnv->updatedCounter_ld = abftEnv->gpu_row/abftEnv->chk_nb;
-    memset(abftEnv->updatedCounter, 0,(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb) * sizeof(double) );
+    for ()
     cout << "done." << endl;
 
     //to he auto tuned later
