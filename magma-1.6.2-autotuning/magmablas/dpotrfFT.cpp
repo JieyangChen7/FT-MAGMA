@@ -37,14 +37,14 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 		                &n, &n,
 		                &one,
 		                A, &lda,
-		                abftEnv->v, &(abftEnv->v_ld),
+		                abftEnv->hrz_v, &(abftEnv->hrz_v_ld),
 		                &zero,
 		                chk1, &chk1_inc );
 		blasf77_dgemv(  &T,
 						&n, &n,
 						&one,
 						A, &lda,
-						abftEnv->v + 1, &(abftEnv->v_ld),
+						abftEnv->hrz_v + 1, &(abftEnv->hrz_v_ld),
 						&zero,
 						chk2, &chk2_inc ); 
 		//handle error 
@@ -53,13 +53,13 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 //								chk1, chk1_inc,
 //								chk2, chk2_inc);
 		
-//		if (DEBUG) {
-//			cout<<"recalcuated checksum on CPU before factorization:"<<endl;
-//			printMatrix_host(chk1, 1, 1, n);
-//			printMatrix_host(chk2, 1, 1, n);
-//			cout<<"updated checksum on CPU before factorization:"<<endl;
-//			printMatrix_host(chksum, chksum_ld, 2, n);
-//		}
+		if (DEBUG) {
+			cout<<"[DPOTRF-BEFORE]recalcuated checksum on CPU before factorization:"<<endl;
+			printMatrix_host(chk1, 1, 1, n);
+			printMatrix_host(chk2, 1, 1, n);
+			cout<<"[DPOTRF-BEFORE]updated checksum on CPU before factorization:"<<endl;
+			printMatrix_host(chksum, chksum_ld, 2, n);
+		}
 	}
 	
 	//do Choleksy factorization
