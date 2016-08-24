@@ -1,5 +1,6 @@
 #./testing/testing_dgetrf_gpu -N 16,16 
-./testing/testing_dpotrf_gpu -N 16,16 
+#./testing/testing_dpotrf_gpu -N 16,16 
+./testing/testing_dgeqrf_gpu -N 16,16 
 #ivy K20c - 25000
 #bdz K40c - 33000
 #bdz C2050 - 18000

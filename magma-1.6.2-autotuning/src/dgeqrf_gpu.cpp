@@ -155,7 +155,7 @@ magma_dgeqrf_gpu(
         return *info;
 
     nb = magma_get_dgeqrf_nb(m);
-   // nb = 4;
+    nb = 4;
     lwork  = (m + n + nb)*nb;
     lhwork = lwork - m*nb;
 
@@ -179,7 +179,7 @@ magma_dgeqrf_gpu(
 
     /* flags */
     bool FT = true;
-    bool DEBUG = false;
+    bool DEBUG = true;
     bool VERIFY = true;
 
     double * dT_col_chk;
