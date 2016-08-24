@@ -87,7 +87,7 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
     if ( side == MagmaLeft ) {
         // Form H C or H^H C
         // Comments assume H C. When forming H^H C, T gets transposed via transt.
-        
+        cout << "dlarfb" << endl;
         // W = C^H V
         dgemmFT( MagmaTrans, notransV,
                 n, k, m,
