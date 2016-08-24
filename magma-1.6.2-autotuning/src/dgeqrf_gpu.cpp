@@ -275,8 +275,8 @@ magma_dgeqrf_gpu(
                               ROW_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb), abftEnv->row_dchk_ld,
                               dT_col_chk, dT_col_chk_ld,
                               dT_row_chk, dT_row_chk_ld,
-                              COL_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb + 1), abftEnv->col_dchk_ld,
-                              ROW_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb + 1), abftEnv->row_dchk_ld,
+                              COL_CHK(old_i / abftEnv->chk_nb, (old_i+2*old_ib) /abftEnv->chk_nb), abftEnv->col_dchk_ld,
+                              ROW_CHK(old_i / abftEnv->chk_nb, (old_i+2*old_ib) /abftEnv->chk_nb), abftEnv->row_dchk_ld,
                               dwork_col_chk, dwork_col_chk_ld,
                               dwork_row_chk, dwork_row_chk_ld,
                               FT, DEBUG, VERIFY, stream);
