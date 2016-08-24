@@ -269,7 +269,7 @@ magma_dgeqrf_gpu(
                               dA(old_i, old_i         ), ldda, 
                               dT(old_i), nb,
                               dA(old_i, old_i+2*old_ib), ldda, 
-                              dd_ref(0),    lddwork);
+                              dd_ref(0),    lddwork,
                               abftEnv,
                               COL_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb), abftEnv->col_dchk_ld,
                               ROW_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb), abftEnv->row_dchk_ld,
