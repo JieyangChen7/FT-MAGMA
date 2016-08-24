@@ -272,14 +272,14 @@ magma_dgeqrf_gpu(
 
 
             cout << "[out] column checksum before factorization" << endl;
-            printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
+            printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (rows / abftEnv->chk_nb) * 2, ib, 2, 4);
 
             cout << "[out] row checksum before factorization" << endl;
-            printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
+            printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, rows , (ib / abftEnv->chk_nb) * 2, 4, 2);
 
 
 
-            
+
             //lapackf77_dgeqrf(&rows, &ib, work(i), &ldwork, tau+i, hwork, &lhwork, info);
             dgeqrfFT(rows, ib, work(i), ldwork, tau+i, hwork, lhwork, info, abftEnv, FT, DEBUG, VERIFY);
             /* Form the triangular factor of the block reflector

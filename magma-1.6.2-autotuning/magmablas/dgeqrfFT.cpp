@@ -40,11 +40,11 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 			int pn = 2;
 			int pincv = 1;
 
-			lapackf77_dlarf(&L, &pm, &pn,
-                         	A + i * lda + i, &pincv,
-                         	tau + i,
-                         	abftEnv->row_hchk + i, &(abftEnv->row_hchk_ld),
-                         	work );
+			// lapackf77_dlarf(&L, &pm, &pn,
+   //                       	A + i * lda + i, &pincv,
+   //                       	tau + i,
+   //                       	abftEnv->row_hchk + i, &(abftEnv->row_hchk_ld),
+   //                       	work );
 
 			*(A + i * lda + i) = Aii;
 
@@ -55,7 +55,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 			double c = 1 / (-1 * (*(tau + i) * Aii));
 			int p2n = (m / abftEnv->chk_nb) * 2;
 			int pincx = 1;
-			blasf77_dscal(&p2n, &c, abftEnv->col_hchk + i * abftEnv->col_hchk_ld, &pincx);
+		//	blasf77_dscal(&p2n, &c, abftEnv->col_hchk + i * abftEnv->col_hchk_ld, &pincx);
 
 			// int p3m = p2n - i;
 			// int p3n = n - i - 1;
