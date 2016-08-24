@@ -301,7 +301,7 @@ magma_dgetrf_gpu(
                 //              c_one, dAT(j-1,j-1), lddat,
                 //                     dAT(j-1,j+1), lddat );
 
-                //VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j - 1, j - 1, 1);
+                VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j - 1, j - 1, 1);
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n - (j+1)*nb, nb,
                              c_one, dAT(j-1,j-1), lddat,
@@ -320,7 +320,7 @@ magma_dgetrf_gpu(
                 //                         dAT(j,  j-1), lddat,
                 //              c_one,     dAT(j,  j+1), lddat );
 
-                 //VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j, m / nb - 1, 1);
+                 VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j, m / nb - 1, 1);
                  dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-j*nb, nb,
                              c_neg_one, dAT(j-1,j+1), lddat,
@@ -437,7 +437,7 @@ magma_dgetrf_gpu(
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
 
-                //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
+                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
                 dtrsmFT(MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                         nb, nb, 
                         c_one, dAT(j, j  ), lddat,
@@ -455,15 +455,7 @@ magma_dgetrf_gpu(
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
 
-                //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
-
-
-                // at_row_chk_recal(abftEnv, dAT(j+1, j+1), lddat, nb, m-(j+1)*nb);
-                // cout<<"row checksum of C matrix using chk_recal:"<<endl;
-                // printMatrix_gpu(abftEnv->chk21, abftEnv->chk21_ld, nb, (m-(j+1)*nb) / abftEnv->chk_nb, 4, 1);
-                // printMatrix_gpu(abftEnv->chk22, abftEnv->chk22_ld, nb, (m-(j+1)*nb) / abftEnv->chk_nb, 4, 1);
-
-
+                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
                 dgemmFT(MagmaNoTrans, MagmaNoTrans,
                         nb, m-(j+1)*nb, nb,
                         c_neg_one,
@@ -485,7 +477,7 @@ magma_dgetrf_gpu(
                 //              n-s*nb, nb,
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
-                //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
+                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n-s*nb, nb,
                              c_one, dAT(j, j  ), lddat,
@@ -503,7 +495,7 @@ magma_dgetrf_gpu(
                 //              c_neg_one, dAT(j,   j+1), lddat,
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
-                //VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
+                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
                 dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-(j+1)*nb, nb,
                              c_neg_one, dAT(j,   j+1), lddat,

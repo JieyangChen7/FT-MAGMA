@@ -178,6 +178,9 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     init_row_chk(abftEnv, A, lda);
     cout << "done." << endl;
 
+    abftEnv->N = 2;
+    
+
     if (DEBUG) {
     	cout << "input matrix:" << endl;
         printMatrix_gpu(A, lda, gpu_row, gpu_col, 4, 4);
