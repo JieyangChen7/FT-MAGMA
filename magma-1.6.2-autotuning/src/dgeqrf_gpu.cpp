@@ -230,8 +230,8 @@ magma_dgeqrf_gpu(
         magma_dmalloc(&dwork_col_chk, dwork_col_chk_pitch * nb);
         cout << "done." << endl;
 
-        col_benchmark(abftEnv, dA, ldda);
-        row_benchmark(abftEnv, dA, ldda);
+        // col_benchmark(abftEnv, dA, ldda);
+        // row_benchmark(abftEnv, dA, ldda);
 
     }
 
@@ -269,6 +269,17 @@ magma_dgeqrf_gpu(
             }
 
             magma_queue_sync( stream[1] );
+
+
+            cout << "[out] column checksum before factorization" << endl;
+            printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
+
+            cout << "[out] row checksum before factorization" << endl;
+            printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
+
+
+
+            
             //lapackf77_dgeqrf(&rows, &ib, work(i), &ldwork, tau+i, hwork, &lhwork, info);
             dgeqrfFT(rows, ib, work(i), ldwork, tau+i, hwork, lhwork, info, abftEnv, FT, DEBUG, VERIFY);
             /* Form the triangular factor of the block reflector
