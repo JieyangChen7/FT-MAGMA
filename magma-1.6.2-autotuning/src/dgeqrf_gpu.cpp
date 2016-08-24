@@ -257,10 +257,29 @@ magma_dgeqrf_gpu(
             if (i > 0) {
                 /* Apply H' to A(i:m,i+2*ib:n) from the left */
                 cols = n-old_i-2*old_ib;
-                magma_dlarfb_gpu( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
-                                  m-old_i, cols, old_ib,
-                                  dA(old_i, old_i         ), ldda, dT(old_i), nb,
-                                  dA(old_i, old_i+2*old_ib), ldda, dd_ref(0),    lddwork);
+                // magma_dlarfb_gpu( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
+                //                   m-old_i, cols, old_ib,
+                //                   dA(old_i, old_i         ), ldda, 
+                //                   dT(old_i), nb,
+                //                   dA(old_i, old_i+2*old_ib), ldda, 
+                //                   dd_ref(0),    lddwork);
+
+                 dlarfbFT( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
+                           m-old_i, cols, old_ib,
+                              dA(old_i, old_i         ), ldda, 
+                              dT(old_i), nb,
+                              dA(old_i, old_i+2*old_ib), ldda, 
+                              dd_ref(0),    lddwork);
+                              abftEnv,
+                              COL_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb), abftEnv->col_dchk_ld,
+                              ROW_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb), abftEnv->row_dchk_ld,
+                              dT_col_chk, dT_col_chk_ld,
+                              dT_row_chk, dT_row_chk_ld,
+                              COL_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb + 1), abftEnv->col_dchk_ld,
+                              ROW_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb + 1), abftEnv->row_dchk_ld,
+                              dwork_col_chk, dwork_col_chk_ld,
+                              dwork_row_chk, dwork_row_chk_ld,
+                              FT, DEBUG, VERIFY, stream);
                 
                 /* store the diagonal */
                 magma_dsetmatrix_async( old_ib, old_ib,
