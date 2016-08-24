@@ -264,7 +264,7 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 
 
 	cout << "updatedCounter initialize" << endl;
-    abftEnv->updatedCounter = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
+    abftEnv->updatedCounter = new int[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)]();
     abftEnv->updatedCounter_ld = abftEnv->gpu_row/abftEnv->chk_nb;
     cout << "done." << endl;
 
