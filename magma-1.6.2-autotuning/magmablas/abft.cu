@@ -109,14 +109,14 @@ void col_detect_correct(double * A, int lda, int B, int m, int n,
 {
 	//printf("col_detect_correct called \n");
 	//error threshold 
-	double E = 1e-5;
+	/*double E = 1e-5;
 	
 	col_detect_correct_kernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(A, lda, B, E,
 					checksum_update, checksum_update_ld,
 					hrz_recal_chk, hrz_recal_chk_ld);
 
 	cudaStreamSynchronize(stream);
-					
+	*/				
 }
 
 
@@ -132,12 +132,13 @@ void row_detect_correct(double * A, int lda, int B, int m, int n,
 {
 	//printf("row_detect_correct called \n");
 	//error threshold 
+	/*
 	double E = 1e-5;
 	
 	row_detect_correct_kernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(A, lda, B, E,
 					checksum_update, checksum_update_ld,
 					vrt_recal_chk, vrt_recal_chk_ld);
-					
+	*/				
 }
 
 
