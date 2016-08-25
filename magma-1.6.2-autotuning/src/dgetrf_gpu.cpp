@@ -349,7 +349,7 @@ magma_dgetrf_gpu(
             magma_dsetmatrix_async( m-j*nb, nb, work, ldwork, dAP, maxm,
                                     stream[0]);
 
-            if (FT) {
+            if (true) {
 
                 // transfer checksums back to GPU.
                 magma_dsetmatrix_async( m-j*nb, 2, 
