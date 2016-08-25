@@ -238,8 +238,10 @@ magma_dgeqrf_gpu(
 
     if ( (nb > 1) && (nb < k) ) {
         /* Use blocked code initially */
+        cout << "nb=" << nb << endl;
         old_i = 0; old_ib = nb;
         for (i = 0; i < k-nb; i += nb) {
+            cout << "i=" << i << endl;
             ib = min(k-i, nb);
             rows = m -i;
             magma_dgetmatrix_async( rows, ib,
@@ -247,6 +249,7 @@ magma_dgeqrf_gpu(
                                     work(i), ldwork, stream[1] );
             if (FT) {
                 //transfer checksums to CPU
+                cout << "ib=" << ib << endl;
                 magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
                                         ROW_CHK(i, i),  abftEnv->row_dchk_ld,
                                         abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
