@@ -733,7 +733,7 @@ void col_benchmark(ABFTEnv * abftEnv, double * A, int lda){
 	double benchmark_time = 0;
 
 	for (int size = 5120; size <= 20480; size += 5120){
-		cout << "size=" << size << end;
+		cout << "size=" << size << endl;
 	benchmark_time = magma_wtime();
 	for (int i = abftEnv->chk_nb; i <= abftEnv->chk_nb; i += abftEnv->chk_nb) {
 
