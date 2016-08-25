@@ -414,7 +414,7 @@ magma_dgetrf_gpu(
             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
 
 
-            if (FT) {
+            if (true) {
                 //transpose checksums back
                 magmablas_dtranspose( m-j*nb, 2, 
                                       dAP_row_chk, dAP_row_chk_ld, 
