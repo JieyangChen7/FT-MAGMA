@@ -346,24 +346,24 @@ magma_dgeqrf_gpu(
                         MAGMA_D_ZERO, 
                         dT_row_chk, dT_row_chk_ld);     
 
-                    // /* calucate the row/col checksums for dV*/
-                    // for (int p = i; p < m; p += nb) {
-                    //     magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-                    //         2, abftEnv->chk_nb, abftEnv->chk_nb,
-                    //         MAGMA_D_ONE, 
-                    //         abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
-                    //         dA(p, i   ), ldda,
-                    //         MAGMA_D_ZERO, 
-                    //         COL_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld);  
+                    /* calucate the row/col checksums for dV*/
+                    for (int p = i; p < m; p += nb) {
+                        magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                            2, abftEnv->chk_nb, abftEnv->chk_nb,
+                            MAGMA_D_ONE, 
+                            abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
+                            dA(p, i   ), ldda,
+                            MAGMA_D_ZERO, 
+                            COL_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld);  
 
-                    //     magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-                    //         abftEnv->chk_nb, 2, abftEnv->chk_nb,
-                    //         MAGMA_D_ONE, 
-                    //         dA(p, i   ), ldda,
-                    //         abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
-                    //         MAGMA_D_ZERO, 
-                    //         ROW_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld);     
-                    // }
+                        magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                            abftEnv->chk_nb, 2, abftEnv->chk_nb,
+                            MAGMA_D_ONE, 
+                            dA(p, i   ), ldda,
+                            abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
+                            MAGMA_D_ZERO, 
+                            ROW_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld);     
+                    }
                 }
 
                 if (FT) {
