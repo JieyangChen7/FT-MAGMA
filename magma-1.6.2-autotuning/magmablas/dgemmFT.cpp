@@ -169,7 +169,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 				C, ldc );
 	
 	if(FT){	
-		magmablasSetKernelStream(streams[4]);
+		magmablasSetKernelStream(stream[4]);
 
 		if (transA == MagmaNoTrans) {
 			magma_dgemm(transA, transB,
