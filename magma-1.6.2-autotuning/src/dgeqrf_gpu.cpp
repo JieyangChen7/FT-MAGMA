@@ -324,41 +324,44 @@ magma_dgeqrf_gpu(
                 /* Send the triangular factor T to the GPU */
                 magma_dsetmatrix( ib, ib, hwork, ib, dT(i), nb );
 
-                /* calucate the row/col checksums for dT*/
-                magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-                    2, abftEnv->chk_nb, abftEnv->chk_nb,
-                    MAGMA_D_ONE, 
-                    abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
-                    dT(i), nb,
-                    MAGMA_D_ZERO, 
-                    dT_col_chk, dT_col_chk_ld);  
-
-                magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-                    abftEnv->chk_nb, 2, abftEnv->chk_nb,
-                    MAGMA_D_ONE, 
-                    dT(i), nb,
-                    abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
-                    MAGMA_D_ZERO, 
-                    dT_row_chk, dT_row_chk_ld);     
-
-                /* calucate the row/col checksums for dV*/
-                for (int p = i; p < m; p += nb) {
+                if (FT) {
+                    /* calucate the row/col checksums for dT*/
                     magma_dgemm(MagmaNoTrans, MagmaNoTrans,
                         2, abftEnv->chk_nb, abftEnv->chk_nb,
                         MAGMA_D_ONE, 
                         abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
-                        dA(p, i   ), ldda,
+                        dT(i), nb,
                         MAGMA_D_ZERO, 
-                        COL_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld);  
+                        dT_col_chk, dT_col_chk_ld);  
 
                     magma_dgemm(MagmaNoTrans, MagmaNoTrans,
                         abftEnv->chk_nb, 2, abftEnv->chk_nb,
                         MAGMA_D_ONE, 
-                        dA(p, i   ), ldda,
+                        dT(i), nb,
                         abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
                         MAGMA_D_ZERO, 
-                        ROW_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld);     
+                        dT_row_chk, dT_row_chk_ld);     
+
+                    /* calucate the row/col checksums for dV*/
+                    for (int p = i; p < m; p += nb) {
+                        magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                            2, abftEnv->chk_nb, abftEnv->chk_nb,
+                            MAGMA_D_ONE, 
+                            abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
+                            dA(p, i   ), ldda,
+                            MAGMA_D_ZERO, 
+                            COL_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld);  
+
+                        magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                            abftEnv->chk_nb, 2, abftEnv->chk_nb,
+                            MAGMA_D_ONE, 
+                            dA(p, i   ), ldda,
+                            abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
+                            MAGMA_D_ZERO, 
+                            ROW_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld);     
+                    }
                 }
+
 
                 cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
                 cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
