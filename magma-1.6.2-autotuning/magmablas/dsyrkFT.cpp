@@ -99,7 +99,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	}
 
 
-	if (FT & VERIFT) {
+	if (FT & VERIFY) {
 		//verify C after use
 		//reclaculate checksums of C on GPU
 		at_col_chk_recal(abftEnv, C, ldc, n, n);
