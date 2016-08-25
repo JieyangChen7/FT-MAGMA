@@ -704,21 +704,21 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 				col_chk_recal_select(abftEnv, A, lda, i, i, 7);
 			}
 			benchmark_time = magma_wtime() - benchmark_time;
-			cout << "auto tuning time: " << benchmark_time << endl;
+			cout << "[" << i << "]" <<"auto tuning time: " << benchmark_time << endl;
 
 			benchmark_time = magma_wtime();
 			for (int t = 0; t < 100; t++) {
 				col_chk_recal_select(abftEnv, A, lda, i, i, 1);
 			}
 			benchmark_time = magma_wtime() - benchmark_time;
-			cout << "auto tuning time: " << benchmark_time << endl;
+			cout << "[" << i << "]" << "hand tuning time: " << benchmark_time << endl;
 
 			benchmark_time = magma_wtime();
 			for (int t = 0; t < 100; t++) {
 				col_chk_recal_select(abftEnv, A, lda, i, i, 9);
 			}
 			benchmark_time = magma_wtime() - benchmark_time;
-			cout << "auto tuning time: " << benchmark_time << endl;
+			cout << "[" << i << "]" << "naive tuning time: " << benchmark_time << endl;
 	//	}
 
 	}
