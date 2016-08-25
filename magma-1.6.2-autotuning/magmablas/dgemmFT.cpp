@@ -187,25 +187,25 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 					col_chkC, col_chkC_ld );
 		}
 
-		// if (transB == MagmaNoTrans) {
-		// 	//we can further work on this to support trans A.
-		// 	magma_dgemm(transA, transB,
-		// 			m , (n / abftEnv->chk_nb) * 2, k,
-		// 			alpha,
-		// 			A, lda,
-		// 			row_chkB, row_chkB_ld,
-		// 			beta,
-		// 			row_chkC, row_chkC_ld );
-		// } else {
-		// 	//we can further work on this to support trans A.
-		// 	magma_dgemm(transA, transB,
-		// 			m , (n / abftEnv->chk_nb) * 2, k,
-		// 			alpha,
-		// 			A, lda,
-		// 			col_chkB, col_chkB_ld,
-		// 			beta,
-		// 			row_chkC, row_chkC_ld );
-		// }
+		if (transB == MagmaNoTrans) {
+			//we can further work on this to support trans A.
+			magma_dgemm(transA, transB,
+					m , (n / abftEnv->chk_nb) * 2, k,
+					alpha,
+					A, lda,
+					row_chkB, row_chkB_ld,
+					beta,
+					row_chkC, row_chkC_ld );
+		} else {
+			//we can further work on this to support trans A.
+			magma_dgemm(transA, transB,
+					m , (n / abftEnv->chk_nb) * 2, k,
+					alpha,
+					A, lda,
+					col_chkB, col_chkB_ld,
+					beta,
+					row_chkC, row_chkC_ld );
+		}
 		
 	}
 
@@ -258,7 +258,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 
 						
-		// //verify B before use
+		// //verify B after use
 		
 
 		// if (transB == MagmaNoTrans) {
@@ -312,12 +312,12 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
         					  abftEnv->stream[1]);
 
-		// at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
+		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  row_chkC, row_chkC_ld,
-  //       					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-  //       					  abftEnv->stream[1]);
+		row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+        					  row_chkC, row_chkC_ld,
+        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+        					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 
