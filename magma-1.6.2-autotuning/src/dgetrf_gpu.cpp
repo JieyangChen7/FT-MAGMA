@@ -257,7 +257,7 @@ magma_dgetrf_gpu(
         cout << "nb=" << nb <<  endl;
         double comp_time = magma_wtime();
         for( j=0; j < s; j++ ) {
-            cout << "j=" << j << endl;
+            //cout << "j=" << j << endl;
             // download j-th panel
             cols = maxm - j*nb;
             magmablas_dtranspose( nb, m-j*nb, dAT(j,j), lddat, dAP, cols );
