@@ -279,7 +279,7 @@ magma_dgetrf_gpu(
             magma_dgetmatrix_async( m-j*nb, nb, dAP, cols, work, ldwork,
                                     stream[0]);
 
-            if (FT) {
+            if (true) {
                 // also copy checksums to CPU
                 magma_dgetmatrix_async( m-j*nb, 2, 
                                         dAP_row_chk, dAP_row_chk_ld, 
