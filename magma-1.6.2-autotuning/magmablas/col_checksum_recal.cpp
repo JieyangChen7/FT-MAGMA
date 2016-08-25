@@ -629,7 +629,7 @@ void col_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda) {
 	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 		cout << "[" << i << "]:	";
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
-			for (int c = 0; c < num_choice; c++) {
+			for (int c = 1; c <= num_choice; c++) {
 				gpu_time = magma_wtime();
 				for (int t = 0; t < num_test; t++) {
 					col_chk_recal_select(abftEnv, A, lda, i, j, c);
