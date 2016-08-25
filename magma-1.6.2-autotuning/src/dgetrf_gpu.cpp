@@ -243,8 +243,8 @@ magma_dgetrf_gpu(
 
 
              cout << "banchmarking:" << endl;
-             col_ChecksumRecalProfiler(abftEnv, dAT, lddat, stream); 
-             col_benchmark(abftEnv, dAT, lddat, stream);
+             col_ChecksumRecalProfiler(abftEnv, dAT, lddat); 
+             col_benchmark(abftEnv, dAT, lddat);
 
 
         }
