@@ -224,8 +224,9 @@ magma_dgetrf_gpu(
         int dAP_row_chk_ld;
 
         abftEnv = new ABFTEnv();
+        initializeABFTEnv(abftEnv, nb, dAT, lddat, n, m, m, nb, stream, 2, DEBUG);
         if (FT) {
-            initializeABFTEnv(abftEnv, nb, dAT, lddat, n, m, m, nb, stream, 2, DEBUG);
+           
     
             /* allocate space for checksum of dAP */
             cout << "allocate space for row checksum of dAP......";
