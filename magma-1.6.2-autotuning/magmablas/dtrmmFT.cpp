@@ -19,7 +19,7 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 	int mem_row = 0; // number of row and col stored in memory(no trans operation)
 	int mem_col = 0;
 
-	cout << "trmm" << endl;
+	//cout << "trmm" << endl;
 	if (FT & VERIFY) {
 		mem_row = n;
 		mem_col = n;
