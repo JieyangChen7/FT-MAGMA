@@ -113,11 +113,11 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 						bool DEBUG);
 
 
-void col_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
+void col_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda);
 
 void col_benchmark(ABFTEnv * abftEnv, double * A, int lda);
 
-void row_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda, magma_queue_t * stream);
+void row_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda);
 
 void row_benchmark(ABFTEnv * abftEnv, double * A, int lda);
 
