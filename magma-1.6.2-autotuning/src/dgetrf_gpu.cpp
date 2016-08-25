@@ -263,7 +263,7 @@ magma_dgetrf_gpu(
             cols = maxm - j*nb;
             magmablas_dtranspose( nb, m-j*nb, dAT(j,j), lddat, dAP, cols );
 
-            if (FT) {
+            if (true) {
                 // also transpose checksums
                 magmablas_dtranspose( 2, m-j*nb,
                                      COL_CHK_T(j,j), abftEnv->col_dchk_ld, 
