@@ -28,7 +28,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	cudaStreamSynchronize(stream[1]);
 	cudaStreamSynchronize(stream[4]);
 
-	//cout << "dgemm" << endl;
+	cout << "dgemm" << endl;
 
 	int mem_row = 0; // number of row and col of B stored in memory(no trans operation)
 	int mem_col = 0;
