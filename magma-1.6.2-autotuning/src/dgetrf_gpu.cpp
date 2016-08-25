@@ -229,7 +229,7 @@ magma_dgetrf_gpu(
 
         abftEnv = new ABFTEnv();
         initializeABFTEnv(abftEnv, nb, dAT, lddat, n, m, m, nb, stream, 2, DEBUG);
-        if (true) {
+        if (FT) {
            
     
             /* allocate space for checksum of dAP */
@@ -267,7 +267,7 @@ magma_dgetrf_gpu(
             cols = maxm - j*nb;
             magmablas_dtranspose( nb, m-j*nb, dAT(j,j), lddat, dAP, cols );
 
-            if (true) {
+            if (FT) {
                 // also transpose checksums
                 magmablas_dtranspose( 2, m-j*nb,
                                      COL_CHK_T(j,j), abftEnv->col_dchk_ld, 
@@ -283,7 +283,7 @@ magma_dgetrf_gpu(
             magma_dgetmatrix_async( m-j*nb, nb, dAP, cols, work, ldwork,
                                     stream[0]);
 
-            if (true) {
+            if (FT) {
                 // also copy checksums to CPU
                 magma_dgetmatrix_async( m-j*nb, 2, 
                                         dAP_row_chk, dAP_row_chk_ld, 
@@ -313,7 +313,7 @@ magma_dgetrf_gpu(
                              ROW_CHK_T(j-1, j-1), abftEnv->row_dchk_ld,
                              COL_CHK_T(j-1, j+1), abftEnv->col_dchk_ld,
                              ROW_CHK_T(j-1, j+1), abftEnv->row_dchk_ld,
-                             true, DEBUG, VERIFY, stream);
+                             FT, DEBUG, VERIFY, stream);
 
 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -335,7 +335,7 @@ magma_dgetrf_gpu(
                              ROW_CHK_T(j, j-1), abftEnv->row_dchk_ld,
                              COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
                              ROW_CHK_T(j, j+1), abftEnv->row_dchk_ld,
-                             true, DEBUG, VERIFY, stream);
+                             FT, DEBUG, VERIFY, stream);
             }
 
             // do the cpu part
@@ -353,7 +353,7 @@ magma_dgetrf_gpu(
             magma_dsetmatrix_async( m-j*nb, nb, work, ldwork, dAP, maxm,
                                     stream[0]);
 
-            if (true) {
+            if (FT) {
 
                 // transfer checksums back to GPU.
                 magma_dsetmatrix_async( m-j*nb, 2, 
@@ -371,7 +371,7 @@ magma_dgetrf_gpu(
                 ipiv[i] += j*nb;
             }
 
-            if (true) {
+            if (FT) {
                 int * real_effect = new int[m];
                 for (int i = 0; i < m; i++) {
                     real_effect[i] = i;
@@ -404,7 +404,7 @@ magma_dgetrf_gpu(
 
             magmablas_dlaswp( n, dAT, lddat, j*nb + 1, j*nb + nb, ipiv, 1 );
 
-            if (true) {
+            if (FT) {
                 // also do row swap on checksums
                 magmablas_dlaswp( (n/nb)*2, 
                                   abftEnv->col_dchk, abftEnv->col_dchk_ld, 
@@ -418,7 +418,7 @@ magma_dgetrf_gpu(
             magmablas_dtranspose( m-j*nb, nb, dAP, maxm, dAT(j,j), lddat );
 
 
-            if (true) {
+            if (FT) {
                 //transpose checksums back
                 magmablas_dtranspose( m-j*nb, 2, 
                                       dAP_row_chk, dAP_row_chk_ld, 
@@ -446,7 +446,7 @@ magma_dgetrf_gpu(
                         ROW_CHK_T(j, j), abftEnv->row_dchk_ld,                        
                         COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
                         ROW_CHK_T(j, j+1), abftEnv->row_dchk_ld,
-                        true, DEBUG, VERIFY, stream);
+                        FT, DEBUG, VERIFY, stream);
                 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
                 //              nb, m-(j+1)*nb, nb,
@@ -468,7 +468,7 @@ magma_dgetrf_gpu(
                         ROW_CHK_T(j+1, j), abftEnv->row_dchk_ld,
                         COL_CHK_T(j+1, j+1), abftEnv->col_dchk_ld,
                         ROW_CHK_T(j+1, j+1), abftEnv->row_dchk_ld,
-                        true, DEBUG, VERIFY, stream);
+                        FT, DEBUG, VERIFY, stream);
 
             }
             else if (n-s*nb > 0){
