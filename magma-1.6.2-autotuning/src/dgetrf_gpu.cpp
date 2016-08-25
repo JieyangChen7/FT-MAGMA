@@ -225,7 +225,7 @@ magma_dgetrf_gpu(
 
         abftEnv = new ABFTEnv();
         initializeABFTEnv(abftEnv, nb, dAT, lddat, n, m, m, nb, stream, 2, DEBUG);
-        if (FT) {
+        if (true) {
            
     
             /* allocate space for checksum of dAP */
