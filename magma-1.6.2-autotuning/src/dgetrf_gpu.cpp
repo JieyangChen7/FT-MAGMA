@@ -211,9 +211,9 @@ magma_dgetrf_gpu(
         }
   
         /* flags */
-        bool FT = true;
+        bool FT = false;
         bool DEBUG = false;
-        bool VERIFY = true;
+        bool VERIFY = false;
     
         ABFTEnv * abftEnv;
 
@@ -242,9 +242,9 @@ magma_dgetrf_gpu(
             cout << "done." << endl;
 
 
-             cout << "banchmarking:" << endl;
-             //col_ChecksumRecalProfiler(abftEnv, dAT, lddat); 
-             col_benchmark(abftEnv, dAT, lddat);
+             // cout << "banchmarking:" << endl;
+             // //col_ChecksumRecalProfiler(abftEnv, dAT, lddat); 
+             // col_benchmark(abftEnv, dAT, lddat);
 
 
         }
