@@ -92,6 +92,19 @@ struct ABFTEnv {
 };
 
 
+void row_checksum_kernel_cccs4(int m, int n, int chk_nb, 
+			   	 		   double * A, int lda, 
+			     		   double * vrt_vd, int vrt_vd_ld, 
+			     		   double * vrt_chk, int vrt_chk_ld, 
+			     		   magma_queue_t * stream);
+
+void col_checksum_kernel_ccns4(int m, int n, int chk_nb, 
+						   double * A, int lda, 
+						   double * vrt_vd, int vrt_vd_ld, 
+						   double * hrz_chk, int hrz_chk_ld, 
+						   magma_queue_t * stream);
+
+
 void CholeskyGenerator(double * A, int lda, int n);
 
 void printMatrix_host(double * matrix_host, int ld,  int M, int N, int row_block, int col_block);
