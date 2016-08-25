@@ -316,7 +316,8 @@ bool updateCounter(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2, in
 
 	// cout<<"Counter after"<<endl;
 	// printMatrix_host_int(abftEnv->updatedCounter, abftEnv->updatedCounter_ld, abftEnv->gpu_row /abftEnv->chk_nb, abftEnv->gpu_col /abftEnv->chk_nb, -1, -1);
-	return verify;
+	//return verify;
+    return false;
 }
 
 

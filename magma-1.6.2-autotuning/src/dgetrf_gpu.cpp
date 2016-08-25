@@ -299,6 +299,7 @@ magma_dgetrf_gpu(
                 //                     dAT(j-1,j+1), lddat );
 
                 VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j - 1, j - 1, 1);
+                
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n - (j+1)*nb, nb,
                              c_one, dAT(j-1,j-1), lddat,
