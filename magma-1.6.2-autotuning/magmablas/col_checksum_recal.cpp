@@ -689,6 +689,43 @@ void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 }
 
 
+void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
+	cout << "start banchmarking:" << endl;
+	double benchmark_time = 0;
+
+
+	
+	for (int i = abftEnv->chk_nb; i <= abftEnv->gpu_row; i += abftEnv->chk_nb) {
+
+	//	for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
+
+			benchmark_time = magma_wtime();
+			for (int t = 0; t < 100; t++) {
+				col_chk_recal_select(abftEnv, A, lda, i, i, 7);
+			}
+			benchmark_time = magma_wtime() - benchmark_time;
+			cout << "auto tuning time: " << benchmark_time << endl;
+
+			benchmark_time = magma_wtime();
+			for (int t = 0; t < 100; t++) {
+				col_chk_recal_select(abftEnv, A, lda, i, i, 1);
+			}
+			benchmark_time = magma_wtime() - benchmark_time;
+			cout << "auto tuning time: " << benchmark_time << endl;
+
+			benchmark_time = magma_wtime();
+			for (int t = 0; t < 100; t++) {
+				col_chk_recal_select(abftEnv, A, lda, i, i, 9);
+			}
+			benchmark_time = magma_wtime() - benchmark_time;
+			cout << "auto tuning time: " << benchmark_time << endl;
+	//	}
+
+	}
+	
+	cout << "done benchmarking" << endl;
+}
+
 void col_benchmark(ABFTEnv * abftEnv, double * A, int lda){
 	cout << "start banchmarking:" << endl;
 	double benchmark_time = 0;
