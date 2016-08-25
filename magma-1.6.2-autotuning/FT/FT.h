@@ -116,6 +116,8 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
 void col_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda);
 
 void col_benchmark(ABFTEnv * abftEnv, double * A, int lda);
+void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda);
+
 
 void row_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda);
 
