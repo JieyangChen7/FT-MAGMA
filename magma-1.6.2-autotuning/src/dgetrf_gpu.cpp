@@ -400,7 +400,7 @@ magma_dgetrf_gpu(
 
             magmablas_dlaswp( n, dAT, lddat, j*nb + 1, j*nb + nb, ipiv, 1 );
 
-            if (FT) {
+            if (true) {
                 // also do row swap on checksums
                 magmablas_dlaswp( (n/nb)*2, 
                                   abftEnv->col_dchk, abftEnv->col_dchk_ld, 
