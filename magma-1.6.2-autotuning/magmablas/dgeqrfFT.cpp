@@ -12,6 +12,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 			   ABFTEnv * abftEnv, 
 			   bool FT , bool DEBUG, bool VERIFY) {
 
+
 	if (DEBUG) {
 		cout << "[DGEQRF] input matrix before factorization" << endl;
 		printMatrix_host(A, lda, m, n, 4, 4);

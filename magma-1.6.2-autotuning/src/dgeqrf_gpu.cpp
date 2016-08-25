@@ -180,7 +180,7 @@ magma_dgeqrf_gpu(
     /* flags */
     bool FT = true;
     bool DEBUG = false;
-    bool VERIFY = true;
+    bool VERIFY = false;
 
     double * dT_col_chk;
     int dT_col_chk_ld;
@@ -264,12 +264,12 @@ magma_dgeqrf_gpu(
                 //                   dA(old_i, old_i+2*old_ib), ldda, 
                 //                   dd_ref(0),    lddwork);
 
-
-                cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
-                cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
-                cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
-                 
-                VERIFY = updateCounter(abftEnv, old_i / nb, m / nb - 1, (old_i+2*old_ib) / nb, n / nb - 1, 1);
+                if (FT) {
+                    cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
+                    cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
+                    cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
+                }
+                //VERIFY = updateCounter(abftEnv, old_i / nb, m / nb - 1, (old_i+2*old_ib) / nb, n / nb - 1, 1);
                 dlarfbFT( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
                            m-old_i, cols, old_ib,
                               dA(old_i, old_i         ), ldda, 
@@ -362,14 +362,14 @@ magma_dgeqrf_gpu(
                     }
                 }
 
-
-                cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
-                cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
-                cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
-
+                if (FT) {
+                    cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
+                    cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
+                    cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
+                }
                 if (i+nb < k-nb) {
                     /* Apply H' to A(i:m,i+ib:i+2*ib) from the left */
-                    VERIFY = updateCounter(abftEnv, i / nb, m / nb - 1, (i+ib) / nb, i+2*ib / nb - 1, 1);
+                    //VERIFY = updateCounter(abftEnv, i / nb, m / nb - 1, (i+ib) / nb, i+2*ib / nb - 1, 1);
                     dlarfbFT( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
                               rows, ib, ib,
                               dA(i, i   ), ldda, dT(i),  nb,
