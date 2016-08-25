@@ -18,7 +18,7 @@ using namespace std;
 void row_chk_swap(ABFTEnv * abftEnv, double * A, int lda, int * real_effect, magma_queue_t * stream) {
     for (int i = 0; i < abftEnv->gpu_col; i++) {
         
-        if (real_effect[i] != i + 1){ //needs adjustment
+        if (real_effect[i] != i){ //needs adjustment
             int j = real_effect[i];
             int origin_block = i / abftEnv->chk_nb;
             int target_block = j / abftEnv->chk_nb;
