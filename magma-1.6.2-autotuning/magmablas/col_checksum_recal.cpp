@@ -699,7 +699,8 @@ void col_benchmark(ABFTEnv * abftEnv, double * A, int lda){
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			at_col_chk_recal(abftEnv, A, lda, i, j);
+			//at_col_chk_recal(abftEnv, A, lda, i, j);
+			col_chk_recal_select(abftEnv, A, lda, i, j, 7);
 		}
 
 	}
