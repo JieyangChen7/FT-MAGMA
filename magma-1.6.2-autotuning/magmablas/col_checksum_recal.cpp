@@ -624,8 +624,8 @@ void col_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda) {
 	double gpu_time = 0.0;
 	double min_time = 1000;
 	int min_choice = 0;
-	int num_choice = 12;
-	int num_test = 1;
+	int num_choice = 8;
+	int num_test = 10;
 	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 		cout << "[" << i << "]:	";
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
