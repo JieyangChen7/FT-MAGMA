@@ -74,11 +74,13 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 					0,
 					row_chkB, row_chkB_ld );
 
+		}
+
 		magma_dtrmm( side, uplo, trans, diag,
 	                m, n,
 	                alpha, dA,  ldda,
 	                dB, lddb);
-	}
+	
 
 
 	if (FT & VERIFY) {
