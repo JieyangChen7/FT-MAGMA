@@ -329,22 +329,22 @@ magma_dgeqrf_gpu(
                 magma_dsetmatrix( ib, ib, hwork, ib, dT(i), nb );
 
                 if (FT) {
-                    // /* calucate the row/col checksums for dT*/
-                    // magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-                    //     2, abftEnv->chk_nb, abftEnv->chk_nb,
-                    //     MAGMA_D_ONE, 
-                    //     abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
-                    //     dT(i), nb,
-                    //     MAGMA_D_ZERO, 
-                    //     dT_col_chk, dT_col_chk_ld);  
+                    /* calucate the row/col checksums for dT*/
+                    magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                        2, abftEnv->chk_nb, abftEnv->chk_nb,
+                        MAGMA_D_ONE, 
+                        abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
+                        dT(i), nb,
+                        MAGMA_D_ZERO, 
+                        dT_col_chk, dT_col_chk_ld);  
 
-                    // magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-                    //     abftEnv->chk_nb, 2, abftEnv->chk_nb,
-                    //     MAGMA_D_ONE, 
-                    //     dT(i), nb,
-                    //     abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
-                    //     MAGMA_D_ZERO, 
-                    //     dT_row_chk, dT_row_chk_ld);     
+                    magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                        abftEnv->chk_nb, 2, abftEnv->chk_nb,
+                        MAGMA_D_ONE, 
+                        dT(i), nb,
+                        abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
+                        MAGMA_D_ZERO, 
+                        dT_row_chk, dT_row_chk_ld);     
 
                     // /* calucate the row/col checksums for dV*/
                     // for (int p = i; p < m; p += nb) {
