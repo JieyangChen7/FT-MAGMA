@@ -249,13 +249,13 @@ magma_dgeqrf_gpu(
                                     work(i), ldwork, stream[1] );
             if (FT) {
                 //transfer checksums to CPU
-                cout << "ib=" << ib << endl;
-                magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
-                                        ROW_CHK(i, i),  abftEnv->row_dchk_ld,
-                                        abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
-                magma_dgetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
-                                        COL_CHK(i, i),  abftEnv->col_dchk_ld,
-                                        abftEnv->col_hchk, abftEnv->col_hchk_ld, stream[1] );
+                // cout << "ib=" << ib << endl;
+                // magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
+                //                         ROW_CHK(i, i),  abftEnv->row_dchk_ld,
+                //                         abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
+                // magma_dgetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
+                //                         COL_CHK(i, i),  abftEnv->col_dchk_ld,
+                //                         abftEnv->col_hchk, abftEnv->col_hchk_ld, stream[1] );
             }
             if (i > 0) {
                 /* Apply H' to A(i:m,i+2*ib:n) from the left */
