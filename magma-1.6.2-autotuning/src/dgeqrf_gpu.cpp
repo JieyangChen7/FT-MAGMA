@@ -360,15 +360,15 @@ magma_dgeqrf_gpu(
 
 
                     col_checksum_kernel_ccns4(m - i, ib, abftEnv->chk_nb,
-                                            dA(p, i   ), ldda,
+                                            dA(i, i   ), ldda,
                                             abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
                                             COL_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld,
                                             abftEnv->stream);
 
                     row_checksum_kernel_cccs4(m - i, ib, abftEnv->chk_nb,
-                                            dA(p, i   ), ldda,
+                                            dA(i, i   ), ldda,
                                             abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
-                                            ROW_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld,
+                                            ROW_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld,
                                             abftEnv->stream);
 
                     // /* calucate the row/col checksums for dV*/
