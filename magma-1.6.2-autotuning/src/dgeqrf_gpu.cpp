@@ -198,7 +198,7 @@ magma_dgeqrf_gpu(
 
     ABFTEnv * abftEnv = new ABFTEnv();
     initializeABFTEnv(abftEnv, nb, dA, ldda, m, n, m, nb, stream, 3, DEBUG);
-    if (FT) {
+    if (true) {
         
 
         /* allocate space for checksum of dT */
