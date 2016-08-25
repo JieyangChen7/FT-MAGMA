@@ -17,7 +17,7 @@ using namespace std;
 
 void row_chk_swap(ABFTEnv * abftEnv, double * A, int lda, int * real_effect, magma_queue_t * stream) {
     for (int i = 0; i < abftEnv->gpu_col; i++) {
-        magmablasSetKernelStream( stream[i%4]);
+        
         if (real_effect[i] != i + 1){ //needs adjustment
             int j = real_effect[i];
             int origin_block = i / abftEnv->chk_nb;
@@ -25,6 +25,7 @@ void row_chk_swap(ABFTEnv * abftEnv, double * A, int lda, int * real_effect, mag
             int origin_block_pos = i % abftEnv->chk_nb;
             int target_block_pos = j % abftEnv->chk_nb;
 
+            magmablasSetKernelStream( stream[0]);
             magma_daxpy(abftEnv->gpu_row, MAGMA_D_NEG_ONE,
             A + i * lda, 1,
             abftEnv->row_dchk + origin_block * 2 * abftEnv->row_dchk_ld, 1 );
@@ -33,6 +34,8 @@ void row_chk_swap(ABFTEnv * abftEnv, double * A, int lda, int * real_effect, mag
             A + j * lda, 1,
             abftEnv->row_dchk + origin_block * 2 * abftEnv->row_dchk_ld, 1 );
 
+
+             magmablasSetKernelStream( stream[1]);
             magma_daxpy(abftEnv->gpu_row, (origin_block_pos + 1) * (-1),
             A + i * lda, 1,
             abftEnv->row_dchk + (origin_block * 2 + 1) * abftEnv->row_dchk_ld, 1 );
