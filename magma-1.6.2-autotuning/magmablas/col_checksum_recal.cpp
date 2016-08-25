@@ -682,8 +682,8 @@ void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, 
 void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 
 	// needs to do boundary check first
-	//int i = abftEnv->col_mapping[(m / abftEnv->chk_nb) * abftEnv->col_mapping_ld + (n / abftEnv->chk_nb)];
-	col_chk_recal_select(abftEnv, A, lda, m, n, 1);
+	int i = abftEnv->col_mapping[(m / abftEnv->chk_nb) * abftEnv->col_mapping_ld + (n / abftEnv->chk_nb)];
+	col_chk_recal_select(abftEnv, A, lda, m, n, i);
 
 }
 
@@ -693,31 +693,17 @@ void col_benchmark(ABFTEnv * abftEnv, double * A, int lda){
 	double benchmark_time = 0;
 
 
-	// benchmark_time = magma_wtime();
-	// for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
-
-	// 	for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
-
-	// 		at_col_chk_recal(abftEnv, A, lda, i, j);
-	// 	}
-
-	// }
-	// benchmark_time = magma_wtime() - benchmark_time;
-	// cout << "auto tuning time: " << benchmark_time << endl;
-
-	col_chk_recal_select(abftEnv, A, lda, abftEnv->gpu_row, abftEnv->gpu_row, 1);
-
 	benchmark_time = magma_wtime();
 	for (int i = abftEnv->chk_nb; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			col_chk_recal_select(abftEnv, A, lda, i, j, 15);
+			at_col_chk_recal(abftEnv, A, lda, i, j);
 		}
 
 	}
 	benchmark_time = magma_wtime() - benchmark_time;
-	cout << "same location time: " << benchmark_time << endl;
+	cout << "auto tuning time: " << benchmark_time << endl;
 
 
 	benchmark_time = magma_wtime();
@@ -739,7 +725,7 @@ void col_benchmark(ABFTEnv * abftEnv, double * A, int lda){
 
 		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-			col_chk_recal_select(abftEnv, A, lda, i, j, 5);
+			col_chk_recal_select(abftEnv, A, lda, i, j, 9);
 		}
 
 	}
