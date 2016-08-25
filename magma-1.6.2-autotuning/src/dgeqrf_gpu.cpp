@@ -362,7 +362,7 @@ magma_dgeqrf_gpu(
                     col_checksum_kernel_ccns4(m - i, ib, abftEnv->chk_nb,
                                             dA(i, i   ), ldda,
                                             abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
-                                            COL_CHK(p / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld,
+                                            COL_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld,
                                             abftEnv->stream);
 
                     row_checksum_kernel_cccs4(m - i, ib, abftEnv->chk_nb,
