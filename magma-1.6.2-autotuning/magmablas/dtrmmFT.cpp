@@ -19,7 +19,7 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 	int mem_row = 0; // number of row and col stored in memory(no trans operation)
 	int mem_col = 0;
 
-	if (VERIFY) {
+	if (FT & VERIFY) {
 		mem_row = n;
 		mem_col = n;
 		at_col_chk_recal(abftEnv, dA, ldda, mem_row, mem_col);
@@ -80,7 +80,7 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 
 
 
-	if (VERIFY) {
+	if (FT & VERIFY) {
 		mem_row = n;
 		mem_col = n;
 		at_col_chk_recal(abftEnv, dA, ldda, mem_row, mem_col);

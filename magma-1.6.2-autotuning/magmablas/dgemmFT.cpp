@@ -31,7 +31,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	int mem_row = 0; // number of row and col of B stored in memory(no trans operation)
 	int mem_col = 0;
 
-	if (VERIFY) {
+	if (FT & VERIFY) {
 
 		// number of row and col of A stored in memory(no trans operation)
 		if (transA == MagmaNoTrans) {
@@ -212,7 +212,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	}
 
 
-	if (VERIFY) {
+	if (FT & VERIFY) {
 		cudaStreamSynchronize(stream[1]);
 		cudaStreamSynchronize(stream[4]);
 

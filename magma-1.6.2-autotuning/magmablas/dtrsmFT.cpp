@@ -21,7 +21,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 	//cout << "trsm" << endl;
 	cudaStreamSynchronize(stream[1]);
 	cudaStreamSynchronize(stream[4]);
-	if (VERIFY) {
+	if (FT & VERIFY) {
 		//verify B before use
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 		int mem_col = n;
@@ -75,7 +75,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 	}
 
 
-	if (VERIFY) {
+	if (FT & VERIFY) {
 
 		cudaStreamSynchronize(stream[1]);
 		cudaStreamSynchronize(stream[4]);
