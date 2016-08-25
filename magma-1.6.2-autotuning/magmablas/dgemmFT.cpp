@@ -54,23 +54,23 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			}
 
 		} else if (transA == MagmaTrans) {
-			// mem_row = k;
-			// mem_col = m;
+			mem_row = k;
+			mem_col = m;
 
-			// at_row_chk_recal(abftEnv, A, lda, mem_row, mem_col);
-			// row_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
-   //      					  row_chkA, row_chkA_ld,
-   //      					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-   //      					  abftEnv->stream[1]);
+			at_row_chk_recal(abftEnv, A, lda, mem_row, mem_col);
+			row_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
+        					  row_chkA, row_chkA_ld,
+        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+        					  abftEnv->stream[1]);
 
-			// if (DEBUG) {
-			// 	cout<<"[DGEMM-BEFORE] matrix A:"<<endl;
-			// 	printMatrix_gpu(A, lda, mem_row, mem_col, 4, 4);
-			// 	cout<<"[DGEMM-BEFORE] recalculated row checksum of A:"<<endl;
-			// 	printMatrix_gpu(abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, mem_row , (mem_col / abftEnv->chk_nb) * 2, 4, 2);
-			// 	cout<<"[DGEMM-BEFORE] updated row checksum of A:"<<endl;
-			// 	printMatrix_gpu(row_chkA, row_chkA_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
-			// }
+			if (DEBUG) {
+				cout<<"[DGEMM-BEFORE] matrix A:"<<endl;
+				printMatrix_gpu(A, lda, mem_row, mem_col, 4, 4);
+				cout<<"[DGEMM-BEFORE] recalculated row checksum of A:"<<endl;
+				printMatrix_gpu(abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, mem_row , (mem_col / abftEnv->chk_nb) * 2, 4, 2);
+				cout<<"[DGEMM-BEFORE] updated row checksum of A:"<<endl;
+				printMatrix_gpu(row_chkA, row_chkA_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
+			}
 
 		}
 		
@@ -81,23 +81,23 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 
 		if (transB == MagmaNoTrans) {
-			// mem_row = k;
-			// mem_col = n;
-			// at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
+			mem_row = k;
+			mem_col = n;
+			at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
-			// row_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
-   //      					  row_chkB, row_chkB_ld,
-   //      					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-   //      					  abftEnv->stream[1]);
+			row_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+        					  row_chkB, row_chkB_ld,
+        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+        					  abftEnv->stream[1]);
 
-			// if (DEBUG) {
-			// 	cout<<"[DGEMM-BEFORE] matrix B:"<<endl;
-			// 	printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
-			// 	cout<<"[DGEMM-BEFORE] recalculated row checksum of B:"<<endl;
-			// 	printMatrix_gpu(abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
-			// 	cout<<"[DGEMM-BEFORE] updated row checksum of B:"<<endl;
-			// 	printMatrix_gpu(row_chkB, row_chkB_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
-			// }
+			if (DEBUG) {
+				cout<<"[DGEMM-BEFORE] matrix B:"<<endl;
+				printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
+				cout<<"[DGEMM-BEFORE] recalculated row checksum of B:"<<endl;
+				printMatrix_gpu(abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
+				cout<<"[DGEMM-BEFORE] updated row checksum of B:"<<endl;
+				printMatrix_gpu(row_chkB, row_chkB_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
+			}
 
 		} else if (transB == MagmaTrans) {
 			mem_row = n;
@@ -131,12 +131,12 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
         					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
         					  abftEnv->stream[1]);
 
-		// at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
+		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  row_chkC, row_chkC_ld,
-  //       					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-  //       					  abftEnv->stream[1]);
+		row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+        					  row_chkC, row_chkC_ld,
+        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+        					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 
@@ -187,25 +187,25 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 					col_chkC, col_chkC_ld );
 		}
 
-		// if (transB == MagmaNoTrans) {
-		// 	//we can further work on this to support trans A.
-		// 	magma_dgemm(transA, transB,
-		// 			m , (n / abftEnv->chk_nb) * 2, k,
-		// 			alpha,
-		// 			A, lda,
-		// 			row_chkB, row_chkB_ld,
-		// 			beta,
-		// 			row_chkC, row_chkC_ld );
-		// } else {
-		// 	//we can further work on this to support trans A.
-		// 	magma_dgemm(transA, transB,
-		// 			m , (n / abftEnv->chk_nb) * 2, k,
-		// 			alpha,
-		// 			A, lda,
-		// 			col_chkB, col_chkB_ld,
-		// 			beta,
-		// 			row_chkC, row_chkC_ld );
-		// }
+		if (transB == MagmaNoTrans) {
+			//we can further work on this to support trans A.
+			magma_dgemm(transA, transB,
+					m , (n / abftEnv->chk_nb) * 2, k,
+					alpha,
+					A, lda,
+					row_chkB, row_chkB_ld,
+					beta,
+					row_chkC, row_chkC_ld );
+		} else {
+			//we can further work on this to support trans A.
+			magma_dgemm(transA, transB,
+					m , (n / abftEnv->chk_nb) * 2, k,
+					alpha,
+					A, lda,
+					col_chkB, col_chkB_ld,
+					beta,
+					row_chkC, row_chkC_ld );
+		}
 		
 	}
 
@@ -302,40 +302,40 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 		
 
-		// mem_row = m;
-		// mem_col = n;
+		mem_row = m;
+		mem_col = n;
 		
-		// at_col_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
+		at_col_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		// col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  col_chkC, col_chkC_ld,
-  //       					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
-  //       					  abftEnv->stream[1]);
+		col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+        					  col_chkC, col_chkC_ld,
+        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+        					  abftEnv->stream[1]);
 
-		// at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
+		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  row_chkC, row_chkC_ld,
-  //       					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-  //       					  abftEnv->stream[1]);
+		row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+        					  row_chkC, row_chkC_ld,
+        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+        					  abftEnv->stream[1]);
 
-		// if (DEBUG) {
+		if (DEBUG) {
 
-		// 	cout<<"[DGEMM-AFTER] matrix C:"<<endl;
-		// 	printMatrix_gpu(C, ldc, mem_row, mem_col, 4, 4);
+			cout<<"[DGEMM-AFTER] matrix C:"<<endl;
+			printMatrix_gpu(C, ldc, mem_row, mem_col, 4, 4);
 
-		// 	cout<<"[DGEMM-AFTER] recalculated column checksum of C:"<<endl;
-		// 	printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+			cout<<"[DGEMM-AFTER] recalculated column checksum of C:"<<endl;
+			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 		
-		// 	cout<<"[DGEMM-AFTER] updated column checksum of C:"<<endl;
-		// 	printMatrix_gpu(col_chkC, col_chkC_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+			cout<<"[DGEMM-AFTER] updated column checksum of C:"<<endl;
+			printMatrix_gpu(col_chkC, col_chkC_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 
-		// 	cout<<"[DGEMM-AFTER] recalculated row checksum of C:"<<endl;
-		// 	printMatrix_gpu(abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
+			cout<<"[DGEMM-AFTER] recalculated row checksum of C:"<<endl;
+			printMatrix_gpu(abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
 		
-		// 	cout<<"[DGEMM-AFTER] updated row checksum of C:"<<endl;
-		// 	printMatrix_gpu(row_chkC, row_chkC_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
-		// }
+			cout<<"[DGEMM-AFTER] updated row checksum of C:"<<endl;
+			printMatrix_gpu(row_chkC, row_chkC_ld, mem_row, (mem_col / abftEnv->chk_nb) * 2, 4, 2);
+		}
 
 	}
 }
