@@ -60,7 +60,7 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 
 	if (FT) {
 
-		update column checksum
+		//update column checksum
 		magma_dtrmm( side, uplo, trans, diag,
 	             (m / abftEnv->chk_nb) * 2, n,
 	             alpha, dA, ldda,
