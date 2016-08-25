@@ -684,7 +684,7 @@ void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 
 	// needs to do boundary check first
 	int i = abftEnv->col_mapping[(m / abftEnv->chk_nb) * abftEnv->col_mapping_ld + (n / abftEnv->chk_nb)];
-	i＝ 7;
+	i = 7;
 	col_chk_recal_select(abftEnv, A, lda, m, n, i);
 
 }
