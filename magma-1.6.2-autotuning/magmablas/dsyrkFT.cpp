@@ -99,26 +99,26 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	}
 
 
-	if (FT & VERIFY) {
-		//verify C after use
-		//reclaculate checksums of C on GPU
-		at_col_chk_recal(abftEnv, C, ldc, n, n);
-		//handle error 
-		col_detect_correct(C, ldc,
-							abftEnv->chk_nb, n, m, 
-							checksumC, checksumC_ld, 
-							abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
-							stream[1]);
+	// if (FT & VERIFY) {
+	// 	//verify C after use
+	// 	//reclaculate checksums of C on GPU
+	// 	at_col_chk_recal(abftEnv, C, ldc, n, n);
+	// 	//handle error 
+	// 	col_detect_correct(C, ldc,
+	// 						abftEnv->chk_nb, n, m, 
+	// 						checksumC, checksumC_ld, 
+	// 						abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
+	// 						stream[1]);
 		
-		if (DEBUG) {
-			cudaStreamSynchronize(stream[1]);
-			cout<<"[DSYRK-AFTER]matrix C:"<<endl;
-			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, n, -1, -1);
+	// 	if (DEBUG) {
+	// 		cudaStreamSynchronize(stream[1]);
+	// 		cout<<"[DSYRK-AFTER]matrix C:"<<endl;
+	// 		printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, n, -1, -1);
 		
-			cout<<"[DSYRK-AFTER]updated checksum of C:"<<endl;
-			printMatrix_gpu(checksumC, checksumC_ld, 2, n, -1, -1);
-		}
-	}
+	// 		cout<<"[DSYRK-AFTER]updated checksum of C:"<<endl;
+	// 		printMatrix_gpu(checksumC, checksumC_ld, 2, n, -1, -1);
+	// 	}
+	// }
 
 
 }

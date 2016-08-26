@@ -81,6 +81,8 @@ int main( int argc, char** argv)
                    =================================================================== */
                 cpu_time = magma_wtime();
                 lapackf77_dpotrf( lapack_uplo_const(opts.uplo), &N, h_A, &lda, &info );
+                magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
+                lapackf77_dpotrf( lapack_uplo_const(opts.uplo), &N, h_A, &lda, &info );
                 cpu_time = magma_wtime() - cpu_time;
                 cpu_perf = gflops / cpu_time;
                 if (info != 0)
