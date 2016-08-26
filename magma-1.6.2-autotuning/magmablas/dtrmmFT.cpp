@@ -20,43 +20,43 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 	int mem_col = 0;
 
 	//cout << "trmm" << endl;
-	// if (FT & VERIFY) {
-	// 	mem_row = n;
-	// 	mem_col = n;
-	// 	at_col_chk_recal(abftEnv, dA, ldda, mem_row, mem_col);
+	if (FT & VERIFY) {
+		mem_row = n;
+		mem_col = n;
+		at_col_chk_recal(abftEnv, dA, ldda, mem_row, mem_col);
 
 
-	// 	if (DEBUG) {
+		if (DEBUG) {
 			
-	// 		cout<<"[DTRMM-BEFORE] matrix A:"<<endl;
-	// 		printMatrix_gpu(dA, ldda, mem_row, mem_col, 4, 4);
+			cout<<"[DTRMM-BEFORE] matrix A:"<<endl;
+			printMatrix_gpu(dA, ldda, mem_row, mem_col, 4, 4);
 
-	// 		cout<<"[DTRMM-BEFORE] recalculated column checksum of A:"<<endl;
-	// 		printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+			cout<<"[DTRMM-BEFORE] recalculated column checksum of A:"<<endl;
+			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 		
-	// 		cout<<"[DTRMM-BEFORE] updated column checksum of A:"<<endl;
-	// 		printMatrix_gpu(col_chkA, col_chkA_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
-	// 	}
+			cout<<"[DTRMM-BEFORE] updated column checksum of A:"<<endl;
+			printMatrix_gpu(col_chkA, col_chkA_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+		}
 
-	// 	mem_row = m;
-	// 	mem_col = n;
-	// 	at_col_chk_recal(abftEnv, dB, lddb, mem_row, mem_col);
+		mem_row = m;
+		mem_col = n;
+		at_col_chk_recal(abftEnv, dB, lddb, mem_row, mem_col);
 
 
-	// 	if (DEBUG) {
+		if (DEBUG) {
 			
-	// 		cout<<"[DTRMM-BEFORE] matrix B:"<<endl;
-	// 		printMatrix_gpu(dB, lddb, mem_row, mem_col, 4, 4);
+			cout<<"[DTRMM-BEFORE] matrix B:"<<endl;
+			printMatrix_gpu(dB, lddb, mem_row, mem_col, 4, 4);
 
-	// 		cout<<"[DTRMM-BEFORE] recalculated column checksum of B:"<<endl;
-	// 		printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+			cout<<"[DTRMM-BEFORE] recalculated column checksum of B:"<<endl;
+			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 		
-	// 		cout<<"[DTRMM-BEFORE] updated column checksum of B:"<<endl;
-	// 		printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
-	// 	}
+			cout<<"[DTRMM-BEFORE] updated column checksum of B:"<<endl;
+			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+		}
 
 
-	// }
+	}
 
 	if (FT) {
 
@@ -84,43 +84,43 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
 	
 
 
-	if (FT & VERIFY) {
-		mem_row = n;
-		mem_col = n;
-		at_col_chk_recal(abftEnv, dA, ldda, mem_row, mem_col);
+	// if (FT & VERIFY) {
+	// 	mem_row = n;
+	// 	mem_col = n;
+	// 	at_col_chk_recal(abftEnv, dA, ldda, mem_row, mem_col);
 
 
-		if (DEBUG) {
+	// 	if (DEBUG) {
 			
-			cout<<"[DTRMM-AFTER] matrix A:"<<endl;
-			printMatrix_gpu(dA, ldda, mem_row, mem_col, 4, 4);
+	// 		cout<<"[DTRMM-AFTER] matrix A:"<<endl;
+	// 		printMatrix_gpu(dA, ldda, mem_row, mem_col, 4, 4);
 
-			cout<<"[DTRMM-AFTER] recalculated column checksum of A:"<<endl;
-			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+	// 		cout<<"[DTRMM-AFTER] recalculated column checksum of A:"<<endl;
+	// 		printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 		
-			cout<<"[DTRMM-AFTER] updated column checksum of A:"<<endl;
-			printMatrix_gpu(col_chkA, col_chkA_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
-		}
+	// 		cout<<"[DTRMM-AFTER] updated column checksum of A:"<<endl;
+	// 		printMatrix_gpu(col_chkA, col_chkA_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+	// 	}
 
-		mem_row = m;
-		mem_col = n;
-		at_col_chk_recal(abftEnv, dB, lddb, mem_row, mem_col);
+	// 	mem_row = m;
+	// 	mem_col = n;
+	// 	at_col_chk_recal(abftEnv, dB, lddb, mem_row, mem_col);
 
 
-		if (DEBUG) {
+	// 	if (DEBUG) {
 			
-			cout<<"[DTRMM-AFTER] matrix B:"<<endl;
-			printMatrix_gpu(dB, lddb, mem_row, mem_col, 4, 4);
+	// 		cout<<"[DTRMM-AFTER] matrix B:"<<endl;
+	// 		printMatrix_gpu(dB, lddb, mem_row, mem_col, 4, 4);
 
-			cout<<"[DTRMM-AFTER] recalculated column checksum of B:"<<endl;
-			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+	// 		cout<<"[DTRMM-AFTER] recalculated column checksum of B:"<<endl;
+	// 		printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 		
-			cout<<"[DTRMM-AFTER] updated column checksum of B:"<<endl;
-			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
-		}
+	// 		cout<<"[DTRMM-AFTER] updated column checksum of B:"<<endl;
+	// 		printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+	// 	}
 
 
-	}
+	// }
 
 	
 }
