@@ -251,20 +251,13 @@ magma_dgeqrf_gpu(
             if (FT) {
                 //transfer checksums to CPU
                 cout << "ib=" << ib << endl;
-                // magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
-                //                         ROW_CHK(i, i),  abftEnv->row_dchk_ld,
-                //                         abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
-                // magma_dgetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
-                //                         COL_CHK(i, i),  abftEnv->col_dchk_ld,
-                //                         abftEnv->col_hchk, abftEnv->col_hchk_ld, stream[1] );
-
-
-                magma_dgetmatrix_async( 1, 1,
-                                        ROW_CHK(i, i),  abftEnv->row_dchk_ld,
+                magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
+                                        ROW_CHK(i / nb, i / nb),  abftEnv->row_dchk_ld,
                                         abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
-                magma_dgetmatrix_async( 1, 1,
-                                        COL_CHK(i, i),  abftEnv->col_dchk_ld,
+                magma_dgetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
+                                        COL_CHK(i / nb, i / nb),  abftEnv->col_dchk_ld,
                                         abftEnv->col_hchk, abftEnv->col_hchk_ld, stream[1] );
+
             }
             if (i > 0) {
                 /* Apply H' to A(i:m,i+2*ib:n) from the left */
@@ -324,20 +317,12 @@ magma_dgeqrf_gpu(
             if (FT) {
 
                 //transfer checksums to GPU
-                // magma_dsetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
-                //                         abftEnv->row_hchk, abftEnv->row_hchk_ld, 
-                //                         ROW_CHK(i, i),  abftEnv->row_dchk_ld, stream[1] );
-                // magma_dsetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
-                //                         abftEnv->col_hchk, abftEnv->col_hchk_ld,
-                //                         COL_CHK(i, i),  abftEnv->col_dchk_ld, stream[1] );
-
-
-                 magma_dsetmatrix_async( 1, 1,
+                magma_dsetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
                                         abftEnv->row_hchk, abftEnv->row_hchk_ld, 
-                                        ROW_CHK(i, i),  abftEnv->row_dchk_ld, stream[1] );
-                magma_dsetmatrix_async( 1, 1,
+                                        ROW_CHK(i / nb, i / nb),  abftEnv->row_dchk_ld, stream[1] );
+                magma_dsetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
                                         abftEnv->col_hchk, abftEnv->col_hchk_ld,
-                                        COL_CHK(i, i),  abftEnv->col_dchk_ld, stream[1] );
+                                        COL_CHK(i / nb, i / nb),  abftEnv->col_dchk_ld, stream[1] );
             }
 
             if (i + ib < n) {
