@@ -179,7 +179,7 @@ magma_dgeqrf_gpu(
     lddwork= n;
 
     /* flags */
-    bool FT = true;
+    bool FT = false;
     bool DEBUG = false;
     bool VERIFY = false;
 
@@ -199,7 +199,7 @@ magma_dgeqrf_gpu(
 
     ABFTEnv * abftEnv = new ABFTEnv();
     initializeABFTEnv(abftEnv, nb, dA, ldda, m, n, m, nb, stream, 3, DEBUG);
-    if (true) {
+    if (false) {
         
 
         /* allocate space for checksum of dT */
