@@ -250,13 +250,13 @@ magma_dgeqrf_gpu(
                                     work(i), ldwork, stream[1] );
             if (FT) {
                 //transfer checksums to CPU
-                // cout << "ib=" << ib << endl;
-                // magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
-                //                         ROW_CHK(i, i),  abftEnv->row_dchk_ld,
-                //                         abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
-                // magma_dgetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
-                //                         COL_CHK(i, i),  abftEnv->col_dchk_ld,
-                //                         abftEnv->col_hchk, abftEnv->col_hchk_ld, stream[1] );
+                cout << "ib=" << ib << endl;
+                magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
+                                        ROW_CHK(i, i),  abftEnv->row_dchk_ld,
+                                        abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
+                magma_dgetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
+                                        COL_CHK(i, i),  abftEnv->col_dchk_ld,
+                                        abftEnv->col_hchk, abftEnv->col_hchk_ld, stream[1] );
             }
             if (i > 0) {
                 /* Apply H' to A(i:m,i+2*ib:n) from the left */
@@ -268,11 +268,11 @@ magma_dgeqrf_gpu(
                 //                   dA(old_i, old_i+2*old_ib), ldda, 
                 //                   dd_ref(0),    lddwork);
 
-                // if (FT) {
-                //     cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
-                //     cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
-                //     cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
-                // }
+                if (FT) {
+                    cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
+                    cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
+                    cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
+                }
                 VERIFY = updateCounter(abftEnv, old_i / nb, m / nb - 1, (old_i+2*old_ib) / nb, n / nb - 1, 1);
                 dlarfbFT( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
                            m-old_i, cols, old_ib,
@@ -315,13 +315,13 @@ magma_dgeqrf_gpu(
             magma_dsetmatrix( rows, ib, work(i), ldwork, dA(i,i), ldda );
             if (FT) {
 
-                // //transfer checksums to GPU
-                // magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
-                //                         abftEnv->row_hchk, abftEnv->row_hchk_ld, 
-                //                         ROW_CHK(i, i),  abftEnv->row_dchk_ld, stream[1] );
-                // magma_dgetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
-                //                         abftEnv->col_hchk, abftEnv->col_hchk_ld,
-                //                         COL_CHK(i, i),  abftEnv->col_dchk_ld, stream[1] );
+                //transfer checksums to GPU
+                magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
+                                        abftEnv->row_hchk, abftEnv->row_hchk_ld, 
+                                        ROW_CHK(i, i),  abftEnv->row_dchk_ld, stream[1] );
+                magma_dgetmatrix_async( (rows /abftEnv->chk_nb) * 2, ib,
+                                        abftEnv->col_hchk, abftEnv->col_hchk_ld,
+                                        COL_CHK(i, i),  abftEnv->col_dchk_ld, stream[1] );
             }
 
             if (i + ib < n) {
@@ -391,11 +391,11 @@ magma_dgeqrf_gpu(
                     // }
                 }
 
-                // if (FT) {
-                //     cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
-                //     cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
-                //     cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
-                // }
+                if (FT) {
+                    cudaMemset2D(dd_ref(0), lddwork * sizeof(double), 0, n * sizeof(double), nb);
+                    cudaMemset2D(dwork_row_chk, dwork_row_chk_ld * sizeof(double), 0, n * sizeof(double), 2);
+                    cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
+                }
                 if (i+nb < k-nb) {
                     /* Apply H' to A(i:m,i+ib:i+2*ib) from the left */
                     VERIFY = updateCounter(abftEnv, i / nb, m / nb - 1, (i+ib) / nb, (i+2*ib) / nb - 1, 1);
