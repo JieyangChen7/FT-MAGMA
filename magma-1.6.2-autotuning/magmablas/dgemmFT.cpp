@@ -304,22 +304,22 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 		
 
-		// mem_row = m;
-		// mem_col = n;
+		mem_row = m;
+		mem_col = n;
 		
-		// at_col_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
+		at_col_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		// col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  col_chkC, col_chkC_ld,
-  //       					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
-  //       					  abftEnv->stream[1]);
+		col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+        					  col_chkC, col_chkC_ld,
+        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+        					  abftEnv->stream[1]);
 
-		// at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
+		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-  //       					  row_chkC, row_chkC_ld,
-  //       					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-  //       					  abftEnv->stream[1]);
+		row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+        					  row_chkC, row_chkC_ld,
+        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+        					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 
