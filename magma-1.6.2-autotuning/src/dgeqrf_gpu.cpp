@@ -199,7 +199,7 @@ magma_dgeqrf_gpu(
 
     ABFTEnv * abftEnv = new ABFTEnv();
     initializeABFTEnv(abftEnv, nb, dA, ldda, m, n, m, nb, stream, 3, DEBUG);
-    if (false) {
+    if (FT) {
         
 
         /* allocate space for checksum of dT */
@@ -250,7 +250,7 @@ magma_dgeqrf_gpu(
                                     work(i), ldwork, stream[1] );
             if (FT) {
                 //transfer checksums to CPU
-                cout << "ib=" << ib << endl;
+                //cout << "ib=" << ib << endl;
                 magma_dgetmatrix_async( rows, (ib / abftEnv->chk_nb) * 2,
                                         ROW_CHK(i / nb, i / nb),  abftEnv->row_dchk_ld,
                                         abftEnv->row_hchk, abftEnv->row_hchk_ld, stream[1] );
