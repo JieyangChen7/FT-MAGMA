@@ -179,7 +179,7 @@ magma_dgeqrf_gpu(
     lddwork= n;
 
     /* flags */
-    bool FT = false;
+    bool FT = true;
     bool DEBUG = false;
     bool VERIFY = false;
 
