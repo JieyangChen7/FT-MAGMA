@@ -69,6 +69,8 @@ int main( int argc, char** argv)
                =================================================================== */
             gpu_time = magma_wtime();
             magma_dpotrf_gpu( opts.uplo, N, d_A, ldda, &info );
+            magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
+            magma_dpotrf_gpu( opts.uplo, N, d_A, ldda, &info );
             gpu_time = magma_wtime() - gpu_time;
             gpu_perf = gflops / gpu_time;
             if (info != 0)
@@ -80,8 +82,6 @@ int main( int argc, char** argv)
                    Performs operation using LAPACK
                    =================================================================== */
                 cpu_time = magma_wtime();
-                lapackf77_dpotrf( lapack_uplo_const(opts.uplo), &N, h_A, &lda, &info );
-                magma_dsetmatrix( N, N, h_A, lda, d_A, ldda );
                 lapackf77_dpotrf( lapack_uplo_const(opts.uplo), &N, h_A, &lda, &info );
                 cpu_time = magma_wtime() - cpu_time;
                 cpu_perf = gflops / cpu_time;
