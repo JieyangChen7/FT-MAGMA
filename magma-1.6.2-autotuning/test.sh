@@ -24,6 +24,8 @@
 ./testing/testing_dpotrf_gpu -N 30720,30720
 ./testing/testing_dpotrf_gpu -N 33280,33280
 ./testing/testing_dpotrf_gpu -N 35840,35840
+./testing/testing_dpotrf_gpu -N 38400,38400
+./testing/testing_dpotrf_gpu -N 40960,40960
 
 
 
