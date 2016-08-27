@@ -19,9 +19,10 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * stream) {
 	//cout << "trsm" << endl;
-	cudaStreamSynchronize(stream[1]);
-	cudaStreamSynchronize(stream[4]);
+	
 	// if (FT & VERIFY) {
+	// cudaStreamSynchronize(stream[1]);
+	// cudaStreamSynchronize(stream[4]);
 	// 	//verify B before use
 	// 	int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 	// 	int mem_col = n;

@@ -25,8 +25,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		bool FT, bool DEBUG, bool VERIFY, 
 		magma_queue_t * stream) {
 
-	cudaStreamSynchronize(stream[1]);
-	cudaStreamSynchronize(stream[4]);
+	
 
 	//cout << "dgemm" << endl;
 
@@ -34,7 +33,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	int mem_col = 0;
 
 	// if (FT & VERIFY) {
-
+		// cudaStreamSynchronize(stream[1]);
+		// cudaStreamSynchronize(stream[4]);
 	// 	// number of row and col of A stored in memory(no trans operation)
 	// 	if (transA == MagmaNoTrans) {
 	// 		mem_row = m;

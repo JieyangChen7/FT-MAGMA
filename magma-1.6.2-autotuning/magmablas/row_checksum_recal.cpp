@@ -683,7 +683,7 @@ void at_row_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 
 	// needs to do boundary check first
 	//int i = abftEnv->row_mapping[(m / abftEnv->chk_nb) * abftEnv->row_mapping_ld + (n / abftEnv->chk_nb)];
-	row_chk_recal_select(abftEnv, A, lda, m, n, 5);
+	row_chk_recal_select(abftEnv, A, lda, m, n, 7);
 
 }
 
