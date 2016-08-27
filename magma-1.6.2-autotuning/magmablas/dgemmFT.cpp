@@ -213,8 +213,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 
 	if (FT & VERIFY) {
-		cudaStreamSynchronize(stream[1]);
-		cudaStreamSynchronize(stream[4]);
+		//cudaStreamSynchronize(stream[1]);
+		//cudaStreamSynchronize(stream[4]);
 		mem_row = m;
 		mem_col = n;
 		

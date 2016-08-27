@@ -363,8 +363,8 @@ void row_checksum_kernel_cccs2(int m, int n, int chk_nb,
 					vrt_chk + ((i / chk_nb) * 2 + 1) * vrt_chk_ld, 1 );
 	}
 	
-	cudaStreamSynchronize(stream[1]);
-	cudaStreamSynchronize(stream[2]);
+	//cudaStreamSynchronize(stream[1]);
+	//cudaStreamSynchronize(stream[2]);
 }
 
 void row_chk_recal_7(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {

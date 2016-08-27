@@ -139,6 +139,10 @@ magma_dpotrf_gpu(
         stream[1] = orig_stream;
     }
     
+    stream[2] = stream[1];
+    stream[3] = stream[1];
+    stream[4] = stream[1];
+
     
 
     //variables for FT

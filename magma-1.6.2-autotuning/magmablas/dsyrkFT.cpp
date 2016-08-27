@@ -100,8 +100,8 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 
 
 	if (FT & VERIFY) {
-		cudaStreamSynchronize(stream[1]);
-		cudaStreamSynchronize(stream[4]);
+		//cudaStreamSynchronize(stream[1]);
+		//cudaStreamSynchronize(stream[4]);
 	
 		//verify C after use
 		//reclaculate checksums of C on GPU
