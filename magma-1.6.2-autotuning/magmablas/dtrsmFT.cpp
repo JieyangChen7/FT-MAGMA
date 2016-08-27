@@ -72,29 +72,29 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 	}
 
 
-	// if (FT & VERIFY) {
+	if (FT & VERIFY) {
 
-	// 	cudaStreamSynchronize(stream[1]);
-	// 	cudaStreamSynchronize(stream[4]);
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
 		
-	// 	int mem_row = m; // number of row and col of B stored in memory(no trans operation)
-	// 	int mem_col = n;		
+		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
+		int mem_col = n;		
 					
-	// 	at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
-	// 	col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
- //        					  col_chkB, col_chkB_ld,
- //        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
- //        					  abftEnv->stream[1]);
+		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
+		col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+        					  col_chkB, col_chkB_ld,
+        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+        					  abftEnv->stream[1]);
 		
-	// 	if (DEBUG) {
-	// 		cout<<"[trsm] updated B after trsm:"<<endl;
-	// 		printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
+		if (DEBUG) {
+			cout<<"[trsm] updated B after trsm:"<<endl;
+			printMatrix_gpu(B, ldb, mem_row, mem_col, 4, 4);
 
-	// 		cout<<"[trsm] recalculated checksum of B after trsm:"<<endl;
-	// 		printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+			cout<<"[trsm] recalculated checksum of B after trsm:"<<endl;
+			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
 
-	// 		cout<<"[trsm] updated column checksum of B after trsm:"<<endl;
-	// 		printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
-	// 	}
-	// }
+			cout<<"[trsm] updated column checksum of B after trsm:"<<endl;
+			printMatrix_gpu(col_chkB, col_chkB_ld, (mem_row / abftEnv->chk_nb) * 2, mem_col, 2, 4);
+		}
+	}
 }
