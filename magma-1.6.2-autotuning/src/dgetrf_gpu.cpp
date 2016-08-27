@@ -375,7 +375,7 @@ magma_dgetrf_gpu(
                 ipiv[i] += j*nb;
             }
 
-            if (FT) {
+            if (false) {
                 int * real_effect = new int[m];
                 for (int i = 0; i < m; i++) {
                     real_effect[i] = i;
