@@ -170,7 +170,7 @@ magma_dpotrf_gpu(
 		
 	}
     cout << "init complete" << endl;
-    cout << "nb=" << nb << endl;
+    cout << "[n:" << n << "nb:" << nb << "FT" << FT << endl;
     if (0) {
     //if ((nb <= 1) || (nb >= n)) {
         /* Use unblocked code. */
@@ -299,11 +299,11 @@ magma_dpotrf_gpu(
                                             stream[1] );
                 }
                 
-//                if (*info != 0) {
-//                    *info = *info + j;
-//                    break;
-//                }
-//                
+               if (*info != 0) {
+                   *info = *info + j;
+                   break;
+               }
+                
                 if ( (j+jb) < n) {  
 
                     VERIFY = updateCounter(abftEnv, j / nb + 1, n / nb - 1, j / nb, j / nb, 1);
@@ -326,24 +326,9 @@ magma_dpotrf_gpu(
             magma_queue_sync( stream[2] );
             magma_queue_sync( stream[3] );
             magma_queue_sync( stream[4] );
-//			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-//				cout << "PAPI ERROR" << endl;
-//				return -1;
-//			}
-//			if (FT) {
-//					//cout << "FT enabled:" << endl;
-//					FTtime = real_time;
-//			} else {
-//					//cout << "FT disabled:" << endl;
-//					noFTtime = real_time;
-//			}  
-//			PAPI_shutdown();
-//        
-//        	float overhead = (FTtime - noFTtime) / noFTtime;
-//        	cout << N <<"	no FT:" << noFTtime <<"		FT:"<< FTtime <<"		overhead:"<< overhead <<endl;
+
         	}
         }
-  //  }
 
     magma_free_pinned( work );
     magma_queue_destroy( stream[0] );
