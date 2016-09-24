@@ -306,7 +306,7 @@ magma_dgetrf_gpu(
                 //              c_one, dAT(j-1,j-1), lddat,
                 //                     dAT(j-1,j+1), lddat );
 
-                VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j - 1, j - 1, 1);
+                //VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j - 1, j - 1, 1);
 
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n - (j+1)*nb, nb,
@@ -315,9 +315,12 @@ magma_dgetrf_gpu(
                              abftEnv,
                              COL_CHK_T(j-1, j-1), abftEnv->col_dchk_ld,
                              ROW_CHK_T(j-1, j-1), abftEnv->row_dchk_ld,
+                             MemoryCheck(abftEnv, j - 1, j - 1, j - 1, j - 1),
                              COL_CHK_T(j-1, j+1), abftEnv->col_dchk_ld,
                              ROW_CHK_T(j-1, j+1), abftEnv->row_dchk_ld,
-                             FT, DEBUG, VERIFY, stream);
+                             MemoryCheck(abftEnv, j + 1, n / nb - 1, j - 1, j - 1),
+                             ComputationCheck(abftEnv, j + 1, n / nb - 1, j - 1, j - 1, 1),
+                             FT, DEBUG, stream);
 
 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -326,7 +329,7 @@ magma_dgetrf_gpu(
                 //                         dAT(j,  j-1), lddat,
                 //              c_one,     dAT(j,  j+1), lddat );
 
-                 VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j, m / nb - 1, 1);
+                 //VERIFY = updateCounter(abftEnv, j + 1, n / nb - 1, j, m / nb - 1, 1);
                  dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-j*nb, nb,
                              c_neg_one, dAT(j-1,j+1), lddat,
@@ -335,10 +338,14 @@ magma_dgetrf_gpu(
                              abftEnv,
                              COL_CHK_T(j-1, j+1), abftEnv->col_dchk_ld,
                              ROW_CHK_T(j-1, j+1), abftEnv->row_dchk_ld,
+                             MemoryCheck(abftEnv, j + 1, n / nb - 1, j - 1, j - 1),
                              COL_CHK_T(j, j-1), abftEnv->col_dchk_ld,
                              ROW_CHK_T(j, j-1), abftEnv->row_dchk_ld,
+                             MemoryCheck(abftEnv, j - 1, j - 1, j, m / nb - 1),
                              COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
                              ROW_CHK_T(j, j+1), abftEnv->row_dchk_ld,
+                             MemoryCheck(abftEnv, j + 1, n / nb - 1, j, m / nb - 1),
+                             ComputationCheck(abftEnv, j + 1, n / nb - 1, j, m / nb - 1, 1),
                              FT, DEBUG, VERIFY, stream);
             }
 
@@ -347,8 +354,10 @@ magma_dgetrf_gpu(
             magma_queue_sync( stream[0] );
             //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
 
-            VERIFY = updateCounter(abftEnv, j, j, j, m / nb - 1, 1);
-            dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo, abftEnv, false, DEBUG, VERIFY);
+            //VERIFY = updateCounter(abftEnv, j, j, j, m / nb - 1, 1);
+            dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo, 
+                     abftEnv, false, DEBUG, 
+                     ComputationCheck(abftEnv, j, j, j, m / nb - 1, 1));
 
             if ( *info == 0 && iinfo > 0 )
                 *info = iinfo + j*nb;
@@ -447,10 +456,13 @@ magma_dgetrf_gpu(
                         dAT(j, j+1), lddat,
                         abftEnv,
                         COL_CHK_T(j, j), abftEnv->col_dchk_ld,
-                        ROW_CHK_T(j, j), abftEnv->row_dchk_ld,                        
+                        ROW_CHK_T(j, j), abftEnv->row_dchk_ld,
+                        MemoryCheck(abftEnv, j, j, j, j),                        
                         COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
                         ROW_CHK_T(j, j+1), abftEnv->row_dchk_ld,
-                        FT, DEBUG, VERIFY, stream);
+                        MemoryCheck(abftEnv, j + 1, j + 1, j, j),   
+                        ComputationCheck(abftEnv, j + 1, j + 1, j, j, 1),   
+                        FT, DEBUG, stream);
                 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
                 //              nb, m-(j+1)*nb, nb,

@@ -283,7 +283,7 @@ magma_dpotrf_gpu(
                             ROW_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->row_dchk_ld,
                             MemoryCheck(abftEnv, j / nb + 1, n / nb , j / nb, j / nb),
                             ComputationCheck(abftEnv, j / nb + 1, n / nb - 1 , j / nb, j / nb, 1),
-                			FT, DEBUG, VERIFY,
+                			FT, DEBUG,
                             stream);
                 	
                 }
@@ -325,7 +325,7 @@ magma_dpotrf_gpu(
                             ROW_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->row_dchk_ld,
                             MemoryCheck(abftEnv, j / nb + 1, n / nb - 1, j / nb, j / nb),
                             ComputationCheck(abftEnv, j / nb + 1, n / nb - 1, j / nb, j / nb, 1),
-                			FT, DEBUG, VERIFY, 
+                			FT, DEBUG,
                             stream);
                 }
                 
