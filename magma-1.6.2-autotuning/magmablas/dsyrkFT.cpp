@@ -16,7 +16,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		ABFTEnv * abftEnv,
 		double * col_chkA, int col_chkA_ld, bool MEM_CHECK_A,
 		double * col_chkC, int col_chkC_ld, bool MEM_CHECK_C, bool COM_CHECK_C,
-		bool FT, bool DEBUG, bool VERIFY,
+		bool FT, bool DEBUG,
 		magma_queue_t * stream){
 	
 	/*		   m				n
