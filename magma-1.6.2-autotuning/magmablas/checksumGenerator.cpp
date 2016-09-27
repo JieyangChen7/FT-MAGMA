@@ -338,7 +338,7 @@ bool MemoryCheck(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2) {
     }
 
    cout<<"Memory after"<<endl;
-   printMatrix_host_int(abftEnv->lastCheckTime, abftEnv->lastCheckTime_ld, abftEnv->gpu_row /abftEnv->chk_nb, abftEnv->gpu_col /abftEnv->chk_nb, -1, -1);
+   printMatrix_host_time(abftEnv->lastCheckTime, abftEnv->lastCheckTime_ld, abftEnv->gpu_row /abftEnv->chk_nb, abftEnv->gpu_col /abftEnv->chk_nb, -1, -1);
     return verify;
     //return false;
     //return true;
