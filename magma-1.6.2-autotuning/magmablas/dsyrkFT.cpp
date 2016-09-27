@@ -26,7 +26,7 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	 * ******************	*********
 	 */
 	//
-	if (DEBUG) {
+	if (true) {
 		cout << "syrk" << endl;
 	}
 	

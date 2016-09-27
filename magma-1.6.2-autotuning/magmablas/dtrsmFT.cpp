@@ -19,7 +19,7 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		bool FT, bool DEBUG,
 		magma_queue_t * stream) {
 
-	if (DEBUG) {
+	if (true) {
 		cout << "trsm" << endl;
 	}
 	
