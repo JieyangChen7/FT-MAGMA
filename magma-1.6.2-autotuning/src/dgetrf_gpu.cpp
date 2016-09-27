@@ -448,8 +448,6 @@ magma_dgetrf_gpu(
                 //              nb, nb,
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
-
-                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
                 dtrsmFT(MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                         nb, nb, 
                         c_one, dAT(j, j  ), lddat,
@@ -470,7 +468,6 @@ magma_dgetrf_gpu(
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
 
-                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
                 dgemmFT(MagmaNoTrans, MagmaNoTrans,
                         nb, m-(j+1)*nb, nb,
                         c_neg_one,
@@ -496,7 +493,6 @@ magma_dgetrf_gpu(
                 //              n-s*nb, nb,
                 //              c_one, dAT(j, j  ), lddat,
                 //                     dAT(j, j+1), lddat);
-                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j, j, 1);
                 dtrsmFT( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                              n-s*nb, nb,
                              c_one, dAT(j, j  ), lddat,
@@ -517,7 +513,6 @@ magma_dgetrf_gpu(
                 //              c_neg_one, dAT(j,   j+1), lddat,
                 //                         dAT(j+1, j  ), lddat,
                 //              c_one,     dAT(j+1, j+1), lddat );
-                VERIFY = updateCounter(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1);
                 dgemmFT( MagmaNoTrans, MagmaNoTrans,
                              n-(j+1)*nb, m-(j+1)*nb, nb,
                              c_neg_one, dAT(j,   j+1), lddat,
