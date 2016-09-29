@@ -38,11 +38,11 @@ void init_row_chk(ABFTEnv * abftEnv, double * A, int lda) {
 
 time_t getMillSec() {
     struct timeval now;
-    if(gettimeofday(&now) == -1) {
+    if(gettimeofday(&now, NULL) == -1) {
         cout << "GET TIME ERROR!" << endl;
         return 0;
     }
-    time_t t = now.tv_sec * 1000 + now.tv_nsec / 1000;
+    time_t t = now.tv_sec * 1000 + now.tv_usec / 1000;
     return t;
 }
 
