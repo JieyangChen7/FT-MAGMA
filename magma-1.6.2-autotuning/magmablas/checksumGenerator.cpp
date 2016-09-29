@@ -5,6 +5,7 @@
 #include "cuda_profiler_api.h"
 #include "cublas_v2.h"
 #include <cstring>
+#include <sys/time.h>
 using namespace std;
 //initialize checksum
 //M: number of rows
@@ -32,6 +33,17 @@ void init_row_chk(ABFTEnv * abftEnv, double * A, int lda) {
 					MAGMA_D_ZERO, 
 					ROW_CHK(0, i / abftEnv->chk_nb), abftEnv->row_dchk_ld);			
 	}
+}
+
+
+time_t getMillSec() {
+    struct timeval now;
+    if(gettimeofday(&now) == -1) {
+        cout << "GET TIME ERROR!" << endl;
+        return 0;
+    }
+    time_t t = now.tv_sec * 1000 + now.tv_nsec / 1000;
+    return t;
 }
 
 
@@ -259,6 +271,9 @@ void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb,
     cout << "lastCheckTime initialize" << endl;
     abftEnv->lastCheckTime = new time_t[(abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb)];
     abftEnv->lastCheckTime_ld = abftEnv->gpu_row/abftEnv->chk_nb;
+    for (int i = 0; i < (abftEnv->gpu_row/abftEnv->chk_nb) * (abftEnv->gpu_col/abftEnv->chk_nb); i++) {
+        abftEnv->lastCheckTime[i] = getMillSec();
+    }
     cout << "done." << endl;
 
 
@@ -330,8 +345,8 @@ bool MemoryCheck(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2) {
     for (int i = row1; i <= row2; i++) {
         for (int j = col1; j <= col2; j++) {
             time_t temp = *(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i);
-            if (time(NULL) - temp > abftEnv->T) {
-                *(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i) = time(NULL);
+            if (getMillSec() - temp > abftEnv->T) {
+                *(abftEnv->lastCheckTime + j * abftEnv->lastCheckTime_ld + i) = getMillSec();
                 verify = true;
             }
         }
