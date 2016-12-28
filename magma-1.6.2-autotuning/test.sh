@@ -28,7 +28,7 @@
 #./testing/testing_dpotrf_gpu -N 40960,40960
 
 
-./testing/testing_dgetrf_gpu -N 1024,1024
+#./testing/testing_dgetrf_gpu -N 1024,1024
 #./testing/testing_dgetrf_gpu -N 5120,5120
 #./testing/testing_dgetrf_gpu -N 7680,7680
 #./testing/testing_dgetrf_gpu -N 10240,10240
@@ -39,7 +39,7 @@
 #./testing/testing_dgetrf_gpu -N 23040,23040
 #./testing/testing_dgetrf_gpu -N 25600,25600
 #./testing/testing_dgetrf_gpu -N 28160,28160
-#./testing/testing_dgetrf_gpu -N 30720,30720
+./testing/testing_dgetrf_gpu -N 30720,30720
 
 
 #./testing/testing_dgeqrf_gpu -N 5120,5120
