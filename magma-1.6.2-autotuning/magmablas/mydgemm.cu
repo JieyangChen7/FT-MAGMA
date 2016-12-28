@@ -20,7 +20,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 	A = A + blockIdx.x * lda;
 
 	__shared__ double cache1[NB];
-	//__shared__ double cache2[NB];
+	__shared__ double cache2[NB];
 	
 	//load one column to cache
 	cache1[threadIdx.x] = A[threadIdx.x];
