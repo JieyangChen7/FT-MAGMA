@@ -91,7 +91,7 @@ struct ABFTEnv {
     int N;
 };
 
-void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t * stream);
+void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t stream);
 
 
 void row_checksum_kernel_cccs4(int m, int n, int chk_nb, 

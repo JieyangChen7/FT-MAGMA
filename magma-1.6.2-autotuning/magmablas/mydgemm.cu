@@ -43,7 +43,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 }
 
 
-void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t * stream) {
+void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t stream) {
 	chkenc_kernel<<<n, m, stream>>>(A, lda, Chk, ldchk);
 }
 
