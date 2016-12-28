@@ -14,9 +14,10 @@
 __global__ void
 chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 {
+//	printf("start kernel\n");
     //blockIdx.x: determin the column to process
 	A = A + blockIdx.x * lda;
-	
+/*
 	__shared__ double cache1[NB];
 	__shared__ double cache2[NB];
 	
@@ -39,7 +40,9 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 		*(Chk + blockIdx.x * ldchk) = cache1[0];
 		*(Chk + blockIdx.x * ldchk + 1) = cache2[0];
 
-	}   
+	}  
+
+	*/ 
 }
 
 
