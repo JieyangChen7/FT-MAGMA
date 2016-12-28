@@ -24,7 +24,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 	
 	//load one column to cache
 	cache1[threadIdx.x] = A[threadIdx.x];
-	//cache2[threadIdx.x] = cache1[threadIdx.x]; //add weights
+	cache2[threadIdx.x] = A[threadIdx.x]; //add weights
 
 	__syncthreads();
 
