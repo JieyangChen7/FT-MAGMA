@@ -734,13 +734,13 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 	double benchmark_time = 0;
 
 	double * test_chk1;
-	size_t test_chk1_pitch = magma_roundup((abftEnv->gpu_row / chk_nb) * 2 * sizeof(double), 32);
+	size_t test_chk1_pitch = magma_roundup((abftEnv->gpu_row / abftEnv->chk_nb) * 2 * sizeof(double), 32);
     test_chk1_ld = test_chk1_pitch / sizeof(double);
     magma_dmalloc(&(test_chk1), test_chk1_pitch * abftEnv->gpu_col);
 
 
     double * test_chk2;
-	size_t test_chk2_pitch = magma_roundup((abftEnv->gpu_row / chk_nb) * 2 * sizeof(double), 32);
+	size_t test_chk2_pitch = magma_roundup((abftEnv->gpu_row / abftEnv->chk_nb) * 2 * sizeof(double), 32);
     test_chk2_ld = test_chk2_pitch / sizeof(double);
     magma_dmalloc(&(test_chk2), test_chk2_pitch * abftEnv->gpu_col);
 
@@ -779,12 +779,17 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			col_checksum_kernel_ncns2(abftEnv->chk_nb, i, abftEnv->chk_nb,
 						  A, lda, 
 						  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
-						  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
+						  test_chk2, test_chk2_ld, 
 						  abftEnv->stream);
+			cudaStreamSynchronize(*(abftEnv->stream));
 
-				chkenc(A, lda, abftEnv->chk_nb, i, test_chk, test_chk_ld, 
+			chkenc(A, lda, abftEnv->chk_nb, i, test_chk1, test_chk1_ld, 
 						  *(abftEnv->stream));
-				cudaStreamSynchronize(*(abftEnv->stream));
+			cudaStreamSynchronize(*(abftEnv->stream));
+
+			compareChk(test_chk1, test_chk1_ld, test_chk2, test_chk2_ld, 2, i);
+
+
 			//}
 
 
