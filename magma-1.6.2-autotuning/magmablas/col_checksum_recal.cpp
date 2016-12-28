@@ -621,8 +621,8 @@ void col_chk_recal_12(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 
 void col_chk_recal_13(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 	chkenc(A, lda, m, n, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
-						  abftEnv->stream);
-	cudaStreamSynchronize(abftEnv->stream);
+						  *(abftEnv->stream));
+	cudaStreamSynchronize(*(abftEnv->stream));
 }
 
 
