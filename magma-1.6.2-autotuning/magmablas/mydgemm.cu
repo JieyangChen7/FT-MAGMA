@@ -30,7 +30,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 	while (i != 0) {
 		if (threadIdx.x < i)
-			cache[threadIdx.x] += cache1[threadIdx.x + i];
+			cache[threadIdx.x] += cache[threadIdx.x + i];
 		__syncthreads();
 		i /= 2;
 	}
@@ -49,7 +49,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 	while (i != 0) {
 		if (threadIdx.x < i)
-			cache[threadIdx.x] += cache1[threadIdx.x + i];
+			cache[threadIdx.x] += cache[threadIdx.x + i];
 		__syncthreads();
 		i /= 2;
 	}
