@@ -35,6 +35,9 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 		    cache2[threadIdx.x] += cache2[threadIdx.x + i];
 		__syncthreads();
 		i /= 2;
+		if (threadIdx.x == 0) {
+			printf("i=%d\n", i);
+		}
 	}
 /*
 	if (threadIdx.x == 0) {
