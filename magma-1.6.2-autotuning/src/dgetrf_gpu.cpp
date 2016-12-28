@@ -491,7 +491,7 @@ magma_dgetrf_gpu(
                         ROW_CHK_T(j+1, j+1), abftEnv->row_dchk_ld,
                         MemoryCheck(abftEnv, j + 1, j + 1, j + 1, m / nb - 1), 
                         ComputationCheck(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1), 
-                        FT, DEBUG, VERIFY, stream);
+                        FT, DEBUG, stream);
 
 
 
@@ -513,7 +513,7 @@ magma_dgetrf_gpu(
                              COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
                              MemoryCheck(abftEnv, j + 1, j + 1, j, j),   
                              ComputationCheck(abftEnv, j + 1, j + 1, j, j, 1),   
-                             FT, DEBUG, VERIFY, stream);
+                             FT, DEBUG, stream);
 
 
                 // magma_dgemm( MagmaNoTrans, MagmaNoTrans,
@@ -537,7 +537,7 @@ magma_dgetrf_gpu(
                              ROW_CHK_T(j+1, j+1), abftEnv->row_dchk_ld,
                              MemoryCheck(abftEnv, j + 1, j + 1, j + 1, m / nb - 1), 
                              ComputationCheck(abftEnv, j + 1, j + 1, j + 1, m / nb - 1, 1), 
-                             FT, DEBUG, VERIFY, stream);
+                             FT, DEBUG, stream);
         }
         //MemoryErrorCheck(abftEnv, dAT, lddat, stream);
     }
