@@ -737,12 +737,13 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 	size_t test_chk1_pitch = magma_roundup((abftEnv->gpu_row / abftEnv->chk_nb) * 2 * sizeof(double), 32);
     int test_chk1_ld = test_chk1_pitch / sizeof(double);
     magma_dmalloc(&(test_chk1), test_chk1_pitch * abftEnv->gpu_col);
-
+    cudaMemset2D(test_chk1, test_chk1_pitch, 0, (abftEnv->gpu_row / abftEnv->chk_nb) * 2 * sizeof(double), abftEnv->gpu_col);
 
     double * test_chk2;
 	size_t test_chk2_pitch = magma_roundup((abftEnv->gpu_row / abftEnv->chk_nb) * 2 * sizeof(double), 32);
     int test_chk2_ld = test_chk2_pitch / sizeof(double);
     magma_dmalloc(&(test_chk2), test_chk2_pitch * abftEnv->gpu_col);
+    cudaMemset2D(test_chk2, test_chk2_pitch, 0, (abftEnv->gpu_row / abftEnv->chk_nb) * 2 * sizeof(double), abftEnv->gpu_col);
 
 	
 	//for (int i = abftEnv->chk_nb; i <= abftEnv->gpu_col; i += abftEnv->chk_nb) {
