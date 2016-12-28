@@ -749,7 +749,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 
 	//	for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 
-		cout << i << "\t";
+	//	cout << i << "\t";
 
 			// benchmark_time = magma_wtime();
 			// for (int t = 0; t < 100; t++) {
