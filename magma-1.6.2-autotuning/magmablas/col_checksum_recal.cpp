@@ -731,7 +731,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			}
 			benchmark_time = magma_wtime() - benchmark_time;
 			cout << benchmark_time << endl;
-			cout << benchmark_time << "\t";
+			// cout << benchmark_time << "\t";
 
 			// benchmark_time = magma_wtime();
 			// for (int t = 0; t < 100; t++) {
