@@ -1,4 +1,4 @@
-#./testing/testing_dgetrf_gpu -N 16,16 
+./testing/testing_dgetrf_gpu -N 16,16 
 #./testing/testing_dpotrf_gpu -N 16,16 
 #./testing/testing_dgeqrf_gpu -N 16,16 
 #ivy K20c - 25000
@@ -35,7 +35,7 @@
 #./testing/testing_dgetrf_gpu -N 12800,12800
 #./testing/testing_dgetrf_gpu -N 15360,15360
 #./testing/testing_dgetrf_gpu -N 17920,17920
-./testing/testing_dgetrf_gpu -N 20480,20480
+#./testing/testing_dgetrf_gpu -N 20480,20480
 #./testing/testing_dgetrf_gpu -N 23040,23040
 #./testing/testing_dgetrf_gpu -N 25600,25600
 #./testing/testing_dgetrf_gpu -N 28160,28160
