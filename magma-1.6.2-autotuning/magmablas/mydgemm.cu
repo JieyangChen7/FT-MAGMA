@@ -8,14 +8,14 @@
 #include "magma.h"
 #include <stdlib.h>
 
-#define NB 512
+#define NB 256
 // encoding checksum for A
 
 __global__ void
 chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 {
-	if (blockIdx.x == 0 && threadIdx.x == 0)
-		printf("grid:%d, block:%d\n", gridDim.x, blockDim.x);
+	//if (blockIdx.x == 0 && threadIdx.x == 0)
+	//	printf("grid:%d, block:%d\n", gridDim.x, blockDim.x);
     //blockIdx.x: determin the column to process
 	A = A + blockIdx.x * lda;
 
@@ -36,9 +36,9 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 		    cache2[threadIdx.x] += cache2[threadIdx.x + i];
 		__syncthreads();
 		i /= 2;
-		if (threadIdx.x == 0) {
-			printf("i=%d\n", i);
-		}
+	//	if (threadIdx.x == 0) {
+	//		printf("i=%d\n", i);
+	//	}
 	}
 /*
 	if (threadIdx.x == 0) {
