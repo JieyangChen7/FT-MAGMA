@@ -17,14 +17,14 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 //	printf("start kernel\n");
     //blockIdx.x: determin the column to process
 	A = A + blockIdx.x * lda;
-/*
+
 	__shared__ double cache1[NB];
 	__shared__ double cache2[NB];
 	
 	//load one column to cache
 	cache1[threadIdx.x] = A[threadIdx.x];
 	cache2[threadIdx.x] = cache1[threadIdx.x] * (threadIdx.x + 1); //add weights
-
+/*
 	__syncthreads();
 
 	int i = blockDim.x / 2;
