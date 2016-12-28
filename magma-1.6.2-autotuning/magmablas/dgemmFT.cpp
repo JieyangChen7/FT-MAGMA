@@ -26,7 +26,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		magma_queue_t * stream) {
 
 	
-	if (DEBUG) {
+	if (true) {
 		cout << "dgemm" << endl;
 	}
 
