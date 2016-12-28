@@ -8,7 +8,7 @@
 #include "magma.h"
 #include <stdlib.h>
 
-#define NB 64
+#define NB 4
 // encoding checksum for A
 
 __global__ void
@@ -40,14 +40,14 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 	//		printf("i=%d\n", i);
 	//	}
 	}
-/*
+
 	if (threadIdx.x == 0) {
 		*(Chk + blockIdx.x * ldchk) = cache1[0];
 		*(Chk + blockIdx.x * ldchk + 1) = cache2[0];
 
 	}  
 
-	*/ 
+	
 }
 
 
