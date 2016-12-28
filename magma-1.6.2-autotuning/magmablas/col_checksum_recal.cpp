@@ -13,7 +13,7 @@ void compareChk(double * chk1, int ldchk1, double * chk2, int ldchk2, int m, int
 
     bool correct = true;
     for (int i = 0; i < m * n; i++) {
-    	if (abs(chk1_host[i] - chk2_host[i]) < 1e-5) 
+    	if (abs(chk1_host[i] - chk2_host[i]) > 1e-5) 
     		correct = false;
     }
     if (correct) {
