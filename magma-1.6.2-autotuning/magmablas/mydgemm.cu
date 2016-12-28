@@ -8,7 +8,7 @@
 #include "magma.h"
 #include <stdlib.h>
 
-#define NB 64
+#define NB 128
 // encoding checksum for A
 
 __global__ void
