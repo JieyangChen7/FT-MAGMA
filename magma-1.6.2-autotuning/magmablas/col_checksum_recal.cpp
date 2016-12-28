@@ -2,6 +2,26 @@
 #include <iostream>
 using namespace std;
 
+
+void compareChk(double * chk1, int ldchk1, double * chk2, int ldchk2, int m, int n) {
+	double * chk1_host = new double[m * n]();
+	magma_dgetmatrix(m, n, chk1, ldchk1, chk1_host, m);
+
+	double * chk2_host = new double[m * n]();
+	magma_dgetmatrix(m, n, chk2, ldchk2, chk2_host, m);
+
+    bool correct = true;
+    for (int i = 0; i < m * n; i++) {
+    	if (chk1_host[i] != chk2_host[i])
+    		correct = false;
+    }
+    if (correct) {
+    	cout << "correct!" << endl;
+    } else {
+    	cout << "wrong!" << endl;
+    }
+}
+
 //recalculate column checksums
 //M: number of rows of A
 //N: numner of cols of A
@@ -713,6 +733,16 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 	cout << "start banchmarking:" << endl;
 	double benchmark_time = 0;
 
+	double * test_chk1;
+	size_t test_chk1_pitch = magma_roundup((abftEnv->gpu_row / chk_nb) * 2 * sizeof(double), 32);
+    test_chk1_ld = test_chk1_pitch / sizeof(double);
+    magma_dmalloc(&(test_chk1), test_chk1_pitch * abftEnv->gpu_col);
+
+
+    double * test_chk2;
+	size_t test_chk2_pitch = magma_roundup((abftEnv->gpu_row / chk_nb) * 2 * sizeof(double), 32);
+    test_chk2_ld = test_chk2_pitch / sizeof(double);
+    magma_dmalloc(&(test_chk2), test_chk2_pitch * abftEnv->gpu_col);
 
 	
 	for (int i = abftEnv->chk_nb; i <= abftEnv->gpu_col; i += abftEnv->chk_nb) {
@@ -743,12 +773,28 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			// cout << benchmark_time << endl;
 			// cout << benchmark_time << "\t";
 
-			benchmark_time = magma_wtime();
-			for (int t = 0; t < 100; t++) {
-				col_chk_recal_select(abftEnv, A, lda, abftEnv->chk_nb, i, 13);
-			}
-			benchmark_time = magma_wtime() - benchmark_time;
-			cout << benchmark_time << endl;
+			//benchmark_time = magma_wtime();
+			//for (int t = 0; t < 1; t++) {
+
+			col_checksum_kernel_ncns2(abftEnv->chk_nb, i, abftEnv->chk_nb,
+						  A, lda, 
+						  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
+						  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
+						  abftEnv->stream);
+
+				chkenc(A, lda, abftEnv->chk_nb, i, test_chk, test_chk_ld, 
+						  *(abftEnv->stream));
+				cudaStreamSynchronize(*(abftEnv->stream));
+			//}
+
+
+
+			//benchmark_time = magma_wtime() - benchmark_time;
+			//cout << benchmark_time << endl;
+
+
+
+
 	//	}
 
 	}
