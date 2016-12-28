@@ -619,6 +619,13 @@ void col_chk_recal_12(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 }
 
 
+void col_chk_recal_13(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
+	chkenc(A, lda, m, n, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
+						  abftEnv->stream);
+	cudaStreamSynchronize(abftEnv->stream);
+}
+
+
 void col_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda) {
 
 	double gpu_time = 0.0;
@@ -674,6 +681,8 @@ void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, 
 			case 11: col_chk_recal_11(abftEnv, A, lda, m, n);
 					break;		
 			case 12: col_chk_recal_12(abftEnv, A, lda, m, n);
+					break;
+			case 13: col_chk_recal_13(abftEnv, A, lda, m, n);
 					break;
 			default: cout << "selecting error" << endl;
 		}
