@@ -24,7 +24,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 	//load one column to cache
 	cache1[threadIdx.x] = A[threadIdx.x];
 	cache2[threadIdx.x] = cache1[threadIdx.x] * (threadIdx.x + 1); //add weights
-/*
+
 	__syncthreads();
 
 	int i = blockDim.x / 2;
@@ -36,6 +36,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 		__syncthreads();
 		i /= 2;
 	}
+/*
 	if (threadIdx.x == 0) {
 		*(Chk + blockIdx.x * ldchk) = cache1[0];
 		*(Chk + blockIdx.x * ldchk + 1) = cache2[0];
