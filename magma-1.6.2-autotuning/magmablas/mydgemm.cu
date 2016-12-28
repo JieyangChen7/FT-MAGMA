@@ -45,7 +45,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 	__syncthreads();
 
-	int i = blockDim.x / 2;
+	i = blockDim.x / 2;
 
 	while (i != 0) {
 		if (threadIdx.x < i)
