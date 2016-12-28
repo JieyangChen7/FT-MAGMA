@@ -145,7 +145,7 @@ magma_dgetrf_gpu(
 
     /* debug use only */
     //nb = 4;
-    nb = 16;
+    nb = 4;
     s      = mindim / nb;
 
     if (nb <= 1 || nb >= min(m,n)) {
