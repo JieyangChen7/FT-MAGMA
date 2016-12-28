@@ -777,12 +777,12 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			//benchmark_time = magma_wtime();
 			//for (int t = 0; t < 1; t++) {
 
-			// col_checksum_kernel_ncns2(abftEnv->chk_nb, abftEnv->chk_nb, abftEnv->chk_nb,
-			// 			  A, lda, 
-			// 			  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
-			// 			  test_chk2, test_chk2_ld, 
-			// 			  abftEnv->stream);
-			// cudaStreamSynchronize(*(abftEnv->stream));
+			col_checksum_kernel_ncns2(abftEnv->chk_nb, abftEnv->chk_nb, abftEnv->chk_nb,
+						  A, lda, 
+						  abftEnv->hrz_vd, abftEnv->hrz_vd_ld, 
+						  test_chk2, test_chk2_ld, 
+						  abftEnv->stream);
+			cudaStreamSynchronize(*(abftEnv->stream));
 
 			// chkenc(A, lda, abftEnv->chk_nb, abftEnv->chk_nb, test_chk1, test_chk1_ld, 
 			// 			  *(abftEnv->stream));
