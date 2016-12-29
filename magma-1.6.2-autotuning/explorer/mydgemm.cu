@@ -119,6 +119,43 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 }
 
 
+__global__ void
+chkenc_kernel4(double * A, int lda, double * Chk , int ldchk)
+{
+
+    //blockIdx.x: determin the column to process
+    for(int k = 0; k < NB; k += cB)
+
+	    double sum1 = 0;
+	    double sum2 = 0;
+
+		A = A + k * lda;
+
+		__shared__ double cache[rB][cB];
+
+		for (int i = 0; i < NB; i += rB) {
+			
+			//load a block to cache
+			for (int j = 0; j < rB; j++) {
+				cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
+			}
+			__syncthreads();
+
+			for (int j = 0; j < rB; j++) {
+				sum1 += cache[j][threadIdx.x];
+				sum2 += cache[j][threadIdx.x] * (i + j + 1);
+			}
+			__syncthreads();
+			A = A + rB;
+		}
+
+		*(Chk + idx * ldchk) = sum1;
+		*(Chk + idx * ldchk+1) = sum2;
+	}
+	
+}
+
+
 void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStream_t stream) {
     int numBlocks; // Occupancy in terms of active blocks 
     int blockSize = cB; 
@@ -127,13 +164,13 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStr
 	int activeWarps; 
 	int maxWarps; 
 	cudaGetDevice(&device); 
-	cudaGetDeviceProperties(&prop, device); cudaOccupancyMaxActiveBlocksPerMultiprocessor( &numBlocks, chkenc_kernel3, blockSize, 0); 
+	cudaGetDeviceProperties(&prop, device); cudaOccupancyMaxActiveBlocksPerMultiprocessor( &numBlocks, chkenc_kernel4, blockSize, 0); 
 	activeWarps = numBlocks * blockSize / prop.warpSize; 
 	maxWarps = prop.maxThreadsPerMultiProcessor / prop.warpSize; 
 	printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	chkenc_kernel3<<<n/cB, cB, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel4<<<1, cB, 0, stream>>>(A, lda, Chk, ldchk);
 }
 
 int main(){
