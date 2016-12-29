@@ -83,7 +83,7 @@ chkenc_kernel2(double * A, int lda, double * Chk , int ldchk)
 }
 
 void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t stream) {
-    int numBlocks; // Occupancy in terms of active blocks 
+  /*  int numBlocks; // Occupancy in terms of active blocks 
     int blockSize = 512; 
 	int device; 
 	cudaDeviceProp prop; 
@@ -93,8 +93,8 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_q
 	cudaGetDeviceProperties(&prop, device); cudaOccupancyMaxActiveBlocksPerMultiprocessor( &numBlocks, chkenc_kernel2, blockSize, 0); 
 	activeWarps = numBlocks * blockSize / prop.warpSize; 
 	maxWarps = prop.maxThreadsPerMultiProcessor / prop.warpSize; 
-	printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
-
+	//printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
+*/
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
 	chkenc_kernel2<<<n/m, m, 0, stream>>>(A, lda, Chk, ldchk);
 }
