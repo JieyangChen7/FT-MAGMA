@@ -124,7 +124,7 @@ chkenc_kernel4(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
-    for(int k = 0; k < NB; k += cB)
+    for(int k = 0; k < NB; k += cB) {
 
 	    double sum1 = 0;
 	    double sum2 = 0;
