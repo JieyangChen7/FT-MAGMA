@@ -103,16 +103,26 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 		//load a block to cache
 		for (int j = 0; j < B; j++) {
 			cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
+			if (blockIdx.x == 0 && threadIdx.x == 0) {
+				printf("%f ", cache[threadIdx.x][j]);
+			}
 		}
+
+		if (blockIdx.x == 0 && threadIdx.x == 0) {
+				printf("\n");
+	    }
 		__syncthreads();
 
 		for (int j = 0; j < B; j++) {
 			sum1 += cache[j][threadIdx.x];
 			sum2 += cache[j][threadIdx.x] * (i + j + 1);
 			if (blockIdx.x == 0 && threadIdx.x == 0) {
-				printf("%f", cache[j][threadIdx.x]);
+				printf("%f ", cache[j][threadIdx.x]);
 			}
 		}
+		if (blockIdx.x == 0 && threadIdx.x == 0) {
+				printf("\n");
+	    }
 		__syncthreads();
 	}
 
