@@ -3,7 +3,7 @@
 #include<iostream>
 #include"papi.h"
 #define NB 512
-#define B 16
+#define B 8
 
 using namespace std;
 
