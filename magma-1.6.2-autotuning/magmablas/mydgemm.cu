@@ -108,7 +108,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 
 		for (int j = 0; j < B; j++) {
 			sum1 += cache[j][threadIdx.x];
-			sum1 += cache[j][threadIdx.x] * (i + j + 1);
+			sum2 += cache[j][threadIdx.x] * (i + j + 1);
 		}
 
 	}
