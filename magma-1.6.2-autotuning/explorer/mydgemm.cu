@@ -89,13 +89,13 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStr
 	int activeWarps; 
 	int maxWarps; 
 	cudaGetDevice(&device); 
-	cudaGetDeviceProperties(&prop, device); cudaOccupancyMaxActiveBlocksPerMultiprocessor( &numBlocks, chkenc_kernel, blockSize, 0); 
+	cudaGetDeviceProperties(&prop, device); cudaOccupancyMaxActiveBlocksPerMultiprocessor( &numBlocks, chkenc_kernel2, blockSize, 0); 
 	activeWarps = numBlocks * blockSize / prop.warpSize; 
 	maxWarps = prop.maxThreadsPerMultiProcessor / prop.warpSize; 
 	printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	chkenc_kernel<<<n, m, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel2<<<n, m/n, 0, stream>>>(A, lda, Chk, ldchk);
 }
 
 int main(){
