@@ -171,7 +171,8 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStr
 	printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	chkenc_kernel4<<<1, cB, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel3<<<N/cB, cB, 0, stream>>>(A, lda, Chk, ldchk);
+	//chkenc_kernel4<<<1, cB, 0, stream>>>(A, lda, Chk, ldchk);
 }
 
 int main(){
