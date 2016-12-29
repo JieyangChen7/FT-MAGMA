@@ -96,7 +96,7 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_q
 	printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	chkenc_kernel2<<<m/n, m, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel2<<<n/m, m, 0, stream>>>(A, lda, Chk, ldchk);
 }
 
 
