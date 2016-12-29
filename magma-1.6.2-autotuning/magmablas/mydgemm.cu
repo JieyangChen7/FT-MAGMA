@@ -10,7 +10,7 @@
 
 #define NB 8
 // encoding checksum for A
-#define B 2
+#define B 4
 
 __global__ void
 chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
