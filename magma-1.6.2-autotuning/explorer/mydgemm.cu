@@ -1,7 +1,10 @@
 
 #include<stdio.h>
+#include<iostream>
 #include"papi.h"
 #define NB 512
+
+using namespace std;
 
 // encoding checksum for A
 
@@ -99,14 +102,16 @@ int main(){
 	float mflops = 0.0;
 
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-		//cout << "PAPI ERROR" << endl;
+		cout << "PAPI ERROR" << endl;
 		return;
 	}
 	chkenc(dA, ldda, NB, n, chk , ldchk, stream);
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-		//cout << "PAPI ERROR" << endl;
+		cout << "PAPI ERROR" << endl;
 		return;
 	}
+
+	coud << real_time;
 
 
 
