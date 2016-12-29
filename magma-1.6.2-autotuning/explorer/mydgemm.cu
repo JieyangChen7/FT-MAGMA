@@ -97,7 +97,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 	__shared__ double cache[B][B];
 
 	for (int i = 0; i < NB; i += B) {
-		A = A + i;
+		
 		//load a block to cache
 		for (int j = 0; j < B; j++) {
 			cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
@@ -106,9 +106,10 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 
 		for (int j = 0; j < B; j++) {
 			sum1 += cache[j][threadIdx.x];
-			sum1 += cache[j][threadIdx.x] * (i + j + 1);
+			sum2 += cache[j][threadIdx.x] * (i + j + 1);
 		}
-
+		__syncthreads();
+		A = A + B;
 	}
 
 	*(Chk + idx * ldchk) = sum1;
@@ -119,7 +120,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 
 void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStream_t stream) {
     int numBlocks; // Occupancy in terms of active blocks 
-    int blockSize = 32; 
+    int blockSize = B; 
 	int device; 
 	cudaDeviceProp prop; 
 	int activeWarps; 
@@ -131,7 +132,7 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStr
 	printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	chkenc_kernel3<<<n/32, 32, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel3<<<n/B, B, 0, stream>>>(A, lda, Chk, ldchk);
 }
 
 int main(){
