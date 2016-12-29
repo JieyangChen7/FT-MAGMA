@@ -110,7 +110,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 			sum1 += cache[j][threadIdx.x];
 			sum2 += cache[j][threadIdx.x] * (i + j + 1);
 		}
-
+		__syncthreads();
 	}
 
 	idx += threadIdx.x;
