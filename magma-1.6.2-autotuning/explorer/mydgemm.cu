@@ -111,7 +111,7 @@ int main(){
 		return;
 	}
 
-	coud << real_time;
+	cout << real_time;
 
 
 
