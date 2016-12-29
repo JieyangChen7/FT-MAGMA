@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<iostream>
 #include"papi.h"
+#define N 30720
 #define NB 512
 #define rB 32
 #define cB 32
@@ -124,7 +125,7 @@ chkenc_kernel4(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
-    for(int k = 0; k < NB; k += cB) {
+    for(int k = 0; k < NB; k += N) {
 
 	    double sum1 = 0;
 	    double sum2 = 0;
@@ -174,20 +175,20 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStr
 }
 
 int main(){
-	int n = 30720;
-	double * A = new double[NB * n];
-	for (int i = 0; i < NB*n; i++) {
+	
+	double * A = new double[NB * N];
+	for (int i = 0; i < NB*N; i++) {
 		A[i] = i;
 	}
 	double * dA;
 	size_t dApitch;
-	cudaMallocPitch(&dA, &dApitch, NB*sizeof(double), n);
-	cudaMemcpy2D(dA, dApitch, A, NB, NB, n, cudaMemcpyHostToDevice);
+	cudaMallocPitch(&dA, &dApitch, NB*sizeof(double), N);
+	cudaMemcpy2D(dA, dApitch, A, NB, NB, N, cudaMemcpyHostToDevice);
 	int ldda = dApitch/sizeof(double);
 
 	double * chk;
 	size_t chkpitch;
-	cudaMallocPitch(&chk, &chkpitch, 2*sizeof(double), n);
+	cudaMallocPitch(&chk, &chkpitch, 2*sizeof(double), N);
 	int ldchk = chkpitch/sizeof(double);
 
 	cudaStream_t stream;
@@ -202,13 +203,13 @@ int main(){
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
-	chkenc(dA, ldda, NB, n, chk , ldchk, stream);
+	chkenc(dA, ldda, NB, N, chk , ldchk, stream);
 	cudaStreamSynchronize(stream);
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
-	int flops = 2 * NB * n * 2;
+	int flops = 2 * NB * N * 2;
 	cout << real_time << "\t" << (flops/real_time)/1e9;
 
 
