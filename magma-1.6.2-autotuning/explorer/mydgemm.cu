@@ -133,8 +133,8 @@ int main(){
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
-
-	cout << real_time;
+	int flops = 2 * NB * n * 2;
+	cout << real_time << "\t" << (flops/real_time)/1e9;
 
 
 
