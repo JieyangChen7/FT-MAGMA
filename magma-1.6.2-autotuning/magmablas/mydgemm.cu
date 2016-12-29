@@ -99,7 +99,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 	__shared__ double cache[B][B];
 
 	for (int i = 0; i < NB; i += B) {
-		A = A + i;
+		A = A + B;
 		//load a block to cache
 		for (int j = 0; j < B; j++) {
 			cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
