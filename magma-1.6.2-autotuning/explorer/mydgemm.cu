@@ -128,6 +128,7 @@ int main(){
 		return;
 	}
 	chkenc(dA, ldda, NB, n, chk , ldchk, stream);
+	cudaStreamSynchronize(stream);
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
 		return;
