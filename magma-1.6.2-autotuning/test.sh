@@ -39,7 +39,7 @@
 #./testing/testing_dgetrf_gpu -N 23040,23040
 #./testing/testing_dgetrf_gpu -N 25600,25600
 #./testing/testing_dgetrf_gpu -N 28160,28160
-./testing/testing_dgetrf_gpu -N 30720,30720
+#./testing/testing_dgetrf_gpu -N 30720,30720
 
 
 #./testing/testing_dgeqrf_gpu -N 5120,5120

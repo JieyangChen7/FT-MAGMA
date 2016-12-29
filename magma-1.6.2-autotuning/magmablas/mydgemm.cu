@@ -8,9 +8,9 @@
 #include "magma.h"
 #include <stdlib.h>
 
-#define NB 16
+#define NB 4
 // encoding checksum for A
-#define B 4
+#define B 2
 
 __global__ void
 chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
