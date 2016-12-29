@@ -749,7 +749,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 	
 	//for (int i = abftEnv->chk_nb; i <= abftEnv->gpu_col; i += abftEnv->chk_nb) {
     int i = abftEnv->gpu_col;
-	//	for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
+		for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 		long long flops = 2 * abftEnv->chk_nb * i * 2;
 		flops *= 1;
 
@@ -798,17 +798,17 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			compareChk(test_chk1, test_chk1_ld, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, i);
 
 			// if (i == 1024){
-				printMatrix_gpu(A, lda,  16 , 16, 4, 4);
+				// printMatrix_gpu(A, lda,  16 , 16, 4, 4);
 
-			 printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,  2 , 4, 2, 4);
+			 // printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,  2 , 4, 2, 4);
 
-			  printMatrix_gpu(test_chk1, test_chk1_ld,  2 , 4, 2, 4);
+			 //  printMatrix_gpu(test_chk1, test_chk1_ld,  2 , 4, 2, 4);
 			// }
 
 			cout << endl;
 
 
-	//	}
+		}
 
 //	}
 	
