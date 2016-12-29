@@ -753,12 +753,12 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 
 		cout << i << "\t";
 
-			benchmark_time = magma_wtime();
-			for (int t = 0; t < 100; t++) {
-				col_chk_recal_select(abftEnv, A, lda, abftEnv->chk_nb, i, 9);
-			}
-			benchmark_time = magma_wtime() - benchmark_time;
-			cout << benchmark_time << "\t";
+			// benchmark_time = magma_wtime();
+			// for (int t = 0; t < 100; t++) {
+			// 	col_chk_recal_select(abftEnv, A, lda, abftEnv->chk_nb, i, 9);
+			// }
+			// benchmark_time = magma_wtime() - benchmark_time;
+			// cout << benchmark_time << "\t";
 
 			benchmark_time = magma_wtime();
 			for (int t = 0; t < 100; t++) {
@@ -767,12 +767,12 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			benchmark_time = magma_wtime() - benchmark_time;
 			cout << benchmark_time << "\t";
 
-			benchmark_time = magma_wtime();
-			for (int t = 0; t < 100; t++) {
-				col_chk_recal_select(abftEnv, A, lda, abftEnv->chk_nb, i, 7);
-			}
-			benchmark_time = magma_wtime() - benchmark_time;
-			cout << benchmark_time << "\t";
+			// benchmark_time = magma_wtime();
+			// for (int t = 0; t < 100; t++) {
+			// 	col_chk_recal_select(abftEnv, A, lda, abftEnv->chk_nb, i, 7);
+			// }
+			// benchmark_time = magma_wtime() - benchmark_time;
+			// cout << benchmark_time << "\t";
 
 			benchmark_time = magma_wtime();
 			for (int t = 0; t < 100; t++) {
@@ -788,7 +788,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 						  *(abftEnv->stream));
 			cudaStreamSynchronize(*(abftEnv->stream));
 
-			//compareChk(test_chk1, test_chk1_ld, test_chk2, test_chk2_ld, 2, i);
+			
 
 			// printMatrix_gpu(test_chk2, test_chk2_ld,  2 , abftEnv->chk_nb, 2, 4);
 
@@ -798,9 +798,11 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 
 
 			benchmark_time = magma_wtime() - benchmark_time;
-			cout << benchmark_time << endl;
+			cout << benchmark_time << "\t";
 
+			compareChk(test_chk1, test_chk1_ld, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, i);
 
+			cout << endl;
 
 
 		}
