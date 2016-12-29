@@ -54,7 +54,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 }
 
 
-void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t stream) {
+void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStream_t stream) {
     int numBlocks; // Occupancy in terms of active blocks 
     int blockSize = 512; 
 	int device; 
@@ -77,13 +77,13 @@ int main(){
 	for (int i = 0; i < NB*n; i++) {
 		A[i] = i;
 	}
-	double dA;
+	double * dA;
 	size_t dApitch;
 	cudaMallocPitch(&dA, &dApitch, NB*sizeof(double), n);
 	cudaMemcpy2D(dA, dApitch, A, NB, NB, n, cudaMemcpyHostToDevice);
 	int ldda = dApitch/sizeof(double);
 
-	double chk;
+	double * chk;
 	size_t chkpitch;
 	cudaMallocPitch(&chk, &chkpitch, 2*sizeof(double), n);
 	int ldchk = chkpitch/sizeof(double);
@@ -94,7 +94,7 @@ int main(){
 	chkenc(dA, ldda, NB, n, chk , ldchk, stream);
 
 
-	
+
 
 
 }
