@@ -775,7 +775,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			cout << benchmark_time << "\t";
 
 			benchmark_time = magma_wtime();
-			for (int t = 0; t < 1; t++) {
+			for (int t = 0; t < 100; t++) {
 
 			// col_checksum_kernel_ncns2(abftEnv->chk_nb, i, abftEnv->chk_nb,
 			// 			  A, lda, 
