@@ -1,6 +1,7 @@
 
-
+#include<stdio.h>
 #define NB 512
+
 // encoding checksum for A
 
 __global__ void
