@@ -790,9 +790,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 
 			
 
-			// printMatrix_gpu(test_chk2, test_chk2_ld,  2 , abftEnv->chk_nb, 2, 4);
-
-			// printMatrix_gpu(test_chk1, test_chk1_ld,  2 , abftEnv->chk_nb, 2, 4);
+			
 			}
 
 
@@ -801,6 +799,11 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			cout << benchmark_time << "\t";
 
 			compareChk(test_chk1, test_chk1_ld, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, i);
+
+			if (i == 1024)
+			 printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,  2 , i, 2, 4);
+
+			 printMatrix_gpu(test_chk1, test_chk1_ld,  2 , i, 2, 4);
 
 			cout << endl;
 
