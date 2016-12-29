@@ -3,8 +3,8 @@
 #include<iostream>
 #include"papi.h"
 #define NB 512
-#define rB 8
-#define cB 128
+#define rB 16
+#define cB 64
 
 using namespace std;
 
