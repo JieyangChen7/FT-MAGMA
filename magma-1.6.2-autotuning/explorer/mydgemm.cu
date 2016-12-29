@@ -3,7 +3,8 @@
 #include<iostream>
 #include"papi.h"
 #define NB 512
-#define B 8
+#define rB 8
+#define cB 128
 
 using namespace std;
 
@@ -87,29 +88,29 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
-    int idx = blockIdx.x * B;
+    int idx = blockIdx.x * cB;
 
     double sum1 = 0;
     double sum2 = 0;
 
 	A = A + idx * lda;
 
-	__shared__ double cache[B][B];
+	__shared__ double cache[rB][cB];
 
-	for (int i = 0; i < NB; i += B) {
+	for (int i = 0; i < NB; i += rB) {
 		
 		//load a block to cache
-		for (int j = 0; j < B; j++) {
+		for (int j = 0; j < rB; j++) {
 			cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
 		}
 		__syncthreads();
 
-		for (int j = 0; j < B; j++) {
+		for (int j = 0; j < rB; j++) {
 			sum1 += cache[j][threadIdx.x];
 			sum2 += cache[j][threadIdx.x] * (i + j + 1);
 		}
 		__syncthreads();
-		A = A + B;
+		A = A + rB;
 	}
 
 	*(Chk + idx * ldchk) = sum1;
@@ -120,7 +121,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 
 void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStream_t stream) {
     int numBlocks; // Occupancy in terms of active blocks 
-    int blockSize = B; 
+    int blockSize = cB; 
 	int device; 
 	cudaDeviceProp prop; 
 	int activeWarps; 
@@ -132,7 +133,7 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStr
 	printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	chkenc_kernel3<<<n/B, B, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel3<<<n/cB, cB, 0, stream>>>(A, lda, Chk, ldchk);
 }
 
 int main(){
