@@ -747,8 +747,8 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
     cudaMemset2D(test_chk2, test_chk2_pitch, 0, (abftEnv->gpu_row / abftEnv->chk_nb) * 2 * sizeof(double), abftEnv->gpu_col);
 
 	
-	for (int i = abftEnv->chk_nb; i <= abftEnv->gpu_col; i += abftEnv->chk_nb) {
-
+	//for (int i = abftEnv->chk_nb; i <= abftEnv->gpu_col; i += abftEnv->chk_nb) {
+    int i = abftEnv->gpu_col;
 	//	for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 		long long flops = 2 * abftEnv->chk_nb * i * 2;
 		flops *= 1;
@@ -806,7 +806,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			cout << endl;
 
 
-		}
+	//	}
 
 //	}
 	
