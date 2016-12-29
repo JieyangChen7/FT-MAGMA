@@ -8,7 +8,7 @@
 #include "magma.h"
 #include <stdlib.h>
 
-#define NB 4
+#define NB 8
 // encoding checksum for A
 #define B 2
 
