@@ -8,9 +8,9 @@
 #include "magma.h"
 #include <stdlib.h>
 
-#define NB 512
+#define NB 4
 // encoding checksum for A
-#define B 32
+#define B 2
 
 __global__ void
 chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
@@ -132,7 +132,7 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_q
 	//printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 */
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	chkenc_kernel3<<<n/32, 32, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel3<<<n/B, B, 0, stream>>>(A, lda, Chk, ldchk);
 }
 
 

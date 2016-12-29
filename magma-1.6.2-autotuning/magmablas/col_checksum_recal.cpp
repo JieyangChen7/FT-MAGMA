@@ -797,13 +797,13 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 
 			compareChk(test_chk1, test_chk1_ld, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, i);
 
-			// if (i == 1024){
-				// printMatrix_gpu(A, lda,  16 , 16, 4, 4);
+			
+			printMatrix_gpu(A, lda,  16 , 16, 4, 4);
 
-			 // printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,  2 , 4, 2, 4);
+			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,  2 , 4, 2, 4);
 
-			 //  printMatrix_gpu(test_chk1, test_chk1_ld,  2 , 4, 2, 4);
-			// }
+			printMatrix_gpu(test_chk1, test_chk1_ld,  2 , 4, 2, 4);
+		
 
 			cout << endl;
 
