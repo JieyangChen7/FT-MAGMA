@@ -149,8 +149,8 @@ chkenc_kernel4(double * A, int lda, double * Chk , int ldchk)
 			A = A + rB;
 		}
 
-		*(Chk + idx * ldchk) = sum1;
-		*(Chk + idx * ldchk+1) = sum2;
+		*(Chk + k * ldchk) = sum1;
+		*(Chk + k * ldchk+1) = sum2;
 	}
 	
 }
