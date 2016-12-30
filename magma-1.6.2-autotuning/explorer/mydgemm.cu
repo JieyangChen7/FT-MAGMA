@@ -181,7 +181,7 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 
 	extern __shared__ double cache[]; //rB * cB
 
-	for (int i = 0; i < NB; i += rB) {
+	for (int i = 0; i < NB; i += rb) {
 		
 		//load a block to cache
 		cache[threadIdx.x + threadIdx.y * cb] = *(A + threadIdx.y * lda + threadIdx.x);
