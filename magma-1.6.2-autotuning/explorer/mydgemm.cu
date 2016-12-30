@@ -27,20 +27,20 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 	__syncthreads();
 
 	/* logrithm reduction */
-	int i = blockDim.x / 2;
+	//int i = blockDim.x / 2;
 
-	while (i != 0) {
-		if (threadIdx.x < i)
-			cache[threadIdx.x] += cache[threadIdx.x + i];
-		__syncthreads();
-		i /= 2;
-	}
+	//while (i != 0) {
+	//	if (threadIdx.x < i)
+	//		cache[threadIdx.x] += cache[threadIdx.x + i];
+	//	__syncthreads();
+	//	i /= 2;
+	//}
 
 	/* single thread reduction */
-	//if (threadIdx.x == 0)
-	//for (int i = 1; i < NB; i++) {
-	//	cache[threadIdx.x] += cache[threadIdx.x + i];
-	//}
+	if (threadIdx.x == 0)
+	for (int i = 1; i < NB; i++) {
+		cache[threadIdx.x] += cache[threadIdx.x + i];
+	}
 
 
 	if (threadIdx.x == 0) {
