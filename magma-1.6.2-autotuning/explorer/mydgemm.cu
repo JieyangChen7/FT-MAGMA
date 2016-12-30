@@ -14,8 +14,7 @@ using namespace std;
 __global__ void
 chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 {
-	//if (blockIdx.x == 0 && threadIdx.x == 0)
-	//	printf("grid:%d, block:%d\n", gridDim.x, blockDim.x);
+
     //blockIdx.x: determin the column to process
 	A = A + blockIdx.x * lda;
 
@@ -27,31 +26,15 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 	__syncthreads();
 
 	/* logrithm reduction */
-	//int i = blockDim.x / 2;
-
-	//while (i != 0) {
-	//	if (threadIdx.x < i)
-	//		cache[threadIdx.x] += cache[threadIdx.x + i];
-	//	__syncthreads();
-	//	i /= 2;
-	//}
-
-
-	/* single thread reduction */
-	double sum = 0;
-	if (threadIdx.x == 0) {
-
-		for (int i = 0; i < NB; i++) {
-			sum += cache[i];
-		}
+	int i = blockDim.x / 2;
+	while (i != 0) {
+		if (threadIdx.x < i)
+			cache[threadIdx.x] += cache[threadIdx.x + i];
+		__syncthreads();
+		i /= 2;
 	}
 
 
-	if (threadIdx.x == 0) {
-		*(Chk + blockIdx.x * ldchk) = sum;
-	}
-
-/*
 	//load one column to cache
 	cache[threadIdx.x] = A[threadIdx.x] * (threadIdx.x + 1);
 
@@ -69,9 +52,63 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 	if (threadIdx.x == 0) {
 		*(Chk + blockIdx.x * ldchk + 1) = cache[0];
 	}
-*/
+
 	
 }
+
+
+__global__ void
+chkenc_kernel1_5(double * A, int lda, double * Chk , int ldchk)
+{
+
+	//blockIdx.x: determin the column to process
+	A = A + blockIdx.x * lda;
+
+	__shared__ double cache[NB];
+	
+	//load one column to cache
+	cache[threadIdx.x] = A[threadIdx.x];
+
+	__syncthreads();
+
+
+	double sum = 0;
+	if (threadIdx.x == 0) {
+
+		for (int i = 0; i < NB; i++) {
+			sum += cache[i];
+		}
+	}
+
+
+	if (threadIdx.x == 0) {
+		*(Chk + blockIdx.x * ldchk) = sum;
+	}
+
+
+	//load one column to cache
+	cache[threadIdx.x] = A[threadIdx.x] * (threadIdx.x + 1);
+
+	__syncthreads();
+
+
+	double sum = 0;
+	if (threadIdx.x == 0) {
+
+		for (int i = 0; i < NB; i++) {
+			sum += cache[i];
+		}
+	}
+
+
+	if (threadIdx.x == 0) {
+		*(Chk + blockIdx.x * ldchk + 1) = sum;
+	}
+
+	
+}
+
+
 
 
 
