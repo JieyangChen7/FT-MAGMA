@@ -165,8 +165,8 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 
 	idx += threadIdx.x;
 
-	*(Chk + idx * ldchk) = cache[0][threadIdx.x];
-	*(Chk + idx * ldchk+1) = cache[0][threadIdx.x];
+	*(Chk + idx * ldchk) = sum1;
+	*(Chk + idx * ldchk+1) = sum2;
 	
 }
 
