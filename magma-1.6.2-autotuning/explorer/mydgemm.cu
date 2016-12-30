@@ -311,8 +311,8 @@ int main(){
 		return;
 	}
 	//chkenc(dA, ldda, NB, N, chk , ldchk, stream);
-	
-	chkenc_kernel<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
+	for (int i = 0; i < 100; i++)
+		chkenc_kernel<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
 	cudaStreamSynchronize(stream);
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
@@ -332,8 +332,8 @@ int main(){
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
-	
-	chkenc_kernel1_5<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
+	for (int i = 0; i < 100; i++)
+		chkenc_kernel1_5<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
 	cudaStreamSynchronize(stream);
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
