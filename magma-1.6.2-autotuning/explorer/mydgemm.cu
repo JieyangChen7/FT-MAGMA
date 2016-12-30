@@ -36,10 +36,14 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 	//	i /= 2;
 	//}
 
+
 	/* single thread reduction */
-	if (threadIdx.x == 0)
-	for (int i = 1; i < NB; i++) {
-		cache[threadIdx.x] += cache[threadIdx.x + i];
+	double sum = 0;
+	if (threadIdx.x == 0) {
+
+		for (int i = 0; i < NB; i++) {
+			sum += cache[i];
+		}
 	}
 
 
