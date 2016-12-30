@@ -188,7 +188,7 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 		//load a block to cache
 		cache[threadIdx.x + threadIdx.y * rb] = *(A + threadIdx.y * lda + threadIdx.x);
 		__syncthreads();
-		int k = rB / 2;
+		int k = rb / 2;
 		while (k != 0) {
 			if (threadIdx.x < k) {
 				cache[threadIdx.x + threadIdx.y * rb] += cache[threadIdx.x + k + threadIdx.y * rb];
@@ -203,7 +203,7 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 
 		cache[threadIdx.x + threadIdx.y * rb] = *(A + threadIdx.y * lda + threadIdx.x) * (i + threadIdx.x + 1);
 		__syncthreads();
-		k = rB / 2;
+		k = rb / 2;
 		while (k != 0) {
 			if (threadIdx.x < k) {
 				cache[threadIdx.x + threadIdx.y * rb] += cache[threadIdx.x + k + threadIdx.y * rb];
@@ -215,7 +215,7 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 			sum2 += cache[0 + threadIdx.y * rb];
 		}
 				
-		A = A + rB;
+		A = A + rb;
 	}
 
 	idx += threadIdx.y;
