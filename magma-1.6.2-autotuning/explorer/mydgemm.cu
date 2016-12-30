@@ -307,6 +307,19 @@ int main(){
 	long long flops = 2 * NB * N * 2;
 
 
+	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+		cout << "PAPI ERROR" << endl;
+		return;
+	}
+
+	chkenc_kernel<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
+	cudaStreamSynchronize(stream);
+	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+		cout << "PAPI ERROR" << endl;
+		return;
+	}
+	cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
+
 
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
