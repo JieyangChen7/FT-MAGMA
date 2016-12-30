@@ -27,7 +27,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 	/* logrithm reduction */
 	int i = blockDim.x / 2;
-	while (i >= 32) {
+	while (i != 0) {
 		if (threadIdx.x < i)
 			cache[threadIdx.x] += cache[threadIdx.x + i];
 		__syncthreads();
@@ -46,7 +46,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 	i = blockDim.x / 2;
 
-	while (i >= 32) {
+	while (i != 0) {
 		if (threadIdx.x < i)
 			cache[threadIdx.x] += cache[threadIdx.x + i];
 		__syncthreads();
@@ -308,7 +308,7 @@ int main(){
 
 	int max = 0;
 
-for (int nb = 32; nb <= 512; nb += 32) {
+for (int nb = 2; nb <= 512; nb += 2) {
 	/*for (int rb = 2; rb <= 512; rb += 2) {
 		for (int cb = 2; cb <= 512; cb += 2) {
 	    int nb = 512;
@@ -346,7 +346,7 @@ for (int nb = 32; nb <= 512; nb += 32) {
 			max =(flops/real_time)/1e9;
 		}
 		PAPI_shutdown();
-/*
+
 		real_time = 0.0;
 		proc_time = 0.0;
 		flpins = 0.0;
@@ -370,7 +370,7 @@ for (int nb = 32; nb <= 512; nb += 32) {
 		cout << endl;
 
 		PAPI_shutdown();
-	*/
+	
 	// }
 	}
 
