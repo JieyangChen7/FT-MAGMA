@@ -66,6 +66,57 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 
 __global__ void
+chkenc_kernel1_5(double * A, int lda, double * Chk , int ldchk)
+{
+
+	//blockIdx.x: determin the column to process
+	A = A + blockIdx.x * lda;
+
+	__shared__ double cache[NB];
+	
+	//load one column to cache
+	cache[threadIdx.x] = A[threadIdx.x];
+
+	__syncthreads();
+
+
+	double sum = 0;
+	if (threadIdx.x == 0) {
+
+		for (int i = 0; i < NB; i++) {
+			sum += cache[i];
+		}
+	}
+
+
+	if (threadIdx.x == 0) {
+		*(Chk + blockIdx.x * ldchk) = sum;
+	}
+
+
+	//load one column to cache
+	cache[threadIdx.x] = A[threadIdx.x] * (threadIdx.x + 1);
+
+	__syncthreads();
+
+
+	double sum = 0;
+	if (threadIdx.x == 0) {
+
+		for (int i = 0; i < NB; i++) {
+			sum += cache[i];
+		}
+	}
+
+
+	if (threadIdx.x == 0) {
+		*(Chk + blockIdx.x * ldchk + 1) = sum;
+	}
+
+	
+}
+
+__global__ void
 chkenc_kernel2(double * A, int lda, double * Chk , int ldchk)
 {
 
@@ -153,7 +204,7 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_q
 	//printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 	*/
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	chkenc_kernel<<<n, NB, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel1_5<<<n, NB, 0, stream>>>(A, lda, Chk, ldchk);
 
 }
 
