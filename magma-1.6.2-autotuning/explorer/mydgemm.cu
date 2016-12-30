@@ -26,6 +26,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 	__syncthreads();
 
+	/* logrithm reduction */
 	int i = blockDim.x / 2;
 
 	while (i != 0) {
@@ -35,11 +36,18 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 		i /= 2;
 	}
 
+	/* single thread reduction */
+	//if (threadIdx.x == 0)
+	//for (int i = 1; i < NB; i++) {
+	//	cache[threadIdx.x] += cache[threadIdx.x + i];
+	//}
+
+
 	if (threadIdx.x == 0) {
 		*(Chk + blockIdx.x * ldchk) = cache[0];
 	}
 
-
+/*
 	//load one column to cache
 	cache[threadIdx.x] = A[threadIdx.x] * (threadIdx.x + 1);
 
@@ -57,7 +65,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 	if (threadIdx.x == 0) {
 		*(Chk + blockIdx.x * ldchk + 1) = cache[0];
 	}
-
+*/
 	
 }
 
@@ -228,8 +236,10 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, cudaStr
 	printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	dim3 d(cB, rB, 1);
-	chkenc_kernel3_5<<<N/cB, d, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel<<<N, NB, 0, stream>>>(A, lda, Chk, ldchk);
+
+	//dim3 d(cB, rB, 1);
+	//chkenc_kernel3_5<<<N/cB, d, 0, stream>>>(A, lda, Chk, ldchk);
 	//chkenc_kernel4<<<1, cB, 0, stream>>>(A, lda, Chk, ldchk);
 }
 
