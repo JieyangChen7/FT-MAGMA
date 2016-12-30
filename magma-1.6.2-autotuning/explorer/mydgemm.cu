@@ -304,7 +304,7 @@ int main(){
 	float proc_time = 0.0;
 	long long flpins = 0.0;
 	float mflops = 0.0;
-	int flops = 2 * NB * N * 2;
+	int flops = 2 * NB * N * 2 * 100;
 
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
