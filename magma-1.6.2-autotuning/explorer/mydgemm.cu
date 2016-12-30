@@ -296,7 +296,6 @@ int main(){
 	cudaMemcpy2D(dA, dApitch, A, NB, NB, N, cudaMemcpyHostToDevice);
 	int ldda = dApitch/sizeof(double);
 
-	double * chk;
 	size_t chkpitch;
 	cudaMallocPitch(&chk, &chkpitch, 2*sizeof(double), N);
 	int ldchk = chkpitch/sizeof(double);
@@ -313,7 +312,31 @@ int main(){
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
-	chkenc(dA, ldda, NB, N, chk , ldchk, stream);
+	//chkenc(dA, ldda, NB, N, chk , ldchk, stream);
+	
+	chkenc_kernel<<<N, NB, 0, stream>>>(A, lda, Chk, ldchk);
+	cudaStreamSynchronize(stream);
+	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+		cout << "PAPI ERROR" << endl;
+		return;
+	}
+	int flops = 2 * NB * N * 2;
+	cout << real_time << "\t" << (flops/real_time)/1e9;
+
+
+
+	real_time = 0.0;
+	proc_time = 0.0;
+	flpins = 0.0;
+	mflops = 0.0;
+
+	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+		cout << "PAPI ERROR" << endl;
+		return;
+	}
+	//chkenc(dA, ldda, NB, N, chk , ldchk, stream);
+	
+	chkenc_kernel1_5<<<N, NB, 0, stream>>>(A, lda, Chk, ldchk);
 	cudaStreamSynchronize(stream);
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
