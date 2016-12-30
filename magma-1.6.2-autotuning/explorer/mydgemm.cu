@@ -27,7 +27,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 	/* logrithm reduction */
 	int i = blockDim.x / 2;
-	while (i > 32) {
+	while (i >= 32) {
 		if (threadIdx.x < i)
 			cache[threadIdx.x] += cache[threadIdx.x + i];
 		__syncthreads();
@@ -46,7 +46,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 	i = blockDim.x / 2;
 
-	while (i > 32) {
+	while (i >= 32) {
 		if (threadIdx.x < i)
 			cache[threadIdx.x] += cache[threadIdx.x + i];
 		__syncthreads();
