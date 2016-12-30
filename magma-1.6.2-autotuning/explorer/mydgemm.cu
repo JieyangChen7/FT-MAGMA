@@ -3,7 +3,7 @@
 #include<iostream>
 #include"papi.h"
 #define N 30720
-#define NB 512
+#define NB 480
 #define rB 32
 #define cB 32
 
