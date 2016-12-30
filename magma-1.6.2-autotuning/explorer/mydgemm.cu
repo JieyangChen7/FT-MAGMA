@@ -312,7 +312,7 @@ int main(){
 	int max = 0;
 
 //for (int nb = 2; nb <= 512; nb += 2) {
-	for (int rb = 2; rb <= 512; rb += 2) {
+	for (int rb = 2; rb <= 32; rb += 2) {
 	//	for (int cb = 2; cb <= 512; cb += 2) {
 	    int nb = 512;
 		
