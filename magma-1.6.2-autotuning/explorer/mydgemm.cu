@@ -342,9 +342,9 @@ for (int nb = 2; nb <= 512; nb += 2) {
 		
 		cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
 
-		if (max < (flops/real_time)/1e9) {
-			max =(flops/real_time)/1e9;
-		}
+		//if (max < (flops/real_time)/1e9) {
+		//	max =(flops/real_time)/1e9;
+		//}
 		PAPI_shutdown();
 
 		real_time = 0.0;
@@ -374,7 +374,7 @@ for (int nb = 2; nb <= 512; nb += 2) {
 	// }
 	}
 
-	cout <<"max:" <<max;
+	//cout <<"max:" <<max;
 
 
 	return 0;
