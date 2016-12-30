@@ -337,7 +337,7 @@ int main(){
 		//chkenc_kernel<<<N, nb, nb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
 		//dim3 d(rb, cb, 1);
 		//chkenc_kernel3_5<<<N/cb, d, rb*cb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
-		chkenc_kernel3<<<N/rb, rb, rb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
+		chkenc_kernel3<<<N/rb, rb, rb*rb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
 		cudaStreamSynchronize(stream);
 		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 			cout << "PAPI ERROR" << endl;
@@ -371,10 +371,13 @@ int main(){
 
 		cout << real_time << "\t" << (flops/real_time)/1e9;
 
-		cout << endl;
+		
 
 		PAPI_shutdown();
 	*/
+
+
+	cout << endl;
 	 }
 	//}
 
