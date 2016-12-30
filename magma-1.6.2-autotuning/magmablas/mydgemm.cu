@@ -8,11 +8,11 @@
 #include "magma.h"
 #include <stdlib.h>
 
-#define NB 4
+#define NB 512
 // encoding checksum for A
-#define B 2
-#define rB 2
-#define cB 2
+#define B 32
+#define rB 32
+#define cB 32
 #define N 30720
 
 __global__ void
