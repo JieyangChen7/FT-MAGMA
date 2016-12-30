@@ -750,7 +750,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 	for (int i = abftEnv->chk_nb; i <= abftEnv->gpu_col; i += abftEnv->chk_nb) {
     //int i = abftEnv->chk_nb;
 		//for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
-		long long flops = 2 * abftEnv->chk_nb * i * 2;
+		long long flops = 3 * abftEnv->chk_nb * i;
 		flops *= 1;
 
 		cout << i << "\t";
