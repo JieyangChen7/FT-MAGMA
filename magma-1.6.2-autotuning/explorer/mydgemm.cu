@@ -317,9 +317,9 @@ int main(){
 	    int nb = 512;
 		
 
-		if (rb * cb > 1024)
-			continue;
-		cout << rb << "\t" << cb << "\t";
+		//if (rb * cb > 1024)
+		//	continue;
+		//cout << rb << "\t" << cb << "\t";
 
 	
 		float real_time = 0.0;
