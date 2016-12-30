@@ -100,7 +100,7 @@ chkenc_kernel1_5(double * A, int lda, double * Chk , int ldchk)
 	__syncthreads();
 
 
-	double sum = 0;
+	sum = 0;
 	if (threadIdx.x == 0) {
 
 		for (int i = 0; i < NB; i++) {
