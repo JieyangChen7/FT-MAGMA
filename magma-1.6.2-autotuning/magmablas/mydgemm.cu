@@ -38,6 +38,10 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 		i /= 2;
 	}
 
+	if (threadIdx.x == 0) {
+		*(Chk + blockIdx.x * ldchk + 1) = cache[0];
+	}
+
 
 	//load one column to cache
 	cache[threadIdx.x] = A[threadIdx.x] * (threadIdx.x + 1);
