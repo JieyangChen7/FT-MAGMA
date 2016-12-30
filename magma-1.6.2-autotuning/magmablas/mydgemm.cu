@@ -229,6 +229,7 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 		A = A + rB;
 	}
 
+	idx += threadIdx.y;
 
 	if (threadIdx.x == 0) {
 		*(Chk + idx * ldchk) = sum1;
