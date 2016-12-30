@@ -143,7 +143,9 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 			if (threadIdx.x < k) {
 				cache[threadIdx.x][threadIdx.y] += cache[threadIdx.x + k][threadIdx.y];
 			}
+			
 			__syncthreads();
+			k /= 2;
 		}
 		if (threadIdx.x == 0) {
 			sum1 += cache[0][threadIdx.y];
@@ -157,6 +159,7 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 				cache[threadIdx.x][threadIdx.y] += cache[threadIdx.x + k][threadIdx.y];
 			}
 			__syncthreads();
+			k /= 2;
 		}
 		if (threadIdx.x == 0) {
 			sum2 += cache[0][threadIdx.y];
