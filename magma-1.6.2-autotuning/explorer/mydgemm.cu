@@ -320,6 +320,8 @@ int main(){
 	}
 	cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
 
+	PAPI_shutdown();
+
 
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
