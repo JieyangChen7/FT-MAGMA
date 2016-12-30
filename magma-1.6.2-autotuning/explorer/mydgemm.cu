@@ -4,8 +4,8 @@
 #include"papi.h"
 #define N 30720
 #define NB 512
-#define rB 32
-#define cB 32
+#define rB 64
+#define cB 64
 
 using namespace std;
 
@@ -302,7 +302,7 @@ int main(){
 
 
 
-	for (int nb = 32; nb <= 512; nb += 32) {
+	//for (int nb = 32; nb <= 512; nb += 32) {
 
 		cout << nb << "\t";
 
@@ -318,7 +318,9 @@ int main(){
 			return;
 		}
 		
-		chkenc_kernel<<<N, nb, nb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
+		//chkenc_kernel<<<N, nb, nb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
+		dim3 d(cB, rB, 1);
+		chkenc_kernel3_5<<<N/cB, d, 0, stream>>>(dA, ldda, chk, ldchk);
 		cudaStreamSynchronize(stream);
 		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 			cout << "PAPI ERROR" << endl;
@@ -328,7 +330,7 @@ int main(){
 		cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
 
 		PAPI_shutdown();
-
+/*
 		real_time = 0.0;
 		proc_time = 0.0;
 		flpins = 0.0;
@@ -352,7 +354,8 @@ int main(){
 		cout << endl;
 
 		PAPI_shutdown();
-	}
+	*/
+	//}
 
 
 	return 0;
