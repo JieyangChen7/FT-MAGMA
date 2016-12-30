@@ -3,7 +3,7 @@
 #include<iostream>
 #include"papi.h"
 #define N 30720
-#define NB 480
+#define NB 512
 #define rB 32
 #define cB 32
 
@@ -18,7 +18,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
     //blockIdx.x: determin the column to process
 	A = A + blockIdx.x * lda;
 
-	__shared__ double cache[NB];
+	extern __shared__ double cache[];
 	
 	//load one column to cache
 	cache[threadIdx.x] = A[threadIdx.x];
@@ -68,7 +68,7 @@ chkenc_kernel1_5(double * A, int lda, double * Chk , int ldchk)
 	//blockIdx.x: determin the column to process
 	A = A + blockIdx.x * lda;
 
-	__shared__ double cache[NB];
+	extern __shared__ double cache[];
 	
 	//load one column to cache
 	cache[threadIdx.x] = A[threadIdx.x];
@@ -79,7 +79,7 @@ chkenc_kernel1_5(double * A, int lda, double * Chk , int ldchk)
 	double sum = 0;
 	if (threadIdx.x == 0) {
 
-		for (int i = 0; i < NB; i++) {
+		for (int i = 0; i < blockDim.x; i++) {
 			sum += cache[i];
 		}
 		*(Chk + blockIdx.x * ldchk) = sum;
@@ -95,7 +95,7 @@ chkenc_kernel1_5(double * A, int lda, double * Chk , int ldchk)
 	sum = 0;
 	if (threadIdx.x == 0) {
 
-		for (int i = 0; i < NB; i++) {
+		for (int i = 0; i < blockDim.x; i++) {
 			sum += cache[i];
 		}
 		*(Chk + blockIdx.x * ldchk + 1) = sum;
@@ -300,63 +300,56 @@ int main(){
 	cudaStream_t stream;
 	cudaStreamCreate(&stream);
 
-	float real_time = 0.0;
-	float proc_time = 0.0;
-	long long flpins = 0.0;
-	float mflops = 0.0;
-	long long flops = 2 * NB * N * 2;
 
 
-	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-		cout << "PAPI ERROR" << endl;
-		return;
+	for (int nb = 32; nb <= 512; nb += 32) {
+
+		cout << nb << "\t";
+
+		float real_time = 0.0;
+		float proc_time = 0.0;
+		long long flpins = 0.0;
+		float mflops = 0.0;
+		long long flops = 2 * nb * N * 2;
+
+
+		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+			cout << "PAPI ERROR" << endl;
+			return;
+		}
+		
+		chkenc_kernel<<<N, nb, nb, stream>>>(dA, ldda, chk, ldchk);
+		cudaStreamSynchronize(stream);
+		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+			cout << "PAPI ERROR" << endl;
+			return;
+		}
+		
+		cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
+
+		PAPI_shutdown();
+
+		real_time = 0.0;
+		proc_time = 0.0;
+		flpins = 0.0;
+		mflops = 0.0;
+
+		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+			cout << "PAPI ERROR" << endl;
+			return;
+		}
+		
+		chkenc_kernel1_5<<<N, nb, nb, stream>>>(dA, ldda, chk, ldchk);
+		cudaStreamSynchronize(stream);
+		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+			cout << "PAPI ERROR" << endl;
+			return;
+		}
+		cout << real_time << "\t" << (flops/real_time)/1e9;
+
+		cout << endl;
+
 	}
-
-	chkenc_kernel<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
-	cudaStreamSynchronize(stream);
-	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-		cout << "PAPI ERROR" << endl;
-		return;
-	}
-	cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
-
-	PAPI_shutdown();
-
-
-	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-		cout << "PAPI ERROR" << endl;
-		return;
-	}
-	//chkenc(dA, ldda, NB, N, chk , ldchk, stream);
-	
-	chkenc_kernel<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
-	cudaStreamSynchronize(stream);
-	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-		cout << "PAPI ERROR" << endl;
-		return;
-	}
-	
-	cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
-
-	PAPI_shutdown();
-
-	real_time = 0.0;
-	proc_time = 0.0;
-	flpins = 0.0;
-	mflops = 0.0;
-
-	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-		cout << "PAPI ERROR" << endl;
-		return;
-	}
-	
-	chkenc_kernel1_5<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
-	cudaStreamSynchronize(stream);
-	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-		cout << "PAPI ERROR" << endl;
-		return;
-	}
-	cout << real_time << "\t" << (flops/real_time)/1e9;
 
 
 	return 0;
