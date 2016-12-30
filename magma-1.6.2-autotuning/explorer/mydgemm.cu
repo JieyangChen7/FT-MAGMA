@@ -306,6 +306,7 @@ int main(){
 	cudaStream_t stream;
 	cudaStreamCreate(&stream);
 
+	int max = 0;
 
 
 	for (int rb = 2; rb <= 512; rb += 2) {
@@ -339,6 +340,9 @@ int main(){
 		
 		cout << real_time << "\t" << (flops/real_time)/1e9 << "\t" << endl;
 
+		if (max < (flops/real_time)/1e9) {
+			max =(flops/real_time)/1e9;
+		}
 		PAPI_shutdown();
 /*
 		real_time = 0.0;
@@ -367,6 +371,8 @@ int main(){
 	*/
 	 }
 	}
+
+	cout <<"max:" <<max;
 
 
 	return 0;
