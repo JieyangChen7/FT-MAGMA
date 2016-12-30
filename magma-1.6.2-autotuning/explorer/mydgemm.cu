@@ -186,33 +186,33 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 	for (int i = 0; i < NB; i += rb) {
 		
 		//load a block to cache
-		cache[threadIdx.x + threadIdx.y * cb] = *(A + threadIdx.y * lda + threadIdx.x);
+		cache[threadIdx.x + threadIdx.y * rb] = *(A + threadIdx.y * lda + threadIdx.x);
 		__syncthreads();
 		int k = rB / 2;
 		while (k != 0) {
 			if (threadIdx.x < k) {
-				cache[threadIdx.x + threadIdx.y * cb] += cache[threadIdx.x + k + threadIdx.y * cb];
+				cache[threadIdx.x + threadIdx.y * rb] += cache[threadIdx.x + k + threadIdx.y * rb];
 			}
 			
 			__syncthreads();
 			k /= 2;
 		}
 		if (threadIdx.x == 0) {
-			sum1 += cache[0 + threadIdx.y * cb];
+			sum1 += cache[0 + threadIdx.y * rb];
 		}
 
-		cache[threadIdx.x + threadIdx.y * cb] = *(A + threadIdx.y * lda + threadIdx.x) * (i + threadIdx.x + 1);
+		cache[threadIdx.x + threadIdx.y * rb] = *(A + threadIdx.y * lda + threadIdx.x) * (i + threadIdx.x + 1);
 		__syncthreads();
 		k = rB / 2;
 		while (k != 0) {
 			if (threadIdx.x < k) {
-				cache[threadIdx.x + threadIdx.y * cb] += cache[threadIdx.x + k + threadIdx.y * cb];
+				cache[threadIdx.x + threadIdx.y * rb] += cache[threadIdx.x + k + threadIdx.y * rb];
 			}
 			__syncthreads();
 			k /= 2;
 		}
 		if (threadIdx.x == 0) {
-			sum2 += cache[0 + threadIdx.y * cb];
+			sum2 += cache[0 + threadIdx.y * rb];
 		}
 				
 		A = A + rB;
@@ -313,7 +313,7 @@ int main(){
 	    int nb = 512;
 		
 
-		if (rb * nb > 1024)
+		if (rb * cb > 1024)
 			continue;
 		cout << rb << "\t" << cb << "\t";
 		float real_time = 0.0;
