@@ -48,7 +48,7 @@ chkenc_kernel(double * A, int lda, double * Chk , int ldchk)
 
 
 	if (threadIdx.x == 0) {
-		*(Chk + blockIdx.x * ldchk) = cache[0];
+		*(Chk + blockIdx.x * ldchk) = sum;
 	}
 
 /*
