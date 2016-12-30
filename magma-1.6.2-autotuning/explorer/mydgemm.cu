@@ -144,7 +144,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 
 	A = A + idx * lda;
 
-	__shared__ double cache[];
+	extern __shared__ double cache[];
 
 	for (int i = 0; i < NB; i += b) {
 		
