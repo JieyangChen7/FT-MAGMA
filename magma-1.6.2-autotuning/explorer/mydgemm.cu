@@ -309,11 +309,11 @@ int main(){
 	for (int rb = 2; rb <= 512; rb += 2) {
 		for (int cb = 2; cb <= 512; cb += 2) {
 	    int nb = 512;
-		cout << rb << "\t" << cb << "\t";
+		
 
 		if (rb * nb > 1024)
 			continue;
-
+		cout << rb << "\t" << cb << "\t";
 		float real_time = 0.0;
 		float proc_time = 0.0;
 		long long flpins = 0.0;
@@ -335,7 +335,7 @@ int main(){
 			return;
 		}
 		
-		cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
+		cout << real_time << "\t" << (flops/real_time)/1e9 << "\t" << endl;
 
 		PAPI_shutdown();
 /*
