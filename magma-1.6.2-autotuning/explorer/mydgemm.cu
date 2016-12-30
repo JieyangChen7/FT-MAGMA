@@ -345,10 +345,13 @@ int main(){
 			cout << "PAPI ERROR" << endl;
 			return;
 		}
+
+
 		cout << real_time << "\t" << (flops/real_time)/1e9;
 
 		cout << endl;
 
+		PAPI_shutdown();
 	}
 
 
