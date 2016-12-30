@@ -303,7 +303,7 @@ int main(){
 
 
 	//for (int nb = 32; nb <= 512; nb += 32) {
-
+	int nb = 512;
 		cout << nb << "\t";
 
 		float real_time = 0.0;
