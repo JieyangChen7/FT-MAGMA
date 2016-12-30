@@ -134,29 +134,32 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
-    int idx = blockIdx.x * cB;
+
+    int b = blockDim.x;
+
+    int idx = blockIdx.x * b;
 
     double sum1 = 0;
     double sum2 = 0;
 
 	A = A + idx * lda;
 
-	__shared__ double cache[rB][cB];
+	__shared__ double cache[];
 
-	for (int i = 0; i < NB; i += rB) {
+	for (int i = 0; i < NB; i += b) {
 		
 		//load a block to cache
-		for (int j = 0; j < rB; j++) {
-			cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
+		for (int j = 0; j < b; j++) {
+			cache[threadIdx.x + j * b] = *(A + j * lda + threadIdx.x);
 		}
 		__syncthreads();
 
-		for (int j = 0; j < rB; j++) {
-			sum1 += cache[j][threadIdx.x];
-			sum2 += cache[j][threadIdx.x] * (i + j + 1);
+		for (int j = 0; j < b; j++) {
+			sum1 += cache[j + threadIdx.x * b];
+			sum2 += cache[j + threadIdx.x * b] * (i + j + 1);
 		}
 		__syncthreads();
-		A = A + rB;
+		A = A + b;
 	}
 
 	*(Chk + idx * ldchk) = sum1;
@@ -308,9 +311,9 @@ int main(){
 
 	int max = 0;
 
-for (int nb = 2; nb <= 512; nb += 2) {
-	/*for (int rb = 2; rb <= 512; rb += 2) {
-		for (int cb = 2; cb <= 512; cb += 2) {
+//for (int nb = 2; nb <= 512; nb += 2) {
+	for (int rb = 2; rb <= 512; rb += 2) {
+	//	for (int cb = 2; cb <= 512; cb += 2) {
 	    int nb = 512;
 		
 
@@ -318,7 +321,7 @@ for (int nb = 2; nb <= 512; nb += 2) {
 			continue;
 		cout << rb << "\t" << cb << "\t";
 
-	*/
+	
 		float real_time = 0.0;
 		float proc_time = 0.0;
 		long long flpins = 0.0;
@@ -331,9 +334,10 @@ for (int nb = 2; nb <= 512; nb += 2) {
 			return;
 		}
 		
-		chkenc_kernel<<<N, nb, nb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
+		//chkenc_kernel<<<N, nb, nb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
 		//dim3 d(rb, cb, 1);
 		//chkenc_kernel3_5<<<N/cb, d, rb*cb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
+		chkenc_kernel3<<<N/rb, rb, rb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
 		cudaStreamSynchronize(stream);
 		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 			cout << "PAPI ERROR" << endl;
@@ -342,11 +346,11 @@ for (int nb = 2; nb <= 512; nb += 2) {
 		
 		cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
 
-		//if (max < (flops/real_time)/1e9) {
-		//	max =(flops/real_time)/1e9;
-		//}
+		if (max < (flops/real_time)/1e9) {
+			max =(flops/real_time)/1e9;
+		}
 		PAPI_shutdown();
-
+/*
 		real_time = 0.0;
 		proc_time = 0.0;
 		flpins = 0.0;
@@ -370,11 +374,11 @@ for (int nb = 2; nb <= 512; nb += 2) {
 		cout << endl;
 
 		PAPI_shutdown();
-	
-	// }
-	}
+	*/
+	 }
+	//}
 
-	//cout <<"max:" <<max;
+	cout <<"max:" <<max;
 
 
 	return 0;
