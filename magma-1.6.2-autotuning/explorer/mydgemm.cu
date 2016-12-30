@@ -338,7 +338,7 @@ int main(){
 	
 	cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
 
-
+	PAPI_shutdown();
 
 	real_time = 0.0;
 	proc_time = 0.0;
