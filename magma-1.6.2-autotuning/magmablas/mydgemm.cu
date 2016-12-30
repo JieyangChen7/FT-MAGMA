@@ -11,8 +11,8 @@
 #define NB 512
 // encoding checksum for A
 #define B 32
-#define rB 128
-#define cB 2
+#define rB 64
+#define cB 8
 #define N 30720
 
 __global__ void
