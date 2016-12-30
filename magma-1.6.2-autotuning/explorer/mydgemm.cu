@@ -138,16 +138,35 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 		//load a block to cache
 		cache[threadIdx.x][threadIdx.y] = *(A + threadIdx.y * lda + threadIdx.x);
 		__syncthreads();
-		if (threadIdx.y == 0) {
-			for (int j = 0; j < rB; j++) {
-				sum1 += cache[j][threadIdx.x];
-				sum2 += cache[j][threadIdx.x] * (i + j + 1);
+		int k = rB / 2;
+		while (k != 0) {
+			if (threadIdx.x < k) {
+				cache[threadIdx.x][threadIdx.y] += cache[threadIdx.x + k][threadIdx.y];
 			}
+			__syncthreads();
 		}
+		if (threadIdx.x == 0) {
+			sum1 += cache[0][threadIdx.y];
+		}
+
+		cache[threadIdx.x][threadIdx.y] = *(A + threadIdx.y * lda + threadIdx.x) * (i + threadIdx.x + 1);
 		__syncthreads();
+		int k = rB / 2;
+		while (k != 0) {
+			if (threadIdx.x < k) {
+				cache[threadIdx.x][threadIdx.y] += cache[threadIdx.x + k][threadIdx.y];
+			}
+			__syncthreads();
+		}
+		if (threadIdx.x == 0) {
+			sum2 += cache[0][threadIdx.y];
+		}
+				
 		A = A + rB;
 	}
-	if (threadIdx.y == 0) {
+
+
+	if (threadIdx.x == 0) {
 		*(Chk + idx * ldchk) = sum1;
 		*(Chk + idx * ldchk+1) = sum2;
 	}
