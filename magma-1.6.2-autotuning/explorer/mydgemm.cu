@@ -340,7 +340,7 @@ for (int nb = 2; nb <= 512; nb += 2) {
 			return;
 		}
 		
-		cout << real_time << "\t" << (flops/real_time)/1e9 << "\t" << endl;
+		cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
 
 		if (max < (flops/real_time)/1e9) {
 			max =(flops/real_time)/1e9;
