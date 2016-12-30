@@ -292,6 +292,7 @@ int main(){
 	cudaMemcpy2D(dA, dApitch, A, NB, NB, N, cudaMemcpyHostToDevice);
 	int ldda = dApitch/sizeof(double);
 
+	double * chk;
 	size_t chkpitch;
 	cudaMallocPitch(&chk, &chkpitch, 2*sizeof(double), N);
 	int ldchk = chkpitch/sizeof(double);
