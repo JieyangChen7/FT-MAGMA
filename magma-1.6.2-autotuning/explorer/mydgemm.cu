@@ -319,7 +319,7 @@ int main(){
 		return;
 	}
 	
-	cout << real_time << "\t" << (flops/real_time)/1e9;
+	cout << real_time << "\t" << (flops/real_time)/1e9 << "\t";
 
 
 
@@ -341,6 +341,8 @@ int main(){
 	}
 	cout << real_time << "\t" << (flops/real_time)/1e9;
 
+
+	return 0;
 
 
 
