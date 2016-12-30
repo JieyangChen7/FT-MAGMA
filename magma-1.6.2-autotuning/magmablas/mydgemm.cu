@@ -86,13 +86,10 @@ chkenc_kernel1_5(double * A, int lda, double * Chk , int ldchk)
 		for (int i = 0; i < NB; i++) {
 			sum += cache[i];
 		}
-	}
-
-
-	if (threadIdx.x == 0) {
 		*(Chk + blockIdx.x * ldchk) = sum;
 	}
 
+	__syncthreads();
 
 	//load one column to cache
 	cache[threadIdx.x] = A[threadIdx.x] * (threadIdx.x + 1);
@@ -106,13 +103,8 @@ chkenc_kernel1_5(double * A, int lda, double * Chk , int ldchk)
 		for (int i = 0; i < NB; i++) {
 			sum += cache[i];
 		}
-	}
-
-
-	if (threadIdx.x == 0) {
 		*(Chk + blockIdx.x * ldchk + 1) = sum;
 	}
-
 	
 }
 
