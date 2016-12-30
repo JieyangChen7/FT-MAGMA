@@ -303,6 +303,7 @@ int main(){
 	float proc_time = 0.0;
 	long long flpins = 0.0;
 	float mflops = 0.0;
+	int flops = 2 * NB * N * 2;
 
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
@@ -310,13 +311,13 @@ int main(){
 	}
 	//chkenc(dA, ldda, NB, N, chk , ldchk, stream);
 	
-	chkenc_kernel<<<N, NB, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
 	cudaStreamSynchronize(stream);
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
-	int flops = 2 * NB * N * 2;
+	
 	cout << real_time << "\t" << (flops/real_time)/1e9;
 
 
@@ -330,15 +331,13 @@ int main(){
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
-	//chkenc(dA, ldda, NB, N, chk , ldchk, stream);
 	
-	chkenc_kernel1_5<<<N, NB, 0, stream>>>(A, lda, Chk, ldchk);
+	chkenc_kernel1_5<<<N, NB, 0, stream>>>(dA, ldda, chk, ldchk);
 	cudaStreamSynchronize(stream);
 	if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 		cout << "PAPI ERROR" << endl;
 		return;
 	}
-	int flops = 2 * NB * N * 2;
 	cout << real_time << "\t" << (flops/real_time)/1e9;
 
 
