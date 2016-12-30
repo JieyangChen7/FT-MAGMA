@@ -151,7 +151,7 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 
 		cache[threadIdx.x][threadIdx.y] = *(A + threadIdx.y * lda + threadIdx.x) * (i + threadIdx.x + 1);
 		__syncthreads();
-		int k = rB / 2;
+		k = rB / 2;
 		while (k != 0) {
 			if (threadIdx.x < k) {
 				cache[threadIdx.x][threadIdx.y] += cache[threadIdx.x + k][threadIdx.y];
