@@ -169,10 +169,12 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
-    int idx = blockIdx.x * cB;
+    
 
     int rb = blockDim.x;
     int cb = blockDim.y; 
+
+    int idx = blockIdx.x * cb;
 
     double sum1 = 0;
     double sum2 = 0;
