@@ -171,48 +171,52 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
     //blockIdx.x: determin the column to process
     int idx = blockIdx.x * cB;
 
+    int rb = blockDim.x;
+    int cb = blockDim.y; 
+
     double sum1 = 0;
     double sum2 = 0;
 
 	A = A + idx * lda;
 
-	__shared__ double cache[rB][cB];
+	extern __shared__ double cache[]; //rB * cB
 
 	for (int i = 0; i < NB; i += rB) {
 		
 		//load a block to cache
-		cache[threadIdx.x][threadIdx.y] = *(A + threadIdx.y * lda + threadIdx.x);
+		cache[threadIdx.x + threadIdx.y * cb] = *(A + threadIdx.y * lda + threadIdx.x);
 		__syncthreads();
 		int k = rB / 2;
 		while (k != 0) {
 			if (threadIdx.x < k) {
-				cache[threadIdx.x][threadIdx.y] += cache[threadIdx.x + k][threadIdx.y];
+				cache[threadIdx.x + threadIdx.y * cb] += cache[threadIdx.x + k + threadIdx.y * cb];
 			}
 			
 			__syncthreads();
 			k /= 2;
 		}
 		if (threadIdx.x == 0) {
-			sum1 += cache[0][threadIdx.y];
+			sum1 += cache[0 + threadIdx.y * cb];
 		}
 
-		cache[threadIdx.x][threadIdx.y] = *(A + threadIdx.y * lda + threadIdx.x) * (i + threadIdx.x + 1);
+		cache[threadIdx.x + threadIdx.y * cb] = *(A + threadIdx.y * lda + threadIdx.x) * (i + threadIdx.x + 1);
 		__syncthreads();
 		k = rB / 2;
 		while (k != 0) {
 			if (threadIdx.x < k) {
-				cache[threadIdx.x][threadIdx.y] += cache[threadIdx.x + k][threadIdx.y];
+				cache[threadIdx.x + threadIdx.y * cb] += cache[threadIdx.x + k + threadIdx.y * cb];
 			}
 			__syncthreads();
 			k /= 2;
 		}
 		if (threadIdx.x == 0) {
-			sum2 += cache[0][threadIdx.y];
+			sum2 += cache[0 + threadIdx.y * cb];
 		}
 				
 		A = A + rB;
 	}
 
+	idx += threadIdx.y;
 
 	if (threadIdx.x == 0) {
 		*(Chk + idx * ldchk) = sum1;
@@ -302,9 +306,13 @@ int main(){
 
 
 
-	//for (int nb = 32; nb <= 512; nb += 32) {
-	int nb = 512;
-		cout << nb << "\t";
+	for (int rb = 2; rb <= 512; rb += 2) {
+		for (int cb = 2; cb <= 512; cb += 2) {
+	    int nb = 512;
+		cout << rb << "\t" << cb << "\t";
+
+		if (rb * nb > 1024)
+			continue;
 
 		float real_time = 0.0;
 		float proc_time = 0.0;
@@ -319,8 +327,8 @@ int main(){
 		}
 		
 		//chkenc_kernel<<<N, nb, nb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
-		dim3 d(cB, rB, 1);
-		chkenc_kernel3_5<<<N/cB, d, 0, stream>>>(dA, ldda, chk, ldchk);
+		dim3 d(rb, cb, 1);
+		chkenc_kernel3_5<<<N/cb, d, rb*cb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
 		cudaStreamSynchronize(stream);
 		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 			cout << "PAPI ERROR" << endl;
