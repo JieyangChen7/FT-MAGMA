@@ -147,7 +147,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 		
 		//load a block to cache
 		if (threadIdx.x < rB) {
-			for (int j = 0; j < B; j++) {
+			for (int j = 0; j < cB; j++) {
 				cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
 				//cache[j][threadIdx.x] = *(A + j * lda + threadIdx.x);
 			}
