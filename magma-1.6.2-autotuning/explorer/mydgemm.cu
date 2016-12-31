@@ -153,12 +153,14 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 			cache[threadIdx.x + j * b] = *(A + j * lda + threadIdx.x);
 		}
 		__syncthreads();
+		/*
 
 		for (int j = 0; j < b; j++) {
 			sum1 += cache[j + threadIdx.x * b];
 			sum2 += cache[j + threadIdx.x * b] * (i + j + 1);
 		}
 		__syncthreads();
+		*/
 		A = A + b;
 	}
 
@@ -193,13 +195,13 @@ chkenc_kernel3_pref(double * A, int lda, double * Chk , int ldchk)
 		}
 		__syncthreads();
 
-/*		for (int j = 0; j < b; j++) {
+	for (int j = 0; j < b; j++) {
 			sum1 += cache[j + threadIdx.x * b];
 			sum2 += cache[j + threadIdx.x * b] * (i + j + 1);
 		}
 		__syncthreads();
 
-		*/
+		
 		A = A + b;
 	}
 
