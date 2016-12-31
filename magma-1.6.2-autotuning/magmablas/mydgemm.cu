@@ -12,7 +12,7 @@
 // encoding checksum for A
 #define B 32
 #define rB 8
-#define cB 16
+#define cB 64
 #define N 30720
 
 __global__ void
@@ -134,26 +134,28 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
-    int idx = blockIdx.x * B;
+    int idx = blockIdx.x * cB;
 
     double sum1 = 0;
     double sum2 = 0;
 
 	A = A + idx * lda;
 
-	__shared__ double cache[B][B];
+	__shared__ double cache[rB][cB];
 
-	for (int i = 0; i < NB; i += B) {
+	for (int i = 0; i < NB; i += rB) {
 		
 		//load a block to cache
-		for (int j = 0; j < B; j++) {
-			cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
-			//cache[j][threadIdx.x] = *(A + j * lda + threadIdx.x);
+		if (threadIdx.x < rB) {
+			for (int j = 0; j < B; j++) {
+				cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
+				//cache[j][threadIdx.x] = *(A + j * lda + threadIdx.x);
+			}
 		}
 
 		__syncthreads();
 
-		for (int j = 0; j < B; j++) {
+		for (int j = 0; j < rB; j++) {
 			sum1 += cache[j][threadIdx.x];
 			sum2 += cache[j][threadIdx.x] * (i + j + 1);
 			
@@ -254,7 +256,7 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	//int cb = 16;
 	//dim3 d(rb, cb, 1);
 	//chkenc_kernel3_5<<<N/cb, d, rb*cb*sizeof(double), stream>>>(A, lda, chk, ldchk);
-	chkenc_kernel3<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3<<<n/cB, cB, 0, stream>>>(A, lda, chk, ldchk);
 
 }
 
