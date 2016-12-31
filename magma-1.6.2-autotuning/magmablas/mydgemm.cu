@@ -235,7 +235,7 @@ chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 
 
 
-void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t stream) {
+void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_queue_t stream) {
   /*  int numBlocks; // Occupancy in terms of active blocks 
     int blockSize = 32; 
 	int device; 
@@ -253,7 +253,7 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_q
 	int cb = 16;
 	dim3 d(rb, cb, 1);
 	chkenc_kernel3_5<<<N/cb, d, rb*cb*sizeof(double), stream>>>(A, lda, chk, ldchk);
-	//chkenc_kernel3<<<n/B, B, 0, stream>>>(A, lda, Chk, ldchk);
+	//chkenc_kernel3<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
 
 }
 
