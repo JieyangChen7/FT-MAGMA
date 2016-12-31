@@ -4,8 +4,8 @@
 #include"papi.h"
 #define N 30720
 #define NB 512
-#define rB 64
-#define cB 64
+#define rB 32
+#define cB 32
 
 using namespace std;
 
