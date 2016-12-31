@@ -487,7 +487,7 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	int rb = B;
 	int cb = B;
 	dim3 d(rb, cb, 1);
-	//chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
 	//chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
 
 }
