@@ -11,8 +11,8 @@
 #define NB 512
 // encoding checksum for A
 #define B 32
-#define rB 64
-#define cB 8
+#define rB 8
+#define cB 16
 #define N 30720
 
 __global__ void
@@ -170,54 +170,58 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 	
 }
 
-
 __global__ void
 chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
-    int idx = blockIdx.x * cB;
+    
+
+    int rb = blockDim.x;
+    int cb = blockDim.y; 
+
+    int idx = blockIdx.x * cb;
 
     double sum1 = 0;
     double sum2 = 0;
 
 	A = A + idx * lda;
 
-	__shared__ double cache[rB][cB];
+	extern __shared__ double cache[]; //rB * cB
 
-	for (int i = 0; i < NB; i += rB) {
+	for (int i = 0; i < NB; i += rb) {
 		
 		//load a block to cache
-		cache[threadIdx.x][threadIdx.y] = *(A + threadIdx.y * lda + threadIdx.x);
+		cache[threadIdx.x + threadIdx.y * rb] = *(A + threadIdx.y * lda + threadIdx.x);
 		__syncthreads();
-		int k = rB / 2;
+		int k = rb / 2;
 		while (k != 0) {
 			if (threadIdx.x < k) {
-				cache[threadIdx.x][threadIdx.y] += cache[threadIdx.x + k][threadIdx.y];
+				cache[threadIdx.x + threadIdx.y * rb] += cache[threadIdx.x + k + threadIdx.y * rb];
 			}
 			
 			__syncthreads();
 			k /= 2;
 		}
 		if (threadIdx.x == 0) {
-			sum1 += cache[0][threadIdx.y];
+			sum1 += cache[0 + threadIdx.y * rb];
 		}
 
-		cache[threadIdx.x][threadIdx.y] = *(A + threadIdx.y * lda + threadIdx.x) * (i + threadIdx.x + 1);
+		cache[threadIdx.x + threadIdx.y * rb] = *(A + threadIdx.y * lda + threadIdx.x) * (i + threadIdx.x + 1);
 		__syncthreads();
-		k = rB / 2;
+		k = rb / 2;
 		while (k != 0) {
 			if (threadIdx.x < k) {
-				cache[threadIdx.x][threadIdx.y] += cache[threadIdx.x + k][threadIdx.y];
+				cache[threadIdx.x + threadIdx.y * rb] += cache[threadIdx.x + k + threadIdx.y * rb];
 			}
 			__syncthreads();
 			k /= 2;
 		}
 		if (threadIdx.x == 0) {
-			sum2 += cache[0][threadIdx.y];
+			sum2 += cache[0 + threadIdx.y * rb];
 		}
 				
-		A = A + rB;
+		A = A + rb;
 	}
 
 	idx += threadIdx.y;
@@ -245,8 +249,11 @@ void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_q
 	//printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 	*/
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	//dim3 d(rB, cB, 1);
-	chkenc_kernel3<<<n/B, B, 0, stream>>>(A, lda, Chk, ldchk);
+	int rb = 8;
+	int cb = 16;
+	dim3 d(rb, cb, 1);
+	chkenc_kernel3_5<<<N/cb, d, rb*cb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
+	//chkenc_kernel3<<<n/B, B, 0, stream>>>(A, lda, Chk, ldchk);
 
 }
 
