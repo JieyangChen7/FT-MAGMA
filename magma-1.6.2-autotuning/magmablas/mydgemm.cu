@@ -171,7 +171,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 	
 }
 
-
+__global__ void
 chkenc_kernel3_2(double * A, int lda, double * Chk , int ldchk)
 {
 
@@ -299,7 +299,7 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	//chkenc_kernel3_5<<<n/cb, d, rb*cb*sizeof(double), stream>>>(A, lda, chk, ldchk);
 	//int b = 32;
 	//chkenc_kernel3<<<n/b, b, b*b*sizeof(double), stream>>>(A, lda, chk, ldchk);
-	chkenc_kernel3_2<<<n/b, b, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3_2<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
 
 }
 
