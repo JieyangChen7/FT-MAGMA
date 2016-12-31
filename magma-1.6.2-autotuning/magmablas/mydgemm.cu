@@ -134,36 +134,34 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
-    int idx = blockIdx.x * cB;
+    int b = blockDim.x;
+    int idx = blockIdx.x * b;
 
     double sum1 = 0;
     double sum2 = 0;
 
 	A = A + idx * lda;
 
-	__shared__ double cache[rB][cB];
+	extern __shared__ double cache[]; //b*b
 
-	for (int i = 0; i < NB; i += rB) {
+	for (int i = 0; i < NB; i += b) {
 		
 		//load a block to cache
-		if (threadIdx.x < rB) {
-			for (int j = 0; j < cB; j++) {
-				cache[threadIdx.x][j] = *(A + j * lda + threadIdx.x);
-				//cache[j][threadIdx.x] = *(A + j * lda + threadIdx.x);
-			}
+		for (int j = 0; j < b; j++) {
+			cache[threadIdx.x * b + j] = *(A + j * lda + threadIdx.x);
 		}
 
 		__syncthreads();
 
-		for (int j = 0; j < rB; j++) {
-			sum1 += cache[j][threadIdx.x];
-			sum2 += cache[j][threadIdx.x] * (i + j + 1);
+		for (int j = 0; j < b; j++) {
+			sum1 += cache[j * b + threadIdx.x];
+			sum2 += cache[j * b + threadIdx.x] * (i + j + 1);
 			
 		}
 		
 		__syncthreads();
 
-		A = A + B;
+		A = A + b;
 	}
 
 	idx += threadIdx.x;
@@ -256,7 +254,8 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	//int cb = 16;
 	//dim3 d(rb, cb, 1);
 	//chkenc_kernel3_5<<<N/cb, d, rb*cb*sizeof(double), stream>>>(A, lda, chk, ldchk);
-	chkenc_kernel3<<<n/cB, cB, 0, stream>>>(A, lda, chk, ldchk);
+	int b = 32;
+	chkenc_kernel3<<<n/b, b, b*b*sizeof(double), stream>>>(A, lda, chk, ldchk);
 
 }
 
