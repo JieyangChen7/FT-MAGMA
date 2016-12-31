@@ -167,6 +167,47 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 	
 }
 
+
+__global__ void
+chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
+{
+
+    //blockIdx.x: determin the column to process
+
+    int b = blockDim.x;
+
+    int idx = blockIdx.x * b;
+
+    double sum1 = 0;
+    double sum2 = 0;
+
+	A = A + idx * lda;
+
+	extern __shared__ double cache[];
+
+	for (int i = 0; i < NB; i += b) {
+		
+		//load a block to cache
+		for (int j = 0; j < b; j++) {
+			cache[threadIdx.x + j * b] = *(A + j * lda + threadIdx.x);
+		}
+		__syncthreads();
+
+/*		for (int j = 0; j < b; j++) {
+			sum1 += cache[j + threadIdx.x * b];
+			sum2 += cache[j + threadIdx.x * b] * (i + j + 1);
+		}
+		__syncthreads();
+
+		*/
+		A = A + b;
+	}
+
+	*(Chk + idx * ldchk) = sum1;
+	*(Chk + idx * ldchk+1) = sum2;
+	
+}
+
 __global__ void
 chkenc_kernel3_5(double * A, int lda, double * Chk , int ldchk)
 {
@@ -313,6 +354,7 @@ int main(){
 
 //for (int nb = 2; nb <= 512; nb += 2) {
 	for (int rb = 2; rb <= 32; rb += 2) {
+	rb = 32;
 	//	for (int cb = 2; cb <= 512; cb += 2) {
 	    int nb = 512;
 		
