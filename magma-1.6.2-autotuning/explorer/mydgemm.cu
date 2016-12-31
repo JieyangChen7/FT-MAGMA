@@ -169,7 +169,7 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 
 
 __global__ void
-chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
+chkenc_kernel3_pref(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
