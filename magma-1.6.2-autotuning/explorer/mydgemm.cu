@@ -356,14 +356,14 @@ int main(){
 
 //for (int nb = 2; nb <= 512; nb += 2) {
 	for (int rb = 2; rb <= 32; rb += 2) {
-	rb = 32;
-	//	for (int cb = 2; cb <= 512; cb += 2) {
+	//rb = 32;
+		for (int cb = 2; cb <= 512; cb += 2) {
 	    int nb = 512;
 		
 
-		//if (rb * cb > 1024)
-		//	continue;
-		//cout << rb << "\t" << cb << "\t";
+		if (rb * cb > 1024)
+			continue;
+		cout << rb << "\t" << cb << "\t";
 
 	
 		float real_time = 0.0;
@@ -379,9 +379,9 @@ int main(){
 		}
 		
 		//chkenc_kernel<<<N, nb, nb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
-		//dim3 d(rb, cb, 1);
-		//chkenc_kernel3_5<<<N/cb, d, rb*cb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
-		chkenc_kernel3<<<N/rb, rb, rb*rb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
+		dim3 d(rb, cb, 1);
+		chkenc_kernel3_5<<<N/cb, d, rb*cb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
+		//chkenc_kernel3<<<N/rb, rb, rb*rb*sizeof(double), stream>>>(dA, ldda, chk, ldchk);
 		cudaStreamSynchronize(stream);
 		if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
 			cout << "PAPI ERROR" << endl;
