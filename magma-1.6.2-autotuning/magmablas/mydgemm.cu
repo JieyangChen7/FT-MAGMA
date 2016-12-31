@@ -10,7 +10,7 @@
 
 #define NB 512
 // encoding checksum for A
-#define B 32
+#define B 16
 #define rB 8
 #define cB 64
 #define N 30720
@@ -391,6 +391,84 @@ chkenc_kernel3_5(double * A, int lda, double * Chk, int ldchk)
 }
 
 
+//N=16
+__global__ void
+chkenc_kernel3_5_P(double * A, int lda, double * Chk, int ldchk)
+{
+
+    //blockIdx.x: determin the column to process
+    
+
+    int idx = blockIdx.x * B;
+
+    double sum = 0;
+
+	A = A + idx * lda;
+	idx += threadIdx.y;
+
+	__shared__ double cache[B][B]; //B * B
+
+	double r = *(A + threadIdx.y * lda + threadIdx.x);
+
+
+	for (int i = 0; i < NB; i += B) {
+		
+		//load a block register -> cache
+		cache[threadIdx.y][threadIdx.x] = r;
+		__syncthreads();
+
+		//load next to register
+		r = *(A + i + B + threadIdx.y * lda + threadIdx.x);
+
+		int k = B / 2;
+		while (k != 0) {
+			if (threadIdx.x < k) {
+				cache[threadIdx.y][threadIdx.x] += cache[threadIdx.y][threadIdx.x + k];
+			}
+			__syncthreads();
+			k /= 2;
+		}
+		if (threadIdx.x == 0) {
+			sum += cache[threadIdx.y][0];
+		}
+
+	}
+
+	if (threadIdx.x == 0) {
+		*(Chk + idx * ldchk) = sum;
+	}
+
+	sum = 0;
+	r = *(A + threadIdx.y * lda + threadIdx.x);
+
+	for (int i = 0; i < NB; i += B) {
+
+		cache[threadIdx.y][threadIdx.x] = r * (i + threadIdx.x + 1);
+		__syncthreads();
+
+		r = *(A + i + B +  threadIdx.y * lda + threadIdx.x);
+		k = B / 2;
+		while (k != 0) {
+			if (threadIdx.x < k) {
+				cache[threadIdx.y][threadIdx.x] += cache[threadIdx.y][threadIdx.x + k];
+			}
+			__syncthreads();
+			k /= 2;
+		}
+		if (threadIdx.x == 0) {
+			sum += cache[threadIdx.y][0];
+		}
+	}
+
+	
+
+	if (threadIdx.x == 0) {
+		*(Chk + idx * ldchk+1) = sum;
+	}
+	
+}
+
+
 
 void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_queue_t stream) {
   /*  int numBlocks; // Occupancy in terms of active blocks 
@@ -409,8 +487,8 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	int rb = B;
 	int cb = B;
 	dim3 d(rb, cb, 1);
-	//chkenc_kernel3_5<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
-	chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
+	//chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
+	//chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
 
 }
 
