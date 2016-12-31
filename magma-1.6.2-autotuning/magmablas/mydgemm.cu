@@ -10,7 +10,7 @@
 
 #define NB 512
 // encoding checksum for A
-#define B 8
+#define B 16
 #define rB 8
 #define cB 64
 #define N 30720
@@ -213,6 +213,7 @@ chkenc_kernel3_P(double * A, int lda, double * Chk , int ldchk)
 	double r13 = *(A + 13 * lda + threadIdx.x);
 	double r14 = *(A + 14 * lda + threadIdx.x);
 	double r15 = *(A + 15 * lda + threadIdx.x);
+	/*
 	double r16 = *(A + 16 * lda + threadIdx.x);
 	double r17 = *(A + 17 * lda + threadIdx.x);
 	double r18 = *(A + 18 * lda + threadIdx.x);
@@ -229,6 +230,7 @@ chkenc_kernel3_P(double * A, int lda, double * Chk , int ldchk)
 	double r29 = *(A + 29 * lda + threadIdx.x);
 	double r30 = *(A + 30 * lda + threadIdx.x);
 	double r31 = *(A + 31 * lda + threadIdx.x);
+	*/
 
 
 
@@ -251,6 +253,7 @@ chkenc_kernel3_P(double * A, int lda, double * Chk , int ldchk)
 		cache[threadIdx.x][13] = r13;
 		cache[threadIdx.x][14] = r14;
 		cache[threadIdx.x][15] = r15;
+		/*
 		cache[threadIdx.x][16] = r16;
 		cache[threadIdx.x][17] = r17;
 		cache[threadIdx.x][18] = r18;
@@ -267,6 +270,7 @@ chkenc_kernel3_P(double * A, int lda, double * Chk , int ldchk)
 		cache[threadIdx.x][29] = r29;
 		cache[threadIdx.x][30] = r30;
 		cache[threadIdx.x][31] = r31;
+		*/
 
 		__syncthreads();
 
@@ -290,6 +294,7 @@ chkenc_kernel3_P(double * A, int lda, double * Chk , int ldchk)
 		 r13 = *(A + 13 * lda + threadIdx.x);
 		 r14 = *(A + 14 * lda + threadIdx.x);
 		 r15 = *(A + 15 * lda + threadIdx.x);
+		 /*
 		 r16 = *(A + 16 * lda + threadIdx.x);
 		 r17 = *(A + 17 * lda + threadIdx.x);
 		 r18 = *(A + 18 * lda + threadIdx.x);
@@ -306,6 +311,7 @@ chkenc_kernel3_P(double * A, int lda, double * Chk , int ldchk)
 		 r29 = *(A + 29 * lda + threadIdx.x);
 		 r30 = *(A + 30 * lda + threadIdx.x);
 		 r31 = *(A + 31 * lda + threadIdx.x);
+		 */
 
 
 		for (int j = 0; j < B; j++) {
@@ -487,8 +493,8 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	int rb = B;
 	int cb = B;
 	dim3 d(rb, cb, 1);
-	chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
-	//chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
+	//chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
 
 }
 
