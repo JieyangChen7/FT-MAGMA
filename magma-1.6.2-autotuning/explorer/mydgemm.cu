@@ -423,7 +423,7 @@ int main(){
 
 	cout << endl;
 	 }
-	//}
+	}
 
 	cout <<"max:" <<max;
 
