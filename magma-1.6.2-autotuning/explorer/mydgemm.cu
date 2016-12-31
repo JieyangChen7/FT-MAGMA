@@ -164,9 +164,12 @@ chkenc_kernel3(double * A, int lda, double * Chk , int ldchk)
 		A = A + b;
 	}
 
-	*(Chk + idx * ldchk) = sum1;
-	*(Chk + idx * ldchk+1) = sum2;
+	//*(Chk + idx * ldchk) = sum1;
+	//*(Chk + idx * ldchk+1) = sum2;
 	
+
+	*(Chk + idx * ldchk) = cache[0];
+	*(Chk + idx * ldchk+1) = cache[0];
 }
 
 
