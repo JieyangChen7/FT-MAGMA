@@ -8,9 +8,9 @@
 #include "magma.h"
 #include <stdlib.h>
 
-#define NB 4
+#define NB 512
 // encoding checksum for A
-#define B 2
+#define B 32
 #define rB 8
 #define cB 64
 #define N 30720
@@ -865,9 +865,12 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	//int rb = B;
 	//int cb = B;
 	dim3 d(m/NB, n/NB, 1);
+	
 	//chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
-	//chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
-	chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
+	for (int i = 0; i < m; i+=NB) {
+		chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A + i, lda, chk + (i/NB)*2, ldchk);
+	}
+	//chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 
 }
 
