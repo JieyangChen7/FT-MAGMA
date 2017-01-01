@@ -7,7 +7,9 @@
 #include "common_magma.h"
 #include "magma.h"
 #include <stdlib.h>
+#include <iostream>
 
+using namespace std;
 #define NB 512
 // encoding checksum for A
 #define B 32
