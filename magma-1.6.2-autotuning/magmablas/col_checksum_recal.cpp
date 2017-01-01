@@ -751,8 +751,9 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
     //int i = abftEnv->chk_nb;
 		//for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 		long long flops = 3 * abftEnv->chk_nb * i;
-		flops *= 1;
-
+		flops *= 100;
+		double t1 =0;
+		double t2 =0;
 		cout << i << "\t";
 
 			// benchmark_time = magma_wtime();
@@ -763,12 +764,13 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			// cout << benchmark_time << "\t";
 
 			benchmark_time = magma_wtime();
-			for (int t = 0; t < 1; t++) {
+			for (int t = 0; t < 100; t++) {
 				col_chk_recal_select(abftEnv, A, lda, abftEnv->chk_nb, i, 1);
 			}
 			cudaStreamSynchronize(*(abftEnv->stream));
 			benchmark_time = magma_wtime() - benchmark_time;
 			cout << benchmark_time << "\t" << (flops/benchmark_time)/1e9 << "\t";
+			t1 =benchmark_time;
 
 			// benchmark_time = magma_wtime();
 			// for (int t = 0; t < 100; t++) {
@@ -778,7 +780,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			// cout << benchmark_time <<"\t" << (flops/benchmark_time)/1e9 << "\t";
 
 			 benchmark_time = magma_wtime();
-			for (int t = 0; t < 1; t++) {
+			for (int t = 0; t < 100; t++) {
 
 				// col_checksum_kernel_ncns2(abftEnv->chk_nb, i, abftEnv->chk_nb,
 				// 			  A, lda, 
@@ -794,10 +796,11 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			cudaStreamSynchronize(*(abftEnv->stream));
 			benchmark_time = magma_wtime() - benchmark_time;
 			cout << benchmark_time << "\t" << (flops/benchmark_time)/1e9<< "\t";
+			t2=benchmark_time;
 
 			compareChk(test_chk1, test_chk1_ld, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, i);
 
-			
+			cout << t1/t2 << "\t";
 			// printMatrix_gpu(A, lda,  i , i, 4, 4);
 
 			// printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,  2 , i, 2, 4);
