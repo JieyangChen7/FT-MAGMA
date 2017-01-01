@@ -688,8 +688,8 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 
 		//idx += threadIdx.x;
 
-		*(Chk + (blockIdx.y * NB + threadIdx.x) * ldchk + blockIdx.x * 2 ) = sum1;
-		*(Chk + (blockIdx.y * NB + threadIdx.x) * ldchk + blockIdx.x * 2 + 1) = sum2;
+		*(Chk + (blockIdx.y * NB + k + threadIdx.x) * ldchk + blockIdx.x * 2 ) = sum1;
+		*(Chk + (blockIdx.y * NB + k + threadIdx.x) * ldchk + blockIdx.x * 2 + 1) = sum2;
 
 
 
@@ -855,8 +855,8 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	//printf("Occupancy: %f \n", (double)activeWarps / maxWarps * 100 );
 	*/
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
-	int rb = B;
-	int cb = B;
+	//int rb = B;
+	//int cb = B;
 	dim3 d(m/NB, n/NB, 1);
 	//chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
 	//chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
