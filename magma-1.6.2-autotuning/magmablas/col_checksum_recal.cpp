@@ -804,12 +804,12 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 
 			cout << endl;
 
-			
+
 			 printMatrix_gpu(A, lda,  i , i, 4, 4);
 
-			 printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,  2 , i, 2, 4);
+			 printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,  (i/abftEnv->chk_nb)*2 , i, 2, 4);
 
-			 printMatrix_gpu(test_chk1, test_chk1_ld,  2 , i, 2, 4);
+			 printMatrix_gpu(test_chk1, test_chk1_ld,  2 , (i/abftEnv->chk_nb)*2, 2, 4);
 		
 
 			
