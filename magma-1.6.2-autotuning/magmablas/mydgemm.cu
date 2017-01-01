@@ -553,6 +553,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 	double r31 = 0;
 	*/
 
+	double * tA = A;
 	for (int k = 0; k < NB; k += B) {
 		
 		r0 = *(A + 0 * lda + threadIdx.x);
@@ -696,8 +697,8 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 		*(Chk + (blockIdx.y * NB + k + threadIdx.x) * ldchk + blockIdx.x * 2 + 1) = sum2;
 
 
-
-		A = A - NB + B * lda;
+		tA += B * lda;
+		A = tA ;
 	}
 	
 }
