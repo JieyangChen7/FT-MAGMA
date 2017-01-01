@@ -17,9 +17,9 @@ void compareChk(double * chk1, int ldchk1, double * chk2, int ldchk2, int m, int
     		correct = false;
     }
     if (correct) {
-    	cout << "correct!" << endl;
+    	cout << "correct!" << "\t";
     } else {
-    	cout << "wrong!" << endl;
+    	cout << "wrong!"<< "\t" ;
     }
 }
 
