@@ -698,6 +698,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 
 
 		tA += B * lda;
+		if(threadIdx.x == 0)
 		printf("next:%f\n", (*tA));
 		A = tA ;
 	}
