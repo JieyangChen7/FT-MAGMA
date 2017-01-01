@@ -518,6 +518,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 
 	double r0 = 0;
 	double r1 = 0;
+	/*
 	double r2 = 0;
 	double r3 = 0;
 	double r4 = 0;
@@ -533,7 +534,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 	double r13 = 0;
 	double r14 = 0;
 	double r15 = 0;
-	/*
+	
 	double r16 = 0;
 	double r17 = 0;
 	double r18 = 0;
@@ -556,6 +557,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 		
 		r0 = *(A + 0 * lda + threadIdx.x);
 		r1 = *(A + 1 * lda + threadIdx.x);
+		/*
 		r2 = *(A + 2 * lda + threadIdx.x);
 		r3 = *(A + 3 * lda + threadIdx.x);
 		r4 = *(A + 4 * lda + threadIdx.x);
@@ -571,7 +573,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 		r13 = *(A + 13 * lda + threadIdx.x);
 		r14 = *(A + 14 * lda + threadIdx.x);
 		r15 = *(A + 15 * lda + threadIdx.x);
-		/*
+		
 		r16 = *(A + 16 * lda + threadIdx.x);
 		r17 = *(A + 17 * lda + threadIdx.x);
 		r18 = *(A + 18 * lda + threadIdx.x);
@@ -597,6 +599,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 			//load current register->shared mem.
 			cache[threadIdx.x][0] = r0;
 			cache[threadIdx.x][1] = r1;
+			/*
 			cache[threadIdx.x][2] = r2;
 			cache[threadIdx.x][3] = r3;
 			cache[threadIdx.x][4] = r4;
@@ -612,7 +615,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 			cache[threadIdx.x][13] = r13;
 			cache[threadIdx.x][14] = r14;
 			cache[threadIdx.x][15] = r15;
-			/*
+			
 			cache[threadIdx.x][16] = r16;
 			cache[threadIdx.x][17] = r17;
 			cache[threadIdx.x][18] = r18;
@@ -639,6 +642,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 			
 			 r0 = *(A + 0 * lda + threadIdx.x);
 			 r1 = *(A + 1 * lda + threadIdx.x);
+			 /*
 			 r2 = *(A + 2 * lda + threadIdx.x);
 			 r3 = *(A + 3 * lda + threadIdx.x);
 			 r4 = *(A + 4 * lda + threadIdx.x);
@@ -654,7 +658,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 			 r13 = *(A + 13 * lda + threadIdx.x);
 			 r14 = *(A + 14 * lda + threadIdx.x);
 			 r15 = *(A + 15 * lda + threadIdx.x);
-			 /*
+			
 			 r16 = *(A + 16 * lda + threadIdx.x);
 			 r17 = *(A + 17 * lda + threadIdx.x);
 			 r18 = *(A + 18 * lda + threadIdx.x);
