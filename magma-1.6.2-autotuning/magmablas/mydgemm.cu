@@ -337,9 +337,8 @@ chkenc_kernel3_P(double * A, int lda, double * Chk , int ldchk)
 }
 
 
-//N=16
 __global__ void
-chkenc_kernel3_PP(double * A, int lda, double * Chk , int ldchk)
+chkenc_kernel3_P_R(double * A, int lda, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
@@ -493,6 +492,209 @@ chkenc_kernel3_PP(double * A, int lda, double * Chk , int ldchk)
 
 	*(Chk + idx * ldchk) = sum1;
 	*(Chk + idx * ldchk+1) = sum2;
+	
+}
+
+
+//N=16 Prefetch - full 
+__global__ void
+chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
+{
+
+    //blockIdx.x: determin the column to process
+    //int idx = blockIdx.x;
+
+
+    double sum1 = 0;
+    double sum2 = 0;
+
+    double temp = 0;
+
+	A = A + blockIdx.x * NB + blockIdx.y * NB * lda;
+
+	
+
+	__shared__ double cache[B][B];
+
+	double r0 = 0;
+	double r1 = 0;
+	double r2 = 0;
+	double r3 = 0;
+	double r4 = 0;
+	double r5 = 0;
+	double r6 = 0;
+	double r7 = 0;
+	
+	double r8 = 0;
+	double r9 = 0;
+	double r10 = 0;
+	double r11 = 0;
+	double r12 = 0;
+	double r13 = 0;
+	double r14 = 0;
+	double r15 = 0;
+	/*
+	double r16 = 0;
+	double r17 = 0;
+	double r18 = 0;
+	double r19 = 0;
+	double r20 = 0;
+	double r21 = 0;
+	double r22 = 0;
+	double r23 = 0;
+	double r24 = 0;
+	double r25 = 0;
+	double r26 = 0;
+	double r27 = 0;
+	double r28 = 0;
+	double r29 = 0;
+	double r30 = 0;
+	double r31 = 0;
+	*/
+
+	for (int k = 0; k < NB; k += B) {
+		
+		r0 = *(A + 0 * lda + threadIdx.x);
+		r1 = *(A + 1 * lda + threadIdx.x);
+		r2 = *(A + 2 * lda + threadIdx.x);
+		r3 = *(A + 3 * lda + threadIdx.x);
+		r4 = *(A + 4 * lda + threadIdx.x);
+		r5 = *(A + 5 * lda + threadIdx.x);
+		r6 = *(A + 6 * lda + threadIdx.x);
+		r7 = *(A + 7 * lda + threadIdx.x);
+		
+		r8 = *(A + 8 * lda + threadIdx.x);
+		r9 = *(A + 9 * lda + threadIdx.x);
+		r10 = *(A + 10 * lda + threadIdx.x);
+		r11 = *(A + 11 * lda + threadIdx.x);
+		r12 = *(A + 12 * lda + threadIdx.x);
+		r13 = *(A + 13 * lda + threadIdx.x);
+		r14 = *(A + 14 * lda + threadIdx.x);
+		r15 = *(A + 15 * lda + threadIdx.x);
+		/*
+		r16 = *(A + 16 * lda + threadIdx.x);
+		r17 = *(A + 17 * lda + threadIdx.x);
+		r18 = *(A + 18 * lda + threadIdx.x);
+		r19 = *(A + 19 * lda + threadIdx.x);
+		r20 = *(A + 20 * lda + threadIdx.x);
+		r21 = *(A + 21 * lda + threadIdx.x);
+		r22 = *(A + 22 * lda + threadIdx.x);
+		r23 = *(A + 23 * lda + threadIdx.x);
+		r24 = *(A + 24 * lda + threadIdx.x);
+		r25 = *(A + 25 * lda + threadIdx.x);
+		r26 = *(A + 26 * lda + threadIdx.x);
+		r27 = *(A + 27 * lda + threadIdx.x);
+		r28 = *(A + 28 * lda + threadIdx.x);
+		r29 = *(A + 29 * lda + threadIdx.x);
+		r30 = *(A + 30 * lda + threadIdx.x);
+		r31 = *(A + 31 * lda + threadIdx.x);
+		*/
+
+
+
+		for (int i = 0; i < NB; i += B) {
+
+			//load current register->shared mem.
+			cache[threadIdx.x][0] = r0;
+			cache[threadIdx.x][1] = r1;
+			cache[threadIdx.x][2] = r2;
+			cache[threadIdx.x][3] = r3;
+			cache[threadIdx.x][4] = r4;
+			cache[threadIdx.x][5] = r5;
+			cache[threadIdx.x][6] = r6;
+			cache[threadIdx.x][7] = r7;
+			
+			cache[threadIdx.x][8] = r8;
+			cache[threadIdx.x][9] = r9;
+			cache[threadIdx.x][10] = r10;
+			cache[threadIdx.x][11] = r11;
+			cache[threadIdx.x][12] = r12;
+			cache[threadIdx.x][13] = r13;
+			cache[threadIdx.x][14] = r14;
+			cache[threadIdx.x][15] = r15;
+			/*
+			cache[threadIdx.x][16] = r16;
+			cache[threadIdx.x][17] = r17;
+			cache[threadIdx.x][18] = r18;
+			cache[threadIdx.x][19] = r19;
+			cache[threadIdx.x][20] = r20;
+			cache[threadIdx.x][21] = r21;
+			cache[threadIdx.x][22] = r22;
+			cache[threadIdx.x][23] = r23;
+			cache[threadIdx.x][24] = r24;
+			cache[threadIdx.x][25] = r25;
+			cache[threadIdx.x][26] = r26;
+			cache[threadIdx.x][27] = r27;
+			cache[threadIdx.x][28] = r28;
+			cache[threadIdx.x][29] = r29;
+			cache[threadIdx.x][30] = r30;
+			cache[threadIdx.x][31] = r31;
+			*/
+
+			__syncthreads();
+
+			A = A + B;
+
+			//load a next block to register
+			
+			 r0 = *(A + 0 * lda + threadIdx.x);
+			 r1 = *(A + 1 * lda + threadIdx.x);
+			 r2 = *(A + 2 * lda + threadIdx.x);
+			 r3 = *(A + 3 * lda + threadIdx.x);
+			 r4 = *(A + 4 * lda + threadIdx.x);
+			 r5 = *(A + 5 * lda + threadIdx.x);
+			 r6 = *(A + 6 * lda + threadIdx.x);
+			 r7 = *(A + 7 * lda + threadIdx.x);
+			 
+			 r8 = *(A + 8 * lda + threadIdx.x);
+			 r9 = *(A + 9 * lda + threadIdx.x);
+			 r10 = *(A + 10 * lda + threadIdx.x);
+			 r11 = *(A + 11 * lda + threadIdx.x);
+			 r12 = *(A + 12 * lda + threadIdx.x);
+			 r13 = *(A + 13 * lda + threadIdx.x);
+			 r14 = *(A + 14 * lda + threadIdx.x);
+			 r15 = *(A + 15 * lda + threadIdx.x);
+			 /*
+			 r16 = *(A + 16 * lda + threadIdx.x);
+			 r17 = *(A + 17 * lda + threadIdx.x);
+			 r18 = *(A + 18 * lda + threadIdx.x);
+			 r19 = *(A + 19 * lda + threadIdx.x);
+			 r20 = *(A + 20 * lda + threadIdx.x);
+			 r21 = *(A + 21 * lda + threadIdx.x);
+			 r22 = *(A + 22 * lda + threadIdx.x);
+			 r23 = *(A + 23 * lda + threadIdx.x);
+			 r24 = *(A + 24 * lda + threadIdx.x);
+			 r25 = *(A + 25 * lda + threadIdx.x);
+			 r26 = *(A + 26 * lda + threadIdx.x);
+			 r27 = *(A + 27 * lda + threadIdx.x);
+			 r28 = *(A + 28 * lda + threadIdx.x);
+			 r29 = *(A + 29 * lda + threadIdx.x);
+			 r30 = *(A + 30 * lda + threadIdx.x);
+			 r31 = *(A + 31 * lda + threadIdx.x);
+			 */
+
+
+			for (int j = 0; j < B; j++) {
+				temp = cache[j][threadIdx.x];
+				sum1 += temp;
+				sum2 += temp * (i + j + 1);
+				
+			}
+			
+			__syncthreads();
+
+			
+		}
+
+		idx += threadIdx.x;
+
+		*(Chk + idx * ldchk) = sum1;
+		*(Chk + idx * ldchk+1) = sum2;
+
+
+
+		A = A - NB + B * lda;
+	}
 	
 }
 
@@ -655,9 +857,10 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
 	int rb = B;
 	int cb = B;
-	dim3 d(rb, cb, 1);
+	dim3 d(m/NB, n/NB, 1);
 	//chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
-	chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
+	//chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 
 }
 

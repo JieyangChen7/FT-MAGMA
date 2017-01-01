@@ -765,7 +765,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 
 			benchmark_time = magma_wtime();
 			for (int t = 0; t < 100; t++) {
-				col_chk_recal_select(abftEnv, A, lda, abftEnv->chk_nb, i, 9);
+				col_chk_recal_select(abftEnv, A, lda, abftEnv->chk_nb, i, 1);
 			}
 			cudaStreamSynchronize(*(abftEnv->stream));
 			benchmark_time = magma_wtime() - benchmark_time;
