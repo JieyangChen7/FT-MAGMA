@@ -7,9 +7,8 @@
 #include "common_magma.h"
 #include "magma.h"
 #include <stdlib.h>
-#include <iostream>
 
-using namespace std;
+
 #define NB 512
 // encoding checksum for A
 #define B 32
@@ -870,7 +869,7 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	
 	//chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
 	for (int i = 0; i < m; i+=NB) {
-		cout << "i=" << i << endl;
+		printf("i=%d\n", i);
 		chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A + i, lda, chk + (i/NB)*2, ldchk);
 	}
 	//chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
