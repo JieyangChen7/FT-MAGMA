@@ -686,10 +686,10 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 			
 		}
 
-		idx += threadIdx.x;
+		//idx += threadIdx.x;
 
-		*(Chk + idx * ldchk) = sum1;
-		*(Chk + idx * ldchk+1) = sum2;
+		*(Chk + (blockIdx.y * NB + threadIdx.x) * ldchk + blockIdx.x * 2 ) = sum1;
+		*(Chk + (blockIdx.y * NB + threadIdx.x) * ldchk + blockIdx.x * 2 + 1) = sum2;
 
 
 
