@@ -710,6 +710,219 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 }
 
 
+//N=16 Prefetch - full - Row
+__global__ void
+chkenc_kernel3_P_FR(double * A, int lda, double * Chk , int ldchk)
+{
+
+    //blockIdx.x: determin the column to process
+    //int idx = blockIdx.x;
+
+
+    double sum1 = 0;
+    double sum2 = 0;
+
+    double temp = 0;
+
+	A = A + blockIdx.x * NB + blockIdx.y * NB * lda;
+
+	
+
+	__shared__ double cache[B][B];
+
+	double r0 = 0;
+	double r1 = 0;
+	
+	double r2 = 0;
+	double r3 = 0;
+	double r4 = 0;
+	double r5 = 0;
+	double r6 = 0;
+	double r7 = 0;
+	
+	double r8 = 0;
+	double r9 = 0;
+	double r10 = 0;
+	double r11 = 0;
+	double r12 = 0;
+	double r13 = 0;
+	double r14 = 0;
+	double r15 = 0;
+	/*
+	double r16 = 0;
+	double r17 = 0;
+	double r18 = 0;
+	double r19 = 0;
+	double r20 = 0;
+	double r21 = 0;
+	double r22 = 0;
+	double r23 = 0;
+	double r24 = 0;
+	double r25 = 0;
+	double r26 = 0;
+	double r27 = 0;
+	double r28 = 0;
+	double r29 = 0;
+	double r30 = 0;
+	double r31 = 0;
+	*/
+
+	double * tA = A;
+	for (int k = 0; k < NB; k += B) {
+		
+		r0 = *(A + 0 * lda + threadIdx.x);
+		r1 = *(A + 1 * lda + threadIdx.x);
+		
+		r2 = *(A + 2 * lda + threadIdx.x);
+		r3 = *(A + 3 * lda + threadIdx.x);
+		r4 = *(A + 4 * lda + threadIdx.x);
+		r5 = *(A + 5 * lda + threadIdx.x);
+		r6 = *(A + 6 * lda + threadIdx.x);
+		r7 = *(A + 7 * lda + threadIdx.x);
+		
+		r8 = *(A + 8 * lda + threadIdx.x);
+		r9 = *(A + 9 * lda + threadIdx.x);
+		r10 = *(A + 10 * lda + threadIdx.x);
+		r11 = *(A + 11 * lda + threadIdx.x);
+		r12 = *(A + 12 * lda + threadIdx.x);
+		r13 = *(A + 13 * lda + threadIdx.x);
+		r14 = *(A + 14 * lda + threadIdx.x);
+		r15 = *(A + 15 * lda + threadIdx.x);
+		/*
+		r16 = *(A + 16 * lda + threadIdx.x);
+		r17 = *(A + 17 * lda + threadIdx.x);
+		r18 = *(A + 18 * lda + threadIdx.x);
+		r19 = *(A + 19 * lda + threadIdx.x);
+		r20 = *(A + 20 * lda + threadIdx.x);
+		r21 = *(A + 21 * lda + threadIdx.x);
+		r22 = *(A + 22 * lda + threadIdx.x);
+		r23 = *(A + 23 * lda + threadIdx.x);
+		r24 = *(A + 24 * lda + threadIdx.x);
+		r25 = *(A + 25 * lda + threadIdx.x);
+		r26 = *(A + 26 * lda + threadIdx.x);
+		r27 = *(A + 27 * lda + threadIdx.x);
+		r28 = *(A + 28 * lda + threadIdx.x);
+		r29 = *(A + 29 * lda + threadIdx.x);
+		r30 = *(A + 30 * lda + threadIdx.x);
+		r31 = *(A + 31 * lda + threadIdx.x);
+		*/
+
+		sum1 = 0;
+		sum2 = 0;
+		temp = 0;
+
+
+		for (int i = 0; i < NB; i += B) {
+
+			//load current register->shared mem.
+			cache[0][threadIdx.x] = r0;
+			cache[threadIdx.x][1] = r1;
+			
+			cache[2][threadIdx.x] = r2;
+			cache[3][threadIdx.x] = r3;
+			cache[4][threadIdx.x] = r4;
+			cache[5][threadIdx.x] = r5;
+			cache[6][threadIdx.x] = r6;
+			cache[7][threadIdx.x] = r7;
+			
+			cache[8][threadIdx.x] = r8;
+			cache[9][threadIdx.x] = r9;
+			cache[10][threadIdx.x] = r10;
+			cache[11][threadIdx.x] = r11;
+			cache[12][threadIdx.x] = r12;
+			cache[13][threadIdx.x] = r13;
+			cache[14][threadIdx.x] = r14;
+			cache[15][threadIdx.x] = r15;
+			/*
+			cache[threadIdx.x][16] = r16;
+			cache[threadIdx.x][17] = r17;
+			cache[threadIdx.x][18] = r18;
+			cache[threadIdx.x][19] = r19;
+			cache[threadIdx.x][20] = r20;
+			cache[threadIdx.x][21] = r21;
+			cache[threadIdx.x][22] = r22;
+			cache[threadIdx.x][23] = r23;
+			cache[threadIdx.x][24] = r24;
+			cache[threadIdx.x][25] = r25;
+			cache[threadIdx.x][26] = r26;
+			cache[threadIdx.x][27] = r27;
+			cache[threadIdx.x][28] = r28;
+			cache[threadIdx.x][29] = r29;
+			cache[threadIdx.x][30] = r30;
+			cache[threadIdx.x][31] = r31;
+			*/
+
+			__syncthreads();
+
+			A = A + B * lda;
+
+			//load a next block to register
+			
+			 r0 = *(A + 0 * lda + threadIdx.x);
+			 r1 = *(A + 1 * lda + threadIdx.x);
+			 
+			 r2 = *(A + 2 * lda + threadIdx.x);
+			 r3 = *(A + 3 * lda + threadIdx.x);
+			 r4 = *(A + 4 * lda + threadIdx.x);
+			 r5 = *(A + 5 * lda + threadIdx.x);
+			 r6 = *(A + 6 * lda + threadIdx.x);
+			 r7 = *(A + 7 * lda + threadIdx.x);
+			 
+			 r8 = *(A + 8 * lda + threadIdx.x);
+			 r9 = *(A + 9 * lda + threadIdx.x);
+			 r10 = *(A + 10 * lda + threadIdx.x);
+			 r11 = *(A + 11 * lda + threadIdx.x);
+			 r12 = *(A + 12 * lda + threadIdx.x);
+			 r13 = *(A + 13 * lda + threadIdx.x);
+			 r14 = *(A + 14 * lda + threadIdx.x);
+			 r15 = *(A + 15 * lda + threadIdx.x);
+			/*
+			 r16 = *(A + 16 * lda + threadIdx.x);
+			 r17 = *(A + 17 * lda + threadIdx.x);
+			 r18 = *(A + 18 * lda + threadIdx.x);
+			 r19 = *(A + 19 * lda + threadIdx.x);
+			 r20 = *(A + 20 * lda + threadIdx.x);
+			 r21 = *(A + 21 * lda + threadIdx.x);
+			 r22 = *(A + 22 * lda + threadIdx.x);
+			 r23 = *(A + 23 * lda + threadIdx.x);
+			 r24 = *(A + 24 * lda + threadIdx.x);
+			 r25 = *(A + 25 * lda + threadIdx.x);
+			 r26 = *(A + 26 * lda + threadIdx.x);
+			 r27 = *(A + 27 * lda + threadIdx.x);
+			 r28 = *(A + 28 * lda + threadIdx.x);
+			 r29 = *(A + 29 * lda + threadIdx.x);
+			 r30 = *(A + 30 * lda + threadIdx.x);
+			 r31 = *(A + 31 * lda + threadIdx.x);
+			 */
+
+
+			for (int j = 0; j < B; j++) {
+				temp = cache[j][threadIdx.x];
+				sum1 += temp;
+				sum2 += temp * (i + j + 1);
+				
+			}
+			
+			__syncthreads();
+
+			
+		}
+
+		//idx += threadIdx.x;
+
+		*(Chk + (blockIdx.y * 2) * ldchk + blockIdx.x * NB + k + threadIdx.x) = sum1;
+		*(Chk + (blockIdx.y * 2 + 1) * ldchk + blockIdx.x * NB + k + threadIdx.x) = sum2;
+
+
+		tA += B;
+		//if(threadIdx.x == 0)
+		//printf("next:%f\n", (*tA));
+		A = tA ;
+	}
+	
+}
+
+
 //N=16
 __global__ void
 chkenc_kernel3_5(double * A, int lda, double * Chk, int ldchk)
@@ -875,7 +1088,9 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	//	chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A + i, lda, chk + (i/NB)*2, ldchk);
 	//}
 	//chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
-	chkenc_kernel3_P_R<<<m/B, B, 0, stream>>>(A, lda, chk, ldchk);
+	//chkenc_kernel3_P_R<<<m/B, B, 0, stream>>>(A, lda, chk, ldchk);
+
+	chkenc_kernel3_5_PR<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 }
 
 

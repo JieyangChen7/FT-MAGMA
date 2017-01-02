@@ -727,7 +727,7 @@ void row_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 
 			benchmark_time = magma_wtime();
 			for (int t = 0; t < 1; t++) {
-				row_chk_recal_select(abftEnv, A, lda, i, abftEnv->chk_nb, 7);
+				row_chk_recal_select(abftEnv, A, lda, i, i, 7);
 			}
 			cudaStreamSynchronize(*(abftEnv->stream));
 			benchmark_time = magma_wtime() - benchmark_time;
@@ -751,7 +751,7 @@ void row_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 				// 			  abftEnv->stream);
 				// cudaStreamSynchronize(*(abftEnv->stream));
 
-				chkenc(A, lda, i, abftEnv->chk_nb, test_chk1, test_chk1_ld, 
+				chkenc(A, lda, i, i, test_chk1, test_chk1_ld, 
 							  *(abftEnv->stream));
 				
 			}
@@ -760,7 +760,7 @@ void row_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			cout << benchmark_time << "\t" << flops/benchmark_time<< "\t";
 			t2=benchmark_time;
 
-			compareChk(test_chk1, test_chk1_ld, abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, i, 2);
+			compareChk(test_chk1, test_chk1_ld, abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, i, (i/abftEnv->chk_nb)*2);
 
 			cout << t1/t2 << "\t";
 
