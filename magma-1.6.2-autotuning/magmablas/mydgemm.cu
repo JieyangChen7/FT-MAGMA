@@ -594,6 +594,9 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 		r31 = *(A + 31 * lda + threadIdx.x);
 		*/
 
+		sum1 = 0;
+		sum2 = 0;
+		temp = 0;
 
 
 		for (int i = 0; i < NB; i += B) {
@@ -699,8 +702,8 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 
 
 		tA += B * lda;
-		if(threadIdx.x == 0)
-		printf("next:%f\n", (*tA));
+		//if(threadIdx.x == 0)
+		//printf("next:%f\n", (*tA));
 		A = tA ;
 	}
 	
@@ -868,11 +871,10 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	dim3 d(m/NB, n/NB, 1);
 	
 	//chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
-	for (int i = 0; i < m; i+=NB) {
-		//printf("i=%d\n", i);
-		chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A + i, lda, chk + (i/NB)*2, ldchk);
-	}
-	//chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
+	//for (int i = 0; i < m; i+=NB) {
+	//	chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A + i, lda, chk + (i/NB)*2, ldchk);
+	//}
+	chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 
 }
 
