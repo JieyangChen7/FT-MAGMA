@@ -91,6 +91,8 @@ struct ABFTEnv {
     int N;
 };
 
+compareChk(double * chk1, int ldchk1, double * chk2, int ldchk2, int m, int n);
+
 void chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t stream);
 
 

@@ -350,7 +350,7 @@ chkenc_kernel3_P_R(double * A, int lda, double * Chk , int ldchk)
 
     double temp = 0;
 
-	A = A + idx * lda;
+	A = A + idx;
 
 	
 
@@ -398,23 +398,23 @@ chkenc_kernel3_P_R(double * A, int lda, double * Chk , int ldchk)
 	for (int i = 0; i < NB; i += B) {
 
 		//load current register->shared mem.
-		cache[threadIdx.x][0] = r0;
-		cache[threadIdx.x][1] = r1;
-		cache[threadIdx.x][2] = r2;
-		cache[threadIdx.x][3] = r3;
-		cache[threadIdx.x][4] = r4;
-		cache[threadIdx.x][5] = r5;
-		cache[threadIdx.x][6] = r6;
-		cache[threadIdx.x][7] = r7;
+		cache[0][threadIdx.x] = r0;
+		cache[1][threadIdx.x] = r1;
+		cache[2][threadIdx.x] = r2;
+		cache[3][threadIdx.x] = r3;
+		cache[4][threadIdx.x] = r4;
+		cache[5][threadIdx.x] = r5;
+		cache[6][threadIdx.x] = r6;
+		cache[7][threadIdx.x] = r7;
 		
-		cache[threadIdx.x][8] = r8;
-		cache[threadIdx.x][9] = r9;
-		cache[threadIdx.x][10] = r10;
-		cache[threadIdx.x][11] = r11;
-		cache[threadIdx.x][12] = r12;
-		cache[threadIdx.x][13] = r13;
-		cache[threadIdx.x][14] = r14;
-		cache[threadIdx.x][15] = r15;
+		cache[8][threadIdx.x] = r8;
+		cache[9][threadIdx.x] = r9;
+		cache[10][threadIdx.x] = r10;
+		cache[11][threadIdx.x] = r11;
+		cache[12][threadIdx.x] = r12;
+		cache[13][threadIdx.x] = r13;
+		cache[14][threadIdx.x] = r14;
+		cache[15][threadIdx.x] = r15;
 		/*
 		cache[threadIdx.x][16] = r16;
 		cache[threadIdx.x][17] = r17;
@@ -436,7 +436,7 @@ chkenc_kernel3_P_R(double * A, int lda, double * Chk , int ldchk)
 
 		__syncthreads();
 
-		A = A + B;
+		A = A + B * lda;
 
 		//load a next block to register
 		
@@ -491,8 +491,8 @@ chkenc_kernel3_P_R(double * A, int lda, double * Chk , int ldchk)
 
 	idx += threadIdx.x;
 
-	*(Chk + idx * ldchk) = sum1;
-	*(Chk + idx * ldchk+1) = sum2;
+	*(Chk + idx) = sum1;
+	*(Chk + idx + ldchk) = sum2;
 	
 }
 
@@ -874,8 +874,8 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	//for (int i = 0; i < m; i+=NB) {
 	//	chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A + i, lda, chk + (i/NB)*2, ldchk);
 	//}
-	chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
-
+	//chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3_P_R<<<m/B, B, 0, stream>>>(A, lda, chk, ldchk);
 }
 
 
