@@ -712,7 +712,7 @@ void row_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
     //int i = abftEnv->chk_nb;
 	//	for (int j = abftEnv->chk_nb; j < abftEnv->gpu_col; j += abftEnv->chk_nb) {
 		long long flops = 3 * i * i;
-		flops *= 100;
+		flops *= 1;
 		flops /=1e9;
 		double t1 =0;
 		double t2 =0;
@@ -760,7 +760,7 @@ void row_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			cout << benchmark_time << "\t" << flops/benchmark_time<< "\t";
 			t2=benchmark_time;
 
-			compareChk(test_chk1, test_chk1_ld, abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, i, (i/abftEnv->chk_nb)*2);
+			compareChk(test_chk1, test_chk1_ld, abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, i, 2);
 
 			cout << t1/t2 << "\t";
 
