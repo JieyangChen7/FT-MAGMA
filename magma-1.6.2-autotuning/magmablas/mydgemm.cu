@@ -1083,14 +1083,13 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	//int cb = B;
 	dim3 d(m/NB, n/NB, 1);
 	
-	//chkenc_kernel3_5_P<<<N/cb, d, 0, stream>>>(A, lda, chk, ldchk);
 	//for (int i = 0; i < m; i+=NB) {
 	//	chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A + i, lda, chk + (i/NB)*2, ldchk);
 	//}
 	//chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 	//chkenc_kernel3_P_R<<<m/B, B, 0, stream>>>(A, lda, chk, ldchk);
 
-	chkenc_kernel3_5_P_FR<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3_P_FR<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 }
 
 
