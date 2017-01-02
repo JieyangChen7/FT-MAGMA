@@ -519,7 +519,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 
 	double r0 = 0;
 	double r1 = 0;
-	/*
+	
 	double r2 = 0;
 	double r3 = 0;
 	double r4 = 0;
@@ -535,7 +535,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 	double r13 = 0;
 	double r14 = 0;
 	double r15 = 0;
-	
+	/*
 	double r16 = 0;
 	double r17 = 0;
 	double r18 = 0;
