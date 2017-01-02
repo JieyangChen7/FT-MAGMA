@@ -1090,7 +1090,7 @@ void chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_q
 	//chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 	//chkenc_kernel3_P_R<<<m/B, B, 0, stream>>>(A, lda, chk, ldchk);
 
-	chkenc_kernel3_5_PR<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3_5_P_R<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 }
 
 
