@@ -816,7 +816,7 @@ chkenc_kernel3_P_FR(double * A, int lda, double * Chk , int ldchk)
 
 			//load current register->shared mem.
 			cache[0][threadIdx.x] = r0;
-			cache[threadIdx.x][1] = r1;
+			cache[1][threadIdx.x] = r1;
 			
 			cache[2][threadIdx.x] = r2;
 			cache[3][threadIdx.x] = r3;
