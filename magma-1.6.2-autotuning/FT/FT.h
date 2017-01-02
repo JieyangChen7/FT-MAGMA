@@ -140,6 +140,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda);
 void row_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda);
 
 void row_benchmark(ABFTEnv * abftEnv, double * A, int lda);
+void row_benchmark_single(ABFTEnv * abftEnv, double * A, int lda);
 
 
 void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, int select);
