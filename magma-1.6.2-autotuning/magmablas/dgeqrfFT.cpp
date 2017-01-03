@@ -10,8 +10,11 @@ using namespace std;
 
 void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, int lwork, int * info,
 			   ABFTEnv * abftEnv, 
-			   bool FT , bool DEBUG, bool VERIFY) {
+			   bool FT , bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER) {
 
+	if (FT && CHECK_BEFORE) {
+
+	}
 
 	if (DEBUG) {
 		cout << "[DGEQRF] input matrix before factorization" << endl;
@@ -104,6 +107,10 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 		cout << "[DGEQRF] row checksum after factorization" << endl;
 		printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
+	}
+
+	if (FT && CHECK_AFTER) {
+
 	}
 
 

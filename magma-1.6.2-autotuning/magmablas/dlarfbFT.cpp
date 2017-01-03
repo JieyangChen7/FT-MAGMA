@@ -10,14 +10,14 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
 						  	double * dwork, int ldwork,
 						  	ABFTEnv * abftEnv,
 						  	double * col_chkV, int col_chkV_ld,
-							double * row_chkV, int row_chkV_ld, bool MEM_CHECK_V,		
+							double * row_chkV, int row_chkV_ld, 	
 							double * col_chkT, int col_chkT_ld,
-							double * row_chkT, int row_chkT_ld, bool MEM_CHECK_T,
+							double * row_chkT, int row_chkT_ld, 
 							double * col_chkC, int col_chkC_ld,  
-							double * row_chkC, int row_chkC_ld, bool MEM_CHECK_C, bool COM_CHECK_C,
+							double * row_chkC, int row_chkC_ld, 
 							double * col_chkW, int col_chkW_ld,  
-							double * row_chkW, int row_chkW_ld, bool MEM_CHECK_W, bool COM_CHECK_W,
-							bool FT, bool DEBUG,
+							double * row_chkW, int row_chkW_ld,
+							bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
 							magma_queue_t * stream) {
 
 	#define dV(i_,j_)  (dV    + (i_) + (j_)*lddv)
@@ -96,12 +96,12 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
                 c_zero, dwork(0), ldwork,
                 abftEnv,
                 col_chkC, col_chkC_ld,  
-			    row_chkC, row_chkC_ld, MEM_CHECK_C,
+			    row_chkC, row_chkC_ld,
 			    col_chkV, col_chkV_ld,  
-			    row_chkV, row_chkV_ld, MEM_CHECK_V,
+			    row_chkV, row_chkV_ld,
 			    col_chkW, col_chkW_ld,  
-			    row_chkW, row_chkW_ld, MEM_CHECK_W, COM_CHECK_W,
-			    FT, DEBUG,
+			    row_chkW, row_chkW_ld,
+			    FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
 			    stream);
 
         // W = W T^H = C^H V T^H
@@ -111,10 +111,10 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
                 dwork(0), ldwork,
                 abftEnv,
                 col_chkT, col_chkT_ld,  
-			    row_chkT, row_chkT_ld, MEM_CHECK_T,
+			    row_chkT, row_chkT_ld,
 			    col_chkW, col_chkW_ld,  
-			    row_chkW, row_chkW_ld, MEM_CHECK_W, COM_CHECK_W,
-			    FT, DEBUG,
+			    row_chkW, row_chkW_ld,
+			    FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
 			    stream);
 
         // C = C - V W^H = C - V T V^H C = (I - V T V^H) C = H C
@@ -125,12 +125,12 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
                 c_one,     dC(0,0),  lddc,
                 abftEnv,
                 col_chkV, col_chkV_ld,  
-			    row_chkV, row_chkV_ld, MEM_CHECK_V,
+			    row_chkV, row_chkV_ld,
 			    col_chkW, col_chkW_ld,  
-			    row_chkW, row_chkW_ld, MEM_CHECK_W,
+			    row_chkW, row_chkW_ld,,
 			    col_chkC, col_chkC_ld,  
-			    row_chkC, row_chkC_ld, MEM_CHECK_C, COM_CHECK_C,
-			    FT, DEBUG,
+			    row_chkC, row_chkC_ld,
+			    FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
 			    stream);
     }
     else {

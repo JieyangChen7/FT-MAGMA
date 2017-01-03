@@ -181,7 +181,8 @@ magma_dgeqrf_gpu(
     /* flags */
     bool FT = true;
     bool DEBUG = false;
-    bool VERIFY = true;
+    bool VERIFY_BEFORE = false;
+    bool VERIFY_AFTER = false;
 
     double * dT_col_chk;
     int dT_col_chk_ld;

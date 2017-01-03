@@ -53,7 +53,7 @@ void swap_col_chk(ABFTEnv * abftEnv, double * A, int lda, double * chksum, int c
 
 void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
               ABFTEnv * abftEnv,
-              bool FT , bool DEBUG, bool VERIFY) {
+              bool FT , bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER) {
 
     double one = 1;
     double zero = 0;
@@ -76,7 +76,7 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
         // printMatrix_host(cA, ldca,  m, n, 4, 4);
     }
 
-    if (FT & VERIFY) {
+    if (FT & CHECK_BEFORE) {
     	char N = 'N';
         double * chk1 = new double[m];
         double * chk2 = new double[m];
@@ -194,6 +194,40 @@ void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
             cout << "[dgetrf] updated column checksum:" << endl;
             printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld,  (m / abftEnv->chk_nb) * 2, abftEnv->chk_nb, 2, 4);
         }
+    }
+
+
+    if (FT & CHECK_AFTER) {
+        char N = 'N';
+        double * chk1 = new double[m];
+        double * chk2 = new double[m];
+        int chk1_inc = 1;
+        int chk2_inc = 1;
+
+
+        blasf77_dgemv(  &N,
+                        &m, &n,
+                        &one,
+                        A, &lda,
+                        abftEnv->hrz_v, &(abftEnv->hrz_v_ld),
+                        &zero,
+                        chk1, &chk1_inc );
+        blasf77_dgemv(  &N,
+                        &m, &n,
+                        &one,
+                        A, &lda,
+                        abftEnv->hrz_v + 1, &(abftEnv->hrz_v_ld),
+                        &zero,
+                        chk2, &chk2_inc );
+
+        if (DEBUG) {
+            cout<<"[dgetrf] recalcuated checksum on CPU before factorization:"<<endl;
+            printMatrix_host(chk1, 1, m, 1, -1, -1);
+            printMatrix_host(chk2, 1, m, 1, -1, -1);
+            cout<<"[dgetrf] updated checksum on CPU before factorization:"<<endl;
+            printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m, 2, -1, -1);
+        }
+
     }
 }
 

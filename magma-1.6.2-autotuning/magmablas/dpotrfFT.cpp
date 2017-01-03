@@ -19,14 +19,14 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * inc2: stride between elememts in chksum2
  */
 void dpotrfFT(double * A, int lda, int n, int * info, 
-			  ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY_BEFORE, bool VERIFY_AFTER) {
+			  ABFTEnv * abftEnv, bool FT , bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER) {
 	
 	double one = 1;
 	double zero = 0;
 	double negone = -1;
 	//cout << "potrf" << endl;
 	
-	if (FT && VERIFY_BEFORE) {
+	if (FT && CHECK_BEFORE) {
 		magma_set_lapack_numthreads(16);
 		//verify A before use
 		char T = 'T';
@@ -94,7 +94,7 @@ void dpotrfFT(double * A, int lda, int n, int * info,
 		}	
 	}
 
-	if (FT && VERIFY_AFTER) {
+	if (FT && CHECK_AFTER) {
 		magma_set_lapack_numthreads(16);
 		//verify A before use
 		char T = 'T';

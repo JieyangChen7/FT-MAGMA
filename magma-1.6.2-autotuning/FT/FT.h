@@ -163,13 +163,16 @@ bool ComputationCheck(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2,
 bool MemoryCheck(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2);
 
 void dpotrfFT(double * A, int lda, int n, int * info, 
-			  ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY_BEFORE, bool VERIFY_AFTER);
+			  ABFTEnv * abftEnv, bool FT , bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER);
 
 
-void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info, ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY);
+void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
+              ABFTEnv * abftEnv,
+              bool FT , bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER);
 
-void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, int lwork, int * info, ABFTEnv * abftEnv, 
-				bool FT , bool DEBUG, bool VERIFY);
+void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, int lwork, int * info,
+			   ABFTEnv * abftEnv, 
+			   bool FT , bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER);
 
 void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
 		int m, int n, double alpha, double * A, int lda,
@@ -209,7 +212,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		double * row_chkB, int row_chkB_ld, 
 		double * col_chkC, int col_chkC_ld,  
 		double * row_chkC, int row_chkC_ld,
-		bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER
+		bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER，
 		magma_queue_t * stream);
 
 void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
@@ -219,13 +222,13 @@ void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_d
     		double * dB, int lddb,
     		ABFTEnv * abftEnv,
 			double * col_chkA, int col_chkA_ld,
-			double * row_chkA, int row_chkA_ld,	bool MEM_CHECK_A,		
+			double * row_chkA, int row_chkA_ld,			
 			double * col_chkB, int col_chkB_ld,
-			double * row_chkB, int row_chkB_ld, bool MEM_CHECK_B, bool COM_CHECK_B,
-			bool FT, bool DEBUG, 
+			double * row_chkB, int row_chkB_ld, 
+			bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
 			magma_queue_t * stream);
 
-int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, magma_storev_t storev,
+iint dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, magma_storev_t storev,
     						int m, int n, int k,
 						  	double * dV, int lddv,
 						  	double * dT, int lddt,
@@ -233,14 +236,14 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
 						  	double * dwork, int ldwork,
 						  	ABFTEnv * abftEnv,
 						  	double * col_chkV, int col_chkV_ld,
-							double * row_chkV, int row_chkV_ld, bool MEM_CHECK_V,		
+							double * row_chkV, int row_chkV_ld, 	
 							double * col_chkT, int col_chkT_ld,
-							double * row_chkT, int row_chkT_ld, bool MEM_CHECK_T,
+							double * row_chkT, int row_chkT_ld, 
 							double * col_chkC, int col_chkC_ld,  
-							double * row_chkC, int row_chkC_ld, bool MEM_CHECK_C, bool COM_CHECK_C,
+							double * row_chkC, int row_chkC_ld, 
 							double * col_chkW, int col_chkW_ld,  
-							double * row_chkW, int row_chkW_ld, bool MEM_CHECK_W, bool COM_CHECK_W,
-							bool FT, bool DEBUG,
+							double * row_chkW, int row_chkW_ld,
+							bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
 							magma_queue_t * stream);
 
 void col_detect_correct(double * A, int lda, 
