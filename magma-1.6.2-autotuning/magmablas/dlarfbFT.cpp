@@ -127,7 +127,7 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
                 col_chkV, col_chkV_ld,  
 			    row_chkV, row_chkV_ld,
 			    col_chkW, col_chkW_ld,  
-			    row_chkW, row_chkW_ld,,
+			    row_chkW, row_chkW_ld,
 			    col_chkC, col_chkC_ld,  
 			    row_chkC, row_chkC_ld,
 			    FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
