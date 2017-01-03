@@ -276,6 +276,8 @@ magma_dgeqrf_gpu(
                     cudaMemset2D(dwork_col_chk, dwork_col_chk_ld * sizeof(double), 0, (n / abftEnv->chk_nb) * 2 * sizeof(double), nb);
                 }
                 //VERIFY = updateCounter(abftEnv, old_i / nb, m / nb - 1, (old_i+2*old_ib) / nb, n / nb - 1, 1);
+                VERIFY_BEFORE = false;
+                VERIFY_AFTER = false;
                 dlarfbFT( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
                            m-old_i, cols, old_ib,
                               dA(old_i, old_i         ), ldda, 
@@ -285,18 +287,14 @@ magma_dgeqrf_gpu(
                               abftEnv,
                               COL_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb), abftEnv->col_dchk_ld,
                               ROW_CHK(old_i / abftEnv->chk_nb, old_i /abftEnv->chk_nb), abftEnv->row_dchk_ld, 
-                              MemoryCheck(abftEnv, old_i / nb, m / nb - 1, old_i / nb, old_i / nb),
                               dT_col_chk, dT_col_chk_ld,
                               dT_row_chk, dT_row_chk_ld,
-                              true,
                               COL_CHK(old_i / abftEnv->chk_nb, (old_i+2*old_ib) /abftEnv->chk_nb), abftEnv->col_dchk_ld,
                               ROW_CHK(old_i / abftEnv->chk_nb, (old_i+2*old_ib) /abftEnv->chk_nb), abftEnv->row_dchk_ld,
-                              MemoryCheck(abftEnv, old_i / nb, m / nb - 1, (old_i+2*old_ib) / nb, n / nb - 1),
-                              ComputationCheck(abftEnv, old_i / nb, m / nb - 1, (old_i+2*old_ib) / nb, n / nb - 1, 1),
                               dwork_col_chk, dwork_col_chk_ld,
                               dwork_row_chk, dwork_row_chk_ld,
-                              false, false,
-                              FT, DEBUG, stream);
+                              FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER,
+                              stream);
                 
                 /* store the diagonal */
                 magma_dsetmatrix_async( old_ib, old_ib,
@@ -308,7 +306,9 @@ magma_dgeqrf_gpu(
 
 
             //lapackf77_dgeqrf(&rows, &ib, work(i), &ldwork, tau+i, hwork, &lhwork, info);
-            dgeqrfFT(rows, ib, work(i), ldwork, tau+i, hwork, lhwork, info, abftEnv, FT, DEBUG, VERIFY);
+            VERIFY_BEFORE = false;
+            VERIFY_AFTER = false;
+            dgeqrfFT(rows, ib, work(i), ldwork, tau+i, hwork, lhwork, info, abftEnv, FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER);
             /* Form the triangular factor of the block reflector
                H = H(i) H(i+1) . . . H(i+ib-1) */
             lapackf77_dlarft( MagmaForwardStr, MagmaColumnwiseStr,
@@ -406,6 +406,8 @@ magma_dgeqrf_gpu(
                 if (i+nb < k-nb) {
                     /* Apply H' to A(i:m,i+ib:i+2*ib) from the left */
                     //VERIFY = updateCounter(abftEnv, i / nb, m / nb - 1, (i+ib) / nb, (i+2*ib) / nb - 1, 1);
+                    VERIFY_BEFORE = false;
+                    VERIFY_AFTER = false;
                     dlarfbFT( MagmaLeft, MagmaConjTrans, MagmaForward, MagmaColumnwise,
                               rows, ib, ib,
                               dA(i, i   ), ldda, dT(i),  nb,
@@ -413,18 +415,15 @@ magma_dgeqrf_gpu(
                               abftEnv,
                               COL_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->col_dchk_ld,
                               ROW_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb), abftEnv->row_dchk_ld,
-                              MemoryCheck(abftEnv, i / nb, m / nb - 1, i / nb, i / nb),
                               dT_col_chk, dT_col_chk_ld,
                               dT_row_chk, dT_row_chk_ld,
-                              true,
                               COL_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb + 1), abftEnv->col_dchk_ld,
                               ROW_CHK(i / abftEnv->chk_nb, i /abftEnv->chk_nb + 1), abftEnv->row_dchk_ld,
-                              MemoryCheck(abftEnv, i / nb, m / nb - 1, (i+ib) / nb, (i+2*ib) / nb - 1),
-                              ComputationCheck(abftEnv, i / nb, m / nb - 1, (i+ib) / nb, (i+2*ib) / nb - 1, 1),
                               dwork_col_chk, dwork_col_chk_ld,
                               dwork_row_chk, dwork_row_chk_ld,
-                              false, false,
-                              FT, DEBUG, stream);
+                              FT, DEBUG, 
+                              VERIFY_BEFORE, VERIFY_AFTER,
+                              stream);
                 }
                 else {
                     cols = n-i-ib;

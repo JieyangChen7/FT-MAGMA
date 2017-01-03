@@ -640,21 +640,6 @@ void col_chk_recal_12(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
 }
 
 
-void col_chk_recal_13(ABFTEnv * abftEnv, double * A, int lda, int m, int n) {
-
-
-
-
-	chkenc(A, lda, m, n, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
-						  *(abftEnv->stream));
-	cudaStreamSynchronize(*(abftEnv->stream));
-
-	printMatrix_gpu(A, lda, m, n, 4, 4);
-
-	printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,  (m / 4) * 2 , n, 2, 4);
-
-
-}
 
 
 void col_ChecksumRecalProfiler(ABFTEnv * abftEnv, double * A, int lda) {
@@ -726,7 +711,7 @@ void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 	//int i = abftEnv->col_mapping[(m / abftEnv->chk_nb) * abftEnv->col_mapping_ld + (n / abftEnv->chk_nb)];
 	//i = 7;
 	//col_chk_recal_select(abftEnv, A, lda, m, n, i);
-	col_chkenc(A, lda, m, n, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,, *(abftEnv->stream));
+	col_chkenc(A, lda, m, n, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, *(abftEnv->stream));
 	cudaStreamSynchronize(*(abftEnv->stream));
 
 }
