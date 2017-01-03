@@ -148,7 +148,8 @@ magma_dpotrf_gpu(
     //variables for FT
     bool FT = true;
     bool DEBUG = false;
-    bool VERIFY = false;
+    bool VERIFY_BEFORE = false;
+    bool VERIFY_AFTER = false;
     ABFTEnv * abftEnv;
     abftEnv = new ABFTEnv();
     initializeABFTEnv(abftEnv, nb, dA, ldda, n, n, nb, nb, stream, 1, DEBUG);
@@ -235,6 +236,8 @@ magma_dpotrf_gpu(
                 //jb = min(nb, (n-j));
             	jb = nb;
                 if (j > 0) {
+                    VERIFY_BEFORE = false;
+                    VERIFY_AFTER = false;
 					dsyrkFT(MagmaLower, MagmaNoTrans,
                             jb, j,
                             MAGMA_D_ONE * (-1),
@@ -243,11 +246,8 @@ magma_dpotrf_gpu(
                             dA(j, j), ldda,
                             abftEnv,
 							COL_CHK(j / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld, 
-                            MemoryCheck(abftEnv, j / nb, j / nb, 0 / nb, j / nb - 1),
 							COL_CHK(j / abftEnv->chk_nb, j / abftEnv->chk_nb), abftEnv->col_dchk_ld,
-                            MemoryCheck(abftEnv, j / nb, j / nb, j / nb, j / nb),
-                            ComputationCheck(abftEnv, j / nb, j / nb, j / nb, j / nb, 1),
-							FT, DEBUG,
+							FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER,
                             stream);
 					
                 }
@@ -265,6 +265,8 @@ magma_dpotrf_gpu(
                            
                 if ( (j+jb) < n && j > 0) {	
                     //VERIFY = updateCounter(abftEnv,j / nb + 1, n / nb - 1, j / nb, j / nb, 1);
+                    VERIFY_BEFORE = false;
+                    VERIFY_AFTER = false;
                 	dgemmFT( MagmaNoTrans, MagmaTrans,
                             (n-j-jb), jb, j, 
                             MAGMA_D_ONE * (-1),
@@ -275,15 +277,11 @@ magma_dpotrf_gpu(
                             abftEnv,
                 			COL_CHK(j / abftEnv->chk_nb + 1, 0), abftEnv->col_dchk_ld,
                             ROW_CHK(j / abftEnv->chk_nb + 1, 0), abftEnv->row_dchk_ld,
-                            MemoryCheck(abftEnv, j / nb + 1, n / nb - 1 , 0 / nb, j / nb - 1),
                 			COL_CHK(j / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld,
                             ROW_CHK(j / abftEnv->chk_nb, 0), abftEnv->row_dchk_ld,
-                            MemoryCheck(abftEnv, j / nb, j / nb , 0 / nb, (j / nb) - 1),
                 			COL_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->col_dchk_ld,
                             ROW_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->row_dchk_ld,
-                            MemoryCheck(abftEnv, j / nb + 1, n / nb , j / nb, j / nb),
-                            ComputationCheck(abftEnv, j / nb + 1, n / nb - 1 , j / nb, j / nb, 1),
-                			FT, DEBUG,
+                			FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER,
                             stream);
                 	
                 }
@@ -293,7 +291,9 @@ magma_dpotrf_gpu(
                 
                 //VERIFY = updateCounter(abftEnv, j / nb, j / nb, j / nb, j / nb, 1);
                 //magma_set_lapack_numthreads(64);
-                dpotrfFT(work, nb, nb, info, abftEnv, FT, DEBUG, VERIFY);
+                VERIFY_BEFORE = true;
+                VERIFY_AFTER = true;
+                dpotrfFT(work, nb, nb, info, abftEnv, FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER);
                                 
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
@@ -313,6 +313,8 @@ magma_dpotrf_gpu(
                 if ( (j+jb) < n) {  
 
                     //VERIFY = updateCounter(abftEnv, j / nb + 1, n / nb - 1, j / nb, j / nb, 1);
+                    VERIFY_BEFORE = true;
+                    VERIFY_AFTER = true;
                 	dtrsmFT( MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
                             (n-j-jb), jb, MAGMA_D_ONE,
                             dA(j,    j), ldda,

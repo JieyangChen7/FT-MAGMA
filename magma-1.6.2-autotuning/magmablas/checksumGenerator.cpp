@@ -12,27 +12,31 @@ using namespace std;
 //N: numner of cols
 void init_col_chk(ABFTEnv * abftEnv, double * A, int lda) {
 
-	for (int i = 0; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {		
-		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-					2, abftEnv->gpu_col, abftEnv->chk_nb,
-					MAGMA_D_ONE, abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
-					A + i, lda,
-					MAGMA_D_ZERO, COL_CHK(i / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld);			
-	}
+	// for (int i = 0; i < abftEnv->gpu_row; i += abftEnv->chk_nb) {		
+	// 	magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+	// 				2, abftEnv->gpu_col, abftEnv->chk_nb,
+	// 				MAGMA_D_ONE, abftEnv->hrz_vd, abftEnv->hrz_vd_ld,
+	// 				A + i, lda,
+	// 				MAGMA_D_ZERO, COL_CHK(i / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld);			
+	// }
+    col_chkenc(A, lda, abftEnv->gpu_col, abftEnv->gpu_row, abftEnv->col_dchk, abftEnv->col_dchk_ld, 
+                              *(abftEnv->stream));
 }
 
 
 void init_row_chk(ABFTEnv * abftEnv, double * A, int lda) {
 
-	for (int i = 0; i < abftEnv->gpu_col; i += abftEnv->chk_nb) {		
-		magma_dgemm(MagmaNoTrans, MagmaNoTrans,
-					abftEnv->gpu_row, 2, abftEnv->chk_nb,
-					MAGMA_D_ONE, 
-					A + i * lda, lda,
-					abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
-					MAGMA_D_ZERO, 
-					ROW_CHK(0, i / abftEnv->chk_nb), abftEnv->row_dchk_ld);			
-	}
+	// for (int i = 0; i < abftEnv->gpu_col; i += abftEnv->chk_nb) {		
+	// 	magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+	// 				abftEnv->gpu_row, 2, abftEnv->chk_nb,
+	// 				MAGMA_D_ONE, 
+	// 				A + i * lda, lda,
+	// 				abftEnv->vrt_vd, abftEnv->vrt_vd_ld,
+	// 				MAGMA_D_ZERO, 
+	// 				ROW_CHK(0, i / abftEnv->chk_nb), abftEnv->row_dchk_ld);			
+	// }
+    row_chkenc(A, lda, abftEnv->gpu_col, abftEnv->gpu_row, abftEnv->row_dchk, abftEnv->row_dchk_ld, 
+                              *(abftEnv->stream));
 }
 
 

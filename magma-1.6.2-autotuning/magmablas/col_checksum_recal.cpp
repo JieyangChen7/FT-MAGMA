@@ -723,9 +723,11 @@ void col_chk_recal_select(ABFTEnv * abftEnv, double * A, int lda, int m, int n, 
 void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 
 	// needs to do boundary check first
-	int i = abftEnv->col_mapping[(m / abftEnv->chk_nb) * abftEnv->col_mapping_ld + (n / abftEnv->chk_nb)];
-	i = 7;
-	col_chk_recal_select(abftEnv, A, lda, m, n, i);
+	//int i = abftEnv->col_mapping[(m / abftEnv->chk_nb) * abftEnv->col_mapping_ld + (n / abftEnv->chk_nb)];
+	//i = 7;
+	//col_chk_recal_select(abftEnv, A, lda, m, n, i);
+	col_chkenc(A, lda, m, n, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,, *(abftEnv->stream));
+	cudaStreamSynchronize(*(abftEnv->stream));
 
 }
 
@@ -780,7 +782,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 			// benchmark_time = magma_wtime() - benchmark_time;
 			// cout << benchmark_time <<"\t" << (flops/benchmark_time)/1e9 << "\t";
 
-			 benchmark_time = magma_wtime();
+			benchmark_time = magma_wtime();
 			for (int t = 0; t < 1; t++) {
 
 				// col_checksum_kernel_ncns2(abftEnv->chk_nb, i, abftEnv->chk_nb,
@@ -790,7 +792,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 				// 			  abftEnv->stream);
 				// cudaStreamSynchronize(*(abftEnv->stream));
 
-				chkenc(A, lda, i, i, test_chk1, test_chk1_ld, 
+				col_chkenc(A, lda, i, i, test_chk1, test_chk1_ld, 
 							  *(abftEnv->stream));
 				
 			}

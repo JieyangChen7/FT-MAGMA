@@ -683,9 +683,11 @@ void at_row_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 
 	// needs to do boundary check first
 	//int i = abftEnv->row_mapping[(m / abftEnv->chk_nb) * abftEnv->row_mapping_ld + (n / abftEnv->chk_nb)];
-	int i = 7;
-	row_chk_recal_select(abftEnv, A, lda, m, n, i);
+	//int i = 7;
+	//row_chk_recal_select(abftEnv, A, lda, m, n, i);
 
+	row_chkenc(A, lda, m, n, abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, *(abftEnv->stream));
+	cudaStreamSynchronize(*(abftEnv->stream));
 }
 
 
@@ -751,7 +753,7 @@ void row_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 				// 			  abftEnv->stream);
 				// cudaStreamSynchronize(*(abftEnv->stream));
 
-				chkenc(A, lda, i, i, test_chk1, test_chk1_ld, 
+				row_chkenc(A, lda, i, i, test_chk1, test_chk1_ld, 
 							  *(abftEnv->stream));
 				
 			}

@@ -18,14 +18,15 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * chksum2: checksum 2
  * inc2: stride between elememts in chksum2
  */
-void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY) {
+void dpotrfFT(double * A, int lda, int n, int * info, 
+			  ABFTEnv * abftEnv, bool FT , bool DEBUG, bool VERIFY_BEFORE, bool VERIFY_AFTER) {
 	
 	double one = 1;
 	double zero = 0;
 	double negone = -1;
 	//cout << "potrf" << endl;
 	
-	if (FT && VERIFY) {
+	if (FT && VERIFY_BEFORE) {
 		magma_set_lapack_numthreads(16);
 		//verify A before use
 		char T = 'T';
@@ -66,6 +67,8 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 	magma_set_lapack_numthreads(1);
 	char uplo = 'L';
 	lapackf77_dpotrf(&uplo, &n, A, &n, info);
+
+
 	if (FT) {
 		//update checksum1 and checksum2
 
@@ -88,9 +91,43 @@ void dpotrfFT(double * A, int lda, int n, int * info, ABFTEnv * abftEnv, bool FT
 			double alpha = negone *  (*(abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1));
 			int incx = 1;
 			blasf77_daxpy(&m, &alpha, A + i * lda + i+1, &incx, abftEnv->col_hchk + 1 + (i + 1) * abftEnv->col_hchk_ld, &(abftEnv->col_hchk_ld) );
-		}
+		}	
+	}
 
+	if (FT && VERIFY_AFTER) {
+		magma_set_lapack_numthreads(16);
+		//verify A before use
+		char T = 'T';
+		double * chk1 = new double[n];
+		double * chk2 = new double[n];
+		int chk1_inc = 1;
+		int chk2_inc = 1;
+		blasf77_dgemv(  &T,
+		                &n, &n,
+		                &one,
+		                A, &lda,
+		                abftEnv->hrz_v, &(abftEnv->hrz_v_ld),
+		                &zero,
+		                chk1, &chk1_inc );
+		blasf77_dgemv(  &T,
+						&n, &n,
+						&one,
+						A, &lda,
+						abftEnv->hrz_v + 1, &(abftEnv->hrz_v_ld),
+						&zero,
+						chk2, &chk2_inc ); 
+		//handle error 
+//		ErrorDetectAndCorrectHost(A, lda, n, n, n,
+//								chksum, chksum_ld,
+//								chk1, chk1_inc,
+//								chk2, chk2_inc);
 		
-		
+		if (DEBUG) {
+			cout<<"[DPOTRF-BEFORE]recalcuated checksum on CPU before factorization:"<<endl;
+			printMatrix_host(chk1, 1, 1, n, -1, -1);
+			printMatrix_host(chk2, 1, 1, n, -1, -1);
+			cout<<"[DPOTRF-BEFORE]updated checksum on CPU before factorization:"<<endl;
+			printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, 2, n, -1, -1);
+		}
 	}
 }

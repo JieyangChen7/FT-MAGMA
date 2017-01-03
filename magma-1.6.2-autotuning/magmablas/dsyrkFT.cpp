@@ -14,9 +14,9 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		double beta,
 		double * C, int ldc,
 		ABFTEnv * abftEnv,
-		double * col_chkA, int col_chkA_ld, bool MEM_CHECK_A,
-		double * col_chkC, int col_chkC_ld, bool MEM_CHECK_C, bool COM_CHECK_C,
-		bool FT, bool DEBUG,
+		double * col_chkA, int col_chkA_ld,
+		double * col_chkC, int col_chkC_ld, 
+		bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
 		magma_queue_t * stream){
 	
 	/*		   m				n
@@ -26,55 +26,53 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	 * ******************	*********
 	 */
 	//
-	if (true) {
-		cout << "syrk" << endl;
-	}
+	// if (true) {
+	// 	cout << "syrk" << endl;
+	// }
 	
 	
-	if (FT) { 
-		if (MEM_CHECK_A) {
-			cudaStreamSynchronize(stream[1]);
-			cudaStreamSynchronize(stream[4]);
+	if (FT && CHECK_BEFORE) { 
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
+	
+		//verify A before use
+		//reclaculate checksums of A on GPU
+		at_col_chk_recal(abftEnv, A, lda, n, m);
+		//handle error 
+		col_detect_correct(A, lda,
+							abftEnv->chk_nb, n, m, 
+							col_chkA, col_chkA_ld, 
+							abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
+							stream[1]);
 		
-			//verify A before use
-			//reclaculate checksums of A on GPU
-			at_col_chk_recal(abftEnv, A, lda, n, m);
-			//handle error 
-			col_detect_correct(A, lda,
-								abftEnv->chk_nb, n, m, 
-								col_chkA, col_chkA_ld, 
-								abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
-								stream[1]);
-			
-			if (DEBUG) {
-				cudaStreamSynchronize(stream[1]);
-				cout<<"[DSYRK-BEFORE]matrix A:"<<endl;
-				printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, m, -1, -1);
-			
-				cout<<"[DSYRK-BEFORE]updated checksum of A:"<<endl;
-				printMatrix_gpu(col_chkA, col_chkA_ld, 2, m, -1, -1);
-			}
+		if (DEBUG) {
+			cudaStreamSynchronize(stream[1]);
+			cout<<"[DSYRK-BEFORE]matrix A:"<<endl;
+			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, m, -1, -1);
+		
+			cout<<"[DSYRK-BEFORE]updated checksum of A:"<<endl;
+			printMatrix_gpu(col_chkA, col_chkA_ld, 2, m, -1, -1);
 		}
-		if (MEM_CHECK_C) {
-			//verify C before use
-			//reclaculate checksums of C on GPU
-			at_col_chk_recal(abftEnv, C, ldc, n, n);
-			//handle error 
-			col_detect_correct(C, ldc,
-								abftEnv->chk_nb, n, m, 
-								col_chkC, col_chkC_ld, 
-								abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
-								stream[1]);
-			
-			if (DEBUG) {
-				cudaStreamSynchronize(stream[1]);
-				cout<<"[DSYRK-BEFORE]matrix C:"<<endl;
-				printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, n, -1, -1);
-			
-				cout<<"[DSYRK-BEFORE]updated checksum of C:"<<endl;
-				printMatrix_gpu(col_chkA, col_chkA_ld, 2, n, -1, -1);
-			}	
-		}
+
+		//verify C before use
+		//reclaculate checksums of C on GPU
+		at_col_chk_recal(abftEnv, C, ldc, n, n);
+		//handle error 
+		// col_detect_correct(C, ldc,
+		// 					abftEnv->chk_nb, n, m, 
+		// 					col_chkC, col_chkC_ld, 
+		// 					abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
+		// 					stream[1]);
+		
+		if (DEBUG) {
+			cudaStreamSynchronize(stream[1]);
+			cout<<"[DSYRK-BEFORE]matrix C:"<<endl;
+			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, n, -1, -1);
+		
+			cout<<"[DSYRK-BEFORE]updated checksum of C:"<<endl;
+			printMatrix_gpu(col_chkA, col_chkA_ld, 2, n, -1, -1);
+		}	
+		
 	}
 
 	//if (FT) {
@@ -105,29 +103,27 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	}
 
 
-	if (FT) {
-		if (COM_CHECK_C) {
-			cudaStreamSynchronize(stream[1]);
-			cudaStreamSynchronize(stream[4]);
+	if (FT && CHECK_AFTER) {
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
+	
+		//verify C after use
+		//reclaculate checksums of C on GPU
+		at_col_chk_recal(abftEnv, C, ldc, n, n);
+		//handle error 
+		// col_detect_correct(C, ldc,
+		// 					abftEnv->chk_nb, n, m, 
+		// 					col_chkC, col_chkC_ld, 
+		// 					abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
+		// 					stream[1]);
 		
-			//verify C after use
-			//reclaculate checksums of C on GPU
-			at_col_chk_recal(abftEnv, C, ldc, n, n);
-			//handle error 
-			col_detect_correct(C, ldc,
-								abftEnv->chk_nb, n, m, 
-								col_chkC, col_chkC_ld, 
-								abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
-								stream[1]);
-			
-			if (DEBUG) {
-				cudaStreamSynchronize(stream[1]);
-				cout<<"[DSYRK-AFTER]matrix C:"<<endl;
-				printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, n, -1, -1);
-			
-				cout<<"[DSYRK-AFTER]updated checksum of C:"<<endl;
-				printMatrix_gpu(col_chkC, col_chkC_ld, 2, n, -1, -1);
-			}
+		if (DEBUG) {
+			cudaStreamSynchronize(stream[1]);
+			cout<<"[DSYRK-AFTER]matrix C:"<<endl;
+			printMatrix_gpu(abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 2, n, -1, -1);
+		
+			cout<<"[DSYRK-AFTER]updated checksum of C:"<<endl;
+			printMatrix_gpu(col_chkC, col_chkC_ld, 2, n, -1, -1);
 		}
 	}
 
