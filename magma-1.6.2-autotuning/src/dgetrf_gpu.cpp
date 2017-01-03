@@ -355,9 +355,11 @@ magma_dgetrf_gpu(
             //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
 
             //VERIFY = updateCounter(abftEnv, j, j, j, m / nb - 1, 1);
+            VERIFY_BEFORE = false;
+            VERIFY_AFTER = false;
             dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo, 
-                     abftEnv, false, DEBUG, 
-                     ComputationCheck(abftEnv, j, j, j, m / nb - 1, 1));
+                     abftEnv, FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER
+                     );
 
             if ( *info == 0 && iinfo > 0 )
                 *info = iinfo + j*nb;
