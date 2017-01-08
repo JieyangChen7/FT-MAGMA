@@ -28,14 +28,14 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 	}
 
-	// double * A2 = new double[lda*n];
-	// memcpy(A2, A, lda*n*sizeof(double));
+	double * A2 = new double[lda*n];
+	memcpy(A2, A, lda*n*sizeof(double));
 
-	// cout << "before1" << endl;
-	// printMatrix_host(A2, lda, m, n, 4, 4);
-	// lapackf77_dgeqrf(&m, &n, A2, &lda, tau, work, &lwork, info);
-	// cout << "after1" << endl;
-	// printMatrix_host(A2, lda, m, n, 4, 4);
+	cout << "before1" << endl;
+	printMatrix_host(A2, lda, m, n, 4, 4);
+	lapackf77_dgeqrf(&m, &n, A2, &lda, tau, work, &lwork, info);
+	cout << "after1" << endl;
+	printMatrix_host(A2, lda, m, n, 4, 4);
 
 
 	
@@ -125,6 +125,9 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
                          tau + i,
                          A + i * lda + i, &lda,
                          work );
+
+		memcpy(A + i * lda + i + 1, v+1, (m2-1)* sizeof(double));
+
 
 		// char T = 'T';
 		// int two = 2;
