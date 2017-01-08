@@ -51,7 +51,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
                          A + (i + 1) * lda + i, &lda,
                          work );
 		*(A + i * lda + i) = AII;
-		
+
 		printMatrix_host(A, lda, m, n, 4, 4);
 
 	}
@@ -72,9 +72,9 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 
 
-	}
+	//}
 
-	lapackf77_dgeqrf(&m, &n, A, &lda, tau, work, &lwork, info);
+	//lapackf77_dgeqrf(&m, &n, A, &lda, tau, work, &lwork, info);
 
 	if (FT) {
 		int k = min (m, n);
