@@ -27,7 +27,19 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
 
 	}
-	cout << "before" << endl;
+
+	double * A2 = new double[lda*n];
+	memcpy(A2, A, lda*n*sizeof(double));
+
+	cout << "before1" << endl;
+	printMatrix_host(A2, lda, m, n, 4, 4);
+	lapackf77_dgeqrf(&m, &n, A2, &lda, tau, work, &lwork, info);
+	cout << "after1" << endl;
+	printMatrix_host(A2, lda, m, n, 4, 4);
+
+
+	
+	cout << "before2" << endl;
 	printMatrix_host(A, lda, m, n, 4, 4);
 
 	int k = min(m, n);
