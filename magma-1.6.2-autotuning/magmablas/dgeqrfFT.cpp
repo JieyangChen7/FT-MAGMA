@@ -62,13 +62,13 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		blasf77_daxpy(&n3,
                       &alpha,
                       A + i * lda + i, &lda,
-                      abftEnv->col_hchk + i * abftEnv->col_hchk_ld, abftEnv->col_hchk_ld);
+                      abftEnv->col_hchk + i * abftEnv->col_hchk_ld, &abftEnv->col_hchk_ld);
 
 		alpha = -1 * (i+1);
-		blasf77_daxpy(&n2,
+		blasf77_daxpy(&n3,
                       &alpha,
                       A + i * lda + i, &lda,
-                      abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1, abftEnv->col_hchk_ld);
+                      abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1, &abftEnv->col_hchk_ld);
 	
 		int n4 = 2;
 		int incxx = 1;
