@@ -52,7 +52,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
                          A + i * lda + i,
                          A + i * lda + i + 1, &incx,
                          tau + i);
-		printMatrix_host(A, lda, m, n, 4, 4);
+		//printMatrix_host(A, lda, m, n, 4, 4);
 		double AII = *(A + i * lda + i);
 		*(A + i * lda + i) = 1;
 
@@ -64,9 +64,13 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
                          work );
 		*(A + i * lda + i) = AII;
 
-		printMatrix_host(A, lda, m, n, 4, 4);
+		//printMatrix_host(A, lda, m, n, 4, 4);
 
 	}
+
+	cout << "after2" << endl;
+	printMatrix_host(A, lda, m, n, 4, 4);
+
 		// if (i > 1) {
 		// 	int n2 = n-i;
 		// 	double alpha = -1;
