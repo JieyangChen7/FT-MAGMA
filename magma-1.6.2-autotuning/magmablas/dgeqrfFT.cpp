@@ -54,10 +54,33 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
                          tau + i);
 		double t = *(tau + i);
 		double b = *(A + i * lda + i);
-
+		double scale = 1/(-(t * b));
 		cout << "scale:" << 1/(-(t * b)) <<endl;
 
+		int n3 = n-i;
+		double alpha = -1;
+		blasf77_daxpy(&n3,
+                      &alpha,
+                      A + i * lda + i, &lda,
+                      abftEnv->col_hchk + i * abftEnv->col_hchk_ld, abftEnv->col_hchk_ld);
+
+		alpha = -1 * (i+1);
+		blasf77_daxpy(&n2,
+                      &alpha,
+                      A + i * lda + i, &lda,
+                      abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1, abftEnv->col_hchk_ld);
+	
+		int n4 = 2;
+		int incxx = 1;
+		blasf77_dscal(&n4,
+                      &scale,
+                      abftEnv->col_hchk + i * abftEnv->col_hchk_ld, &incxx );
+
+
 		printMatrix_host(A, lda, m, n, 4, 4);
+
+		cout << "column checksum" << endl;
+		printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
 
 		double AII = *(A + i * lda + i);
 		*(A + i * lda + i) = 1;
@@ -77,20 +100,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 	cout << "after2" << endl;
 	printMatrix_host(A, lda, m, n, 4, 4);
 
-		// if (i > 1) {
-		// 	int n2 = n-i;
-		// 	double alpha = -1;
-		// 	blasf77_daxpy(&n2,
-  //                         &alpha,
-  //                         A + i * lda + i - 1, &lda,
-  //                         abftEnv->col_hchk + i * abftEnv->col_hchk_ld, abftEnv->col_hchk_ld);
-
-		// 	alpha = -1 * (i+1);
-		// 	blasf77_daxpy(&n2,
-  //                         &alpha,
-  //                         A + i * lda + i - 1, &lda,
-  //                         abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1, abftEnv->col_hchk_ld);
-		// }
+		
 
 
 
