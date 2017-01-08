@@ -27,6 +27,52 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
 
 	}
+	cout << "before" << endl;
+	printMatrix_host(A, lda, m, n, 4, 4);
+
+	int k = min(m, n);
+	for (int i = 0; i < k; i++) {
+		cout << "i=" << i <<endl;
+		int m2 = m - i;
+		int n2 = n - i - 1;
+		int incx = 1;
+		lapackf77_dlarfg(&m2,
+                         A + i * lda + i,
+                         A + i * lda + i + 1, &incx,
+                         tau + i);
+		printMatrix_host(A, lda, m, n, 4, 4);
+		double AII = *(A + i * lda + i);
+		*(A + i * lda + i) = 1;
+
+		char L = 'L';
+		lapackf77_dlarf( &L, &m2, &n2,
+                         A + i * lda + i, &incx,
+                         tau + i,
+                         A + (i + 1) * lda + i, &lda,
+                         work );
+		*(A + i * lda + i) = AII;
+		
+		printMatrix_host(A, lda, m, n, 4, 4);
+
+	}
+		// if (i > 1) {
+		// 	int n2 = n-i;
+		// 	double alpha = -1;
+		// 	blasf77_daxpy(&n2,
+  //                         &alpha,
+  //                         A + i * lda + i - 1, &lda,
+  //                         abftEnv->col_hchk + i * abftEnv->col_hchk_ld, abftEnv->col_hchk_ld);
+
+		// 	alpha = -1 * (i+1);
+		// 	blasf77_daxpy(&n2,
+  //                         &alpha,
+  //                         A + i * lda + i - 1, &lda,
+  //                         abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1, abftEnv->col_hchk_ld);
+		// }
+
+
+
+	}
 
 	lapackf77_dgeqrf(&m, &n, A, &lda, tau, work, &lwork, info);
 

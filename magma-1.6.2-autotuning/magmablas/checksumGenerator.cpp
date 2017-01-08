@@ -20,7 +20,7 @@ void init_col_chk(ABFTEnv * abftEnv, double * A, int lda) {
 	// 				MAGMA_D_ZERO, COL_CHK(i / abftEnv->chk_nb, 0), abftEnv->col_dchk_ld);			
 	// }
     col_chkenc(A, lda, abftEnv->gpu_col, abftEnv->gpu_row, abftEnv->col_dchk, abftEnv->col_dchk_ld, 
-                              *(abftEnv->stream));
+                              abftEnv->stream[1]);
 }
 
 
@@ -36,7 +36,7 @@ void init_row_chk(ABFTEnv * abftEnv, double * A, int lda) {
 	// 				ROW_CHK(0, i / abftEnv->chk_nb), abftEnv->row_dchk_ld);			
 	// }
     row_chkenc(A, lda, abftEnv->gpu_col, abftEnv->gpu_row, abftEnv->row_dchk, abftEnv->row_dchk_ld, 
-                              *(abftEnv->stream));
+                              abftEnv->stream[1]);
 }
 
 
