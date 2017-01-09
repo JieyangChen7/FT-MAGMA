@@ -12,6 +12,7 @@
 #include <iostream>
 #include "FT.h"
 #include "papi.h"
+#include "flops.h"
 
 
 using namespace std;
@@ -146,7 +147,7 @@ magma_dpotrf_gpu(
     
 
     //variables for FT
-    bool FT = true;
+    bool FT = false;
     bool DEBUG = false;
     bool VERIFY_BEFORE = false;
     bool VERIFY_AFTER = false;
@@ -230,6 +231,8 @@ magma_dpotrf_gpu(
         	
             //=========================================================
             // Compute the Cholesky factorization A = L*L'.
+            real_Double_t   gflops, gpu_perf, gpu_time;
+            gpu_time = magma_wtime();
             for (j=0; j < n; j += nb) {
                 //  Update and factorize the current diagonal block and test
                 //  for non-positive-definiteness. Computing MIN
@@ -334,6 +337,10 @@ magma_dpotrf_gpu(
             magma_queue_sync( stream[2] );
             magma_queue_sync( stream[3] );
             magma_queue_sync( stream[4] );
+            gpu_time = magma_wtime() - gpu_time;
+            gflops = FLOPS_DPOTRF( N ) / 1e9;
+            gpu_perf = gflops / gpu_time;
+            cout << "time:" << gpu_time << "\t gflops:" << gflops << endl;
 
         	}
         }
