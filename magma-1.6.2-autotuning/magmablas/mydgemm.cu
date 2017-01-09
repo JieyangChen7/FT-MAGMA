@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 
-#define NB 4
+#define NB 512
 // encoding checksum for A
 #define B 2
 #define rB 8
@@ -499,7 +499,7 @@ chkenc_kernel3_P_R(double * A, int lda, double * Chk , int ldchk)
 
 //N=16 Prefetch - full 
 __global__ void
-chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
+chkenc_kernel3_P_F(double * A, int lda, int nb, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
@@ -511,7 +511,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 
     double temp = 0;
 
-	A = A + blockIdx.x * NB + blockIdx.y * NB * lda;
+	A = A + blockIdx.x * nb + blockIdx.y * nb * lda;
 
 	
 
@@ -555,7 +555,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 	*/
 
 	double * tA = A;
-	for (int k = 0; k < NB; k += B) {
+	for (int k = 0; k < nb; k += B) {
 		
 		r0 = *(A + 0 * lda + threadIdx.x);
 		r1 = *(A + 1 * lda + threadIdx.x);
@@ -599,7 +599,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 		temp = 0;
 
 
-		for (int i = 0; i < NB; i += B) {
+		for (int i = 0; i < nb; i += B) {
 
 			//load current register->shared mem.
 			cache[threadIdx.x][0] = r0;
@@ -697,8 +697,8 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 
 		//idx += threadIdx.x;
 
-		*(Chk + (blockIdx.y * NB + k + threadIdx.x) * ldchk + blockIdx.x * 2 ) = sum1;
-		*(Chk + (blockIdx.y * NB + k + threadIdx.x) * ldchk + blockIdx.x * 2 + 1) = sum2;
+		*(Chk + (blockIdx.y * nb + k + threadIdx.x) * ldchk + blockIdx.x * 2 ) = sum1;
+		*(Chk + (blockIdx.y * nb + k + threadIdx.x) * ldchk + blockIdx.x * 2 + 1) = sum2;
 
 
 		tA += B * lda;
@@ -712,7 +712,7 @@ chkenc_kernel3_P_F(double * A, int lda, double * Chk , int ldchk)
 
 //N=16 Prefetch - full - Row
 __global__ void
-chkenc_kernel3_P_FR(double * A, int lda, double * Chk , int ldchk)
+chkenc_kernel3_P_FR(double * A, int lda, int nb, double * Chk , int ldchk)
 {
 
     //blockIdx.x: determin the column to process
@@ -724,7 +724,7 @@ chkenc_kernel3_P_FR(double * A, int lda, double * Chk , int ldchk)
 
     double temp = 0;
 
-	A = A + blockIdx.x * NB + blockIdx.y * NB * lda;
+	A = A + blockIdx.x * nb + blockIdx.y * nb * lda;
 
 	
 
@@ -768,7 +768,7 @@ chkenc_kernel3_P_FR(double * A, int lda, double * Chk , int ldchk)
 	*/
 
 	double * tA = A;
-	for (int k = 0; k < NB; k += B) {
+	for (int k = 0; k < nb; k += B) {
 		
 		r0 = *(A + 0 * lda + threadIdx.x);
 		r1 = *(A + 1 * lda + threadIdx.x);
@@ -812,7 +812,7 @@ chkenc_kernel3_P_FR(double * A, int lda, double * Chk , int ldchk)
 		temp = 0;
 
 
-		for (int i = 0; i < NB; i += B) {
+		for (int i = 0; i < nb; i += B) {
 
 			//load current register->shared mem.
 			cache[0][threadIdx.x] = r0;
@@ -910,8 +910,8 @@ chkenc_kernel3_P_FR(double * A, int lda, double * Chk , int ldchk)
 
 		//idx += threadIdx.x;
 
-		*(Chk + (blockIdx.y * 2) * ldchk + blockIdx.x * NB + k + threadIdx.x) = sum1;
-		*(Chk + (blockIdx.y * 2 + 1) * ldchk + blockIdx.x * NB + k + threadIdx.x) = sum2;
+		*(Chk + (blockIdx.y * 2) * ldchk + blockIdx.x * nb + k + threadIdx.x) = sum1;
+		*(Chk + (blockIdx.y * 2 + 1) * ldchk + blockIdx.x * nb + k + threadIdx.x) = sum2;
 
 
 		tA += B;
@@ -1065,7 +1065,7 @@ chkenc_kernel3_5_P(double * A, int lda, double * Chk, int ldchk)
 
 
 
-void col_chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_queue_t stream) {
+void col_chkenc(double * A, int lda, int m, int n, int nb, double * chk , int ldchk, magma_queue_t stream) {
   /*  int numBlocks; // Occupancy in terms of active blocks 
     int blockSize = 32; 
 	int device; 
@@ -1089,11 +1089,11 @@ void col_chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, mag
 	//chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 	//chkenc_kernel3_P_R<<<m/B, B, 0, stream>>>(A, lda, chk, ldchk);
 
-	chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, nb, chk, ldchk);
 }
 
 
-void row_chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, magma_queue_t stream) {
+void row_chkenc(double * A, int lda, int m, int n, int nb, double * chk , int ldchk, magma_queue_t stream) {
   /*  int numBlocks; // Occupancy in terms of active blocks 
     int blockSize = 32; 
 	int device; 
@@ -1117,7 +1117,7 @@ void row_chkenc(double * A, int lda, int m, int n, double * chk , int ldchk, mag
 	//chkenc_kernel3_P_F<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
 	//chkenc_kernel3_P_R<<<m/B, B, 0, stream>>>(A, lda, chk, ldchk);
 
-	chkenc_kernel3_P_FR<<<d, B, 0, stream>>>(A, lda, chk, ldchk);
+	chkenc_kernel3_P_FR<<<d, B, 0, stream>>>(A, lda, nb, chk, ldchk);
 }
 
 

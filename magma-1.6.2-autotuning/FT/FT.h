@@ -93,10 +93,10 @@ struct ABFTEnv {
 
 void compareChk(double * chk1, int ldchk1, double * chk2, int ldchk2, int m, int n);
 
-void col_chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t stream);
+void col_chkenc(double * A, int lda, int m, int n, int nb, double * Chk , int ldchk, magma_queue_t stream);
 
 
-void row_chkenc(double * A, int lda, int m, int n, double * Chk , int ldchk, magma_queue_t stream);
+void row_chkenc(double * A, int lda, int m, int n, int nb, double * Chk , int ldchk, magma_queue_t stream);
 
 
 void row_checksum_kernel_cccs4(int m, int n, int chk_nb, 
