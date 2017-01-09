@@ -32,10 +32,10 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 		//cout << "trsm verify" << endl;
 		at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
-		col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkB, col_chkB_ld,
-        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
-        					  abftEnv->stream[1]);
+		// col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+  //       					  col_chkB, col_chkB_ld,
+  //       					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+  //       					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 			cout<<"[trsm] updated B before trsm:"<<endl;
@@ -83,10 +83,10 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 			int mem_col = n;		
 						
 			at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
-			col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
-	        					  col_chkB, col_chkB_ld,
-	        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
-	        					  abftEnv->stream[1]);
+			// col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+	  //       					  col_chkB, col_chkB_ld,
+	  //       					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+	  //       					  abftEnv->stream[1]);
 			
 			if (DEBUG) {
 				cout<<"[trsm] updated B after trsm:"<<endl;

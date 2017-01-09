@@ -42,10 +42,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_col = k;
 
 			at_col_chk_recal(abftEnv, A, lda, mem_row, mem_col);
-			col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkA, col_chkA_ld,
-        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
-        					  abftEnv->stream[1]);
+			// col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
+   //      					  col_chkA, col_chkA_ld,
+   //      					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+   //      					  abftEnv->stream[1]);
 
 			if (DEBUG) {
 				cout<<"[DGEMM-BEFORE] matrix A:"<<endl;
@@ -61,10 +61,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_col = m;
 
 			at_row_chk_recal(abftEnv, A, lda, mem_row, mem_col);
-			row_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
-        					  row_chkA, row_chkA_ld,
-        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-        					  abftEnv->stream[1]);
+			// row_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
+   //      					  row_chkA, row_chkA_ld,
+   //      					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+   //      					  abftEnv->stream[1]);
 
 			if (DEBUG) {
 				cout<<"[DGEMM-BEFORE] matrix A:"<<endl;
@@ -85,10 +85,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_col = n;
 			at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
-			row_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
-        					  row_chkB, row_chkB_ld,
-        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-        					  abftEnv->stream[1]);
+			// row_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+   //      					  row_chkB, row_chkB_ld,
+   //      					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+   //      					  abftEnv->stream[1]);
 
 			if (DEBUG) {
 				cout<<"[DGEMM-BEFORE] matrix B:"<<endl;
@@ -104,10 +104,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_col = k;
 			at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
-			col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkB, col_chkB_ld,
-        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
-        					  abftEnv->stream[1]);
+			// col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+   //      					  col_chkB, col_chkB_ld,
+   //      					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+   //      					  abftEnv->stream[1]);
 
 			if (DEBUG) {
 				cout<<"[DGEMM-BEFORE] matrix B:"<<endl;
@@ -125,17 +125,17 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 		at_col_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkC, col_chkC_ld,
-        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
-        					  abftEnv->stream[1]);
+		// col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+  //       					  col_chkC, col_chkC_ld,
+  //       					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+  //       					  abftEnv->stream[1]);
 
 		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-        					  row_chkC, row_chkC_ld,
-        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-        					  abftEnv->stream[1]);
+		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+  //       					  row_chkC, row_chkC_ld,
+  //       					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+  //       					  abftEnv->stream[1]);
 
 		if (DEBUG) {
 
@@ -217,17 +217,17 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 		at_col_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-        					  col_chkC, col_chkC_ld,
-        					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
-        					  abftEnv->stream[1]);
+		// col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+  //       					  col_chkC, col_chkC_ld,
+  //       					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+  //       					  abftEnv->stream[1]);
 
 		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
-		row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
-        					  row_chkC, row_chkC_ld,
-        					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
-        					  abftEnv->stream[1]);
+		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
+  //       					  row_chkC, row_chkC_ld,
+  //       					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
+  //       					  abftEnv->stream[1]);
 
 
 		if (DEBUG) {

@@ -39,11 +39,11 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		//reclaculate checksums of A on GPU
 		at_col_chk_recal(abftEnv, A, lda, n, m);
 		//handle error 
-		col_detect_correct(A, lda,
-							abftEnv->chk_nb, n, m, 
-							col_chkA, col_chkA_ld, 
-							abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
-							stream[1]);
+		// col_detect_correct(A, lda,
+		// 					abftEnv->chk_nb, n, m, 
+		// 					col_chkA, col_chkA_ld, 
+		// 					abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, 
+		// 					stream[1]);
 		
 		if (DEBUG) {
 			cudaStreamSynchronize(stream[1]);
