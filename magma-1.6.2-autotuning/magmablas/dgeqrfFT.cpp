@@ -51,11 +51,12 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		int m2 = m - i;
 		//int n2 = n - i - 1;
 		int n2 = n - i;
+		int cm = (m/abftEnv->chk_nb)*2;
 		int incx = 1;
 		double Aii = *(A + i * lda + i);
 		double b = *(A + i * lda + i);
 		double * v = new double[m2];
-		double * cv = new double[2];
+		double * cv = new double[cm];
 
 
 		if (i > 1) {
@@ -74,8 +75,12 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 
 		memcpy(v+1, A + i * lda + i + 1, (m2-1)* sizeof(double));
-		cv[0] = *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld);
-		cv[1] = *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1);
+		memcpy(cv, abftEnv->col_hchk + i * abftEnv->col_hchk_ld, cm * sizeof(double));
+
+
+
+		//cv[0] = *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld);
+		//cv[1] = *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1);
 
 
 
@@ -91,8 +96,14 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		cv[0] -= 1 * Aii;
 		cv[1] -= (i + 1) * Aii;
 
-		cv[0] *= scale;
-		cv[1] *= scale;
+
+
+		//cv[0] *= scale;
+		//cv[1] *= scale;
+
+		blasf77_dscal( &cm,
+                       &scale,
+                       cv, &incx );
 
 		cv[0] += 1;
 		cv[1] += 1;
@@ -122,7 +133,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
                      &d_zero,
                      cw, &inccw);
 
-		blasf77_dger( &two, &n2,
+		blasf77_dger( &cm, &n2,
                       &neg_tau,
                      cv, &one,
                      work, &one,
@@ -137,16 +148,17 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 
 
-
-		memcpy(A + i * lda + i + 1, v+1, (m2-1)* sizeof(double));
-
-
 		cv[0] -= 1;
 		cv[1] -= 1;
 
+		memcpy(A + i * lda + i + 1, v+1, (m2-1)* sizeof(double));
+		memcpy(abftEnv->col_hchk + i * abftEnv->col_hchk_ld, cv, cm * sizeof(double));
 
-		*(abftEnv->col_hchk + i * abftEnv->col_hchk_ld) = cv[0];
-		*(abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1) = cv[1];
+
+		
+
+		// *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld) = cv[0];
+		// *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1) = cv[1];
 
 		cout << "column checksum" << endl;
 		printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
