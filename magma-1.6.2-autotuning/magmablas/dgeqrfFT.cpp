@@ -116,8 +116,8 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		double d_one = 1; 
 		blasf77_dgemv( &T,
                      &m2, &two,
-                     &done,
-                     abftEnv->row_hchk + i, abftEnv->row_hchk_ld,
+                     &d_one,
+                     abftEnv->row_hchk + i, &abftEnv->row_hchk_ld,
                      v, &incx,
                      &zero,
                      cw, &inccw);
@@ -126,13 +126,13 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
                       &neg_tau,
                      cv, &one,
                      work, &one,
-                     abftEnv->col_hchk + i * abftEnv->row_hchk_ld, abftEnv->row_hchk_ld);
+                     abftEnv->col_hchk + i * abftEnv->row_hchk_ld, &abftEnv->row_hchk_ld);
 
 		blasf77_dger( &m2, &two,
                       &neg_tau,
                       v, &incx,
                       cw, &inccw,
-                      abftEnv->row_hchk + i, abftEnv->row_hchk_ld);
+                      abftEnv->row_hchk + i, &abftEnv->row_hchk_ld);
 
 
 
