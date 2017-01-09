@@ -11,7 +11,7 @@
 
 #define NB 512
 // encoding checksum for A
-#define B 2
+#define B 16
 #define rB 8
 #define cB 64
 #define N 30720
