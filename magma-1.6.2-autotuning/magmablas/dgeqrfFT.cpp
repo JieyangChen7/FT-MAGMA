@@ -109,7 +109,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		char T = 'T';
 		int two = 2;
 		int one = 1;
-		int zero = 0;
+		int d_zero = 0;
 		double * cw = new double[2];
 		int inccw = 1;
 		double neg_tau = *(tau + i) * -1;
@@ -119,7 +119,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
                      &d_one,
                      abftEnv->row_hchk + i, &abftEnv->row_hchk_ld,
                      v, &incx,
-                     &zero,
+                     &d_zero,
                      cw, &inccw);
 
 		blasf77_dger( &two, &n2,
