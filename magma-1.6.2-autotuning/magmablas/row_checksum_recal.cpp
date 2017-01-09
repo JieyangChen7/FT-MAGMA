@@ -753,7 +753,7 @@ void row_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 				// 			  abftEnv->stream);
 				// cudaStreamSynchronize(*(abftEnv->stream));
 
-				row_chkenc(A, lda, i, i, test_chk1, test_chk1_ld, 
+				row_chkenc(A, lda, i, i, abftEnv->chk_nb, test_chk1, test_chk1_ld, 
 							  *(abftEnv->stream));
 				
 			}

@@ -775,7 +775,7 @@ void col_benchmark_single(ABFTEnv * abftEnv, double * A, int lda){
 				// 			  abftEnv->stream);
 				// cudaStreamSynchronize(*(abftEnv->stream));
 
-				col_chkenc(A, lda, i, i, test_chk1, test_chk1_ld, 
+				col_chkenc(A, lda, i, i, abftEnv->chk_nb, test_chk1, test_chk1_ld, 
 							  *(abftEnv->stream));
 				
 			}
