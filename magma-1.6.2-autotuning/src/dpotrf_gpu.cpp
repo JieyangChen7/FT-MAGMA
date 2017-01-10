@@ -337,10 +337,11 @@ magma_dpotrf_gpu(
             magma_queue_sync( stream[2] );
             magma_queue_sync( stream[3] );
             magma_queue_sync( stream[4] );
+            
             gpu_time = magma_wtime() - gpu_time;
             gflops = FLOPS_DPOTRF( n ) / 1e9;
             gpu_perf = gflops / gpu_time;
-            cout << "time:" << gpu_time << "\t gflops:" << gflops << endl;
+            cout << "time:" << gpu_time << "\t gflops:" << gpu_perf << endl;
 
         	}
         }
