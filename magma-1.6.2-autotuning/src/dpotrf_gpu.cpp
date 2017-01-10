@@ -12,7 +12,7 @@
 #include <iostream>
 #include "FT.h"
 #include "papi.h"
-#include "./testing/flops.h"
+#include "../testing/flops.h"
 
 
 using namespace std;
