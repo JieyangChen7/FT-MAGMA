@@ -147,7 +147,7 @@ magma_dpotrf_gpu(
     
 
     //variables for FT
-    bool FT = false;
+    bool FT = true;
     bool DEBUG = false;
     bool VERIFY_BEFORE = false;
     bool VERIFY_AFTER = false;
@@ -337,7 +337,7 @@ magma_dpotrf_gpu(
             magma_queue_sync( stream[2] );
             magma_queue_sync( stream[3] );
             magma_queue_sync( stream[4] );
-            
+
             gpu_time = magma_wtime() - gpu_time;
             gflops = FLOPS_DPOTRF( n ) / 1e9;
             gpu_perf = gflops / gpu_time;
