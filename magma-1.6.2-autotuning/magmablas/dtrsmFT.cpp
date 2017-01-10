@@ -24,8 +24,8 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 	// }
 	
 	if (FT && CHECK_BEFORE) {
-		cudaStreamSynchronize(stream[1]);
-		cudaStreamSynchronize(stream[4]);
+		//cudaStreamSynchronize(stream[1]);
+		//cudaStreamSynchronize(stream[4]);
 		//verify B before use
 		int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 		int mem_col = n;
@@ -65,9 +65,9 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 
 	if (FT) {
 		//update checksums
-		//magmablasSetKernelStream(stream[1]);	
+		magmablasSetKernelStream(stream[1]);	
 		
-		magmablasSetKernelStream(stream[4]);	
+		//magmablasSetKernelStream(stream[4]);	
 		magma_dtrsm(side, uplo, trans, diag,
                     (m / abftEnv->chk_nb) * 2, n,
                     alpha, A, lda,
@@ -76,8 +76,8 @@ void dtrsmFT(magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_di
 
 
 	if (FT && CHECK_AFTER) {
-			cudaStreamSynchronize(stream[1]);
-			cudaStreamSynchronize(stream[4]);
+			//cudaStreamSynchronize(stream[1]);
+			//cudaStreamSynchronize(stream[4]);
 			
 			int mem_row = m; // number of row and col of B stored in memory(no trans operation)
 			int mem_col = n;		

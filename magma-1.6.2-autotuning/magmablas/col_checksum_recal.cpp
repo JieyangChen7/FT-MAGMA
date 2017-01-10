@@ -709,8 +709,8 @@ void at_col_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 	//int i = abftEnv->col_mapping[(m / abftEnv->chk_nb) * abftEnv->col_mapping_ld + (n / abftEnv->chk_nb)];
 	//i = 7;
 	//col_chk_recal_select(abftEnv, A, lda, m, n, i);
-	col_chkenc(A, lda, m, n, abftEnv->chk_nb, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, *(abftEnv->stream));
-	cudaStreamSynchronize(*(abftEnv->stream));
+	col_chkenc(A, lda, m, n, abftEnv->chk_nb, abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld, abftEnv->stream[1]);
+	//cudaStreamSynchronize(*(abftEnv->stream));
 
 }
 

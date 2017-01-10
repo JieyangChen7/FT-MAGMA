@@ -686,8 +686,8 @@ void at_row_chk_recal(ABFTEnv * abftEnv, double * A, int lda, int m, int n){
 	//int i = 7;
 	//row_chk_recal_select(abftEnv, A, lda, m, n, i);
 
-	row_chkenc(A, lda, m, n, abftEnv->chk_nb, abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, *(abftEnv->stream));
-	cudaStreamSynchronize(*(abftEnv->stream));
+	row_chkenc(A, lda, m, n, abftEnv->chk_nb, abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld, abftEnv->stream[1]);
+	//cudaStreamSynchronize(*(abftEnv->stream));
 }
 
 

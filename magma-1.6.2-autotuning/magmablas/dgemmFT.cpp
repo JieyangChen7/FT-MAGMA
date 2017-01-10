@@ -34,8 +34,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	int mem_col = 0;
 
 	if (FT && CHECK_BEFORE) {
-		cudaStreamSynchronize(stream[1]);
-		cudaStreamSynchronize(stream[4]);
+		//cudaStreamSynchronize(stream[1]);
+		//cudaStreamSynchronize(stream[4]);
 		// number of row and col of A stored in memory(no trans operation)
 		if (transA == MagmaNoTrans) {
 			mem_row = m;
@@ -168,8 +168,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 				C, ldc );
 	
 	if(FT){	
-		magmablasSetKernelStream(stream[4]);
-
+		//magmablasSetKernelStream(stream[4]);
+		magmablasSetKernelStream(stream[1]);
 		if (transA == MagmaNoTrans) {
 			magma_dgemm(transA, transB,
 					(m / abftEnv->chk_nb) * 2, n, k,
@@ -210,8 +210,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 
 	if (FT && CHECK_AFTER) {
-		cudaStreamSynchronize(stream[1]);
-		cudaStreamSynchronize(stream[4]);
+		//cudaStreamSynchronize(stream[1]);
+		//cudaStreamSynchronize(stream[4]);
 		mem_row = m;
 		mem_col = n;
 		
