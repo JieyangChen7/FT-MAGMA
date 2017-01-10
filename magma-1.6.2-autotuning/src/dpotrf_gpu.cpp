@@ -294,8 +294,8 @@ magma_dpotrf_gpu(
                 
                 //VERIFY = updateCounter(abftEnv, j / nb, j / nb, j / nb, j / nb, 1);
                 //magma_set_lapack_numthreads(64);
-                VERIFY_BEFORE = true;
-                VERIFY_AFTER = true;
+                VERIFY_BEFORE = false;
+                VERIFY_AFTER = false;
                 dpotrfFT(work, nb, nb, info, abftEnv, FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER);
                                 
                 magma_dsetmatrix_async( jb, jb,
@@ -316,8 +316,8 @@ magma_dpotrf_gpu(
                 if ( (j+jb) < n) {  
 
                     //VERIFY = updateCounter(abftEnv, j / nb + 1, n / nb - 1, j / nb, j / nb, 1);
-                    VERIFY_BEFORE = true;
-                    VERIFY_AFTER = true;
+                    VERIFY_BEFORE = false;
+                    VERIFY_AFTER = false;
                 	dtrsmFT( MagmaRight, MagmaLower, MagmaTrans, MagmaNonUnit,
                             (n-j-jb), jb, MAGMA_D_ONE,
                             dA(j,    j), ldda,
@@ -334,9 +334,9 @@ magma_dpotrf_gpu(
             }
             magma_queue_sync( stream[0] );
             magma_queue_sync( stream[1] );
-            magma_queue_sync( stream[2] );
-            magma_queue_sync( stream[3] );
-            magma_queue_sync( stream[4] );
+           // magma_queue_sync( stream[2] );
+           // magma_queue_sync( stream[3] );
+           // magma_queue_sync( stream[4] );
 
             gpu_time = magma_wtime() - gpu_time;
             gflops = FLOPS_DPOTRF( n ) / 1e9;
