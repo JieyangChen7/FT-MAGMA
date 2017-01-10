@@ -34,14 +34,16 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	int mem_col = 0;
 
 	if (FT && CHECK_BEFORE) {
-		//cudaStreamSynchronize(stream[1]);
-		//cudaStreamSynchronize(stream[4]);
+
 		// number of row and col of A stored in memory(no trans operation)
 		if (transA == MagmaNoTrans) {
 			mem_row = m;
 			mem_col = k;
 
 			at_col_chk_recal(abftEnv, A, lda, mem_row, mem_col);
+
+			cudaStreamSynchronize(stream[1]);
+			cudaStreamSynchronize(stream[4]);
 			// col_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
    //      					  col_chkA, col_chkA_ld,
    //      					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
@@ -61,6 +63,9 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_col = m;
 
 			at_row_chk_recal(abftEnv, A, lda, mem_row, mem_col);
+
+			cudaStreamSynchronize(stream[1]);
+			cudaStreamSynchronize(stream[4]);
 			// row_detect_correct(A, lda, abftEnv->chk_nb, mem_row, mem_col,
    //      					  row_chkA, row_chkA_ld,
    //      					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
@@ -85,6 +90,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 			mem_col = n;
 			at_row_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
 
+
+			cudaStreamSynchronize(stream[1]);
+			cudaStreamSynchronize(stream[4]);
+
 			// row_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
    //      					  row_chkB, row_chkB_ld,
    //      					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,
@@ -102,7 +111,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		} else if (transB == MagmaTrans) {
 			mem_row = n;
 			mem_col = k;
-			at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);
+			at_col_chk_recal(abftEnv, B, ldb, mem_row, mem_col);		
+
+			cudaStreamSynchronize(stream[1]);
+			cudaStreamSynchronize(stream[4]);
 
 			// col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
    //      					  col_chkB, col_chkB_ld,
@@ -125,12 +137,18 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		
 		at_col_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
+
 		// col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
   //       					  col_chkC, col_chkC_ld,
   //       					  abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
   //       					  abftEnv->stream[1]);
 
 		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
+
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
 
 		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
   //       					  row_chkC, row_chkC_ld,
@@ -168,8 +186,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 				C, ldc );
 	
 	if(FT){	
-		//magmablasSetKernelStream(stream[4]);
-		magmablasSetKernelStream(stream[1]);
+		magmablasSetKernelStream(stream[4]);
+		//magmablasSetKernelStream(stream[1]);
 		if (transA == MagmaNoTrans) {
 			magma_dgemm(transA, transB,
 					(m / abftEnv->chk_nb) * 2, n, k,
@@ -210,12 +228,14 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 
 	if (FT && CHECK_AFTER) {
-		//cudaStreamSynchronize(stream[1]);
-		//cudaStreamSynchronize(stream[4]);
+
 		mem_row = m;
 		mem_col = n;
 		
 		at_col_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
+
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
 
 		// col_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
   //       					  col_chkC, col_chkC_ld,
@@ -224,6 +244,8 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 		at_row_chk_recal(abftEnv, C, ldc, mem_row, mem_col);
 
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
 		// row_detect_correct(C, ldc, abftEnv->chk_nb, mem_row, mem_col,
   //       					  row_chkC, row_chkC_ld,
   //       					  abftEnv->vrt_recal_chk, abftEnv->vrt_recal_chk_ld,

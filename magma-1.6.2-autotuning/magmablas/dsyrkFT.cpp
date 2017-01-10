@@ -32,12 +32,14 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	
 	
 	if (FT && CHECK_BEFORE) { 
-		//cudaStreamSynchronize(stream[1]);
-		//cudaStreamSynchronize(stream[4]);
+
 	
 		//verify A before use
 		//reclaculate checksums of A on GPU
 		at_col_chk_recal(abftEnv, A, lda, n, m);
+
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
 		//handle error 
 		// col_detect_correct(A, lda,
 		// 					abftEnv->chk_nb, n, m, 
@@ -57,6 +59,9 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 		//verify C before use
 		//reclaculate checksums of C on GPU
 		at_col_chk_recal(abftEnv, C, ldc, n, n);
+
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
 		//handle error 
 		// col_detect_correct(C, ldc,
 		// 					abftEnv->chk_nb, n, m, 
@@ -92,8 +97,8 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 	
 	if(FT){
 		//update checksums on GPU
-		magmablasSetKernelStream(stream[1]);
-		//magmablasSetKernelStream(stream[4]);
+		//magmablasSetKernelStream(stream[1]);
+		magmablasSetKernelStream(stream[4]);
 		magma_dgemm(
 					MagmaNoTrans, MagmaTrans,
 					2, n, m,
@@ -105,12 +110,14 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 
 
 	if (FT && CHECK_AFTER) {
-		//cudaStreamSynchronize(stream[1]);
-		//cudaStreamSynchronize(stream[4]);
+
 	
 		//verify C after use
 		//reclaculate checksums of C on GPU
 		at_col_chk_recal(abftEnv, C, ldc, n, n);
+
+		cudaStreamSynchronize(stream[1]);
+		cudaStreamSynchronize(stream[4]);
 		//handle error 
 		// col_detect_correct(C, ldc,
 		// 					abftEnv->chk_nb, n, m, 
