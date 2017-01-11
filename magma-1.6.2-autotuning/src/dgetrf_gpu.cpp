@@ -219,7 +219,7 @@ magma_dgetrf_gpu(
         // stream[4] = stream[1];
   
         /* flags */
-        bool FT = false;
+        bool FT = true;
         bool DEBUG = false;
         bool VERIFY_BEFORE = false;
         bool VERIFY_AFTER = false;    
@@ -355,8 +355,8 @@ magma_dgetrf_gpu(
             //lapackf77_dgetrf( &rows, &nb, work, &ldwork, ipiv+j*nb, &iinfo);
 
             //VERIFY = updateCounter(abftEnv, j, j, j, m / nb - 1, 1);
-            VERIFY_BEFORE = false;
-            VERIFY_AFTER = false;
+            VERIFY_BEFORE = true;
+            VERIFY_AFTER = true;
             dgetrfFT(rows, nb, work, ldwork, ipiv+j*nb, &iinfo, 
                      abftEnv, FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER
                      );
