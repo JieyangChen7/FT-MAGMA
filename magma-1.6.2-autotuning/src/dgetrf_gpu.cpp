@@ -252,11 +252,11 @@ magma_dgetrf_gpu(
             cout << "done." << endl;
 
 
-              cout << "banchmarking:" << endl;
+              //cout << "banchmarking:" << endl;
              // //col_ChecksumRecalProfiler(abftEnv, dAT, lddat); 
              // col_benchmark(abftEnv, dAT, lddat);
             //col_benchmark_single(abftEnv, dAT, lddat);
-              row_benchmark_single(abftEnv, dAT, lddat);
+            //  row_benchmark_single(abftEnv, dAT, lddat);
 
         }
 
