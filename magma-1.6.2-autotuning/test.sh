@@ -25,7 +25,6 @@
 
 
 
-./testing/testing_dgetrf_gpu -N 1024,1024
 ./testing/testing_dgetrf_gpu -N 5120,5120
 ./testing/testing_dgetrf_gpu -N 7680,7680
 ./testing/testing_dgetrf_gpu -N 10240,10240

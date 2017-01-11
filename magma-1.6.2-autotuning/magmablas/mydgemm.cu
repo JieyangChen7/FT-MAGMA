@@ -1109,7 +1109,7 @@ void row_chkenc(double * A, int lda, int m, int n, int nb, double * chk , int ld
 	cudaFuncSetCacheConfig(chkenc_kernel, cudaFuncCachePreferShared);
 	//int rb = B;
 	//int cb = B;
-	dim3 d(m/NB, n/NB, 1);
+	dim3 d(m/nb, n/nb, 1);
 	
 	//for (int i = 0; i < m; i+=NB) {
 	//	chkenc_kernel3_P<<<n/B, B, 0, stream>>>(A + i, lda, chk + (i/NB)*2, ldchk);
