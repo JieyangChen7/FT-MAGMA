@@ -492,7 +492,7 @@ magma_dgetrf_gpu(
                         ROW_CHK_T(j+1, j), abftEnv->row_dchk_ld,
                         COL_CHK_T(j+1, j+1), abftEnv->col_dchk_ld,
                         ROW_CHK_T(j+1, j+1), abftEnv->row_dchk_ld,
-                        FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER,
+                        FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER, INJECT,
                         stream);
 
 

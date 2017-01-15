@@ -294,7 +294,7 @@ magma_dgeqrf_gpu(
                               ROW_CHK(old_i / abftEnv->chk_nb, (old_i+2*old_ib) /abftEnv->chk_nb), abftEnv->row_dchk_ld,
                               dwork_col_chk, dwork_col_chk_ld,
                               dwork_row_chk, dwork_row_chk_ld,
-                              FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER,
+                              FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER, INJECT,
                               stream);
                 
                 /* store the diagonal */
@@ -423,8 +423,9 @@ magma_dgeqrf_gpu(
                               dwork_col_chk, dwork_col_chk_ld,
                               dwork_row_chk, dwork_row_chk_ld,
                               FT, DEBUG, 
-                              VERIFY_BEFORE, VERIFY_AFTER,
+                              VERIFY_BEFORE, VERIFY_AFTER, INJECT,
                               stream);
+                    INJECT = false;
                 }
                 else {
                     cols = n-i-ib;
