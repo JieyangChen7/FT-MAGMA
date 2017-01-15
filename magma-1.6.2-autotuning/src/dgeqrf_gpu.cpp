@@ -179,11 +179,11 @@ magma_dgeqrf_gpu(
     lddwork= n;
 
     /* flags */
-    bool FT = true;
+    bool FT = false;
     bool DEBUG = false;
     bool VERIFY_BEFORE = false;
     bool VERIFY_AFTER = false;
-    bool INJECT = true;
+    bool INJECT = false;
 
     double * dT_col_chk;
     int dT_col_chk_ld;
