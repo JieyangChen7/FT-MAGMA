@@ -30,9 +30,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	// 	cout << "dgemm" << endl;
 	// }
 
-	if (INJECT) {
-		magma_dscal( 1, 10000000000, A, 1);
-	}
+	
 
 	int mem_row = 0; // number of row and col of B stored in memory(no trans operation)
 	int mem_col = 0;
@@ -188,6 +186,10 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 				A, lda, B, ldb,
 				beta,
 				C, ldc );
+
+	if (INJECT) {
+		magma_dscal( 1, 10000000000, C, 1);
+	}
 	
 	if(FT){	
 		magmablasSetKernelStream(stream[4]);
