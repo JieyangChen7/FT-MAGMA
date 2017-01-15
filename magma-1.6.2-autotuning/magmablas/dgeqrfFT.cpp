@@ -28,19 +28,19 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 	}
 
-	double * A2 = new double[lda*n];
-	memcpy(A2, A, lda*n*sizeof(double));
+	// double * A2 = new double[lda*n];
+	// memcpy(A2, A, lda*n*sizeof(double));
 
-	cout << "before1" << endl;
-	printMatrix_host(A2, lda, m, n, 4, 4);
-	lapackf77_dgeqrf(&m, &n, A2, &lda, tau, work, &lwork, info);
-	cout << "after1" << endl;
-	printMatrix_host(A2, lda, m, n, 4, 4);
+	// cout << "before1" << endl;
+	// printMatrix_host(A2, lda, m, n, 4, 4);
+	// lapackf77_dgeqrf(&m, &n, A2, &lda, tau, work, &lwork, info);
+	// cout << "after1" << endl;
+	// printMatrix_host(A2, lda, m, n, 4, 4);
 
 
 	
-	cout << "before2" << endl;
-	printMatrix_host(A, lda, m, n, 4, 4);
+	// cout << "before2" << endl;
+	// printMatrix_host(A, lda, m, n, 4, 4);
 
 	int k = min(m, n);
 	for (int i = 0; i < k; i++) {
@@ -160,23 +160,23 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		// *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld) = cv[0];
 		// *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1) = cv[1];
 
-		cout << "column checksum" << endl;
-		printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
+		// cout << "column checksum" << endl;
+		// printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
 
-		cout << "row checksum" << endl;
-		printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
+		// cout << "row checksum" << endl;
+		// printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
 
 	}
 
-	cout << "after2" << endl;
-	printMatrix_host(A, lda, m, n, 4, 4);
+	// cout << "after2" << endl;
+	// printMatrix_host(A, lda, m, n, 4, 4);
 
 		
-	cout << "column checksum after2" << endl;
-	printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
+	// cout << "column checksum after2" << endl;
+	// printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
 
-	cout << "row checksum after2" << endl;
-	printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
+	// cout << "row checksum after2" << endl;
+	// printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
 
 
 	//}
