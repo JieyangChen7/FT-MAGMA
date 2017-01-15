@@ -45,7 +45,7 @@
 ./testing/testing_dgeqrf_gpu -N 15360,15360
 ./testing/testing_dgeqrf_gpu -N 17920,17920
 ./testing/testing_dgeqrf_gpu -N 20480,20480
-./testing/testing_dgeqrf_gpu -N 23040,23040
+
 
 
 
