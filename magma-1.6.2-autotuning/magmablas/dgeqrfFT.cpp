@@ -27,6 +27,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 		printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
 
 	}
+	cout << "dgeqrf" <<endl;
 
 	if (FT) {
 
