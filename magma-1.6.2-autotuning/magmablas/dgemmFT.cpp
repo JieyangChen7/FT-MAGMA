@@ -27,7 +27,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 
 	
 	// if (true) {
-	 	cout << "dgemm" << endl;
+	// 	cout << "dgemm" << endl;
 	// }
 
 	
