@@ -82,17 +82,17 @@ void dsyrkFT(magma_uplo_t uplo, magma_trans_t trans,
 
 	//if (FT) {
 		magmablasSetKernelStream(stream[1]);
-		magma_dgemm(
-				MagmaNoTrans, MagmaTrans,
-				n, n, m,
-				MAGMA_D_ONE * (-1),
-				A, lda, A, lda,
-				MAGMA_D_ONE,
-				C, ldc );
+		// magma_dgemm(
+		// 		MagmaNoTrans, MagmaTrans,
+		// 		n, n, m,
+		// 		MAGMA_D_ONE * (-1),
+		// 		A, lda, A, lda,
+		// 		MAGMA_D_ONE,
+		// 		C, ldc );
 //	} else {
-//		magma_dsyrk(uplo, trans, n, m,
-//					alpha, A, lda,
-//					beta,     C, ldc);
+		magma_dsyrk(uplo, trans, n, m,
+					alpha, A, lda,
+					beta,     C, ldc);
 //	}
 	
 	if(FT){
