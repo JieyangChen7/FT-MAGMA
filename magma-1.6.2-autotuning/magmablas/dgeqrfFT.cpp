@@ -44,7 +44,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 	int k = min(m, n);
 	for (int i = 0; i < k; i++) {
-		cout << "i=" << i <<endl;
+		//cout << "i=" << i <<endl;
 
 
 
