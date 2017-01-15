@@ -28,161 +28,140 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 	}
 
-	// double * A2 = new double[lda*n];
-	// memcpy(A2, A, lda*n*sizeof(double));
+	if (FT) {
 
-	// cout << "before1" << endl;
-	// printMatrix_host(A2, lda, m, n, 4, 4);
-	// lapackf77_dgeqrf(&m, &n, A2, &lda, tau, work, &lwork, info);
-	// cout << "after1" << endl;
-	// printMatrix_host(A2, lda, m, n, 4, 4);
-
-
-	
-	// cout << "before2" << endl;
-	// printMatrix_host(A, lda, m, n, 4, 4);
-
-	int k = min(m, n);
-	for (int i = 0; i < k; i++) {
-		//cout << "i=" << i <<endl;
+		int k = min(m, n);
+		for (int i = 0; i < k; i++) {
+			//cout << "i=" << i <<endl;
 
 
 
-		int m2 = m - i;
-		//int n2 = n - i - 1;
-		int n2 = n - i;
-		int cm = (m/abftEnv->chk_nb)*2;
-		int incx = 1;
-		double Aii = *(A + i * lda + i);
-		double b = *(A + i * lda + i);
-		double * v = new double[m2];
-		double * cv = new double[cm];
+			int m2 = m - i;
+			//int n2 = n - i - 1;
+			int n2 = n - i;
+			int cm = (m/abftEnv->chk_nb)*2;
+			int incx = 1;
+			double Aii = *(A + i * lda + i);
+			double b = *(A + i * lda + i);
+			double * v = new double[m2];
+			double * cv = new double[cm];
 
 
-		if (i > 1) {
-			double alpha = -1;
-			blasf77_daxpy(&n2,
-              &alpha,
-              A + i * lda + i - 1, &lda,
-              abftEnv->col_hchk + i * abftEnv->col_hchk_ld, &abftEnv->col_hchk_ld);
+			if (i > 1) {
+				double alpha = -1;
+				blasf77_daxpy(&n2,
+	              &alpha,
+	              A + i * lda + i - 1, &lda,
+	              abftEnv->col_hchk + i * abftEnv->col_hchk_ld, &abftEnv->col_hchk_ld);
 
-			alpha = -1 * (i+1);
-			blasf77_daxpy(&n2,
-              &alpha,
-              A + i * lda + i - 1, &lda,
-              abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1, &abftEnv->col_hchk_ld);
+				alpha = -1 * (i+1);
+				blasf77_daxpy(&n2,
+	              &alpha,
+	              A + i * lda + i - 1, &lda,
+	              abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1, &abftEnv->col_hchk_ld);
+			}
+
+
+			memcpy(v+1, A + i * lda + i + 1, (m2-1)* sizeof(double));
+			memcpy(cv, abftEnv->col_hchk + i * abftEnv->col_hchk_ld, cm * sizeof(double));
+
+
+
+			//cv[0] = *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld);
+			//cv[1] = *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1);
+
+
+
+
+
+			lapackf77_dlarfg(&m2, &b, v+1, &incx, tau + i);
+
+			v[0] = 1;
+
+			double t = *(tau + i);
+			double scale = 1/(-(t * b));
+
+			cv[0] -= 1 * Aii;
+			cv[1] -= (i + 1) * Aii;
+
+
+
+			//cv[0] *= scale;
+			//cv[1] *= scale;
+
+			blasf77_dscal( &cm,
+	                       &scale,
+	                       cv, &incx );
+
+			cv[0] += 1;
+			cv[1] += 1;
+
+
+
+			char L = 'L';
+			lapackf77_dlarf( &L, &m2, &n2,
+	                         v, &incx,
+	                         tau + i,
+	                         A + i * lda + i, &lda,
+	                         work );
+
+			char T = 'T';
+			int two = 2;
+			int one = 1;
+			double d_zero = 0;
+			double * cw = new double[2];
+			int inccw = 1;
+			double neg_tau = *(tau + i) * -1;
+			double d_one = 1; 
+			blasf77_dgemv( &T,
+	                     &m2, &two,
+	                     &d_one,
+	                     abftEnv->row_hchk + i, &abftEnv->row_hchk_ld,
+	                     v, &incx,
+	                     &d_zero,
+	                     cw, &inccw);
+
+			blasf77_dger( &cm, &n2,
+	                      &neg_tau,
+	                     cv, &one,
+	                     work, &one,
+	                     abftEnv->col_hchk + i * abftEnv->row_hchk_ld, &abftEnv->row_hchk_ld);
+
+			blasf77_dger( &m2, &two,
+	                      &neg_tau,
+	                      v, &incx,
+	                      cw, &inccw,
+	                      abftEnv->row_hchk + i, &abftEnv->row_hchk_ld);
+
+
+
+
+			cv[0] -= 1;
+			cv[1] -= 1;
+
+			memcpy(A + i * lda + i + 1, v+1, (m2-1)* sizeof(double));
+			memcpy(abftEnv->col_hchk + i * abftEnv->col_hchk_ld, cv, cm * sizeof(double));
+
+
+		
+
 		}
 
+		// cout << "after2" << endl;
+		// printMatrix_host(A, lda, m, n, 4, 4);
 
-		memcpy(v+1, A + i * lda + i + 1, (m2-1)* sizeof(double));
-		memcpy(cv, abftEnv->col_hchk + i * abftEnv->col_hchk_ld, cm * sizeof(double));
-
-
-
-		//cv[0] = *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld);
-		//cv[1] = *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1);
-
-
-
-
-
-		lapackf77_dlarfg(&m2, &b, v+1, &incx, tau + i);
-
-		v[0] = 1;
-
-		double t = *(tau + i);
-		double scale = 1/(-(t * b));
-
-		cv[0] -= 1 * Aii;
-		cv[1] -= (i + 1) * Aii;
-
-
-
-		//cv[0] *= scale;
-		//cv[1] *= scale;
-
-		blasf77_dscal( &cm,
-                       &scale,
-                       cv, &incx );
-
-		cv[0] += 1;
-		cv[1] += 1;
-
-
-
-		char L = 'L';
-		lapackf77_dlarf( &L, &m2, &n2,
-                         v, &incx,
-                         tau + i,
-                         A + i * lda + i, &lda,
-                         work );
-
-		char T = 'T';
-		int two = 2;
-		int one = 1;
-		double d_zero = 0;
-		double * cw = new double[2];
-		int inccw = 1;
-		double neg_tau = *(tau + i) * -1;
-		double d_one = 1; 
-		blasf77_dgemv( &T,
-                     &m2, &two,
-                     &d_one,
-                     abftEnv->row_hchk + i, &abftEnv->row_hchk_ld,
-                     v, &incx,
-                     &d_zero,
-                     cw, &inccw);
-
-		blasf77_dger( &cm, &n2,
-                      &neg_tau,
-                     cv, &one,
-                     work, &one,
-                     abftEnv->col_hchk + i * abftEnv->row_hchk_ld, &abftEnv->row_hchk_ld);
-
-		blasf77_dger( &m2, &two,
-                      &neg_tau,
-                      v, &incx,
-                      cw, &inccw,
-                      abftEnv->row_hchk + i, &abftEnv->row_hchk_ld);
-
-
-
-
-		cv[0] -= 1;
-		cv[1] -= 1;
-
-		memcpy(A + i * lda + i + 1, v+1, (m2-1)* sizeof(double));
-		memcpy(abftEnv->col_hchk + i * abftEnv->col_hchk_ld, cv, cm * sizeof(double));
-
-
-		
-
-		// *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld) = cv[0];
-		// *(abftEnv->col_hchk + i * abftEnv->col_hchk_ld + 1) = cv[1];
-
-		// cout << "column checksum" << endl;
+			
+		// cout << "column checksum after2" << endl;
 		// printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
 
-		// cout << "row checksum" << endl;
+		// cout << "row checksum after2" << endl;
 		// printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
 
+
+	} else {
+
+		lapackf77_dgeqrf(&m, &n, A, &lda, tau, work, &lwork, info);
 	}
-
-	// cout << "after2" << endl;
-	// printMatrix_host(A, lda, m, n, 4, 4);
-
-		
-	// cout << "column checksum after2" << endl;
-	// printMatrix_host(abftEnv->col_hchk, abftEnv->col_hchk_ld, (m / abftEnv->chk_nb) * 2, n, 2, 4);
-
-	// cout << "row checksum after2" << endl;
-	// printMatrix_host(abftEnv->row_hchk, abftEnv->row_hchk_ld, m , (n / abftEnv->chk_nb) * 2, 4, 2);
-
-
-	//}
-
-	//lapackf77_dgeqrf(&m, &n, A, &lda, tau, work, &lwork, info);
-
 	if (FT) {
 		int k = min (m, n);
 		char L = 'L';
