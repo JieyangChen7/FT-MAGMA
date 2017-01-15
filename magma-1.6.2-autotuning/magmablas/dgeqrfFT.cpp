@@ -160,7 +160,7 @@ void dgeqrfFT( int m, int n, double * A, int lda, double * tau, double * work, i
 
 
 	} else {
-		magma_set_lapack_numthreads(64);
+		magma_set_lapack_numthreads(1);
 		lapackf77_dgeqrf(&m, &n, A, &lda, tau, work, &lwork, info);
 	}
 	if (FT) {
