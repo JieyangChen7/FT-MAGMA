@@ -31,7 +31,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	// }
 
 	if (INJECT) {
-		magma_dscal( 1, 100, A, 1);
+		magma_dscal( 1, 10000, A, 1);
 	}
 
 	int mem_row = 0; // number of row and col of B stored in memory(no trans operation)
