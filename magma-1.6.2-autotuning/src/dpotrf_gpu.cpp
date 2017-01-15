@@ -151,6 +151,7 @@ magma_dpotrf_gpu(
     bool DEBUG = false;
     bool VERIFY_BEFORE = false;
     bool VERIFY_AFTER = false;
+    bool INJECT = true;
     ABFTEnv * abftEnv;
     abftEnv = new ABFTEnv();
     initializeABFTEnv(abftEnv, nb, dA, ldda, n, n, nb, nb, stream, 1, DEBUG);
@@ -284,9 +285,9 @@ magma_dpotrf_gpu(
                             ROW_CHK(j / abftEnv->chk_nb, 0), abftEnv->row_dchk_ld,
                 			COL_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->col_dchk_ld,
                             ROW_CHK(j / abftEnv->chk_nb + 1, j/abftEnv->chk_nb), abftEnv->row_dchk_ld,
-                			FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER,
+                			FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER, INJECT,
                             stream);
-                	
+                	INJECT = false; //inject once
                 }
                 
 

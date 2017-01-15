@@ -17,7 +17,7 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
 							double * row_chkC, int row_chkC_ld, 
 							double * col_chkW, int col_chkW_ld,  
 							double * row_chkW, int row_chkW_ld,
-							bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
+							bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER, bool INJECT,
 							magma_queue_t * stream) {
 
 	#define dV(i_,j_)  (dV    + (i_) + (j_)*lddv)
@@ -101,7 +101,7 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
 			    row_chkV, row_chkV_ld,
 			    col_chkW, col_chkW_ld,  
 			    row_chkW, row_chkW_ld,
-			    FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+			    FT, DEBUG, CHECK_BEFORE, CHECK_AFTER, INJECT,
 			    stream);
 
         // W = W T^H = C^H V T^H
@@ -130,7 +130,7 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
 			    row_chkW, row_chkW_ld,
 			    col_chkC, col_chkC_ld,  
 			    row_chkC, row_chkC_ld,
-			    FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+			    FT, DEBUG, CHECK_BEFORE, CHECK_AFTER, INJECT,
 			    stream);
     }
     else {

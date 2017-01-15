@@ -183,6 +183,7 @@ magma_dgeqrf_gpu(
     bool DEBUG = false;
     bool VERIFY_BEFORE = false;
     bool VERIFY_AFTER = false;
+    bool INJECT = true;
 
     double * dT_col_chk;
     int dT_col_chk_ld;

@@ -22,13 +22,17 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		double * row_chkB, int row_chkB_ld, 
 		double * col_chkC, int col_chkC_ld,  
 		double * row_chkC, int row_chkC_ld,
-		bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
+		bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER, bool INJECT,
 		magma_queue_t * stream) {
 
 	
 	// if (true) {
 	// 	cout << "dgemm" << endl;
 	// }
+
+	if (INJECT) {
+		magma_dscal( 1, 100, A, 1);
+	}
 
 	int mem_row = 0; // number of row and col of B stored in memory(no trans operation)
 	int mem_col = 0;

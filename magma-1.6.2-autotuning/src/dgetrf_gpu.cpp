@@ -222,7 +222,8 @@ magma_dgetrf_gpu(
         bool FT = true;
         bool DEBUG = false;
         bool VERIFY_BEFORE = false;
-        bool VERIFY_AFTER = false;    
+        bool VERIFY_AFTER = false;  
+        bool INJECT = true;  
 
         ABFTEnv * abftEnv;
 
@@ -345,8 +346,9 @@ magma_dgetrf_gpu(
                              ROW_CHK_T(j, j-1), abftEnv->row_dchk_ld,
                              COL_CHK_T(j, j+1), abftEnv->col_dchk_ld,
                              ROW_CHK_T(j, j+1), abftEnv->row_dchk_ld,
-                             FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER,
+                             FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER, INJECT,
                              stream);
+                    INJECT = false;
             }
 
             // do the cpu part

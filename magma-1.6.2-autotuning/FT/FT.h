@@ -212,7 +212,7 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 		double * row_chkB, int row_chkB_ld, 
 		double * col_chkC, int col_chkC_ld,  
 		double * row_chkC, int row_chkC_ld,
-		bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
+		bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER, bool INJECT,
 		magma_queue_t * stream);
 
 void dtrmmFT( magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
@@ -243,7 +243,7 @@ int dlarfbFT( magma_side_t side, magma_trans_t trans, magma_direct_t direct, mag
 							double * row_chkC, int row_chkC_ld, 
 							double * col_chkW, int col_chkW_ld,  
 							double * row_chkW, int row_chkW_ld,
-							bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
+							bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER, bool INJECT,
 							magma_queue_t * stream);
 
 void col_detect_correct(double * A, int lda, 
