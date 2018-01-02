@@ -11,7 +11,9 @@
 #include "common_magma.h"
 #include "trace.h"
 #include "FT.h"
+#include <cmath>
 #include <iostream>
+using namespace std;
 
 #define PRECISION_d
 
