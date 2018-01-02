@@ -1,2 +1,2 @@
-git pull origin master
+git pull github master
 make -j 32 -s
