@@ -237,7 +237,7 @@ magma_dpotrf3_mgpu(
         magma_setdevice(d);
         size_t pitch_dcolchk = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
         ld_dcolchk[d] = pitch_dcolchk / sizeof(double);
-        magma_dmalloc(&(abftEnv->col_dchk), pitch_dcolchk * gpu_col[d]);
+        magma_dmalloc(&dcolchk[d], pitch_dcolchk * gpu_col[d]);
     }
     cout << "done." << endl;
 
@@ -248,7 +248,7 @@ magma_dpotrf3_mgpu(
     int * ld_drowchk = new int[ngpu];
     for( d=0; d < ngpu; d++ ) {
         magma_setdevice(d);
-        size_t pitch_drowchk = magma_roundup(gpu_rowp[d] * sizeof(double), 32);
+        size_t pitch_drowchk = magma_roundup(gpu_row[d] * sizeof(double), 32);
         ld_drowchk[d] = pitch_drowchk / sizeof(double);
         magma_dmalloc(&drowchk[d], pitch_drowchk * (gpu_col[d] / nb) * 2);
     }
