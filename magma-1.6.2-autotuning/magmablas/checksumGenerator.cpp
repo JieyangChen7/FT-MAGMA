@@ -54,12 +54,12 @@ time_t getMillSec() {
 
 
 void initializeABFTEnv(ABFTEnv * abftEnv, int chk_nb, 
-						double * A, int lda,
-						int gpu_row, int gpu_col,
-						int cpu_row, int cpu_col,
-						magma_queue_t * stream,
-						int mode,
-						bool DEBUG) {
+					   double * A, int lda,
+					   int gpu_row, int gpu_col,
+					   int cpu_row, int cpu_col,
+					   magma_queue_t * stream,
+					   int mode,
+					   bool DEBUG) {
 
 	abftEnv->mode = mode;
 

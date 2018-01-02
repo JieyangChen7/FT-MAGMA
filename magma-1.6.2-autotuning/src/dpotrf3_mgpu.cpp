@@ -10,6 +10,8 @@
 */
 #include "common_magma.h"
 #include "trace.h"
+#include "FT.h"
+#include <iostream>
 
 #define PRECISION_d
 
@@ -146,7 +148,7 @@ magma_dpotrf3_mgpu(
     }
     magma_setdevice(0);
 #endif
-    
+
     /* initialization */
     for( d=0; d < ngpu; d++ ) {
         /* local-n and local-ld */
@@ -164,6 +166,96 @@ magma_dpotrf3_mgpu(
                 n_local[d] += m%nb;
         }
     }
+    
+    /* flags */
+    bool FT = false;
+    bool DEBUG = false;
+
+    /* matrix sizes to be checksumed */
+    int cpu_row = nb;
+    int cpu_col = nb;
+    int * gpu_row = new int[ngpu];
+    int * gpu_col = new int[ngpu];
+    for (int d = 0; d < ngpu; d++) {
+        gpu_row[d] = n_local[d];
+        gpu_col[d] = n;
+    }
+
+    /* initialize checksum vector on CPU */
+    double * chk_v;
+    int ld_chk_v = nb;
+    magma_dmalloc_pinned(&chk_v, nb * 2 * sizeof(double));
+    for (int i = 0; i < nb; ++i) {
+        *(chk_v + i) = 1;
+    }
+    for (int i = 0; i < nb; ++i) {
+        *(chk_v + ld_chk_v + i) = i + 1;
+    }
+
+    if (DEBUG) {
+        cout << "checksum vector on CPU:" << endl;
+        printMatrix_host(chk_v, ld_chk_v, nb, 2, -1, -1);
+    }
+
+    /* initialize checksum vector on GPUs */
+    double ** dchk_v = new double * [ngpu];
+    size_t pitch_dchk_v = magma_roundup(nb * sizeof(double), 32);
+    int * ld_dchk_v = new int[ngpu];
+    for( d=0; d < ngpu; d++ ) {
+        magma_setdevice(d);
+        magma_dmalloc(&dchk_v[d], pitch_dchk_v * 2);
+        ld_dchk_v[d] = pitch_dchk_v / sizeof(double);
+        magma_dsetmatrix(nb, 2,
+                         chk_v, ld_chk_v, 
+                         dchk_v[d], ld_dchk_v[d]);
+    }
+
+    /* allocate space for update column checksum on CPU */
+    cout << "allocate space for column checksum on CPU......";
+    double * colchk;
+    int ld_colchk;
+    magma_dmalloc_pinned(&colchk, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
+    ld_colchk = (cpu_row / nb) * 2;
+    cout << "done." << endl;
+
+    /* allocate space for update column checksum on CPU */
+    cout << "allocate space for row checksum on CPU......";
+    double * rowchk;
+    int ld_rowchk;
+    magma_dmalloc_pinned(&rowchk, cpu_row * (cpu_col / nb) * 2 * sizeof(double));
+    ld_rowchk = cpu_row;
+    cout << "done." << endl;
+
+    
+    /* allocate space for update checksum on GPU */
+    cout << "allocate space for column checksums on GPUs......";
+    double ** dcolchk = new double * [ngpu];
+    int * ld_dcolchk = new int[ngpu];
+    for( d=0; d < ngpu; d++ ) {
+        magma_setdevice(d);
+        size_t pitch_dcolchk = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
+        ld_dcolchk[d] = pitch_dcolchk / sizeof(double);
+        magma_dmalloc(&(abftEnv->col_dchk), pitch_dcolchk * gpu_col[d]);
+    }
+    cout << "done." << endl;
+
+
+    /* allocate space for update checksum on GPU */
+    cout << "allocate space for row checksums on GPUs......";
+    double ** drowchk = new double * [ngpu];
+    int * ld_drowchk = new int[ngpu];
+    for( d=0; d < ngpu; d++ ) {
+        magma_setdevice(d);
+        size_t pitch_drowchk = magma_roundup(gpu_rowp[d] * sizeof(double), 32);
+        ld_drowchk[d] = pitch_drowchk / sizeof(double);
+        magma_dmalloc(&drowchk[d], pitch_drowchk * (gpu_col[d] / nb) * 2);
+    }
+    cout << "done." << endl;
+
+
+    
+
+    
 
     /* == initialize the trace */
     trace_init( 1, ngpu, 3, (CUstream_st**)queues );
