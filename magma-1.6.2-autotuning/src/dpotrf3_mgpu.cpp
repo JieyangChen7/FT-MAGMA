@@ -213,7 +213,7 @@ magma_dpotrf3_mgpu(
         if (DEBUG) {
             cout << "on GPU " << d << " :" << endl;
             printMatrix_gpu(dchk_v[d], ld_dchk_v[d],
-                            nb, 2, nb, nb)
+                            nb, 2, nb, nb);
         }
     }
 
