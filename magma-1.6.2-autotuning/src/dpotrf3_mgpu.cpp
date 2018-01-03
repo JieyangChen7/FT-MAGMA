@@ -258,8 +258,8 @@ magma_dpotrf3_mgpu(
     cout << "calculate initial column checksum on GPUs......";
     for( d=0; d < ngpu; d++ ) {
         magma_setdevice(d);
-        col_chkenc(d_lA[d], ldda, gpu_row[d], gpu_col[d], nb, dcolchk[d], ld_dcolchk[d], queues[d][stream1]);
-        row_chkenc(d_lA[d], ldda, gpu_row[d], gpu_col[d], nb, drowchk[d], ld_drowchk[d], queues[d][stream1]);
+        col_chk_enc(gpu_row[d], gpu_col[d], nb, d_lA[d], ldda,  dchk_v[d], ld_dchk_v, dcolchk[d], ld_dcolchk[d], queues[d][stream1]);
+        row_chk_enc(gpu_row[d], gpu_col[d], nb, d_lA[d], ldda,  dchk_v[d], ld_dchk_v, drowchk[d], ld_drowchk[d], queues[d][stream1]);
     }
     cout << "done." << endl;
 

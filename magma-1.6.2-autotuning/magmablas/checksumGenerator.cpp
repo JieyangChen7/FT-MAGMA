@@ -23,7 +23,6 @@ void init_col_chk(ABFTEnv * abftEnv, double * A, int lda) {
                               abftEnv->stream[1]);
 }
 
-
 void init_row_chk(ABFTEnv * abftEnv, double * A, int lda) {
 
 	// for (int i = 0; i < abftEnv->gpu_col; i += abftEnv->chk_nb) {		
@@ -37,6 +36,36 @@ void init_row_chk(ABFTEnv * abftEnv, double * A, int lda) {
 	// }
     row_chkenc(A, lda, abftEnv->gpu_col, abftEnv->gpu_row, abftEnv->chk_nb, abftEnv->row_dchk, abftEnv->row_dchk_ld, 
                               abftEnv->stream[1]);
+}
+
+void col_chk_enc(int m, int n, int nb, 
+                 double * A, int lda,
+                 double * chk_v, int ld_chk_v,
+                 double * dcolchk, int ld_dcolchk, 
+                 magma_queue_t stream) {
+
+    for (int i = 0; i < m; i += nb) {        
+        magma_dgemm(MagmaTrans, MagmaNoTrans,
+                    2, n, nb,
+                    MAGMA_D_ONE, chk_v, ld_chk_v,
+                    A + i, lda,
+                    MAGMA_D_ZERO, dcolchk + i * 2, ld_dcolchk);           
+    }
+}
+
+void row_chk_enc(int m, int n, int nb, 
+                 double * A, int lda,
+                 double * chk_v, int ld_chk_v,
+                 double * drowchk, int ld_drowchk, 
+                 magma_queue_t stream) {
+
+    for (int i = 0; i < n; i += nb) {        
+        magma_dgemm(MagmaNoTrans, MagmaNoTrans,
+                    m, 2, nb,
+                    MAGMA_D_ONE, chk_v, ld_chk_v,
+                    A + i * lda, lda,
+                    MAGMA_D_ZERO, drowchk + (i * 2) * ld_drowchk, ld_drowchk);           
+    }
 }
 
 
