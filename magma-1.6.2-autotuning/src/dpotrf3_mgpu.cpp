@@ -210,6 +210,11 @@ magma_dpotrf3_mgpu(
         magma_dsetmatrix(nb, 2,
                          chk_v, ld_chk_v, 
                          dchk_v[d], ld_dchk_v[d]);
+        if (DEBUG) {
+            cout << "on GPU " << d << " :" << endl;
+            printMatrix_gpu(dchk_v[d], ld_dchk_v[d],
+                            nb, 2, nb, nb)
+        }
     }
 
     /* allocate space for update column checksum on CPU */
