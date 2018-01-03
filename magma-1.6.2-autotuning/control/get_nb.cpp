@@ -51,6 +51,7 @@ magma_int_t magma_get_spotrf_nb( magma_int_t m )
 
 magma_int_t magma_get_dpotrf_nb( magma_int_t m )
 {
+    return 4;
     magma_int_t arch = magma_getdevice_arch();
     if ( arch >= 300 ) {       // 3.x Kepler
         if      (m <  3072) return 256;
