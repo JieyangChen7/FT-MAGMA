@@ -229,8 +229,8 @@ magma_dpotrf3_mgpu(
     cout << "done." << endl;
 
     
-    /* allocate space for update checksum on GPU */
-    cout << "allocate space for column checksums on GPUs......";
+    /* allocate space for update col checksum on GPU */
+    cout << "allocate space for col column checksums on GPUs......";
     double ** dcolchk = new double * [ngpu];
     int * ld_dcolchk = new int[ngpu];
     for( d=0; d < ngpu; d++ ) {
@@ -242,7 +242,7 @@ magma_dpotrf3_mgpu(
     cout << "done." << endl;
 
 
-    /* allocate space for update checksum on GPU */
+    /* allocate space for update row checksum on GPU */
     cout << "allocate space for row checksums on GPUs......";
     double ** drowchk = new double * [ngpu];
     int * ld_drowchk = new int[ngpu];
@@ -262,6 +262,20 @@ magma_dpotrf3_mgpu(
         row_chkenc(d_lA[d], ldda, gpu_row[d], gpu_col[d], nb, drowchk[d], ld_drowchk[d], queues[d][stream1]);
     }
     cout << "done." << endl;
+
+    if (DEBUG) {
+
+        for( d=0; d < ngpu; d++ ) {
+            magma_setdevice(d);
+            cout << "on GPU " << d << " :" << endl;
+            cout << "input matrix A:" << endl;
+            printMatrix_gpu(d_lA[d], ldda, gpu_row[d], gpu_col[d], nb, nb);
+            cout << "column chk:" << endl;
+            printMatrix_gpu(dcolchk[d], ld_dcolchk[d], (gpu_row[d] / nb) * 2, gpu_col[d], 2, nb);
+            cout << "row chk:" << endl;
+            printMatrix_gpu(drowchk[d], ld_drowchk[d], gpu_row[d], (gpu_col[d] / nb) * 2, nb, 2);
+        }
+    }
     
 
     
