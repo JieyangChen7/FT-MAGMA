@@ -171,7 +171,7 @@ magma_dpotrf3_mgpu(
     
     /* flags */
     bool FT = false;
-    bool DEBUG = false;
+    bool DEBUG = true;
 
     /* matrix sizes to be checksumed */
     int cpu_row = nb;
