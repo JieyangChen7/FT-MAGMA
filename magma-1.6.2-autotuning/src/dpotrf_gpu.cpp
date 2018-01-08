@@ -297,7 +297,12 @@ magma_dpotrf_gpu(
                 //magma_set_lapack_numthreads(64);
                 VERIFY_BEFORE = true;
                 VERIFY_AFTER = false;
-                dpotrfFT(work, nb, nb, info, abftEnv, FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER);
+                dpotrfFT(MagmaUpperStr, &jb, work, &jb, info,
+                         nb, 
+                         abftEnv->col_hchk, abftEnv->col_hchk_ld, 
+                         abftEnv->row_hchk, abftEnv->row_hchk_ld, 
+                         abftEnv->vrt_v + 1, &(abftEnv->vrt_v_ld),
+                         FT, DEBUG, VERIFY_BEFORE, VERIFY_AFTER);
                                 
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,

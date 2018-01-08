@@ -97,6 +97,9 @@ magma_dpotrf3_mgpu(
 #define dlP(id, i, j, k)  (d_lP[(id)] + (k)*nb*lddp + (j)*lddp + (i))
 #define dlPT(id, i, j, k) (d_lP[(id)] + (k)*nb*lddp + (j)*nb   + (i))
 
+#define get_dcolchk(id, i, j)     (dcolchk[(id)] + (j)*ld_dcolchk + (i/nb)*2)
+#define get_drowchk(id, i, j)     (drowchk[(id)] + (j/nb)*2*ld_drowchk + i)
+
     magma_int_t     j, jb, nb0, nb2, d, dd, id, j_local, j_local2, buf;
     double c_one     = MAGMA_D_ONE;
     double c_neg_one = MAGMA_D_NEG_ONE;
@@ -172,6 +175,8 @@ magma_dpotrf3_mgpu(
     /* flags */
     bool FT = false;
     bool DEBUG = true;
+    bool CHECK_BEFORE;
+    bool CHECK_AFTER;
 
     /* matrix sizes to be checksumed */
     int cpu_row = nb;
@@ -577,6 +582,15 @@ magma_dpotrf3_mgpu(
                                     Alo(j,j),               lda,
                                     queues[id][stream1] );
 
+            if (FT) {
+                /* send chk of diagonal to cpu on stream1 */
+                magma_dgetmatrix_async( 2, jb,
+                                        get_dcolchk(id, nb*j_local, j), ld_dcolchk,
+                                        colchk, ld_colchk,
+                                        queues[id][stream1] );
+            }
+
+
             /* update off-diagonal blocks of the panel */
             if ( j > 0 ) {
                 d = (j/nb+1)%ngpu;
@@ -611,7 +625,15 @@ magma_dpotrf3_mgpu(
             /* wait for the panel and factorized it on cpu */
             magma_setdevice(id);
             magma_queue_sync( queues[id][stream1] );
-            lapackf77_dpotrf(MagmaLowerStr, &jb, Alo(j,j), &lda, info);
+            //lapackf77_dpotrf(MagmaLowerStr, &jb, Alo(j,j), &lda, info);
+            CHECK_BEFORE = true;
+            CHECK_AFTER = true;
+            dpotrfFT(MagmaLowerStr, &jb, Alo(j,j), &lda, info,
+                     nb, 
+                     colchk, ld_colchk, 
+                     rowchk, ld_rowchk, 
+                     chk_v, ld_chk_v, 
+                     FT, DEBUG, CHECK_BEFORE, CHECK_AFTER);
             if (*info != 0) {
                 *info = *info + j;
                 break;
@@ -642,6 +664,14 @@ magma_dpotrf3_mgpu(
                                         Alo(j,j),               lda,
                                         dlA(id, nb*j_local, j), ldda,
                                         queues[id][stream1] );
+            }
+
+            /* send the chk of diagonal to gpus on stream1 */
+            if (FT) {
+                magma_dsetmatrix_async( 2, jb,
+                                        colchk, ld_colchk,
+                                        get_dcolchk(id, nb*j_local, j), ld_dcolchk,
+                                        queues[d][stream1] );
             }
 
             /* panel factorize the off-diagonal */

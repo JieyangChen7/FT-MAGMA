@@ -177,8 +177,12 @@ bool ComputationCheck(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2,
 
 bool MemoryCheck(ABFTEnv * abftEnv, int row1, int row2, int col1, int col2);
 
-void dpotrfFT(double * A, int lda, int n, int * info, 
-			  ABFTEnv * abftEnv, bool FT , bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER);
+void dpotrfFT(const char uplo, int n, double * A, int lda, int * info, 
+			  int nb, 
+			  double * colchk, int ld_colchk, 
+			  double * rowchk, int ld_rowchk, 
+			  double * chk_v, int ld_chk_v, 
+			  bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER);
 
 
 void dgetrfFT(int m, int n, double * A, int lda, int * ipiv, int * info,
