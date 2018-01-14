@@ -70,6 +70,75 @@ void row_chk_enc(int m, int n, int nb,
     }
 }
 
+void check_row(int m, int n, int nb,
+               double * A, int lda,
+               double * chk_v, int ld_chk_v,
+               double * rowchkA, int ld_rowchkA, 
+               double * rowchkA_r, int ld_rowchkA_r,
+               magma_queue_t stream,
+               bool DEBUG, char[] s) {
+
+    row_chk_enc(m, n, nb, 
+                A, lda,  
+                chk_v, ld_chk_v, 
+                rowchkA_r, ld_rowchkA_r, stream);
+
+    // row_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+  //                          col_chkB, col_chkB_ld,
+  //                          abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+  //                          abftEnv->stream[1]);
+
+    if (DEBUG) {
+            cudaStreamSynchronize(stream);
+
+            cout << "[" << s << "][check_row] input matrix:"<<endl;
+            printMatrix_gpu(A, lda, m, n, nb, nb);
+
+            cout << "[" << s << "][check_row] recalculated row checksum:"<<endl;
+            printMatrix_gpu(rowchkA_r, ld_rowchkA_r, m , (n / nb) * 2, nb, 2);
+        
+            cout << "[" << s << "][check_row] updated row checksum:"<<endl;
+            printMatrix_gpu(rowchkB, ld_rowchkB, m , (n / nb) * 2, nb, 2);
+        
+        }
+}
+
+
+void check_col(int m, int n, int nb,
+               double * A, int lda,
+               double * chk_v, int ld_chk_v,
+               double * colchkA, int ld_colchkA, 
+               double * colchkA_r, int ld_colchkA_r,
+               magma_queue_t stream,
+               bool DEBUG, char[] s) {
+
+    col_chk_enc(m, n, nb, 
+                A, lda,  
+                chk_v, ld_chk_v, 
+                colchkA_r, ld_colchkA_r, stream);
+
+    // col_detect_correct(B, ldb, abftEnv->chk_nb, mem_row, mem_col,
+  //                          col_chkB, col_chkB_ld,
+  //                          abftEnv->hrz_recal_chk, abftEnv->hrz_recal_chk_ld,
+  //                          abftEnv->stream[1]);
+
+    if (DEBUG) {
+            cudaStreamSynchronize(stream);
+
+            cout << "[" << s << "][check_col] input matrix:"<<endl;
+            printMatrix_gpu(A, lda, m, n, nb, nb);
+
+            cout << "[" << s << "][check_col] recalculated row checksum:"<<endl;
+            printMatrix_gpu(colchkA_r, ld_colchkA_r, (m / nb) * 2 , n, 2, nb);
+        
+            cout << "[" << s << "][check_col] updated row checksum:"<<endl;
+            printMatrix_gpu(colchkB, ld_colchkB, (m / nb) * 2 , n, 2, nb);
+        
+        }
+}
+
+
+
 
 time_t getMillSec() {
     struct timeval now;
