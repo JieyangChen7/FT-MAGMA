@@ -97,8 +97,20 @@ magma_dpotrf3_mgpu(
 #define dlP(id, i, j, k)  (d_lP[(id)] + (k)*nb*lddp + (j)*lddp + (i))
 #define dlPT(id, i, j, k) (d_lP[(id)] + (k)*nb*lddp + (j)*nb   + (i))
 
-#define get_dcolchk(id, i, j)     (dcolchk[(id)] + (j)*ld_dcolchk + (i/nb)*2)
-#define get_drowchk(id, i, j)     (drowchk[(id)] + (j/nb)*2*ld_drowchk + i)
+#define dlA_colchk(id, i, j)       (d_lA_colchk[(id)]   + (j)*ldda_colchk        + (i/nb)*2)
+#define dlA_colchk_r(id, i, j)     (d_lA_colchk_r[(id)] + (j)*ldda_colchk_r      + (i/nb)*2)
+#define dlA_rowchk(id, i, j)       (d_lA_rowchk[(id)]   + (j/nb)*2*ldda_rowchk   + i)
+#define dlA_rowchk_r(id, i, j)     (d_lA_rowchk_r[(id)] + (j/nb)*2*ldda_rowchk_r + i)
+
+#define dlP_colchk(id, i, j, k)       (d_lP_colchk[(id)]   + (k)*nb*lddp_colchk          + (j)*lddp_colchk        + (i/nb)*2)
+#define dlP_colchk_r(id, i, j, k)     (d_lP_colchk_r[(id)] + (k)*nb*lddp_colchk_r        + (j)*lddp_colchk_r      + (i/nb)*2)
+#define dlP_rowchk(id, i, j, k)       (d_lP_rowchk[(id)]   + (k)*(nb/nb)*2*lddp_rowchk   + (j/nb)*2*lddp_rowchk   + i)
+#define dlP_rowchk_r(id, i, j, k)     (d_lP_rowchk_r[(id)] + (k)*(nb/nb)*2*lddp_rowchk_r + (j/nb)*2*lddp_rowchk_r + i)
+
+#define dlPT_colchk(id, i, j, k)       (d_lP_colchk[(id)]   + (k)*nb*lddp_colchk          + ((j*nb+i)/nb)*2)
+#define dlPT_colchk_r(id, i, j, k)     (d_lP_colchk_r[(id)] + (k)*nb*lddp_colchk_r        + ((j*nb+i)/nb)*2)
+#define dlPT_rowchk(id, i, j, k)       (d_lP_rowchk[(id)]   + (k)*(nb/nb)*2*lddp_rowchk   + j * nb + i)
+#define dlPT_rowchk_r(id, i, j, k)     (d_lP_rowchk_r[(id)] + (k)*(nb/nb)*2*lddp_rowchk_r + j * nb + i)
 
     magma_int_t     j, jb, nb0, nb2, d, dd, id, j_local, j_local2, buf;
     double c_one     = MAGMA_D_ONE;
@@ -107,6 +119,12 @@ magma_dpotrf3_mgpu(
     double          d_neg_one = -1.0;
     int upper = (uplo == MagmaUpper);
     double *dlpanel;
+
+    double *dlpanel_colchk;
+    double *dlpanel_rowchk;
+    int ldpanel_colchk;
+    int ldpanel_rowchk;
+
     magma_int_t n_local[MagmaMaxGPUs], ldpanel;
     const magma_int_t stream1 = 0, stream2 = 1, stream3 = 2;
     
@@ -205,19 +223,19 @@ magma_dpotrf3_mgpu(
     }
 
     /* initialize checksum vector on GPUs */
-    double ** dchk_v = new double * [ngpu];
-    size_t pitch_dchk_v = magma_roundup(nb * sizeof(double), 32);
-    int * ld_dchk_v = new int[ngpu];
+    double ** dev_chk_v = new double * [ngpu];
+    size_t pitch_dev_chk_v = magma_roundup(nb * sizeof(double), 32);
+    int * ld_dev_chk_v = new int[ngpu];
     for( d=0; d < ngpu; d++ ) {
         magma_setdevice(d);
-        magma_dmalloc(&dchk_v[d], pitch_dchk_v * 2);
-        ld_dchk_v[d] = pitch_dchk_v / sizeof(double);
+        magma_dmalloc(&dev_chk_v[d], pitch_dchk_v * 2);
+        ld_dev_chk_v[d] = pitch_dev_chk_v / sizeof(double);
         magma_dsetmatrix(nb, 2,
                          chk_v, ld_chk_v, 
-                         dchk_v[d], ld_dchk_v[d]);
+                         dev_chk_v[d], ld_dev_chk_v[d]);
         if (DEBUG) {
             cout << "on GPU " << d << " :" << endl;
-            printMatrix_gpu(dchk_v[d], ld_dchk_v[d],
+            printMatrix_gpu(dev_chk_v[d], ld_dev_chk_v[d],
                             nb, 2, nb, nb);
         }
     }
@@ -239,28 +257,73 @@ magma_dpotrf3_mgpu(
     cout << "done." << endl;
 
     
-    /* allocate space for update col checksum on GPU */
+    /* allocate space for col checksum on GPU */
+    int panel_row;
+    if (uplo == MagmaLower) {
+        panel_row = nb;
+    } else {
+        panel_row = lddp;
+    }
     cout << "allocate space for col column checksums on GPUs......";
-    double ** dcolchk = new double * [ngpu];
-    int * ld_dcolchk = new int[ngpu];
+    double ** d_lA_colchk   = new double * [ngpu];
+    int *     ldda_colchk   = new int      [ngpu];
+    double ** d_lA_colchk_r = new double * [ngpu];
+    int *     ldda_colchk_r = new int      [ngpu];
+
+    double ** d_lP_colchk   = new double * [ngpu];
+    int *     lddp_colchk   = new int      [ngpu];
+    double ** d_lP_colchk_r = new double * [ngpu];
+    int *     lddp_colchk_r = new int      [ngpu];
     for( d=0; d < ngpu; d++ ) {
         magma_setdevice(d);
-        size_t pitch_dcolchk = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
-        ld_dcolchk[d] = pitch_dcolchk / sizeof(double);
-        magma_dmalloc(&dcolchk[d], pitch_dcolchk * gpu_col[d]);
+        size_t pitch_d_lA_colchk = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
+        ldda_colchk[d] = pitch_d_lA_colchk / sizeof(double);
+        magma_dmalloc(&d_lA_colchk[d], pitch_d_lA_colchk * gpu_col[d]);
+
+        size_t pitch_d_lA_colchk_r = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
+        ldda_colchk_r[d] = pitch_d_lA_colchk_r / sizeof(double);
+        magma_dmalloc(&d_lA_colchk_r[d], pitch_d_lA_colchk_r * gpu_col[d]);
+
+        size_t pitch_d_lP_colchk = magma_roundup((panel_row / nb) * 2 * sizeof(double), 32);
+        lddp_colchk[d] = pitch_d_lP_colchk / sizeof(double);
+        magma_dmalloc(&d_lP_colchk[d], pitch_d_lP_colchk * ngpu * nb);
+
+        size_t pitch_d_lP_colchk_r = magma_roundup((panel_row / nb) * 2 * sizeof(double), 32);
+        lddp_colchk_r[d] = pitch_d_lP_colchk_r / sizeof(double);
+        magma_dmalloc(&d_lP_colchk_r[d], pitch_d_lP_colchk_r * ngpu * nb);
+
     }
     cout << "done." << endl;
 
 
-    /* allocate space for update row checksum on GPU */
+    /* allocate space for row checksum on GPU */
     cout << "allocate space for row checksums on GPUs......";
-    double ** drowchk = new double * [ngpu];
-    int * ld_drowchk = new int[ngpu];
+    double ** d_lA_rowchk   = new double * [ngpu];
+    int *     ldda_rowchk   = new int      [ngpu];
+    double ** d_lA_rowchk_r = new double * [ngpu];
+    int *     ldda_rowchk_r = new int      [ngpu];
+
+    double ** d_lP_rowchk   = new double * [ngpu];
+    int *     lddp_rowchk   = new int      [ngpu];
+    double ** d_lP_rowchk_r = new double * [ngpu];
+    int *     lddp_rowchk_r = new int      [ngpu];
     for( d=0; d < ngpu; d++ ) {
         magma_setdevice(d);
-        size_t pitch_drowchk = magma_roundup(gpu_row[d] * sizeof(double), 32);
-        ld_drowchk[d] = pitch_drowchk / sizeof(double);
-        magma_dmalloc(&drowchk[d], pitch_drowchk * (gpu_col[d] / nb) * 2);
+        size_t pitch_d_lA_rowchk = magma_roundup(gpu_row[d] * sizeof(double), 32);
+        ldda_rowchk[d] = pitch_d_lA_rowchk / sizeof(double);
+        magma_dmalloc(&d_lA_rowchk[d], pitch_d_lA_rowchk * (gpu_col[d] / nb) * 2);
+
+        size_t pitch_d_lA_rowchk_r = magma_roundup(gpu_row[d] * sizeof(double), 32);
+        ldda_rowchk_r[d] = pitch_d_lA_rowchk_r / sizeof(double);
+        magma_dmalloc(&d_lA_rowchk_r[d], pitch_d_lA_rowchk_r * (gpu_col[d] / nb) * 2);
+
+        size_t pitch_d_lP_rowchk = magma_roundup(panel_row * sizeof(double), 32);
+        lddp_rowchk[d] = pitch_d_lP_rowchk / sizeof(double);
+        magma_dmalloc(&d_lP_rowchk[d], pitch_d_lP_rowchk * ((ngpu * nb) / nb) * 2);
+
+        size_t pitch_d_lP_rowchk_r = magma_roundup(panel_row * sizeof(double), 32);
+        lddp_rowchk_r[d] = pitch_d_lP_rowchk_r / sizeof(double);
+        magma_dmalloc(&d_lP_rowchk_r[d], pitch_d_lP_rowchk_r * ((ngpu * nb) / nb) * 2);
     }
     cout << "done." << endl;
 
@@ -268,8 +331,17 @@ magma_dpotrf3_mgpu(
     cout << "calculate initial column checksum on GPUs......";
     for( d=0; d < ngpu; d++ ) {
         magma_setdevice(d);
-        col_chk_enc(gpu_row[d], gpu_col[d], nb, d_lA[d], ldda,  dchk_v[d], ld_dchk_v[d], dcolchk[d], ld_dcolchk[d], queues[d][stream1]);
-        row_chk_enc(gpu_row[d], gpu_col[d], nb, d_lA[d], ldda,  dchk_v[d], ld_dchk_v[d], drowchk[d], ld_drowchk[d], queues[d][stream1]);
+        col_chk_enc(gpu_row[d], gpu_col[d], nb, 
+                    d_lA[d], ldda,  
+                    dev_chk_v[d], ld_dev_chk_v[d], 
+                    d_lA_colchk[d], ldda_colchk[d], 
+                    queues[d][stream1]);
+
+        row_chk_enc(gpu_row[d], gpu_col[d], nb, 
+                    d_lA[d], ldda,  
+                    dev_chk_v[d], ld_dev_chk_v[d], 
+                    d_lA_rowchk[d], ldda_rowchk[d], 
+                    queues[d][stream1]);
     }
     cout << "done." << endl;
 
@@ -281,9 +353,9 @@ magma_dpotrf3_mgpu(
             cout << "input matrix A:" << endl;
             printMatrix_gpu(d_lA[d], ldda, gpu_row[d], gpu_col[d], nb, nb);
             cout << "column chk:" << endl;
-            printMatrix_gpu(dcolchk[d], ld_dcolchk[d], (gpu_row[d] / nb) * 2, gpu_col[d], 2, nb);
+            printMatrix_gpu(d_lA_colchk[d], ldda_colchk[d], (gpu_row[d] / nb) * 2, gpu_col[d], 2, nb);
             cout << "row chk:" << endl;
-            printMatrix_gpu(drowchk[d], ld_drowchk[d], gpu_row[d], (gpu_col[d] / nb) * 2, nb, 2);
+            printMatrix_gpu(d_lA_rowchk[d], ldda_rowchk[d], gpu_row[d], (gpu_col[d] / nb) * 2, nb, 2);
         }
     }
     
@@ -435,6 +507,7 @@ magma_dpotrf3_mgpu(
                                               dlpanel, ldpanel,
                                               dlA(d, j, nb*j_local2), ldda,
                                               1, dinvA(d,0), dx(d,0) );
+                        
 #else
                         magma_dtrsm( MagmaLeft, MagmaUpper,
                                      MagmaConjTrans, MagmaNonUnit,
@@ -571,9 +644,23 @@ magma_dpotrf3_mgpu(
             magma_setdevice(id);
             if ( j > 0 ) {
                 magmablasSetKernelStream( queues[id][stream1] );
-                magma_dsyrk(MagmaLower, MagmaNoTrans, jb, j,
-                            d_neg_one, dlA(id, nb*j_local, 0), ldda,
-                            d_one,     dlA(id, nb*j_local, j), ldda);
+                // magma_dsyrk(MagmaLower, MagmaNoTrans, jb, j,
+                //             d_neg_one, dlA(id, nb*j_local, 0), ldda,
+                //             d_one,     dlA(id, nb*j_local, j), ldda);
+                void dsyrkFT(MagmaLower, MagmaNoTrans, jb, j,
+                             d_neg_one, dlA(id, nb*j_local, 0), ldda,
+                             d_one,     dlA(id, nb*j_local, j), ldda,
+                             dlA_colchk(id, nb*j_local, 0),     ldda_colchk,
+                             dlA_colchk_r(id, nb*j_local, 0),   ldda_colchk_r,
+                             dlA_rowchk(id, nb*j_local, 0),     ldda_rowchk,
+                             dlA_rowchk_r(id, nb*j_local, 0),   ldda_rowchk_r,
+                             dlA_colchk(id, nb*j_local, j),     ldda_colchk,
+                             dlA_colchk_r(id, nb*j_local, j),   ldda_colchk_r,
+                             dlA_rowchk(id, nb*j_local, j),     ldda_rowchk,
+                             dlA_rowchk_r(id, nb*j_local, j),   ldda_rowchk_r,
+                             dev_chk_v[id], ld_dev_chk_v[id],
+                             FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+                             queues[id]);
             }
 
             /* send the diagonal to cpu on stream1 */
@@ -585,7 +672,7 @@ magma_dpotrf3_mgpu(
             if (FT) {
                 /* send chk of diagonal to cpu on stream1 */
                 magma_dgetmatrix_async( 2, jb,
-                                        get_dcolchk(id, nb*j_local, j), ld_dcolchk,
+                                        dlA_colchk(id, nb*j_local, j), ldda_colchk,
                                         colchk, ld_colchk,
                                         queues[id][stream1] );
             }
@@ -646,15 +733,38 @@ magma_dpotrf3_mgpu(
                     if ( d == id ) {
                         dlpanel = dlA(d, nb*j_local, j);
                         ldpanel = ldda;
+
+                        dlpanel_colchk = dlA_colchk(d, nb*j_local, j);
+                        ldpanel_colchk = ldda_colchk;
+                        dlpanel_rowchk = dlA_rowchk(d, nb*j_local, j);
+                        ldpanel_rowchk = ldda_rowchk;
+
                     } else {
                         dlpanel = dlPT(d, 0, 0, buf);
                         ldpanel = nb;
+
+                        dlpanel_colchk = dlP_colchk(d, nb*j_local, j);
+                        ldpanel_colchk = lddp_colchk;
+                        dlpanel_rowchk = dlP_rowchk(d, nb*j_local, j);
+                        ldpanel_rowchk = lddp_rowchk;
+
                     }
                     magma_setdevice(d);
                     magma_dsetmatrix_async( jb, jb,
                                             Alo(j,j), lda,
                                             dlpanel,  ldpanel,
                                             queues[d][stream1] );
+                    if (FT) {
+                        magma_dsetmatrix_async( 2, jb,
+                                                colchk, ld_colchk,
+                                                dlpanel_colchk,  ldpanel_colchk,
+                                                queues[d][stream1] );
+                        magma_dsetmatrix_async( jb, 2,
+                                                rowchk, ld_rowchk,
+                                                dlpanel_rowchk,  ldpanel_rowchk,
+                                                queues[d][stream1] );
+                    }
+
                     magma_event_record( events[d][1], queues[d][stream1] );
                     d = (d+1)%ngpu;
                 }
@@ -664,14 +774,16 @@ magma_dpotrf3_mgpu(
                                         Alo(j,j),               lda,
                                         dlA(id, nb*j_local, j), ldda,
                                         queues[id][stream1] );
-            }
-
-            /* send the chk of diagonal to gpus on stream1 */
-            if (FT) {
-                magma_dsetmatrix_async( 2, jb,
-                                        colchk, ld_colchk,
-                                        get_dcolchk(id, nb*j_local, j), ld_dcolchk,
-                                        queues[d][stream1] );
+                if (FT) {
+                    magma_dsetmatrix_async( 2, jb,
+                                            colchk, ld_colchk,
+                                            dlA_colchk(d, nb*j_local, j),  ldda_colchk,
+                                            queues[d][stream1] );
+                    magma_dsetmatrix_async( jb, 2,
+                                            rowchk, ld_rowchk,
+                                            dlA_rowchk(d, nb*j_local, j),  ldda_rowchk,
+                                            queues[d][stream1] );
+                }
             }
 
             /* panel factorize the off-diagonal */
