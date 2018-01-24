@@ -743,10 +743,10 @@ magma_dpotrf3_mgpu(
                         dlpanel = dlPT(d, 0, 0, buf);
                         ldpanel = nb;
 
-                        dlpanel_colchk = dlP_colchk(d, nb*j_local, j);
-                        ldpanel_colchk = lddp_colchk;
-                        dlpanel_rowchk = dlP_rowchk(d, nb*j_local, j);
-                        ldpanel_rowchk = lddp_rowchk;
+                        dlpanel_colchk = dlPT_colchk(d, 0, 0, buf);
+                        ldpanel_colchk = 2;
+                        dlpanel_rowchk = dlPT_rowchk(d, 0, 0, buf);
+                        ldpanel_rowchk = nb;
 
                     }
                     magma_setdevice(d);
@@ -796,9 +796,20 @@ magma_dpotrf3_mgpu(
                     if ( d == id ) {
                         dlpanel = dlA(d, nb*j_local, j);
                         ldpanel = ldda;
+
+                        dlpanel_colchk = dlA_colchk(d, nb*j_local, j);
+                        ldpanel_colchk = ldda_colchk;
+                        dlpanel_rowchk = dlA_rowchk(d, nb*j_local, j);
+                        ldpanel_rowchk = ldda_rowchk;
                     } else {
                         dlpanel = dlPT(d, 0, 0, buf);
                         ldpanel = nb;
+
+                        dlpanel_colchk = dlPT_colchk(d, 0, 0, buf);
+                        ldpanel_colchk = 2;
+                        dlpanel_rowchk = dlPT_rowchk(d, 0, 0, buf);
+                        ldpanel_rowchk = nb;
+
                     }
                     nb2 = n_local[d] - j_local2*nb;
                     nb0 = min(nb, nb2);
@@ -831,7 +842,8 @@ magma_dpotrf3_mgpu(
 #if (defined(PRECISION_d) || defined(PRECISION_s)) && defined(DTRSM_WORK)
                         magmablas_dlaset( MagmaFull, trsm_nb, trsm_n, c_zero, c_zero, dinvA(d,0), trsm_nb );
                         magmablas_dlaset( MagmaFull, nb2,     jb,     c_zero, c_zero, dx(d,0), nb2 );
-                        magmablas_dtrsm_work( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
+                        magmablas_dtrsm_work( MagmaRight, MagmaLower, 
+                                              MagmaConjTrans, MagmaNonUnit,
                                               nb2, jb, c_one,
                                               dlpanel,                ldpanel,
                                               dlA(d, nb*j_local2, j), ldda,
