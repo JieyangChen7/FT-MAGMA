@@ -64,17 +64,17 @@ int main( int argc, char** argv)
 			long long flpins = 0.0;
 			float mflops = 0.0;
 			//timing start***************
-			if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
-				cout << "PAPI ERROR" << endl;
-				return -1;
-			}            
+			// if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+			// 	cout << "PAPI ERROR" << endl;
+			// 	return -1;
+			// }            
             magma_dpotrf_gpu( MagmaLower, N, d_A, ldda, &info );
-            if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
- 				cout << "PAPI ERROR" << endl;
- 				return -1;
- 			}
- 			cout<<"N="<<N<<"---time:"<<real_time<<"---gflops:"<<(double)gflops/real_time<<endl;
- 			PAPI_shutdown();   
+    //         if (PAPI_flops(&real_time, &proc_time, &flpins, &mflops) < PAPI_OK) {
+ 			// 	cout << "PAPI ERROR" << endl;
+ 			// 	return -1;
+ 			// }
+ 			// cout<<"N="<<N<<"---time:"<<real_time<<"---gflops:"<<(double)gflops/real_time<<endl;
+ 			// PAPI_shutdown();   
          
             TESTING_FREE_CPU( h_A );
             TESTING_FREE_PIN( h_R );
