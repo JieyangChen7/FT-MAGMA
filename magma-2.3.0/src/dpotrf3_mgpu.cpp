@@ -234,7 +234,7 @@ magma_dpotrf3_mgpu(
     int cpu_col = nb;
     int * gpu_row = new int[ngpu];
     int * gpu_col = new int[ngpu];
-    for (int d = 0; d < ngpu; d++) {
+    for (d = 0; d < ngpu; d++) {
         gpu_row[d] = n_local[d];
         gpu_col[d] = n;
     }
@@ -262,7 +262,7 @@ magma_dpotrf3_mgpu(
     int * ld_dev_chk_v = new int[ngpu];
     for( d=0; d < ngpu; d++ ) {
         magma_setdevice(d);
-        magma_dmalloc(&dev_chk_v[d], pitch_dchk_v * 2);
+        magma_dmalloc(&dev_chk_v[d], pitch_dev_chk_v * 2);
         ld_dev_chk_v[d] = pitch_dev_chk_v / sizeof(double);
         magma_dsetmatrix(nb, 2,
                          chk_v, ld_chk_v, 
