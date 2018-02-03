@@ -12,8 +12,8 @@
 #include "trace.h"
 #include "abft_printer.h"
 #include <cmath>
-#include <iostream>
-using namespace std;
+// #include <iostream>
+// using namespace std;
 
 #define PRECISION_d
 
