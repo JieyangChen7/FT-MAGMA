@@ -10,8 +10,8 @@
 */
 #include "magma_internal.h"
 #include "trace.h"
-#include "abft_printer.h"
-#include <cmath>
+//#include "abft_printer.h"
+//#include <cmath>
 // #include <iostream>
 // using namespace std;
 
