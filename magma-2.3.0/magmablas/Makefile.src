@@ -22,6 +22,9 @@ hdr += \
 	$(cdir)/zlarfg_devicesfunc.cuh		\
 	$(cdir)/ztrsv_template_device.cuh	\
 
+libmagma_src += \
+	$(cdir)/abft_printer.cpp		\
+
 # alphabetic order by base name (ignoring precision)
 libmagma_src += \
 	$(cdir)/zaxpycp.cu		\
