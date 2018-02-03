@@ -223,142 +223,142 @@ magma_dpotrf3_mgpu(
         }
     }
 
-    /* flags */
-    bool FT = false;
-    bool DEBUG = true;
-    bool CHECK_BEFORE;
-    bool CHECK_AFTER;
+    // /* flags */
+    // bool FT = false;
+    // bool DEBUG = true;
+    // bool CHECK_BEFORE;
+    // bool CHECK_AFTER;
 
-    /* matrix sizes to be checksumed */
-    int cpu_row = nb;
-    int cpu_col = nb;
-    int * gpu_row = new int[ngpu];
-    int * gpu_col = new int[ngpu];
-    for (d = 0; d < ngpu; d++) {
-        gpu_row[d] = n_local[d];
-        gpu_col[d] = n;
-    }
+    // /* matrix sizes to be checksumed */
+    // int cpu_row = nb;
+    // int cpu_col = nb;
+    // int * gpu_row = new int[ngpu];
+    // int * gpu_col = new int[ngpu];
+    // for (d = 0; d < ngpu; d++) {
+    //     gpu_row[d] = n_local[d];
+    //     gpu_col[d] = n;
+    // }
 
-    /* initialize checksum vector on CPU */
-    double * chk_v;
-    int ld_chk_v = nb;
-    magma_dmalloc_pinned(&chk_v, nb * 2 * sizeof(double));
-    for (int i = 0; i < nb; ++i) {
-        *(chk_v + i) = 1;
-    }
-    for (int i = 0; i < nb; ++i) {
-        *(chk_v + ld_chk_v + i) = i + 1;
-    }
+    // /* initialize checksum vector on CPU */
+    // double * chk_v;
+    // int ld_chk_v = nb;
+    // magma_dmalloc_pinned(&chk_v, nb * 2 * sizeof(double));
+    // for (int i = 0; i < nb; ++i) {
+    //     *(chk_v + i) = 1;
+    // }
+    // for (int i = 0; i < nb; ++i) {
+    //     *(chk_v + ld_chk_v + i) = i + 1;
+    // }
 
-    if (DEBUG) {
-        cout << "checksum vector on CPU:" << endl;
-        printMatrix_host(chk_v, ld_chk_v, nb, 2, -1, -1);
-    }
+    // if (DEBUG) {
+    //     cout << "checksum vector on CPU:" << endl;
+    //     printMatrix_host(chk_v, ld_chk_v, nb, 2, -1, -1);
+    // }
 
 
-    /* initialize checksum vector on GPUs */
-    double ** dev_chk_v = new double * [ngpu];
-    size_t pitch_dev_chk_v = magma_roundup(nb * sizeof(double), 32);
-    int * ld_dev_chk_v = new int[ngpu];
-    for( d=0; d < ngpu; d++ ) {
-        magma_setdevice(d);
-        magma_dmalloc(&dev_chk_v[d], pitch_dev_chk_v * 2);
-        ld_dev_chk_v[d] = pitch_dev_chk_v / sizeof(double);
-        magma_dsetmatrix(nb, 2,
-                         chk_v, ld_chk_v, 
-                         dev_chk_v[d], ld_dev_chk_v[d]);
-        if (DEBUG) {
-            cout << "checksum vector on GPU " << d << " :" << endl;
-            printMatrix_gpu(dev_chk_v[d], ld_dev_chk_v[d], nb, 2, -1, -1);
-        }
-    }
+    // /* initialize checksum vector on GPUs */
+    // double ** dev_chk_v = new double * [ngpu];
+    // size_t pitch_dev_chk_v = magma_roundup(nb * sizeof(double), 32);
+    // int * ld_dev_chk_v = new int[ngpu];
+    // for( d=0; d < ngpu; d++ ) {
+    //     magma_setdevice(d);
+    //     magma_dmalloc(&dev_chk_v[d], pitch_dev_chk_v * 2);
+    //     ld_dev_chk_v[d] = pitch_dev_chk_v / sizeof(double);
+    //     magma_dsetmatrix(nb, 2,
+    //                      chk_v, ld_chk_v, 
+    //                      dev_chk_v[d], ld_dev_chk_v[d]);
+    //     if (DEBUG) {
+    //         cout << "checksum vector on GPU " << d << " :" << endl;
+    //         printMatrix_gpu(dev_chk_v[d], ld_dev_chk_v[d], nb, 2, -1, -1);
+    //     }
+    // }
 
-     /* allocate space for update column checksum on CPU */
-    cout << "allocate space for column checksum on CPU......";
-    double * colchk;
-    int ld_colchk;
-    magma_dmalloc_pinned(&colchk, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
-    ld_colchk = (cpu_row / nb) * 2;
-    cout << "done." << endl;
+    //  /* allocate space for update column checksum on CPU */
+    // cout << "allocate space for column checksum on CPU......";
+    // double * colchk;
+    // int ld_colchk;
+    // magma_dmalloc_pinned(&colchk, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
+    // ld_colchk = (cpu_row / nb) * 2;
+    // cout << "done." << endl;
 
-    /* allocate space for update column checksum on CPU */
-    cout << "allocate space for row checksum on CPU......";
-    double * rowchk;
-    int ld_rowchk;
-    magma_dmalloc_pinned(&rowchk, cpu_row * (cpu_col / nb) * 2 * sizeof(double));
-    ld_rowchk = cpu_row;
-    cout << "done." << endl;
+    // /* allocate space for update column checksum on CPU */
+    // cout << "allocate space for row checksum on CPU......";
+    // double * rowchk;
+    // int ld_rowchk;
+    // magma_dmalloc_pinned(&rowchk, cpu_row * (cpu_col / nb) * 2 * sizeof(double));
+    // ld_rowchk = cpu_row;
+    // cout << "done." << endl;
 
     
-    /* allocate space for col checksum on GPU */
-    int panel_row;
-    if (uplo == MagmaLower) {
-        panel_row = nb;
-    } else {
-        panel_row = lddp;
-    }
-    cout << "allocate space for col column checksums on GPUs......";
-    double ** d_lA_colchk   = new double * [ngpu];
-    int *     ldda_colchk   = new int      [ngpu];
-    double ** d_lA_colchk_r = new double * [ngpu];
-    int *     ldda_colchk_r = new int      [ngpu];
+    // /* allocate space for col checksum on GPU */
+    // int panel_row;
+    // if (uplo == MagmaLower) {
+    //     panel_row = nb;
+    // } else {
+    //     panel_row = lddp;
+    // }
+    // cout << "allocate space for col column checksums on GPUs......";
+    // double ** d_lA_colchk   = new double * [ngpu];
+    // int *     ldda_colchk   = new int      [ngpu];
+    // double ** d_lA_colchk_r = new double * [ngpu];
+    // int *     ldda_colchk_r = new int      [ngpu];
 
-    double ** d_lP_colchk   = new double * [ngpu];
-    int *     lddp_colchk   = new int      [ngpu];
-    double ** d_lP_colchk_r = new double * [ngpu];
-    int *     lddp_colchk_r = new int      [ngpu];
-    for( d=0; d < ngpu; d++ ) {
-        magma_setdevice(d);
-        size_t pitch_d_lA_colchk = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
-        ldda_colchk[d] = pitch_d_lA_colchk / sizeof(double);
-        magma_dmalloc(&d_lA_colchk[d], pitch_d_lA_colchk * gpu_col[d]);
+    // double ** d_lP_colchk   = new double * [ngpu];
+    // int *     lddp_colchk   = new int      [ngpu];
+    // double ** d_lP_colchk_r = new double * [ngpu];
+    // int *     lddp_colchk_r = new int      [ngpu];
+    // for( d=0; d < ngpu; d++ ) {
+    //     magma_setdevice(d);
+    //     size_t pitch_d_lA_colchk = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
+    //     ldda_colchk[d] = pitch_d_lA_colchk / sizeof(double);
+    //     magma_dmalloc(&d_lA_colchk[d], pitch_d_lA_colchk * gpu_col[d]);
 
-        size_t pitch_d_lA_colchk_r = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
-        ldda_colchk_r[d] = pitch_d_lA_colchk_r / sizeof(double);
-        magma_dmalloc(&d_lA_colchk_r[d], pitch_d_lA_colchk_r * gpu_col[d]);
+    //     size_t pitch_d_lA_colchk_r = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
+    //     ldda_colchk_r[d] = pitch_d_lA_colchk_r / sizeof(double);
+    //     magma_dmalloc(&d_lA_colchk_r[d], pitch_d_lA_colchk_r * gpu_col[d]);
 
-        size_t pitch_d_lP_colchk = magma_roundup((panel_row / nb) * 2 * sizeof(double), 32);
-        lddp_colchk[d] = pitch_d_lP_colchk / sizeof(double);
-        magma_dmalloc(&d_lP_colchk[d], pitch_d_lP_colchk * ngpu * nb);
+    //     size_t pitch_d_lP_colchk = magma_roundup((panel_row / nb) * 2 * sizeof(double), 32);
+    //     lddp_colchk[d] = pitch_d_lP_colchk / sizeof(double);
+    //     magma_dmalloc(&d_lP_colchk[d], pitch_d_lP_colchk * ngpu * nb);
 
-        size_t pitch_d_lP_colchk_r = magma_roundup((panel_row / nb) * 2 * sizeof(double), 32);
-        lddp_colchk_r[d] = pitch_d_lP_colchk_r / sizeof(double);
-        magma_dmalloc(&d_lP_colchk_r[d], pitch_d_lP_colchk_r * ngpu * nb);
+    //     size_t pitch_d_lP_colchk_r = magma_roundup((panel_row / nb) * 2 * sizeof(double), 32);
+    //     lddp_colchk_r[d] = pitch_d_lP_colchk_r / sizeof(double);
+    //     magma_dmalloc(&d_lP_colchk_r[d], pitch_d_lP_colchk_r * ngpu * nb);
 
-    }
-    cout << "done." << endl;
+    // }
+    // cout << "done." << endl;
 
 
-    /* allocate space for row checksum on GPU */
-    cout << "allocate space for row checksums on GPUs......";
-    double ** d_lA_rowchk   = new double * [ngpu];
-    int *     ldda_rowchk   = new int      [ngpu];
-    double ** d_lA_rowchk_r = new double * [ngpu];
-    int *     ldda_rowchk_r = new int      [ngpu];
+    // /* allocate space for row checksum on GPU */
+    // cout << "allocate space for row checksums on GPUs......";
+    // double ** d_lA_rowchk   = new double * [ngpu];
+    // int *     ldda_rowchk   = new int      [ngpu];
+    // double ** d_lA_rowchk_r = new double * [ngpu];
+    // int *     ldda_rowchk_r = new int      [ngpu];
 
-    double ** d_lP_rowchk   = new double * [ngpu];
-    int *     lddp_rowchk   = new int      [ngpu];
-    double ** d_lP_rowchk_r = new double * [ngpu];
-    int *     lddp_rowchk_r = new int      [ngpu];
-    for( d=0; d < ngpu; d++ ) {
-        magma_setdevice(d);
-        size_t pitch_d_lA_rowchk = magma_roundup(gpu_row[d] * sizeof(double), 32);
-        ldda_rowchk[d] = pitch_d_lA_rowchk / sizeof(double);
-        magma_dmalloc(&d_lA_rowchk[d], pitch_d_lA_rowchk * (gpu_col[d] / nb) * 2);
+    // double ** d_lP_rowchk   = new double * [ngpu];
+    // int *     lddp_rowchk   = new int      [ngpu];
+    // double ** d_lP_rowchk_r = new double * [ngpu];
+    // int *     lddp_rowchk_r = new int      [ngpu];
+    // for( d=0; d < ngpu; d++ ) {
+    //     magma_setdevice(d);
+    //     size_t pitch_d_lA_rowchk = magma_roundup(gpu_row[d] * sizeof(double), 32);
+    //     ldda_rowchk[d] = pitch_d_lA_rowchk / sizeof(double);
+    //     magma_dmalloc(&d_lA_rowchk[d], pitch_d_lA_rowchk * (gpu_col[d] / nb) * 2);
 
-        size_t pitch_d_lA_rowchk_r = magma_roundup(gpu_row[d] * sizeof(double), 32);
-        ldda_rowchk_r[d] = pitch_d_lA_rowchk_r / sizeof(double);
-        magma_dmalloc(&d_lA_rowchk_r[d], pitch_d_lA_rowchk_r * (gpu_col[d] / nb) * 2);
+    //     size_t pitch_d_lA_rowchk_r = magma_roundup(gpu_row[d] * sizeof(double), 32);
+    //     ldda_rowchk_r[d] = pitch_d_lA_rowchk_r / sizeof(double);
+    //     magma_dmalloc(&d_lA_rowchk_r[d], pitch_d_lA_rowchk_r * (gpu_col[d] / nb) * 2);
 
-        size_t pitch_d_lP_rowchk = magma_roundup(panel_row * sizeof(double), 32);
-        lddp_rowchk[d] = pitch_d_lP_rowchk / sizeof(double);
-        magma_dmalloc(&d_lP_rowchk[d], pitch_d_lP_rowchk * ((ngpu * nb) / nb) * 2);
+    //     size_t pitch_d_lP_rowchk = magma_roundup(panel_row * sizeof(double), 32);
+    //     lddp_rowchk[d] = pitch_d_lP_rowchk / sizeof(double);
+    //     magma_dmalloc(&d_lP_rowchk[d], pitch_d_lP_rowchk * ((ngpu * nb) / nb) * 2);
 
-        size_t pitch_d_lP_rowchk_r = magma_roundup(panel_row * sizeof(double), 32);
-        lddp_rowchk_r[d] = pitch_d_lP_rowchk_r / sizeof(double);
-        magma_dmalloc(&d_lP_rowchk_r[d], pitch_d_lP_rowchk_r * ((ngpu * nb) / nb) * 2);
-    }
-    cout << "done." << endl;
+    //     size_t pitch_d_lP_rowchk_r = magma_roundup(panel_row * sizeof(double), 32);
+    //     lddp_rowchk_r[d] = pitch_d_lP_rowchk_r / sizeof(double);
+    //     magma_dmalloc(&d_lP_rowchk_r[d], pitch_d_lP_rowchk_r * ((ngpu * nb) / nb) * 2);
+    // }
+    // cout << "done." << endl;
 
     // /* calculate initial column checksum on GPUs */
     // cout << "calculate initial column checksum on GPUs......";
