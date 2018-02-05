@@ -46,25 +46,6 @@ void printMatrix_host_int(int * matrix_host, int ld,  int M, int N, int row_bloc
 }
 
 
-void printMatrix_host_time(time_t * matrix_host, int ld,  int M, int N, int row_block, int col_block) {
-	for (int i = 0; i < M; i++) {
-		for (int j = 0; j < N; j++) {
-			cout.width(10);
-			cout.setf(ios::left);
-			cout << setprecision(5) << matrix_host[j * ld + i];
-			if (col_block != -1 && (j + 1) % col_block == 0) {
-				cout << "	";
-			}
-		}
-		cout << endl;
-		if (row_block != -1 && (i + 1) % row_block == 0) {
-			cout << endl;
-		}
-	}
-	cout << endl;
-}
-
-
 /**
  * M: number of row
  * N: number of col
