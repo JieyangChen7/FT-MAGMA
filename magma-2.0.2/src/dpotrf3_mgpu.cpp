@@ -10,6 +10,7 @@
 */
 #include "magma_internal.h"
 #include "trace.h"
+#include "abft_printer.h"
 
 #define PRECISION_d
 

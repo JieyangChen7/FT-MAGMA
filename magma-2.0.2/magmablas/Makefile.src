@@ -41,6 +41,8 @@ $(cdir)/dtrtri_diag_batched.$(o_ext): $(cdir)/dtrtri.cuh
 $(cdir)/ctrtri_diag_batched.$(o_ext): $(cdir)/ctrtri.cuh
 $(cdir)/ztrtri_diag_batched.$(o_ext): $(cdir)/ztrtri.cuh
 
+libmagma_zsrc += \
+	$(cdir)/abft_printer.cpp		\
 
 # alphabetic order by base name (ignoring precision)
 libmagma_zsrc += \
