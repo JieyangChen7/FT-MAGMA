@@ -260,9 +260,10 @@ magma_dpotrf3_mgpu(
         magma_setdevice(d);
         magma_dmalloc(&dev_chk_v[d], pitch_dev_chk_v * 2);
         ld_dev_chk_v[d] = pitch_dev_chk_v / sizeof(double);
-        magma_dsetmatrix_async(nb, 2,
-                               chk_v, ld_chk_v, 
-                               dev_chk_v[d], ld_dev_chk_v[d]);
+        magma_dgetmatrix(nb, 2,
+                         chk_v, ld_chk_v, 
+                         dev_chk_v[d], ld_dev_chk_v[d],
+                         queues[d][stream1]);
         if (DEBUG) {
             printf("on GPU %d:\n", d);
             printMatrix_gpu(dev_chk_v[d], ld_dev_chk_v[d],
