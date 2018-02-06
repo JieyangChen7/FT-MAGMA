@@ -220,6 +220,39 @@ magma_dpotrf3_mgpu(
         }
     }
 
+    /* flags */
+    bool FT = false;
+    bool DEBUG = true;
+    bool CHECK_BEFORE;
+    bool CHECK_AFTER;
+
+    /* matrix sizes to be checksumed */
+    int cpu_row = nb;
+    int cpu_col = nb;
+    int * gpu_row = new int[ngpu];
+    int * gpu_col = new int[ngpu];
+    for (int d = 0; d < ngpu; d++) {
+        gpu_row[d] = n_local[d];
+        gpu_col[d] = n;
+    }
+
+    /* initialize checksum vector on CPU */
+    double * chk_v;
+    int ld_chk_v = nb;
+    magma_dmalloc_pinned(&chk_v, nb * 2 * sizeof(double));
+    for (int i = 0; i < nb; ++i) {
+        *(chk_v + i) = 1;
+    }
+    for (int i = 0; i < nb; ++i) {
+        *(chk_v + ld_chk_v + i) = i + 1;
+    }
+
+    if (DEBUG) {
+        cout << "checksum vector on CPU:" << endl;
+        printMatrix_host(chk_v, ld_chk_v, nb, 2, -1, -1);
+    }
+    
+
     /* == initialize the trace */
     trace_init( 1, ngpu, 3, queues );
 
