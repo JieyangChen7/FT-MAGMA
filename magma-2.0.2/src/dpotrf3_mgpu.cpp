@@ -248,10 +248,10 @@ magma_dpotrf3_mgpu(
     }
 
     if (DEBUG) {
-        cout << "checksum vector on CPU:" << endl;
+        printf("checksum vector on CPU:\n");
         printMatrix_host(chk_v, ld_chk_v, nb, 2, -1, -1);
     }
-    
+
 
     /* == initialize the trace */
     trace_init( 1, ngpu, 3, queues );
