@@ -66,6 +66,8 @@ magma_int_t magma_get_dpotrf_nb( magma_int_t n )
         else if (n <  4256) nb = 128;
         else                nb = 256;
     }
+    // debug
+    nb = 4;
     return nb;
 }
 
