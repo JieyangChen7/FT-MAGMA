@@ -252,6 +252,24 @@ magma_dpotrf3_mgpu(
         printMatrix_host(chk_v, ld_chk_v, nb, 2, -1, -1);
     }
 
+    /* initialize checksum vector on GPUs */
+    double ** dev_chk_v = new double * [ngpu];
+    size_t pitch_dev_chk_v = magma_roundup(nb * sizeof(double), 32);
+    int * ld_dev_chk_v = new int[ngpu];
+    for( d=0; d < ngpu; d++ ) {
+        magma_setdevice(d);
+        magma_dmalloc(&dev_chk_v[d], pitch_dchk_v * 2);
+        ld_dev_chk_v[d] = pitch_dev_chk_v / sizeof(double);
+        magma_dsetmatrix(nb, 2,
+                         chk_v, ld_chk_v, 
+                         dev_chk_v[d], ld_dev_chk_v[d]);
+        if (DEBUG) {
+            printf("on GPU %d:\n", d);
+            printMatrix_gpu(dev_chk_v[d], ld_dev_chk_v[d],
+                            nb, 2, nb, nb);
+        }
+    }
+
 
     /* == initialize the trace */
     trace_init( 1, ngpu, 3, queues );
