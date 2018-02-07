@@ -19,12 +19,12 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * chksum2: checksum 2
  * inc2: stride between elememts in chksum2
  */
-void abft_dpotf2(char * uplo, int n, double * A, int lda, int * info, 
-				 int nb, 
-				 double * colchk, int ld_colchk, 
-				 double * rowchk, int ld_rowchk, 
-				 double * chk_v, int ld_chk_v, 
-				 bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER) {
+void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info, 
+			     int nb, 
+			     double * colchk, int ld_colchk, 
+			     double * rowchk, int ld_rowchk, 
+			     double * chk_v, int ld_chk_v, 
+			     bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER) {
 	
 	double one = 1;
 	double zero = 0;
@@ -59,10 +59,11 @@ void abft_dpotf2(char * uplo, int n, double * A, int lda, int * info,
 //								chk1, chk1_inc,
 //								chk2, chk2_inc);
 		double * recal_colchk = new double[n * 2];
+		int num_chk = 2;
 		int ld_recal_colchk = 2;
 
 		blasf77_dgemm(&T, &N,
-                      2, &n, &nb,
+                      &num_chk, &n, &nb,
                       &one, 
                       chk_v, &ld_chk_v,
                       A, &lda,
@@ -142,7 +143,7 @@ void abft_dpotf2(char * uplo, int n, double * A, int lda, int * info,
 		int ld_recal_colchk = 2;
 
 		blasf77_dgemm(&T, &N,
-                      2, &n, &nb,
+                      &num_chk, &n, &nb,
                       &one, 
                       chk_v, &ld_chk_v,
                       A, &lda,

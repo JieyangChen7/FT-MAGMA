@@ -743,7 +743,7 @@ magma_dpotrf3_mgpu(
             magma_setdevice(id);
             magma_queue_sync( queues[id][stream1] );
             //lapackf77_dpotrf(MagmaLowerStr, &jb, Alo(j,j), &lda, info);
-            abft_dpotf2(MagmaLowerStr, jb, Alo(j,j), lda, info, 
+            abft_dpotf2(*MagmaLowerStr, jb, Alo(j,j), lda, info, 
                          nb, 
                          colchk, ld_colchk, 
                          rowchk, ld_rowchk, 
