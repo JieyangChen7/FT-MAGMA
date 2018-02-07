@@ -770,9 +770,9 @@ magma_dpotrf3_mgpu(
                         ldpanel = ldda;
 
                         dlpanel_colchk = dlA_colchk(d, nb*j_local, j);
-                        ldpanel_colchk = ldda_colchk;
+                        ldpanel_colchk = ldda_colchk[d];
                         dlpanel_rowchk = dlA_rowchk(d, nb*j_local, j);
-                        ldpanel_rowchk = ldda_rowchk;
+                        ldpanel_rowchk = ldda_rowchk[d];
 
                     } else {
                         dlpanel = dlPT(d, 0, 0, buf);
@@ -788,7 +788,7 @@ magma_dpotrf3_mgpu(
                                             Alo(j,j), lda,
                                             dlpanel,  ldpanel,
                                             queues[d][stream1] );
-                    
+
                     if (FT) {
                         magma_dsetmatrix_async( 2, jb,
                                                 colchk, ld_colchk,
@@ -833,9 +833,9 @@ magma_dpotrf3_mgpu(
                         ldpanel = ldda;
 
                         dlpanel_colchk = dlA_colchk(d, nb*j_local, j);
-                        ldpanel_colchk = ldda_colchk;
+                        ldpanel_colchk = ldda_colchk[d];
                         dlpanel_rowchk = dlA_rowchk(d, nb*j_local, j);
-                        ldpanel_rowchk = ldda_rowchk;
+                        ldpanel_rowchk = ldda_rowchk[d];
 
                     } else {
                         dlpanel = dlPT(d, 0, 0, buf);
