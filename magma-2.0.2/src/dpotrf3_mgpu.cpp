@@ -812,11 +812,11 @@ magma_dpotrf3_mgpu(
                 if (FT) {
                     magma_dsetmatrix_async( 2, jb,
                                             colchk, ld_colchk,
-                                            dlA_colchk(d, nb*j_local, j),  ldda_colchk,
+                                            dlA_colchk(d, nb*j_local, j),  ldda_colchk[d],
                                             queues[d][stream1] );
                     magma_dsetmatrix_async( jb, 2,
                                             rowchk, ld_rowchk,
-                                            dlA_rowchk(d, nb*j_local, j),  ldda_rowchk,
+                                            dlA_rowchk(d, nb*j_local, j),  ldda_rowchk[d],
                                             queues[d][stream1] );
                 }
             }
