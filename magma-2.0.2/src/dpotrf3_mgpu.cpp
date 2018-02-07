@@ -1025,6 +1025,7 @@ magma_dpotrf3_mgpu(
                                                   dx(d,1), nb2,
                                                   flag, dinvA(d,flag), dinvA_length,
                                                   queues[d][stream2] );
+                            printf("dtrsm_work-other2\n");
                         #else
                             magma_queue_wait_event( queues[d][stream2], events[d][1] ); // panel received
                             magma_dtrsm( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
@@ -1032,6 +1033,7 @@ magma_dpotrf3_mgpu(
                                          dlpanel,                    ldpanel,
                                          dlA(d, nb*j_local2+nb0, j), ldda,
                                          queues[d][stream2] );
+                            printf("dtrsm-other2\n");
                         #endif
                     }
                 }
