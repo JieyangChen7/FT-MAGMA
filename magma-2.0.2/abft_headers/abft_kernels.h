@@ -1,4 +1,4 @@
-void abft_dpotf2(char * uplo, int n, double * A, int lda, int * info, 
+void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info, 
 			  	 int nb, 
 			     double * colchk, int ld_colchk, 
 			     double * rowchk, int ld_rowchk, 

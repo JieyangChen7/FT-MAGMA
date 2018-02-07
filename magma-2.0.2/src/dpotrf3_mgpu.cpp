@@ -241,8 +241,8 @@ magma_dpotrf3_mgpu(
     /* flags */
     bool FT = true;
     bool DEBUG = true;
-    bool CHECK_BEFORE;
-    bool CHECK_AFTER;
+    bool CHECK_BEFORE = true;
+    bool CHECK_AFTER = true;
 
     /* matrix sizes to be checksumed */
     int cpu_row = nb;

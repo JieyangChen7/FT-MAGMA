@@ -140,6 +140,7 @@ void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info,
 //								chk1, chk1_inc,
 //								chk2, chk2_inc);
 		double * recal_colchk = new double[n * 2];
+		int num_chk = 2;
 		int ld_recal_colchk = 2;
 
 		blasf77_dgemm(&T, &N,
