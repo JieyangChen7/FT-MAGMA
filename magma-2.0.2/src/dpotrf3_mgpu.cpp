@@ -924,12 +924,14 @@ magma_dpotrf3_mgpu(
                                                   dx(d,0), nb2,
                                                   1, dinvA(d,0), dinvA_length,
                                                   queues[d][stream2] );
+                            printf("dtrsm_work-other\n");
                         #else
                             magma_dtrsm( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
                                          nb2, jb, c_one,
                                          dlpanel,                ldpanel,
                                          dlA(d, nb*j_local2, j), ldda,
                                          queues[d][stream2] );
+                            printf("dtrsm-other\n");
                         #endif
                     }
                     d = (d+1)%ngpu;
