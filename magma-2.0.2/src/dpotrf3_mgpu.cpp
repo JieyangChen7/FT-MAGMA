@@ -151,10 +151,10 @@ magma_dpotrf3_mgpu(
 #define dlP(id, i, j, k)  (d_lP[(id)] + (k)*nb*lddp + (j)*lddp + (i))
 #define dlPT(id, i, j, k) (d_lP[(id)] + (k)*nb*lddp + (j)*nb   + (i))
 
-#define dlA_colchk(id, i, j)       (d_lA_colchk[(id)]   + (j)*ldda_colchk        + (i/nb)*2)
-#define dlA_colchk_r(id, i, j)     (d_lA_colchk_r[(id)] + (j)*ldda_colchk_r      + (i/nb)*2)
-#define dlA_rowchk(id, i, j)       (d_lA_rowchk[(id)]   + (j/nb)*2*ldda_rowchk   + i)
-#define dlA_rowchk_r(id, i, j)     (d_lA_rowchk_r[(id)] + (j/nb)*2*ldda_rowchk_r + i)
+#define dlA_colchk(id, i, j)       (d_lA_colchk[(id)]   + (j)*ldda_colchk          + ((i)/nb)*2)
+#define dlA_colchk_r(id, i, j)     (d_lA_colchk_r[(id)] + (j)*ldda_colchk_r        + ((i)/nb)*2)
+#define dlA_rowchk(id, i, j)       (d_lA_rowchk[(id)]   + ((j)/nb)*2*ldda_rowchk   + (i))
+#define dlA_rowchk_r(id, i, j)     (d_lA_rowchk_r[(id)] + ((j)/nb)*2*ldda_rowchk_r + (i))
 
 #define dlP_colchk(id, i, j, k)       (d_lP_colchk[(id)]   + (k)*nb*lddp_colchk          + (j)*lddp_colchk        + (i/nb)*2)
 #define dlP_colchk_r(id, i, j, k)     (d_lP_colchk_r[(id)] + (k)*nb*lddp_colchk_r        + (j)*lddp_colchk_r      + (i/nb)*2)

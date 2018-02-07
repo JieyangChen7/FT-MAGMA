@@ -19,7 +19,7 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * chksum2: checksum 2
  * inc2: stride between elememts in chksum2
  */
-void abft_dpotrf2(const char uplo, int n, double * A, int lda, int * info, 
+void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info, 
 			  int nb, 
 			  double * colchk, int ld_colchk, 
 			  double * rowchk, int ld_rowchk, 
@@ -157,4 +157,5 @@ void abft_dpotrf2(const char uplo, int n, double * A, int lda, int * info,
 			cout<<"[DPOTRF-AFTER]updated checksum on CPU before factorization:"<<endl;
 			printMatrix_host(colchk, ld_colchk, 2, n, -1, -1);
 		}
+    }
 }
