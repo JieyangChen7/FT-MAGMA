@@ -44,54 +44,55 @@ $(cdir)/ztrtri_diag_batched.$(o_ext): $(cdir)/ztrtri.cuh
 libmagma_zsrc += \
 	$(cdir)/abft_printer.cpp		\
 	$(cdir)/abft_encoder.cpp		\
+	$(cdir)/abft_potf2.cpp   		\
 
 # alphabetic order by base name (ignoring precision)
 libmagma_zsrc += \
-	$(cdir)/zaxpycp.cu		\
-	$(cdir)/zcaxpycp.cu		\
-	$(cdir)/zgeadd.cu		\
-	$(cdir)/zgeadd2.cu		\
+	$(cdir)/zaxpycp.cu			\
+	$(cdir)/zcaxpycp.cu			\
+	$(cdir)/zgeadd.cu			\
+	$(cdir)/zgeadd2.cu			\
 	$(cdir)/zgemm_reduce.cu		\
 	$(cdir)/zgemv_conj.cu		\
 	$(cdir)/zgerbt_kernels.cu	\
-	$(cdir)/zgerbt.cu		\
-	$(cdir)/zhemv.cu		\
+	$(cdir)/zgerbt.cu			\
+	$(cdir)/zhemv.cu			\
 	$(cdir)/zhemv_upper.cu		\
-	$(cdir)/zlacpy.cu		\
+	$(cdir)/zlacpy.cu			\
 	$(cdir)/zlacpy_conj.cu		\
 	$(cdir)/zlacpy_sym_in.cu	\
 	$(cdir)/zlacpy_sym_out.cu	\
-	$(cdir)/zlag2c.cu		\
-	$(cdir)/clag2z.cu		\
-	$(cdir)/zlange.cu		\
-	$(cdir)/zlanhe.cu		\
+	$(cdir)/zlag2c.cu			\
+	$(cdir)/clag2z.cu			\
+	$(cdir)/zlange.cu			\
+	$(cdir)/zlanhe.cu			\
 	$(cdir)/zlaqps2_gpu.cu		\
-	$(cdir)/zlarf.cu		\
-	$(cdir)/zlarfbx.cu		\
-	$(cdir)/zlarfx.cu		\
-	$(cdir)/zlarfg.cu		\
+	$(cdir)/zlarf.cu			\
+	$(cdir)/zlarfbx.cu			\
+	$(cdir)/zlarfx.cu			\
+	$(cdir)/zlarfg.cu			\
 	$(cdir)/zlarfg-v2.cu		\
 	$(cdir)/zlarfgx-v2.cu		\
-	$(cdir)/zlascl.cu		\
-	$(cdir)/zlascl2.cu		\
+	$(cdir)/zlascl.cu			\
+	$(cdir)/zlascl2.cu			\
 	$(cdir)/zlascl_2x2.cu		\
 	$(cdir)/zlascl_diag.cu		\
-	$(cdir)/zlaset.cu		\
+	$(cdir)/zlaset.cu			\
 	$(cdir)/zlaset_band.cu		\
-	$(cdir)/zlaswp.cu		\
+	$(cdir)/zlaswp.cu			\
 	$(cdir)/zlaswp_sym.cu		\
-	$(cdir)/zclaswp.cu		\
-	$(cdir)/zlat2c.cu		\
-	$(cdir)/clat2z.cu		\
-	$(cdir)/dznrm2.cu		\
-	$(cdir)/zswap.cu		\
-	$(cdir)/zswapblk.cu		\
+	$(cdir)/zclaswp.cu			\
+	$(cdir)/zlat2c.cu			\
+	$(cdir)/clat2z.cu			\
+	$(cdir)/dznrm2.cu			\
+	$(cdir)/zswap.cu			\
+	$(cdir)/zswapblk.cu			\
 	$(cdir)/zswapdblk.cu		\
-	$(cdir)/zsymv.cu		\
+	$(cdir)/zsymv.cu			\
 	$(cdir)/zsymv_upper.cu		\
 	$(cdir)/zsymmetrize.cu		\
 	$(cdir)/zsymmetrize_tiles.cu	\
-	$(cdir)/ztranspose.cu		\
+	$(cdir)/ztranspose.cu			\
 	$(cdir)/ztranspose_conj.cu		\
 	$(cdir)/ztranspose_inplace.cu	\
 	$(cdir)/ztranspose_conj_inplace.cu	\

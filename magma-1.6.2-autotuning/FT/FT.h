@@ -1,5 +1,7 @@
 #include "magma.h"
-//#include "common_magma.h"
+#include "magma_lapack.h"
+#include "magmablas.h"
+#include "common_magma.h"
 #include  <ctime>
 
 /* i and j are block number */

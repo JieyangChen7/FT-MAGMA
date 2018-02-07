@@ -12,6 +12,7 @@
 #include "trace.h"
 #include "abft_printer.h"
 #include "abft_encoder.h"
+#include "abft_kernels.h"
 
 #define PRECISION_d
 
@@ -149,6 +150,22 @@ magma_dpotrf3_mgpu(
 #define dlA(id, i, j)     (d_lA[(id)] + (j)*ldda + (i))
 #define dlP(id, i, j, k)  (d_lP[(id)] + (k)*nb*lddp + (j)*lddp + (i))
 #define dlPT(id, i, j, k) (d_lP[(id)] + (k)*nb*lddp + (j)*nb   + (i))
+
+#define dlA_colchk(id, i, j)       (d_lA_colchk[(id)]   + (j)*ldda_colchk        + (i/nb)*2)
+#define dlA_colchk_r(id, i, j)     (d_lA_colchk_r[(id)] + (j)*ldda_colchk_r      + (i/nb)*2)
+#define dlA_rowchk(id, i, j)       (d_lA_rowchk[(id)]   + (j/nb)*2*ldda_rowchk   + i)
+#define dlA_rowchk_r(id, i, j)     (d_lA_rowchk_r[(id)] + (j/nb)*2*ldda_rowchk_r + i)
+
+#define dlP_colchk(id, i, j, k)       (d_lP_colchk[(id)]   + (k)*nb*lddp_colchk          + (j)*lddp_colchk        + (i/nb)*2)
+#define dlP_colchk_r(id, i, j, k)     (d_lP_colchk_r[(id)] + (k)*nb*lddp_colchk_r        + (j)*lddp_colchk_r      + (i/nb)*2)
+#define dlP_rowchk(id, i, j, k)       (d_lP_rowchk[(id)]   + (k)*(nb/nb)*2*lddp_rowchk   + (j/nb)*2*lddp_rowchk   + i)
+#define dlP_rowchk_r(id, i, j, k)     (d_lP_rowchk_r[(id)] + (k)*(nb/nb)*2*lddp_rowchk_r + (j/nb)*2*lddp_rowchk_r + i)
+
+#define dlPT_colchk(id, i, j, k)       (d_lP_colchk[(id)]   + (k)*nb*lddp_colchk          + ((j*nb+i)/nb)*2)
+#define dlPT_colchk_r(id, i, j, k)     (d_lP_colchk_r[(id)] + (k)*nb*lddp_colchk_r        + ((j*nb+i)/nb)*2)
+#define dlPT_rowchk(id, i, j, k)       (d_lP_rowchk[(id)]   + (k)*(nb/nb)*2*lddp_rowchk   + j * nb + i)
+#define dlPT_rowchk_r(id, i, j, k)     (d_lP_rowchk_r[(id)] + (k)*(nb/nb)*2*lddp_rowchk_r + j * nb + i)
+
 
     magma_int_t     j, jb, nb0, nb2, d, dd, id, j_local, j_local2, buf;
     double c_one     = MAGMA_D_ONE;
@@ -376,7 +393,7 @@ magma_dpotrf3_mgpu(
 
         for( d=0; d < ngpu; d++ ) {
             magma_setdevice(d);
-            printf( "on GPU %d:\n" );
+            printf( "on GPU %d:\n", d);
             printf( "input matrix A:\n" );
             printMatrix_gpu(d_lA[d], ldda, gpu_row[d], gpu_col[d], nb, nb);
             printf( "column chk:\n" );
@@ -660,7 +677,7 @@ magma_dpotrf3_mgpu(
         /* Lower-triangular case                          */
         /* > Compute the Cholesky factorization A = L*L'. */
         /* ---------------------------------------------- */
-        for (j=0; j < n; j += nb) {
+        for (j=0; j < nb; j += nb) {
             /* Set the GPU number that holds the current panel */
             id  = (j/nb)%ngpu;
             buf = (j/nb)%ngpu;
@@ -683,6 +700,13 @@ magma_dpotrf3_mgpu(
                                     dlA(id, nb*j_local, j), ldda,
                                     Alo(j,j),               lda,
                                     queues[id][stream1] );
+            if (FT) {
+                /* send chk of diagonal to cpu on stream1 */
+                magma_dgetmatrix_async( 2, jb,
+                                        dlA_colchk(id, nb*j_local, j), ldda_colchk,
+                                        colchk, ld_colchk,
+                                        queues[id][stream1] );
+            }
 
             /* update off-diagonal blocks of the panel */
             if ( j > 0 ) {
@@ -718,7 +742,14 @@ magma_dpotrf3_mgpu(
             /* wait for the panel and factorized it on cpu */
             magma_setdevice(id);
             magma_queue_sync( queues[id][stream1] );
-            lapackf77_dpotrf(MagmaLowerStr, &jb, Alo(j,j), &lda, info);
+            //lapackf77_dpotrf(MagmaLowerStr, &jb, Alo(j,j), &lda, info);
+            abft_dpotrf2(MagmaLowerStr, jb, Alo(j,j), lda, info, 
+                         nb, 
+                         colchk, ld_colchk, 
+                         rowchk, ld_rowchk, 
+                         chk_v,  ld_chk_v, 
+                         FT,  DEBUG, CHECK_BEFORE, CHECK_AFTER);
+
             if (*info != 0) {
                 *info = *info + j;
                 break;
