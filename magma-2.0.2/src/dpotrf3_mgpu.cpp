@@ -1003,9 +1003,31 @@ magma_dpotrf3_mgpu(
                         if ( d == id ) {
                             dlpanel = dlA(d, nb*j_local, j);
                             ldpanel = ldda;
+
+                            dlpanel_colchk = dlA_colchk(d, nb*j_local, j);
+                            ldpanel_colchk = ldda_colchk[d];
+                            dlpanel_rowchk = dlA_rowchk(d, nb*j_local, j);
+                            ldpanel_rowchk = ldda_rowchk[d];
+
+                            dlpanel_colchk_r = dlA_colchk_r(d, nb*j_local, j);
+                            ldpanel_colchk_r = ldda_colchk_r[d];
+                            dlpanel_rowchk_r = dlA_rowchk_r(d, nb*j_local, j);
+                            ldpanel_rowchk_r = ldda_rowchk_r[d];
+
                         } else {
                             dlpanel = dlPT(d,0,0,buf);
                             ldpanel = nb;
+
+                            dlpanel_colchk = dlPT_colchk(d, 0, 0, buf);
+                            ldpanel_colchk = 2;
+                            dlpanel_rowchk = dlPT_rowchk(d, 0, 0, buf);
+                            ldpanel_rowchk = nb;
+
+                            dlpanel_colchk_r= dlPT_colchk_r(d, 0, 0, buf);
+                            ldpanel_colchk_r = 2;
+                            dlpanel_rowchk_r = dlPT_rowchk_r(d, 0, 0, buf);
+                            ldpanel_rowchk_r = nb;
+                        
                         }
                         magma_setdevice(d);
                         /* update the remaining blocks in the column */
@@ -1018,13 +1040,34 @@ magma_dpotrf3_mgpu(
                                 magma_queue_wait_event( queues[d][stream2], events[d][1] ); // panel received
                             }
                             magmablas_dlaset( MagmaFull, nb2, jb, c_zero, c_zero, dx(d,1), nb2, queues[d][stream2] );
-                            magmablas_dtrsm_work( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
-                                                  nb2, jb, c_one,
-                                                  dlpanel,                    ldpanel,
-                                                  dlA(d, nb*j_local2+nb0, j), ldda,
-                                                  dx(d,1), nb2,
-                                                  flag, dinvA(d,flag), dinvA_length,
-                                                  queues[d][stream2] );
+                            // magmablas_dtrsm_work( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
+                            //                       nb2, jb, c_one,
+                            //                       dlpanel,                    ldpanel,
+                            //                       dlA(d, nb*j_local2+nb0, j), ldda,
+                            //                       dx(d,1), nb2,
+                            //                       flag, dinvA(d,flag), dinvA_length,
+                            //                       queues[d][stream2] );
+
+                            abft_dtrsm_work(MagmaRight, MagmaLower,
+                                            MagmaConjTrans, MagmaNonUnit,
+                                            nb2, jb, c_one,
+                                            dlpanel, ldpanel,
+                                            dlA(d, nb*j_local2+nb0, j), ldda,
+                                            dx(d,1), nb2,
+                                            flag, dinvA(d,flag), dinvA_length,
+                                            nb,
+                                            dlpanel_colchk,    ldpanel_colchk,
+                                            dlpanel_rowchk,    ldpanel_rowchk,
+                                            dlpanel_colchk_r,  ldpanel_colchk_r,
+                                            dlpanel_rowchk_r,  ldpanel_rowchk_r,
+                                            dlA_colchk(d, nb*j_local2+nb0, j),   ldda_colchk[d],
+                                            dlA_rowchk(d, nb*j_local2+nb0, j),   ldda_rowchk[d],
+                                            dlA_colchk_r(d, nb*j_local2+nb0, j), ldda_colchk_r[d],
+                                            dlA_rowchk_r(d, nb*j_local2+nb0, j), ldda_rowchk_r[d],
+                                            dev_chk_v[d],                    ld_dev_chk_v[d],
+                                            FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+                                            queues[d][stream2], queues[d][stream2]);
+
                             printf("dtrsm_work-other2\n");
                         #else
                             magma_queue_wait_event( queues[d][stream2], events[d][1] ); // panel received
