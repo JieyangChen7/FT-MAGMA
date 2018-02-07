@@ -221,7 +221,7 @@ magma_dpotrf3_mgpu(
     }
 
     /* flags */
-    bool FT = false;
+    bool FT = true;
     bool DEBUG = true;
     bool CHECK_BEFORE;
     bool CHECK_AFTER;
@@ -236,7 +236,7 @@ magma_dpotrf3_mgpu(
         gpu_col[d] = n;
     }
 
-    /* initialize checksum vector on CPU */
+    printf( "initialize checksum vector on CPU\n");
     double * chk_v;
     int ld_chk_v = nb;
     magma_dmalloc_pinned(&chk_v, nb * 2 * sizeof(double));
@@ -252,7 +252,7 @@ magma_dpotrf3_mgpu(
         printMatrix_host(chk_v, ld_chk_v, nb, 2, -1, -1);
     }
 
-    /* initialize checksum vector on GPUs */
+    printf( "initialize checksum vector on GPUs\n");
     double ** dev_chk_v = new double * [ngpu];
     size_t pitch_dev_chk_v = magma_roundup(nb * sizeof(double), 32);
     int * ld_dev_chk_v = new int[ngpu];
@@ -268,6 +268,120 @@ magma_dpotrf3_mgpu(
             printf("on GPU %d:\n", d);
             printMatrix_gpu(dev_chk_v[d], ld_dev_chk_v[d],
                             nb, 2, nb, nb);
+        }
+    }
+
+    printf( "allocate space for column checksum on CPU......\n" );
+    double * colchk;
+    int ld_colchk;
+    magma_dmalloc_pinned(&colchk, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
+    ld_colchk = (cpu_row / nb) * 2;
+    printf( "done.\n" );
+
+    printf( "allocate space for row checksum on CPU......\n" );
+    double * rowchk;
+    int ld_rowchk;
+    magma_dmalloc_pinned(&rowchk, cpu_row * (cpu_col / nb) * 2 * sizeof(double));
+    ld_rowchk = cpu_row;
+    printf( "done.\n" );
+
+    /* allocate space for col checksum on GPU */
+    int panel_row;
+    if (uplo == MagmaLower) {
+        panel_row = nb;
+    } else {
+        panel_row = lddp;
+    }
+
+    printf( "allocate space for col column checksums on GPUs......\n" );
+    double ** d_lA_colchk   = new double * [ngpu];
+    int *     ldda_colchk   = new int      [ngpu];
+    double ** d_lA_colchk_r = new double * [ngpu];
+    int *     ldda_colchk_r = new int      [ngpu];
+
+    double ** d_lP_colchk   = new double * [ngpu];
+    int *     lddp_colchk   = new int      [ngpu];
+    double ** d_lP_colchk_r = new double * [ngpu];
+    int *     lddp_colchk_r = new int      [ngpu];
+    for( d=0; d < ngpu; d++ ) {
+        magma_setdevice(d);
+        size_t pitch_d_lA_colchk = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
+        ldda_colchk[d] = pitch_d_lA_colchk / sizeof(double);
+        magma_dmalloc(&d_lA_colchk[d], pitch_d_lA_colchk * gpu_col[d]);
+
+        size_t pitch_d_lA_colchk_r = magma_roundup((gpu_row[d] / nb) * 2 * sizeof(double), 32);
+        ldda_colchk_r[d] = pitch_d_lA_colchk_r / sizeof(double);
+        magma_dmalloc(&d_lA_colchk_r[d], pitch_d_lA_colchk_r * gpu_col[d]);
+
+        size_t pitch_d_lP_colchk = magma_roundup((panel_row / nb) * 2 * sizeof(double), 32);
+        lddp_colchk[d] = pitch_d_lP_colchk / sizeof(double);
+        magma_dmalloc(&d_lP_colchk[d], pitch_d_lP_colchk * ngpu * nb);
+
+        size_t pitch_d_lP_colchk_r = magma_roundup((panel_row / nb) * 2 * sizeof(double), 32);
+        lddp_colchk_r[d] = pitch_d_lP_colchk_r / sizeof(double);
+        magma_dmalloc(&d_lP_colchk_r[d], pitch_d_lP_colchk_r * ngpu * nb);
+
+    }
+    printf( "done.\n" );
+
+    printf( "allocate space for row checksums on GPUs......\n" );
+    double ** d_lA_rowchk   = new double * [ngpu];
+    int *     ldda_rowchk   = new int      [ngpu];
+    double ** d_lA_rowchk_r = new double * [ngpu];
+    int *     ldda_rowchk_r = new int      [ngpu];
+
+    double ** d_lP_rowchk   = new double * [ngpu];
+    int *     lddp_rowchk   = new int      [ngpu];
+    double ** d_lP_rowchk_r = new double * [ngpu];
+    int *     lddp_rowchk_r = new int      [ngpu];
+    for( d=0; d < ngpu; d++ ) {
+        magma_setdevice(d);
+        size_t pitch_d_lA_rowchk = magma_roundup(gpu_row[d] * sizeof(double), 32);
+        ldda_rowchk[d] = pitch_d_lA_rowchk / sizeof(double);
+        magma_dmalloc(&d_lA_rowchk[d], pitch_d_lA_rowchk * (gpu_col[d] / nb) * 2);
+
+        size_t pitch_d_lA_rowchk_r = magma_roundup(gpu_row[d] * sizeof(double), 32);
+        ldda_rowchk_r[d] = pitch_d_lA_rowchk_r / sizeof(double);
+        magma_dmalloc(&d_lA_rowchk_r[d], pitch_d_lA_rowchk_r * (gpu_col[d] / nb) * 2);
+
+        size_t pitch_d_lP_rowchk = magma_roundup(panel_row * sizeof(double), 32);
+        lddp_rowchk[d] = pitch_d_lP_rowchk / sizeof(double);
+        magma_dmalloc(&d_lP_rowchk[d], pitch_d_lP_rowchk * ((ngpu * nb) / nb) * 2);
+
+        size_t pitch_d_lP_rowchk_r = magma_roundup(panel_row * sizeof(double), 32);
+        lddp_rowchk_r[d] = pitch_d_lP_rowchk_r / sizeof(double);
+        magma_dmalloc(&d_lP_rowchk_r[d], pitch_d_lP_rowchk_r * ((ngpu * nb) / nb) * 2);
+    }
+    printf( "done.\n" );
+
+    printf( "calculate initial checksum on GPUs......\n" );
+    for( d=0; d < ngpu; d++ ) {
+        magma_setdevice(d);
+        col_chk_enc(gpu_row[d], gpu_col[d], nb, 
+                    d_lA[d], ldda,  
+                    dev_chk_v[d], ld_dev_chk_v[d], 
+                    d_lA_colchk[d], ldda_colchk[d], 
+                    queues[d][stream1]);
+
+        row_chk_enc(gpu_row[d], gpu_col[d], nb, 
+                    d_lA[d], ldda,  
+                    dev_chk_v[d], ld_dev_chk_v[d], 
+                    d_lA_rowchk[d], ldda_rowchk[d], 
+                    queues[d][stream1]);
+    }
+    printf( "done.\n" );
+
+    if (DEBUG) {
+
+        for( d=0; d < ngpu; d++ ) {
+            magma_setdevice(d);
+            printf( "on GPU %d:\n" );
+            printf( "input matrix A:\n" );
+            printMatrix_gpu(d_lA[d], ldda, gpu_row[d], gpu_col[d], nb, nb);
+            printf( "column chk:\n" );
+            printMatrix_gpu(d_lA_colchk[d], ldda_colchk[d], (gpu_row[d] / nb) * 2, gpu_col[d], 2, nb);
+            printf( "row chk:\n" );
+            printMatrix_gpu(d_lA_rowchk[d], ldda_rowchk[d], gpu_row[d], (gpu_col[d] / nb) * 2, nb, 2);
         }
     }
 
