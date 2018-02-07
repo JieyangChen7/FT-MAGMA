@@ -46,6 +46,7 @@ libmagma_zsrc += 					\
 	$(cdir)/abft_encoder.cpp		\
 	$(cdir)/abft_checker.cpp		\
 	$(cdir)/abft_potf2.cpp   		\
+	$(cdir)/abft_dtrsm_work.cpp   	\
 
 # alphabetic order by base name (ignoring precision)
 libmagma_zsrc += \
