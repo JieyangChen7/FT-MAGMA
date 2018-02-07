@@ -25,7 +25,7 @@ void abft_dtrsm_work(
 
 
 	if (FT & CHECK_BEFORE) {
-		abft_checker_colchk(dA, ldda, m, n, nb,
+		abft_checker_colchk(dA, ldda, n, n, nb,
 						    dA_colchk,   ldda_colchk,
     					    dA_colchk_r, ldda_colchk_r,
     					    chk_v,       ld_chk_v,
