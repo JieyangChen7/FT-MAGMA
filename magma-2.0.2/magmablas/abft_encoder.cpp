@@ -1,3 +1,7 @@
+#include "magma.h"
+#include "magma_lapack.h"
+#include "magmablas.h"
+#include "common_magma.h"
 void col_chk_enc(int m, int n, int nb, 
                  double * A, int lda,
                  double * chk_v, int ld_chk_v,
