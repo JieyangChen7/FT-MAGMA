@@ -151,20 +151,20 @@ magma_dpotrf3_mgpu(
 #define dlP(id, i, j, k)  (d_lP[(id)] + (k)*nb*lddp + (j)*lddp + (i))
 #define dlPT(id, i, j, k) (d_lP[(id)] + (k)*nb*lddp + (j)*nb   + (i))
 
-#define dlA_colchk(id, i, j)       (d_lA_colchk[(id)]   + (j)*ldda_colchk          + ((i)/nb)*2)
-#define dlA_colchk_r(id, i, j)     (d_lA_colchk_r[(id)] + (j)*ldda_colchk_r        + ((i)/nb)*2)
-#define dlA_rowchk(id, i, j)       (d_lA_rowchk[(id)]   + ((j)/nb)*2*ldda_rowchk   + (i))
-#define dlA_rowchk_r(id, i, j)     (d_lA_rowchk_r[(id)] + ((j)/nb)*2*ldda_rowchk_r + (i))
+#define dlA_colchk(id, i, j)       (d_lA_colchk[(id)]   + (j)*ldda_colchk[(id)]          + ((i)/nb)*2)
+#define dlA_colchk_r(id, i, j)     (d_lA_colchk_r[(id)] + (j)*ldda_colchk_r[(id)]        + ((i)/nb)*2)
+#define dlA_rowchk(id, i, j)       (d_lA_rowchk[(id)]   + ((j)/nb)*2*ldda_rowchk[(id)]   + (i))
+#define dlA_rowchk_r(id, i, j)     (d_lA_rowchk_r[(id)] + ((j)/nb)*2*ldda_rowchk_r[(id)] + (i))
 
-#define dlP_colchk(id, i, j, k)       (d_lP_colchk[(id)]   + (k)*nb*lddp_colchk          + (j)*lddp_colchk        + (i/nb)*2)
-#define dlP_colchk_r(id, i, j, k)     (d_lP_colchk_r[(id)] + (k)*nb*lddp_colchk_r        + (j)*lddp_colchk_r      + (i/nb)*2)
-#define dlP_rowchk(id, i, j, k)       (d_lP_rowchk[(id)]   + (k)*(nb/nb)*2*lddp_rowchk   + (j/nb)*2*lddp_rowchk   + i)
-#define dlP_rowchk_r(id, i, j, k)     (d_lP_rowchk_r[(id)] + (k)*(nb/nb)*2*lddp_rowchk_r + (j/nb)*2*lddp_rowchk_r + i)
+#define dlP_colchk(id, i, j, k)       (d_lP_colchk[(id)]   + (k)*nb*lddp_colchk[(id)]          + (j)*lddp_colchk        + ((i)/nb)*2)
+#define dlP_colchk_r(id, i, j, k)     (d_lP_colchk_r[(id)] + (k)*nb*lddp_colchk_r[(id)]        + (j)*lddp_colchk_r      + ((i)/nb)*2)
+#define dlP_rowchk(id, i, j, k)       (d_lP_rowchk[(id)]   + (k)*(nb/nb)*2*lddp_rowchk[(id)]   + (j/nb)*2*lddp_rowchk   + (i))
+#define dlP_rowchk_r(id, i, j, k)     (d_lP_rowchk_r[(id)] + (k)*(nb/nb)*2*lddp_rowchk_r[(id)] + (j/nb)*2*lddp_rowchk_r + (i))
 
-#define dlPT_colchk(id, i, j, k)       (d_lP_colchk[(id)]   + (k)*nb*lddp_colchk          + ((j*nb+i)/nb)*2)
-#define dlPT_colchk_r(id, i, j, k)     (d_lP_colchk_r[(id)] + (k)*nb*lddp_colchk_r        + ((j*nb+i)/nb)*2)
-#define dlPT_rowchk(id, i, j, k)       (d_lP_rowchk[(id)]   + (k)*(nb/nb)*2*lddp_rowchk   + j * nb + i)
-#define dlPT_rowchk_r(id, i, j, k)     (d_lP_rowchk_r[(id)] + (k)*(nb/nb)*2*lddp_rowchk_r + j * nb + i)
+#define dlPT_colchk(id, i, j, k)       (d_lP_colchk[(id)]   + (k)*nb*lddp_colchk[(id)]          + (((j)*nb+(i))/nb)*2)
+#define dlPT_colchk_r(id, i, j, k)     (d_lP_colchk_r[(id)] + (k)*nb*lddp_colchk_r[(id)]        + (((j)*nb+(i))/nb)*2)
+#define dlPT_rowchk(id, i, j, k)       (d_lP_rowchk[(id)]   + (k)*(nb/nb)*2*lddp_rowchk[(id)]   + (j) * nb + (i))
+#define dlPT_rowchk_r(id, i, j, k)     (d_lP_rowchk_r[(id)] + (k)*(nb/nb)*2*lddp_rowchk_r[(id)] + (j) * nb + (i))
 
 
     magma_int_t     j, jb, nb0, nb2, d, dd, id, j_local, j_local2, buf;
@@ -743,7 +743,7 @@ magma_dpotrf3_mgpu(
             magma_setdevice(id);
             magma_queue_sync( queues[id][stream1] );
             //lapackf77_dpotrf(MagmaLowerStr, &jb, Alo(j,j), &lda, info);
-            abft_dpotrf2(MagmaLowerStr, jb, Alo(j,j), lda, info, 
+            abft_dpotf2(MagmaLowerStr, jb, Alo(j,j), lda, info, 
                          nb, 
                          colchk, ld_colchk, 
                          rowchk, ld_rowchk, 
