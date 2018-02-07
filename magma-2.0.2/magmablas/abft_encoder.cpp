@@ -1,4 +1,4 @@
-#include "magma.h"
+#include "magma_internal.h"
 void col_chk_enc(int m, int n, int nb, 
                  double * A, int lda,
                  double * chk_v, int ld_chk_v,
@@ -11,7 +11,8 @@ void col_chk_enc(int m, int n, int nb,
                     MAGMA_D_ONE, 
                     chk_v, ld_chk_v,
                     A + i, lda,
-                    MAGMA_D_ZERO, dcolchk + (i / nb) * 2, ld_dcolchk);           
+                    MAGMA_D_ZERO, dcolchk + (i / nb) * 2, ld_dcolchk,
+                    stream);           
     }
 }
 
@@ -27,6 +28,7 @@ void row_chk_enc(int m, int n, int nb,
                     MAGMA_D_ONE, 
                     A + i * lda, lda,
                     chk_v, ld_chk_v,
-                    MAGMA_D_ZERO, drowchk + ((i / nb) * 2) * ld_drowchk, ld_drowchk);           
+                    MAGMA_D_ZERO, drowchk + ((i / nb) * 2) * ld_drowchk, ld_drowchk,
+                    stream);           
     }
 }

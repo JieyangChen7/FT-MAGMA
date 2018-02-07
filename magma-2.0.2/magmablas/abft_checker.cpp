@@ -1,4 +1,5 @@
 #include <cstdio>
+#include "magma_internal.h"
 #include "abft_encoder.h"
 #include "abft_printer.h"
 void abft_checker_colchk(double * dA, int ldda, int m, int n, int nb,
