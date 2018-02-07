@@ -13,6 +13,7 @@ void abft_dsyrk(magma_uplo_t uplo, magma_trans_t trans,
                  double * dA, int ldda,
                  double beta,
                  double * dC, int lddc,
+                 int nb,
                  double * dA_colchk,    int ldda_colchk,
                  double * dA_rowchk,    int ldda_rowchk,
                  double * dA_colchk_r,  int ldda_colchk_r,
@@ -85,7 +86,8 @@ void abft_dsyrk(magma_uplo_t uplo, magma_trans_t trans,
                             dC_colchk_r, lddc_colchk_r,
                             chk_v,       ld_chk_v,
                             DEBUG,
-                            stream1);   
+                            stream1); 
+    }
 
 
 }

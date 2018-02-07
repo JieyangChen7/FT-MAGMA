@@ -700,10 +700,25 @@ magma_dpotrf3_mgpu(
             /* Update the current diagonal block on stream1 */
             magma_setdevice(id);
             if ( j > 0 ) {
-                magma_dsyrk( MagmaLower, MagmaNoTrans, jb, j,
-                             d_neg_one, dlA(id, nb*j_local, 0), ldda,
-                             d_one,     dlA(id, nb*j_local, j), ldda,
-                             queues[id][stream1] );
+                // magma_dsyrk( MagmaLower, MagmaNoTrans, jb, j,
+                //              d_neg_one, dlA(id, nb*j_local, 0), ldda,
+                //              d_one,     dlA(id, nb*j_local, j), ldda,
+                //              queues[id][stream1] );
+                abft_dsyrk(MagmaLower, MagmaNoTrans, jb, j,
+                           d_neg_one, dlA(id, nb*j_local, 0), ldda,
+                           d_one,     dlA(id, nb*j_local, j), ldda,
+                           nb,
+                           dlA_colchk(id, nb*j_local, 0),       ldda_colchk[id],
+                           dlA_rowchk(id, nb*j_local, 0),       ldda_rowchk[id],
+                           dlA_colchk_r(id, nb*j_local, 0),     ldda_colchk_r[id],
+                           dlA_rowchk_r(id, nb*j_local, 0),     ldda_rowchk_r[id],
+                           dlA_colchk(id, nb*j_local, j),       ldda_colchk[id],
+                           dlA_rowchk(id, nb*j_local, j),       ldda_rowchk[id],
+                           dlA_colchk_r(id, nb*j_local, j),     ldda_colchk_r[id],
+                           dlA_rowchk_r(id, nb*j_local, j),     ldda_rowchk_r[id],
+                           dev_chk_v[id],                       ld_dev_chk_v[id], 
+                           FT,  DEBUG, CHECK_BEFORE, CHECK_AFTER,
+                           queues[id][stream1], queues[id][stream1]);
             }
 
             /* send the diagonal to cpu on stream1 */
