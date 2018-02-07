@@ -19,12 +19,12 @@ double get(double * matrix, int ld, int n, int i, int j) {
  * chksum2: checksum 2
  * inc2: stride between elememts in chksum2
  */
-void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info, 
-			  int nb, 
-			  double * colchk, int ld_colchk, 
-			  double * rowchk, int ld_rowchk, 
-			  double * chk_v, int ld_chk_v, 
-			  bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER) {
+void abft_dpotf2(char * uplo, int n, double * A, int lda, int * info, 
+				 int nb, 
+				 double * colchk, int ld_colchk, 
+				 double * rowchk, int ld_rowchk, 
+				 double * chk_v, int ld_chk_v, 
+				 bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER) {
 	
 	double one = 1;
 	double zero = 0;

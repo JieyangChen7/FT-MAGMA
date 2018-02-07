@@ -703,7 +703,7 @@ magma_dpotrf3_mgpu(
             if (FT) {
                 /* send chk of diagonal to cpu on stream1 */
                 magma_dgetmatrix_async( 2, jb,
-                                        dlA_colchk(id, nb*j_local, j), ldda_colchk,
+                                        dlA_colchk(id, nb*j_local, j), ldda_colchk[id],
                                         colchk, ld_colchk,
                                         queues[id][stream1] );
             }
