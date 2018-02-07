@@ -688,7 +688,7 @@ magma_dpotrf3_mgpu(
         /* Lower-triangular case                          */
         /* > Compute the Cholesky factorization A = L*L'. */
         /* ---------------------------------------------- */
-        for (j=0; j < nb; j += nb) {
+        for (j=0; j < nb*2; j += nb) {
             /* Set the GPU number that holds the current panel */
             id  = (j/nb)%ngpu;
             buf = (j/nb)%ngpu;
@@ -704,6 +704,7 @@ magma_dpotrf3_mgpu(
                 //              d_neg_one, dlA(id, nb*j_local, 0), ldda,
                 //              d_one,     dlA(id, nb*j_local, j), ldda,
                 //              queues[id][stream1] );
+                printf("syrk\n");
                 abft_dsyrk(MagmaLower, MagmaNoTrans, jb, j,
                            d_neg_one, dlA(id, nb*j_local, 0), ldda,
                            d_one,     dlA(id, nb*j_local, j), ldda,
@@ -895,7 +896,7 @@ magma_dpotrf3_mgpu(
                             //                       1, dinvA(d,0), dinvA_length,
                             //                       queues[d][stream1] ); 
 
-
+                            printf("dtrsm_work\n");
                             abft_dtrsm_work(MagmaRight, MagmaLower,
                                             MagmaConjTrans, MagmaNonUnit,
                                             nb0, jb, c_one,
@@ -915,15 +916,16 @@ magma_dpotrf3_mgpu(
                                             dev_chk_v[d],                    ld_dev_chk_v[d],
                                             FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
                                             queues[d][stream1], queues[d][stream1]);
-                            printf("dtrsm_work\n");
+                            
                         #else
+                            printf("dtrsm\n");
                             magma_dtrsm( MagmaRight, MagmaLower,
                                          MagmaConjTrans, MagmaNonUnit,
                                          nb0, jb, c_one,
                                          dlpanel, ldpanel,
                                          dlA(d, nb*j_local2, j), ldda,
                                          queues[d][stream1] );
-                            printf("dtrsm\n");
+                            
                         #endif
                         magma_event_record( events[d][4], queues[d][stream1] );
                     } else if ( nb2 > 0 ) { /* other gpus updating all the blocks on stream2 */
@@ -932,6 +934,7 @@ magma_dpotrf3_mgpu(
                         #if (defined(PRECISION_d) || defined(PRECISION_s)) && defined(DTRSM_WORK)
                             //magmablas_dlaset( MagmaFull, trsm_nb, trsm_n, c_zero, c_zero, dinvA(d,0), trsm_nb );
                             //magmablas_dlaset( MagmaFull, nb2,     jb,     c_zero, c_zero, dx(d,0), nb2 );
+                            printf("dtrsm_work-other\n");
                             magmablas_dtrsm_work( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
                                                   nb2, jb, c_one,
                                                   dlpanel,                ldpanel,
@@ -939,14 +942,15 @@ magma_dpotrf3_mgpu(
                                                   dx(d,0), nb2,
                                                   1, dinvA(d,0), dinvA_length,
                                                   queues[d][stream2] );
-                            printf("dtrsm_work-other\n");
+                            
                         #else
+                            printf("dtrsm-other\n");
                             magma_dtrsm( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
                                          nb2, jb, c_one,
                                          dlpanel,                ldpanel,
                                          dlA(d, nb*j_local2, j), ldda,
                                          queues[d][stream2] );
-                            printf("dtrsm-other\n");
+                            
                         #endif
                     }
                     d = (d+1)%ngpu;
@@ -1062,7 +1066,7 @@ magma_dpotrf3_mgpu(
                             //                       dx(d,1), nb2,
                             //                       flag, dinvA(d,flag), dinvA_length,
                             //                       queues[d][stream2] );
-
+                            printf("dtrsm_work-other2\n");
                             abft_dtrsm_work(MagmaRight, MagmaLower,
                                             MagmaConjTrans, MagmaNonUnit,
                                             nb2, jb, c_one,
@@ -1083,15 +1087,16 @@ magma_dpotrf3_mgpu(
                                             FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
                                             queues[d][stream2], queues[d][stream2]);
 
-                            printf("dtrsm_work-other2\n");
+                            
                         #else
                             magma_queue_wait_event( queues[d][stream2], events[d][1] ); // panel received
+                            printf("dtrsm-other2\n");
                             magma_dtrsm( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
                                          nb2, jb, c_one,
                                          dlpanel,                    ldpanel,
                                          dlA(d, nb*j_local2+nb0, j), ldda,
                                          queues[d][stream2] );
-                            printf("dtrsm-other2\n");
+                            
                         #endif
                     }
                 }
