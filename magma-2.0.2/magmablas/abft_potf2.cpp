@@ -1,5 +1,7 @@
 
 #include<iostream>
+#include "abft_printer.h"
+#include "magma_lapack.h"
 using namespace std;
 //Cholesky Factorization with FT on CPU using ACML
 double get(double * matrix, int ld, int n, int i, int j) {
@@ -29,7 +31,7 @@ void abft_dpotrf2(const char uplo, int n, double * A, int lda, int * info,
 	double negone = -1;
 	
 	if (FT && CHECK_BEFORE) {
-		magma_set_lapack_numthreads(16);
+		//magma_set_lapack_numthreads(16);
 		//verify A before use
 		char T = 'T';
 		char N = 'N';
@@ -78,7 +80,7 @@ void abft_dpotrf2(const char uplo, int n, double * A, int lda, int * info,
 	}
 	
 	//do Choleksy factorization
-	magma_set_lapack_numthreads(1);
+	//magma_set_lapack_numthreads(1);
 	//char uplo = 'L';
 	lapackf77_dpotrf(&uplo, &n, A, &n, info);
 
@@ -86,7 +88,7 @@ void abft_dpotrf2(const char uplo, int n, double * A, int lda, int * info,
 	if (FT) {
 		//update checksum1 and checksum2
 
-		magma_set_lapack_numthreads(64);
+		//magma_set_lapack_numthreads(64);
 		for (int i = 0; i < n; i++) {
 			//chksum1[i] = chksum1[i] / get(A, n, n, i, i);
 			*(colchk + i*ld_colchk) = *(colchk + i*ld_colchk) / get(A, n, n, i, i);
@@ -109,7 +111,7 @@ void abft_dpotrf2(const char uplo, int n, double * A, int lda, int * info,
 	}
 
 	if (FT && CHECK_AFTER) {
-		magma_set_lapack_numthreads(16);
+		//magma_set_lapack_numthreads(16);
 		//verify A before use
 		char T = 'T';
 		char N = 'N';
