@@ -180,6 +180,11 @@ magma_dpotrf3_mgpu(
     int ldpanel_colchk;
     int ldpanel_rowchk;
 
+    double *dlpanel_colchk_r;
+    double *dlpanel_rowchk_r;
+    int ldpanel_colchk_r;
+    int ldpanel_rowchk_r;
+
     magma_int_t n_local[MagmaMaxGPUs], ldpanel;
     const magma_int_t stream1 = 0, stream2 = 1, stream3 = 2;
     
@@ -837,6 +842,11 @@ magma_dpotrf3_mgpu(
                         dlpanel_rowchk = dlA_rowchk(d, nb*j_local, j);
                         ldpanel_rowchk = ldda_rowchk[d];
 
+                        dlpanel_colchk_r = dlA_colchk_r(d, nb*j_local, j);
+                        ldpanel_colchk_r = ldda_colchk_r[d];
+                        dlpanel_rowchk_r = dlA_rowchk_r(d, nb*j_local, j);
+                        ldpanel_rowchk_r = ldda_rowchk_r[d];
+
                     } else {
                         dlpanel = dlPT(d, 0, 0, buf);
                         ldpanel = nb;
@@ -845,6 +855,11 @@ magma_dpotrf3_mgpu(
                         ldpanel_colchk = 2;
                         dlpanel_rowchk = dlPT_rowchk(d, 0, 0, buf);
                         ldpanel_rowchk = nb;
+
+                        dlpanel_colchk_r= dlPT_colchk_r(d, 0, 0, buf);
+                        ldpanel_colchk_r = 2;
+                        dlpanel_rowchk_r = dlPT_rowchk_r(d, 0, 0, buf);
+                        ldpanel_rowchk_r = nb;
 
                     }
                     nb2 = n_local[d] - j_local2*nb;
@@ -864,6 +879,27 @@ magma_dpotrf3_mgpu(
                                                   dx(d,0), nb0,
                                                   1, dinvA(d,0), dinvA_length,
                                                   queues[d][stream1] ); 
+
+
+                            abft_dtrsm_work(MagmaRight, MagmaLower,
+                                            MagmaConjTrans, MagmaNonUnit,
+                                            nb0, jb, c_one,
+                                            dlpanel, ldpanel,
+                                            dlA(d, nb*j_local2, j), ldda,
+                                            dx(d,0), nb0,
+                                            1, dinvA(d,0), dinvA_length,   
+                                            nb,
+                                            dlpanel_colchk,    ldpanel_colchk,
+                                            dlpanel_rowchk,    ldpanel_rowchk,
+                                            dlpanel_colchk_r,  ldpanel_colchk_r,
+                                            dlpanel_rowchk_r,  ldpanel_rowchk_r,
+                                            dlA_colchk(d, nb*j_local2, j),   ldda_colchk,
+                                            dlA_rowchk(d, nb*j_local2, j),   ldda_rowchk,
+                                            dlA_colchk_r(d, nb*j_local2, j), ldda_colchk_r,
+                                            dlA_rowchk_r(d, nb*j_local2, j), ldda_rowchk_r,
+                                            dev_chk_v[d],                    ld_dev_chk_v[d],
+                                            FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+                                            queues[d][stream1], queues[d][stream1]);
                             printf("dtrsm_work\n");
                         #else
                             magma_dtrsm( MagmaRight, MagmaLower,
