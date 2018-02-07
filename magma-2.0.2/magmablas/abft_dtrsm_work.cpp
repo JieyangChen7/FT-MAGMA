@@ -29,12 +29,14 @@ void abft_dtrsm_work(
 						    dA_colchk,   ldda_colchk,
     					    dA_colchk_r, ldda_colchk_r,
     					    chk_v,       ld_chk_v,
-    					    DEBUG);
+    					    DEBUG,
+    					    stream1);
 		abft_checker_colchk(dB, lddb, m, n, nb,
 						    dB_colchk,   lddb_colchk,
     					    dB_colchk_r, lddb_colchk_r,
     					    chk_v,       ld_chk_v,
-    					    DEBUG);
+    					    DEBUG,
+    					    stream1);
 	}
 
 	magmablas_dtrsm_work(side, uplo, transA, diag,
@@ -61,7 +63,8 @@ void abft_dtrsm_work(
 						    dB_colchk,   lddb_colchk,
     					    dB_colchk_r, lddb_colchk_r,
     					    chk_v,       ld_chk_v,
-    					    DEBUG);
+    					    DEBUG,
+    					    stream1);
 	}
 
 }
