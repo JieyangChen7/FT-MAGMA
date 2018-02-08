@@ -784,7 +784,7 @@ magma_dpotrf3_mgpu(
                         //              c_one,     dlA(d, nb0, j), ldda,
                         //              queues[d][stream2] );
 
-                        void dgemmFT( MagmaNoTrans, MagmaConjTrans,
+                        abft_dgemm( MagmaNoTrans, MagmaConjTrans,
                                       n_local[d]-nb0, jb, j,
                                       c_neg_one, dlA(d, nb0, 0), ldda,
                                                  dlpanel,        ldpanel,

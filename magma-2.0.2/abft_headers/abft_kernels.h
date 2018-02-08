@@ -46,7 +46,7 @@ void abft_dsyrk(magma_uplo_t uplo, magma_trans_t trans,
                  bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
                  magma_queue_t stream1, magma_queue_t stream2);
 
-void dgemmFT( magma_trans_t transA, magma_trans_t transB,
+void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
               int m, int n, int k, 
               double alpha, 
               double * dA, int ldda,

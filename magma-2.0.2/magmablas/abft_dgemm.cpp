@@ -7,7 +7,7 @@
  * n: number of row of B (B)
  * k: number of col of A / col of B (i)
  */
-void dgemmFT( magma_trans_t transA, magma_trans_t transB,
+void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 			  int m, int n, int k, 
 			  double alpha, 
 			  double * dA, int ldda,
