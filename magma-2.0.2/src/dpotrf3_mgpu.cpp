@@ -748,10 +748,33 @@ magma_dpotrf3_mgpu(
                         if ( d == id ) {
                             dlpanel = dlA(d, nb*j_local, 0);
                             ldpanel = ldda;
+
+                            dlpanel_colchk = dlA_colchk(d, nb*j_local, 0);
+                            ldpanel_colchk = ldda_colchk[d];
+                            dlpanel_rowchk = dlA_rowchk(d, nb*j_local, 0);
+                            ldpanel_rowchk = ldda_rowchk[d];
+
+                            dlpanel_colchk_r = dlA_colchk_r(d, nb*j_local, 0);
+                            ldpanel_colchk_r = ldda_colchk_r[d];
+                            dlpanel_rowchk_r = dlA_rowchk_r(d, nb*j_local, 0);
+                            ldpanel_rowchk_r = ldda_rowchk_r[d];
+
+
                             magma_queue_wait_event( queues[d][stream2], events[d][4] ); // wait for look-ahead trsm to finish
                         } else {
                             dlpanel = dlPT(d,0,nb,buf);
                             ldpanel = nb;
+
+                            dlpanel_colchk = dlPT_colchk(d, 0, nb, buf);
+                            ldpanel_colchk = 2;
+                            dlpanel_rowchk = dlPT_rowchk(d, 0, nb, buf);
+                            ldpanel_rowchk = nb;
+
+                            dlpanel_colchk_r= dlPT_colchk_r(d, 0, nb, buf);
+                            ldpanel_colchk_r = 2;
+                            dlpanel_rowchk_r = dlPT_rowchk_r(d, 0, nb, buf);
+                            ldpanel_rowchk_r = nb;
+
                             magma_queue_wait_event( queues[d][stream2], events[d][0] ); // rows arrived at gpu
                         }
                         magma_dgemm( MagmaNoTrans, MagmaConjTrans,
@@ -760,6 +783,28 @@ magma_dpotrf3_mgpu(
                                                 dlpanel,        ldpanel,
                                      c_one,     dlA(d, nb0, j), ldda,
                                      queues[d][stream2] );
+
+                        void dgemmFT( MagmaNoTrans, MagmaConjTrans,
+                                      n_local[d]-nb0, jb, j,
+                                      c_neg_one, dlA(d, nb0, 0), ldda,
+                                                dlpanel,        ldpanel,
+                                      c_one,     dlA(d, nb0, j), ldda,
+                                      nb,
+                                      double * dA_colchk,   int ldda_colchk,
+                                      double * dA_rowchk,   int ldda_rowchk,
+                                      double * dA_colchk_r, int ldda_colchk_r,
+                                      double * dA_rowchk_r, int ldda_rowchk_r,
+                                      double * dB_colchk,   int lddb_colchk,
+                                      double * dB_rowchk,   int lddb_rowchk,
+                                      double * dB_colchk_r, int lddb_colchk_r,
+                                      double * dB_rowchk_r, int lddb_rowchk_r,
+                                      double * dC_colchk,   int lddc_colchk,
+                                      double * dC_rowchk,   int lddc_rowchk,
+                                      double * dC_colchk_r, int lddc_colchk_r,
+                                      double * dC_rowchk_r, int lddc_rowchk_r,
+                                      double * chk_v, int ld_chk_v, 
+                                      bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
+                                      magma_queue_t stream1, magma_queue_t stream2)
                         magma_event_record( events[d][2], queues[d][stream2] );
                     }
                     d = (d+1)%ngpu;

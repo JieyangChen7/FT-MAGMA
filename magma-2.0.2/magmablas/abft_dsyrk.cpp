@@ -34,7 +34,7 @@ void abft_dsyrk(magma_uplo_t uplo, magma_trans_t trans,
      */
     
     if (FT && CHECK_BEFORE) { 
-        abft_checker_colchk(dA, ldda, n, n, nb,
+        abft_checker_colchk(dA, ldda, n, k, nb,
                             dA_colchk,   ldda_colchk,
                             dA_colchk_r, ldda_colchk_r,
                             chk_v,       ld_chk_v,
