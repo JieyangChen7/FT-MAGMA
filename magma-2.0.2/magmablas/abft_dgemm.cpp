@@ -103,8 +103,6 @@ void dgemmFT( magma_trans_t transA, magma_trans_t transB,
 	}
 		
 
-	
-	magmablasSetKernelStream(stream[1]);
 	magma_dgemm(transA, transB,
 				m, n, k,
 				alpha,
