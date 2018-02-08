@@ -150,7 +150,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 						m , (n / nb) * 2, k,
 						alpha,
 						dA, ldda,
-						dB_colchkB, lddb_colchk,
+						dB_colchk, lddb_colchk,
 						beta,
 						dC_rowchk, lddc_rowchk,
 						stream2);
