@@ -30,6 +30,20 @@ void abft_checker_rowchk(double * dA, int ldda, int m, int n, int nb,
     					 double * dev_chk_v,    int ld_dev_chk_v,
     					 bool DEBUG,
     					 magma_queue_t stream){
+	printf("abft_checker_rowchk\n");
+	row_chk_enc(m, n, nb, 
+                dA, ldda,  
+                dev_chk_v, ld_dev_chk_v, 
+                dA_rowchk_r, ldda_rowchk_r, 
+                stream);
+	if (DEBUG) {
+			printf( "input matrix:\n" );
+            printMatrix_gpu(dA, ldda, m, n, nb, nb);
+            printf( "updated row chk:\n" );
+            printMatrix_gpu(dA_rowchk, ldda_rowchk, m, (n / nb) * 2, nb, 2);
+            printf( "recalculated row chk:\n" );
+            printMatrix_gpu(dA_rowchk_r, ldda_rowchk_r, m, (n / nb) * 2, nb, 2);
+    }
 	
 }
 

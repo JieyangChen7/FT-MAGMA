@@ -777,34 +777,34 @@ magma_dpotrf3_mgpu(
 
                             magma_queue_wait_event( queues[d][stream2], events[d][0] ); // rows arrived at gpu
                         }
-                        magma_dgemm( MagmaNoTrans, MagmaConjTrans,
-                                     n_local[d]-nb0, jb, j,
-                                     c_neg_one, dlA(d, nb0, 0), ldda,
-                                                dlpanel,        ldpanel,
-                                     c_one,     dlA(d, nb0, j), ldda,
-                                     queues[d][stream2] );
+                        // magma_dgemm( MagmaNoTrans, MagmaConjTrans,
+                        //              n_local[d]-nb0, jb, j,
+                        //              c_neg_one, dlA(d, nb0, 0), ldda,
+                        //                         dlpanel,        ldpanel,
+                        //              c_one,     dlA(d, nb0, j), ldda,
+                        //              queues[d][stream2] );
 
                         void dgemmFT( MagmaNoTrans, MagmaConjTrans,
                                       n_local[d]-nb0, jb, j,
                                       c_neg_one, dlA(d, nb0, 0), ldda,
-                                                dlpanel,        ldpanel,
+                                                 dlpanel,        ldpanel,
                                       c_one,     dlA(d, nb0, j), ldda,
                                       nb,
-                                      double * dA_colchk,   int ldda_colchk,
-                                      double * dA_rowchk,   int ldda_rowchk,
-                                      double * dA_colchk_r, int ldda_colchk_r,
-                                      double * dA_rowchk_r, int ldda_rowchk_r,
-                                      double * dB_colchk,   int lddb_colchk,
-                                      double * dB_rowchk,   int lddb_rowchk,
-                                      double * dB_colchk_r, int lddb_colchk_r,
-                                      double * dB_rowchk_r, int lddb_rowchk_r,
-                                      double * dC_colchk,   int lddc_colchk,
-                                      double * dC_rowchk,   int lddc_rowchk,
-                                      double * dC_colchk_r, int lddc_colchk_r,
-                                      double * dC_rowchk_r, int lddc_rowchk_r,
-                                      double * chk_v, int ld_chk_v, 
-                                      bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER,
-                                      magma_queue_t stream1, magma_queue_t stream2)
+                                      dlA_colchk(d, nb0, 0),    ldda_colchk[d],
+                                      dlA_rowchk(d, nb0, 0),    ldda_rowchk[d],
+                                      dlA_colchk_r(d, nb0, 0),  ldda_colchk_r[d],
+                                      dlA_rowchk_r(d, nb0, 0),  ldda_rowchk_r[d],
+                                      dlpanel_colchk,   ldpanel_colchk,
+                                      dlpanel_rowchk,   ldpanel_rowchk,
+                                      dlpanel_colchk_r, ldpanel_colchk_r,
+                                      dlpanel_rowchk_r, ldpanel_rowchk_r,
+                                      dlA_colchk(d, nb0, j),    ldda_colchk[d],
+                                      dlA_rowchk(d, nb0, j),    ldda_rowchk[d],
+                                      dlA_colchk_r(d, nb0, j),  ldda_colchk_r[d],
+                                      dlA_rowchk_r(d, nb0, j),  ldda_rowchk_r[d],
+                                      dev_chk_v[d],     ld_dev_chk_v[d], 
+                                      FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+                                      queues[d][stream2], queues[d][stream2]);
                         magma_event_record( events[d][2], queues[d][stream2] );
                     }
                     d = (d+1)%ngpu;
