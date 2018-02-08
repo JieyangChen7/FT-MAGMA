@@ -688,7 +688,7 @@ magma_dpotrf3_mgpu(
         /* Lower-triangular case                          */
         /* > Compute the Cholesky factorization A = L*L'. */
         /* ---------------------------------------------- */
-        for (j=0; j < nb*2; j += nb) {
+        for (j=0; j < n; j += nb) {
             /* Set the GPU number that holds the current panel */
             id  = (j/nb)%ngpu;
             buf = (j/nb)%ngpu;
@@ -783,7 +783,7 @@ magma_dpotrf3_mgpu(
                         //                         dlpanel,        ldpanel,
                         //              c_one,     dlA(d, nb0, j), ldda,
                         //              queues[d][stream2] );
-
+                        printf("dgemm\n");
                         abft_dgemm( MagmaNoTrans, MagmaConjTrans,
                                       n_local[d]-nb0, jb, j,
                                       c_neg_one, dlA(d, nb0, 0), ldda,
