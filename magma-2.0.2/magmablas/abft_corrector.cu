@@ -53,8 +53,8 @@ rowchk_detect_correct_kernel(double * dA, int ldda, int nb, double E,
     //determin the block to process
     dA = dA + blockIdx.x * nb + blockIdx.y * nb * lda;
 	
-    dA_rowchk   = dA_rowchk   + blockIdx.x * B + blockIdx.y * 2 * ldda_rowchk;
-    dA_rowchk_r = dA_rowchk_r + blockIdx.x * B + blockIdx.y * 2 * ldda_rowchk_r;
+    dA_rowchk   = dA_rowchk   + blockIdx.x * nb + blockIdx.y * 2 * ldda_rowchk;
+    dA_rowchk_r = dA_rowchk_r + blockIdx.x * nb + blockIdx.y * 2 * ldda_rowchk_r;
         
     //determine the specific colum to process
     dA = dA + threadIdx.x;
@@ -87,7 +87,7 @@ rowchk_detect_correct_kernel(double * dA, int ldda, int nb, double E,
  * m: # of row
  * n: # of column
  */
-void colchk_detect_correct(double * dA, int ldda, int nb,
+void colchk_detect_correct(double * dA, int ldda, int m, int n, int nb,
 				           double * dA_colchk,		int ldda_colchk,
 				           double * dA_colchk_r, 	int ldda_colchk_r,
 						   magma_queue_t stream) 
@@ -96,9 +96,9 @@ void colchk_detect_correct(double * dA, int ldda, int nb,
 	//error threshold 
 	double E = 1e-10;
 	
-	colchk_detect_correct_kernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(dA, ldda, nb, E,
-																		 dA_colchk,		ldda_colchk,
-																		 dA_colchk_r, 	ldda_colchk_r);
+	colchk_detect_correct_kernel<<<dim3(m/nb, n/nb), dim3(nb), 0, stream>>>(dA, ldda, nb, E,
+																		   dA_colchk,		ldda_colchk,
+																		   dA_colchk_r, 	ldda_colchk_r);
 }
 
 
@@ -107,7 +107,7 @@ void colchk_detect_correct(double * dA, int ldda, int nb,
  * m: # of row
  * n: # of column
  */
-void rowchk_detect_correct(double * dA, int ldda, int nb,
+void rowchk_detect_correct(double * dA, int ldda, int m, int n, int nb,
 					 	   double * dA_rowchk,		int ldda_rowchk,
 						   double * dA_rowchk_r,	int ldda_rowchk_r,
 						   magma_queue_t stream) 
@@ -117,9 +117,9 @@ void rowchk_detect_correct(double * dA, int ldda, int nb,
 	
 	double E = 1e-10;
 	
-	rowchk_detect_correct_kernel<<<dim3(m/B, n/B), dim3(B), 0, stream>>>(dA, ldda, nb, E,
-																		 dA_rowchk, ldda_rowchk,
-																		 dA_rowchk_r, ldda_rowchk_r);
+	rowchk_detect_correct_kernel<<<dim3(m/nb, n/nb), dim3(nb), 0, stream>>>(dA, ldda, nb, E,
+																		    dA_rowchk, ldda_rowchk,
+																		    dA_rowchk_r, ldda_rowchk_r);
 					
 }
 
