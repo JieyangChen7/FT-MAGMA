@@ -51,7 +51,7 @@ rowchk_detect_correct_kernel(double * dA, int ldda, int nb, double E,
 							 double * dA_rowchk_r, 	int ldda_rowchk_r)
 {
     //determin the block to process
-    dA = dA + blockIdx.x * nb + blockIdx.y * nb * lda;
+    dA = dA + blockIdx.x * nb + blockIdx.y * nb * ldda;
 	
     dA_rowchk   = dA_rowchk   + blockIdx.x * nb + blockIdx.y * 2 * ldda_rowchk;
     dA_rowchk_r = dA_rowchk_r + blockIdx.x * nb + blockIdx.y * 2 * ldda_rowchk_r;
@@ -97,8 +97,8 @@ void colchk_detect_correct(double * dA, int ldda, int m, int n, int nb,
 	double E = 1e-10;
 	
 	colchk_detect_correct_kernel<<<dim3(m/nb, n/nb), dim3(nb), 0, stream->cuda_stream()>>>(dA, ldda, nb, E,
-																		   dA_colchk,		ldda_colchk,
-																		   dA_colchk_r, 	ldda_colchk_r);
+																		                   dA_colchk,		ldda_colchk,
+																		                   dA_colchk_r, 	ldda_colchk_r);
 }
 
 
@@ -118,8 +118,8 @@ void rowchk_detect_correct(double * dA, int ldda, int m, int n, int nb,
 	double E = 1e-10;
 	
 	rowchk_detect_correct_kernel<<<dim3(m/nb, n/nb), dim3(nb), 0, stream->cuda_stream()>>>(dA, ldda, nb, E,
-																		    dA_rowchk, ldda_rowchk,
-																		    dA_rowchk_r, ldda_rowchk_r);
+																		                   dA_rowchk, ldda_rowchk,
+																		                   dA_rowchk_r, ldda_rowchk_r);
 					
 }
 
