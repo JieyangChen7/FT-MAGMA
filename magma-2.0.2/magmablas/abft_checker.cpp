@@ -2,6 +2,7 @@
 #include "magma_internal.h"
 #include "abft_encoder.h"
 #include "abft_printer.h"
+#include "abft_corrector.h"
 void abft_checker_colchk(double * dA, int ldda, int m, int n, int nb,
 						 double * dA_colchk,    int ldda_colchk,
     					 double * dA_colchk_r,  int ldda_colchk_r,
@@ -14,6 +15,12 @@ void abft_checker_colchk(double * dA, int ldda, int m, int n, int nb,
                 dev_chk_v, ld_dev_chk_v, 
                 dA_colchk_r, ldda_colchk_r, 
                 stream);
+
+	colchk_detect_correct(dA, ldda, nb,
+				          dA_colchk,	ldda_colchk,
+				          dA_colchk_r, 	ldda_colchk_r,
+						  stream);
+
 	if (DEBUG) {
 			printf( "input matrix:\n" );
             printMatrix_gpu(dA, ldda, m, n, nb, nb);
@@ -36,6 +43,11 @@ void abft_checker_rowchk(double * dA, int ldda, int m, int n, int nb,
                 dev_chk_v, ld_dev_chk_v, 
                 dA_rowchk_r, ldda_rowchk_r, 
                 stream);
+
+	rowchk_detect_correct(dA, ldda, nb,
+				          dA_rowchk,	ldda_rowchk,
+				          dA_rowchk_r, 	ldda_rowchk_r,
+						  stream);
 	if (DEBUG) {
 			printf( "input matrix:\n" );
             printMatrix_gpu(dA, ldda, m, n, nb, nb);
@@ -55,5 +67,19 @@ void abft_checker_fullchk(double * dA, int ldda, int m, int n, int nb,
     					  double * dev_chk_v,    int ld_dev_chk_v,
     					  bool DEBUG,
     					  magma_queue_t stream){
+
+	abft_checker_colchk(dA, ldda, m, n, nb,
+						dA_colchk,		ldda_colchk,
+    					dA_colchk_r, 	ldda_colchk_r,
+    					dev_chk_v, 		ld_dev_chk_v,
+    					DEBUG,
+    					stream);
+
+	abft_checker_rowchk(dA, ldda, m, n, nb,
+						dA_rowchk,		ldda_rowchk,
+    					dA_rowchk_r, 	ldda_rowchk_r,
+    					dev_chk_v, 		ld_dev_chk_v,
+    					DEBUG,
+    					stream);
 	
 }
