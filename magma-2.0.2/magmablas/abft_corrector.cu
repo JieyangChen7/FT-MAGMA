@@ -29,18 +29,18 @@ colchk_detect_correct_kernel(double * dA, int ldda, int nb, double E,
     //error detected
     if(fabs(d1) > E) {
     	//locate the error
-	int loc = round(d2 - d1) - 1;
-	printf("[col check]error detected:%f---%d \n",d1,loc);
-		
-	//the sum of the rest correct number except the error one
-	double sum = 0.0;
-	for (int i = 0; i < nb; i++) {
-		if (i != loc) {
-			sum +=	*(dA + i); 
+		int loc = round(d2 - d1) - 1;
+		printf("[col check]error detected:%f---%d \n",d1,loc);
+			
+		//the sum of the rest correct number except the error one
+		double sum = 0.0;
+		for (int i = 0; i < nb; i++) {
+			if (i != loc) {
+				sum +=	*(dA + i); 
+			}
 		}
-	}
-	//correct the error
-	*(dA + loc) = *dA_colchk - sum;
+		//correct the error
+		*(dA + loc) = *dA_colchk - sum;
     }
 }
 
@@ -66,19 +66,19 @@ rowchk_detect_correct_kernel(double * dA, int ldda, int nb, double E,
 	
     //error detected
     if(fabs(d1) > E) {
-	//locate the error
-	int loc = round(d2 - d1) - 1;
-	printf("[row check]error detected:%f---%d \n",d1,loc);
-		
-	//the sum of the rest correct number except the error one
-	double sum = 0.0;
-	for (int i = 0; i < nb; i++) {
-	    if (i != loc) {
-		sum +=	*(dA + i * ldda); 
-	    }
-	}
-	//correct the error
-	*(dA + loc * ldda) = *dA_rowchk - sum;
+		//locate the error
+		int loc = round(d2 - d1) - 1;
+		printf("[row check]error detected:%f---%d \n",d1,loc);
+			
+		//the sum of the rest correct number except the error one
+		double sum = 0.0;
+		for (int i = 0; i < nb; i++) {
+		    if (i != loc) {
+			sum +=	*(dA + i * ldda); 
+		    }
+		}
+		//correct the error
+		*(dA + loc * ldda) = *dA_rowchk - sum;
      }
 }
 

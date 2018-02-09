@@ -45,7 +45,7 @@ libmagma_zsrc += 					\
 	$(cdir)/abft_printer.cpp		\
 	$(cdir)/abft_encoder.cpp		\
 	$(cdir)/abft_checker.cpp		\
-	$(cdir)/abft_corrector.cpp		\
+	$(cdir)/abft_corrector.cu		\
 	$(cdir)/abft_potf2.cpp   		\
 	$(cdir)/abft_dtrsm_work.cpp   	\
 	$(cdir)/abft_dsyrk.cpp   		\
