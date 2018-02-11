@@ -110,6 +110,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 				beta,
 				dC, lddc,
 				stream1);
+	bool INJECT = true;
 
 	if (INJECT) {
 		magma_dscal( 1, 10, dC, 1, stream1);
