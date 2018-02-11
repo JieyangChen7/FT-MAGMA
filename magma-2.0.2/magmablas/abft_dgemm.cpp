@@ -111,9 +111,9 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 				dC, lddc,
 				stream1);
 
-	// if (INJECT) {
-	// 	magma_dscal( 1, 10000000000, C, 1);
-	// }  
+	if (INJECT) {
+		magma_dscal( 1, 10, dC, 1, stream1);
+	}  
 	
 	if(FT){	
 		if (transA == MagmaNoTrans) {
