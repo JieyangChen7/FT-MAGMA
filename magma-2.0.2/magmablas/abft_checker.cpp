@@ -15,7 +15,7 @@ void abft_checker_colchk(double * dA, int ldda, int m, int n, int nb,
                 dev_chk_v, ld_dev_chk_v, 
                 dA_colchk_r, ldda_colchk_r, 
                 stream);
-
+	magma_queue_sync(stream);
 	
 
 	if (DEBUG) {
@@ -30,6 +30,7 @@ void abft_checker_colchk(double * dA, int ldda, int m, int n, int nb,
 				          dA_colchk,	ldda_colchk,
 				          dA_colchk_r, 	ldda_colchk_r,
 						  stream);
+    magma_queue_sync(stream);
 }
 
 void abft_checker_rowchk(double * dA, int ldda, int m, int n, int nb,
@@ -44,6 +45,7 @@ void abft_checker_rowchk(double * dA, int ldda, int m, int n, int nb,
                 dev_chk_v, ld_dev_chk_v, 
                 dA_rowchk_r, ldda_rowchk_r, 
                 stream);
+	magma_queue_sync(stream);
 
 	
 	if (DEBUG) {
@@ -58,6 +60,7 @@ void abft_checker_rowchk(double * dA, int ldda, int m, int n, int nb,
 				          dA_rowchk,	ldda_rowchk,
 				          dA_rowchk_r, 	ldda_rowchk_r,
 						  stream);
+    magma_queue_sync(stream);
 	
 }
 
