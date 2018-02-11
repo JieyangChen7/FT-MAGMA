@@ -42,6 +42,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 		if (transA == MagmaNoTrans) {
 			mem_row = m;
 			mem_col = k;
+			printf("dgemm-before-check-A-col\n");
 			abft_checker_colchk(dA, ldda, mem_row, mem_col, nb,
 	                            dA_colchk,   ldda_colchk,
 	                            dA_colchk_r, ldda_colchk_r,
@@ -53,6 +54,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 		} else if (transA == MagmaTrans) {
 			mem_row = k;
 			mem_col = m;
+			printf("dgemm-before-check-A-row\n");
 			abft_checker_rowchk(dA, ldda, mem_row, mem_col, nb,
 	                            dA_rowchk,   ldda_rowchk,
 	                            dA_rowchk_r, ldda_rowchk_r,
@@ -65,6 +67,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 		if (transB == MagmaNoTrans) {
 			mem_row = k;
 			mem_col = n;
+			printf("dgemm-before-check-B-row\n");
 			abft_checker_rowchk(dB, lddb, mem_row, mem_col, nb,
 	                            dB_rowchk,   lddb_rowchk,
 	                            dB_rowchk_r, lddb_rowchk_r,
@@ -75,6 +78,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 		} else if (transB == MagmaTrans) {
 			mem_row = n;
 			mem_col = k;
+			printf("dgemm-before-check-B-col\n");
 			abft_checker_colchk(dB, lddb, mem_row, mem_col, nb,
 	                            dB_colchk,   lddb_colchk,
 	                            dB_colchk_r, lddb_colchk_r,
@@ -86,7 +90,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 		
 		mem_row = m;
 		mem_col = n;
-
+		printf("dgemm-before-check-C-col\n");
 		abft_checker_colchk(dC, lddc, mem_row, mem_col, nb,
                             dC_colchk,   lddc_colchk,
                             dC_colchk_r, lddc_colchk_r,
@@ -94,6 +98,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
                             DEBUG,
                             stream1);
 
+		printf("dgemm-before-check-C-row\n");
 		abft_checker_rowchk(dC, lddc, mem_row, mem_col, nb,
                             dC_rowchk,   lddc_rowchk,
                             dC_rowchk_r, lddc_rowchk_r,
@@ -164,7 +169,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
 
 		mem_row = m;
 		mem_col = n;
-
+		printf("dgemm-after-check-C-col\n");
 		abft_checker_colchk(dC, lddc, mem_row, mem_col, nb,
                             dC_colchk,   lddc_colchk,
                             dC_colchk_r, lddc_colchk_r,
@@ -172,6 +177,7 @@ void abft_dgemm( magma_trans_t transA, magma_trans_t transB,
                             DEBUG,
                             stream1);
 
+		printf("dgemm-after-check-C-row\n");
 		abft_checker_rowchk(dC, lddc, mem_row, mem_col, nb,
                             dC_rowchk,   lddc_rowchk,
                             dC_rowchk_r, lddc_rowchk_r,
