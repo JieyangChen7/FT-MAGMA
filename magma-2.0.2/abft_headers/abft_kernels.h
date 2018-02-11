@@ -1,9 +1,11 @@
 void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info, 
-			  	 int nb, 
-			     double * colchk, int ld_colchk, 
-			     double * rowchk, int ld_rowchk, 
-			     double * chk_v, int ld_chk_v, 
-			     bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER);
+           int nb, 
+           double * colchk,   int ld_colchk, 
+           double * rowchk,   int ld_rowchk, 
+           double * colchk_r, int ld_colchk_r, 
+           double * rowchk_r, int ld_rowchk_r, 
+           double * chk_v, int ld_chk_v, 
+           bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER);
 
 void abft_dtrsm_work(
     magma_side_t side, magma_uplo_t uplo, magma_trans_t transA, magma_diag_t diag,

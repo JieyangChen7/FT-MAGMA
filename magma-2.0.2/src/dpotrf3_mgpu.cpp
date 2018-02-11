@@ -151,6 +151,11 @@ magma_dpotrf3_mgpu(
 #define dlP(id, i, j, k)  (d_lP[(id)] + (k)*nb*lddp + (j)*lddp + (i))
 #define dlPT(id, i, j, k) (d_lP[(id)] + (k)*nb*lddp + (j)*nb   + (i))
 
+#define Alo_colchk(i, j)    (colchk   + ((j)+off_j)*ld_colchk    + ((nb*(((i)/nb)%h)+off_i)/nb)*2)
+#define Alo_colchk_r(i, j)  (colchk_r + ((j)+off_j)*ld_colchk_r  + ((nb*(((i)/nb)%h)+off_i)/nb)*2)
+#define Alo_rowchk(i, j)    (rowchk   + (((j)+off_j)/nb)*2*ld_colchk    + (nb*(((i)/nb)%h)+off_i))
+#define Alo_rowchk_r(i, j)  (rowchk_r + (((j)+off_j)/nb)*2*ld_colchk_r  + (nb*(((i)/nb)%h)+off_i))
+
 #define dlA_colchk(id, i, j)       (d_lA_colchk[(id)]   + (j)*ldda_colchk[(id)]          + ((i)/nb)*2)
 #define dlA_colchk_r(id, i, j)     (d_lA_colchk_r[(id)] + (j)*ldda_colchk_r[(id)]        + ((i)/nb)*2)
 #define dlA_rowchk(id, i, j)       (d_lA_rowchk[(id)]   + ((j)/nb)*2*ldda_rowchk[(id)]   + (i))
@@ -307,7 +312,6 @@ magma_dpotrf3_mgpu(
     int ld_colchk_r;
     magma_dmalloc_pinned(&colchk, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
     ld_colchk = (cpu_row / nb) * 2;
-
     magma_dmalloc_pinned(&colchk_r, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
     ld_colchk_r = (cpu_row / nb) * 2;
     printf( "done.\n" );
@@ -742,7 +746,7 @@ magma_dpotrf3_mgpu(
                 /* send chk of diagonal to cpu on stream1 */
                 magma_dgetmatrix_async( 2, jb,
                                         dlA_colchk(id, nb*j_local, j), ldda_colchk[id],
-                                        colchk, ld_colchk,
+                                        Alo_colchk(j,j), ld_colchk,
                                         queues[id][stream1] );
             }
 
@@ -829,8 +833,10 @@ magma_dpotrf3_mgpu(
             printf("j = %d, h = %d, size of A = %d, offset = %d\n", j, h, h*n*nb, ((j)+off_j)*lda  + (nb*(((j)/nb)%h)+off_i));
             abft_dpotf2(*MagmaLowerStr, jb, Alo(j,j), lda, info, 
                          nb, 
-                         colchk, ld_colchk, 
-                         rowchk, ld_rowchk, 
+                         Alo_colchk(j,j),   ld_colchk, 
+                         Alo_rowchk(j,j),   ld_rowchk, 
+                         lo_colchk_r(j,j),  ld_colchk_r, 
+                         Alo_rowchk_r(j,j), ld_rowchk_r,
                          chk_v,  ld_chk_v, 
                          FT,  DEBUG, CHECK_BEFORE, CHECK_AFTER);
 
@@ -869,11 +875,11 @@ magma_dpotrf3_mgpu(
 
                     if (FT) {
                         magma_dsetmatrix_async( 2, jb,
-                                                colchk, ld_colchk,
+                                                Alo_colchk(j,j), ld_colchk,
                                                 dlpanel_colchk,  ldpanel_colchk,
                                                 queues[d][stream1] );
                         magma_dsetmatrix_async( jb, 2,
-                                                rowchk, ld_rowchk,
+                                                Alo_rowchk(j,j), ld_rowchk,
                                                 dlpanel_rowchk,  ldpanel_rowchk,
                                                 queues[d][stream1] );
                     }
@@ -889,11 +895,11 @@ magma_dpotrf3_mgpu(
                                         queues[id][stream1] );
                 if (FT) {
                     magma_dsetmatrix_async( 2, jb,
-                                            colchk, ld_colchk,
+                                            Alo_colchk(j,j), ld_colchk,
                                             dlA_colchk(d, nb*j_local, j),  ldda_colchk[d],
                                             queues[d][stream1] );
                     magma_dsetmatrix_async( jb, 2,
-                                            rowchk, ld_rowchk,
+                                            Alo_rowchk(j,j), ld_rowchk,
                                             dlA_rowchk(d, nb*j_local, j),  ldda_rowchk[d],
                                             queues[d][stream1] );
                 }

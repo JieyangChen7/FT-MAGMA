@@ -21,8 +21,10 @@ double get(double * matrix, int ld, int n, int i, int j) {
  */
 void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info, 
 			     int nb, 
-			     double * colchk, int ld_colchk, 
-			     double * rowchk, int ld_rowchk, 
+			     double * colchk, 	int ld_colchk, 
+			     double * rowchk, 	int ld_rowchk, 
+			     double * colchk_r, int ld_colchk_r, 
+			     double * rowchk_r, int ld_rowchk_r, 
 			     double * chk_v, int ld_chk_v, 
 			     bool FT, bool DEBUG, bool CHECK_BEFORE, bool CHECK_AFTER) {
 	
@@ -58,9 +60,9 @@ void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info,
 //								chksum, chksum_ld,
 //								chk1, chk1_inc,
 //								chk2, chk2_inc);
-		double * recal_colchk = new double[n * 2];
+		//double * recal_colchk = new double[n * 2];
 		int num_chk = 2;
-		int ld_recal_colchk = 2;
+		//int ld_recal_colchk = 2;
 
 		blasf77_dgemm(&T, &N,
                       &num_chk, &n, &nb,
@@ -68,13 +70,13 @@ void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info,
                       chk_v, &ld_chk_v,
                       A, &lda,
                       &zero, 
-                      recal_colchk, &ld_recal_colchk);  
+                      colchk_r, &ld_colchk_r);  
 		
 		if (DEBUG) {
 			cout<<"[DPOTRF-BEFORE]recalcuated checksum on CPU before factorization:"<<endl;
 			// printMatrix_host(chk1, 1, 1, n, -1, -1);
 			// printMatrix_host(chk2, 1, 1, n, -1, -1);
-			printMatrix_host(recal_colchk, ld_recal_colchk, 2, n, -1, -1);
+			printMatrix_host(colchk_r, ld_colchk_r, 2, n, -1, -1);
 			cout<<"[DPOTRF-BEFORE]updated checksum on CPU before factorization:"<<endl;
 			printMatrix_host(colchk, ld_colchk, 2, n, -1, -1);
 		}
@@ -139,9 +141,9 @@ void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info,
 //								chksum, chksum_ld,
 //								chk1, chk1_inc,
 //								chk2, chk2_inc);
-		double * recal_colchk = new double[n * 2];
+		//double * recal_colchk = new double[n * 2];
 		int num_chk = 2;
-		int ld_recal_colchk = 2;
+		//int ld_recal_colchk = 2;
 
 		blasf77_dgemm(&T, &N,
                       &num_chk, &n, &nb,
@@ -149,13 +151,13 @@ void abft_dpotf2(const char uplo, int n, double * A, int lda, int * info,
                       chk_v, &ld_chk_v,
                       A, &lda,
                       &zero, 
-                      recal_colchk, &ld_recal_colchk);  
+                      colchk_r, &ld_colchk_r);  
 		
 		if (DEBUG) {
 			cout<<"[DPOTRF-AFTER]recalcuated checksum on CPU before factorization:"<<endl;
 			// printMatrix_host(chk1, 1, 1, n, -1, -1);
 			// printMatrix_host(chk2, 1, 1, n, -1, -1);
-			printMatrix_host(recal_colchk, ld_recal_colchk, 2, n, -1, -1);
+			printMatrix_host(colchk_r, ld_colchk_r, 2, n, -1, -1);
 			cout<<"[DPOTRF-AFTER]updated checksum on CPU before factorization:"<<endl;
 			printMatrix_host(colchk, ld_colchk, 2, n, -1, -1);
 		}
