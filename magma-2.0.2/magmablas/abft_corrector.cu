@@ -24,7 +24,7 @@ colchk_detect_correct_kernel(double * dA, int ldda, int nb, double E,
     dA_colchk_r = dA_colchk_r + threadIdx.x * ldda_colchk_r;
 	
     double d1 = (*dA_colchk)       - (*dA_colchk_r);
-    double d2 = (*(dA_colchk + 1)) - (*dA_colchk_r + 1);
+    double d2 = (*(dA_colchk + 1)) - (*(dA_colchk_r + 1));
 	
     //error detected
     if(fabs(d1) > E) {
