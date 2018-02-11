@@ -62,20 +62,3 @@ void printMatrix_gpu(double * matrix_device, int matrix_ld,
 	printMatrix_host(matrix_host, M, M, N, row_block, col_block);
 	delete[] matrix_host;
 }
-
-void printVector_host(double * vector_host, int N) {
-	for (int i = 0; i < N; i++) {
-		cout.width(5);
-		cout.setf(ios::left);
-		cout << vector_host[i];
-	}
-	cout << endl;
-}
-
-void printVector_gpu(double * vector_device, int N) {
-	double * vector_host = new double[N]();
-	cudaMemcpy(vector_host, vector_device, N * sizeof(double),
-			cudaMemcpyDeviceToHost);
-	printVector_host(vector_host, N);
-	delete[] vector_host;
-}
