@@ -257,7 +257,7 @@ magma_dpotrf3_mgpu(
 
     /* matrix sizes to be checksumed */
     int cpu_row = nb;
-    int cpu_col = nb;
+    int cpu_col = n;
     int * gpu_row = new int[ngpu];
     int * gpu_col = new int[ngpu];
     for (d = 0; d < ngpu; d++) {
@@ -303,15 +303,24 @@ magma_dpotrf3_mgpu(
     printf( "allocate space for column checksum on CPU......\n" );
     double * colchk;
     int ld_colchk;
+    double * colchk_r;
+    int ld_colchk_r;
     magma_dmalloc_pinned(&colchk, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
     ld_colchk = (cpu_row / nb) * 2;
+
+    magma_dmalloc_pinned(&colchk_r, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
+    ld_colchk_r = (cpu_row / nb) * 2;
     printf( "done.\n" );
 
     printf( "allocate space for row checksum on CPU......\n" );
     double * rowchk;
     int ld_rowchk;
+    double * rowchk_r;
+    int ld_rowchk_r;
     magma_dmalloc_pinned(&rowchk, cpu_row * (cpu_col / nb) * 2 * sizeof(double));
     ld_rowchk = cpu_row;
+    magma_dmalloc_pinned(&rowchk_r, cpu_row * (cpu_col / nb) * 2 * sizeof(double));
+    ld_rowchk_r = cpu_row;
     printf( "done.\n" );
 
     /* allocate space for col checksum on GPU */
@@ -817,6 +826,7 @@ magma_dpotrf3_mgpu(
             magma_setdevice(id);
             magma_queue_sync( queues[id][stream1] );
             //lapackf77_dpotrf(MagmaLowerStr, &jb, Alo(j,j), &lda, info);
+            printf("j = %d, h = %d, size of A = %d, offset = %d\n", j, h, h*n*nb, ((j)+off_j)*lda  + (nb*(((i)/nb)%h)+off_i));
             abft_dpotf2(*MagmaLowerStr, jb, Alo(j,j), lda, info, 
                          nb, 
                          colchk, ld_colchk, 
@@ -1045,6 +1055,7 @@ magma_dpotrf3_mgpu(
                                             dlA(d, nb*j_local2, 0), ldda,
                                             Alo(j+jb,0),            lda,
                                             queues[d][stream3] );
+
                     magma_event_record( events[d][3], queues[d][stream3] );
                     /* syn on rows on CPU, seem to be needed on Pluto */
                     //magma_queue_sync( queues[d][stream3] );
