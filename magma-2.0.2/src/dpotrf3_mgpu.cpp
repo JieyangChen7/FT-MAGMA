@@ -1017,7 +1017,7 @@ magma_dpotrf3_mgpu(
 //#define DPOTRF_DEVICE_TO_DEVICE
 #ifdef DPOTRF_DEVICE_TO_DEVICE
                     // lookahead done
-                
+                    printf("gpu-2-gpu\n");
                     /* broadcast the rows to gpus */
                     buf2 = ((j+jb)/nb)%ngpu;
                     for( d2=0; d2 < ngpu; d2++ ) {
@@ -1037,6 +1037,7 @@ magma_dpotrf3_mgpu(
                         }
                     }
 #else
+                    printf("gpu-2-cpu-2-gpu\n");
                     // lookahead done
                     magma_setdevice(d);
                     magma_queue_wait_event( queues[d][stream3], events[d][4] );
