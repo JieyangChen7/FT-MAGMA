@@ -826,7 +826,7 @@ magma_dpotrf3_mgpu(
             magma_setdevice(id);
             magma_queue_sync( queues[id][stream1] );
             //lapackf77_dpotrf(MagmaLowerStr, &jb, Alo(j,j), &lda, info);
-            printf("j = %d, h = %d, size of A = %d, offset = %d\n", j, h, h*n*nb, ((j)+off_j)*lda  + (nb*(((i)/nb)%h)+off_i));
+            printf("j = %d, h = %d, size of A = %d, offset = %d\n", j, h, h*n*nb, ((j)+off_j)*lda  + (nb*(((j)/nb)%h)+off_i));
             abft_dpotf2(*MagmaLowerStr, jb, Alo(j,j), lda, info, 
                          nb, 
                          colchk, ld_colchk, 
