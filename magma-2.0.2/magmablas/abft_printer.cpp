@@ -1,5 +1,6 @@
+#include "magma_internal.h"
 #include "abft_printer.h"
-#include "magma.h"
+//#include "magma.h"
 #include <iostream>
 #include <iomanip>
 using namespace std;

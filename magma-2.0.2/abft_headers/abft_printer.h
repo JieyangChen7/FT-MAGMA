@@ -2,7 +2,7 @@
 // #include "magma_lapack.h"
 // #include "magmablas.h"
 // #include  <ctime>
-
+#include "magma_internal.h"
 
 void printMatrix_host(double * matrix_host, int ld,  int M, int N, int row_block, int col_block);
 void printMatrix_host_int(int * matrix_host, int ld,  int M, int N, int row_block, int col_block);
