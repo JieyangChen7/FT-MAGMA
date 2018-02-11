@@ -296,7 +296,7 @@ magma_dpotrf3_mgpu(
         if (DEBUG) {
             printf("on GPU %d:\n", d);
             printMatrix_gpu(dev_chk_v[d], ld_dev_chk_v[d],
-                            nb, 2, nb, nb);
+                            nb, 2, nb, nb, queues[d][stream1]);
         }
     }
 
@@ -406,11 +406,13 @@ magma_dpotrf3_mgpu(
             magma_setdevice(d);
             printf( "on GPU %d:\n", d);
             printf( "input matrix A:\n" );
-            printMatrix_gpu(d_lA[d], ldda, gpu_row[d], gpu_col[d], nb, nb);
+            printMatrix_gpu(d_lA[d], ldda, gpu_row[d], gpu_col[d], nb, nb, queues[d][stream1]);
             printf( "column chk:\n" );
-            printMatrix_gpu(d_lA_colchk[d], ldda_colchk[d], (gpu_row[d] / nb) * 2, gpu_col[d], 2, nb);
+            printMatrix_gpu(d_lA_colchk[d], ldda_colchk[d], 
+                            (gpu_row[d] / nb) * 2, gpu_col[d], 2, nb, queues[d][stream1]);
             printf( "row chk:\n" );
-            printMatrix_gpu(d_lA_rowchk[d], ldda_rowchk[d], gpu_row[d], (gpu_col[d] / nb) * 2, nb, 2);
+            printMatrix_gpu(d_lA_rowchk[d], ldda_rowchk[d], 
+                            gpu_row[d], (gpu_col[d] / nb) * 2, nb, 2, queues[d][stream1]);
         }
     }
 

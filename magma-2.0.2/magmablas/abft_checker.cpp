@@ -20,11 +20,11 @@ void abft_checker_colchk(double * dA, int ldda, int m, int n, int nb,
 
 	if (DEBUG) {
 			printf( "input matrix:\n" );
-            printMatrix_gpu(dA, ldda, m, n, nb, nb);
+            printMatrix_gpu(dA, ldda, m, n, nb, nb, stream);
             printf( "updated column chk:\n" );
-            printMatrix_gpu(dA_colchk, ldda_colchk, (m / nb) * 2, n, 2, nb);
+            printMatrix_gpu(dA_colchk, ldda_colchk, (m / nb) * 2, n, 2, nb, stream);
             printf( "recalculated column chk:\n" );
-            printMatrix_gpu(dA_colchk_r, ldda_colchk_r, (m / nb) * 2, n, 2, nb);
+            printMatrix_gpu(dA_colchk_r, ldda_colchk_r, (m / nb) * 2, n, 2, nb, stream);
     }
     colchk_detect_correct(dA, ldda, m, n, nb,
 				          dA_colchk,	ldda_colchk,
@@ -48,11 +48,11 @@ void abft_checker_rowchk(double * dA, int ldda, int m, int n, int nb,
 	
 	if (DEBUG) {
 			printf( "input matrix:\n" );
-            printMatrix_gpu(dA, ldda, m, n, nb, nb);
+            printMatrix_gpu(dA, ldda, m, n, nb, nb, stream);
             printf( "updated row chk:\n" );
-            printMatrix_gpu(dA_rowchk, ldda_rowchk, m, (n / nb) * 2, nb, 2);
+            printMatrix_gpu(dA_rowchk, ldda_rowchk, m, (n / nb) * 2, nb, 2, stream);
             printf( "recalculated row chk:\n" );
-            printMatrix_gpu(dA_rowchk_r, ldda_rowchk_r, m, (n / nb) * 2, nb, 2);
+            printMatrix_gpu(dA_rowchk_r, ldda_rowchk_r, m, (n / nb) * 2, nb, 2, stream);
     }
     rowchk_detect_correct(dA, ldda, m, n, nb,
 				          dA_rowchk,	ldda_rowchk,

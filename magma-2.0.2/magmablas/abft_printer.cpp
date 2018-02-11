@@ -50,11 +50,14 @@ void printMatrix_host_int(int * matrix_host, int ld,  int M, int N, int row_bloc
  * M: number of row
  * N: number of col
  */
-void printMatrix_gpu(double * matrix_device, int matrix_ld, int M, int N, int row_block, int col_block) {
+void printMatrix_gpu(double * matrix_device, int matrix_ld, 
+					 int M, int N, int row_block, int col_block, 
+					 magma_queue_t stream) {
 	double * matrix_host = new double[M * N]();
 //	cudaMemcpy2D(matrix_host, M * sizeof(double), matrix_device, matrix_pitch,
 //			M * sizeof(double), N, cudaMemcpyDeviceToHost);
-	magma_dgetmatrix(M, N, matrix_device, matrix_ld, matrix_host, M);
+	magma_dgetmatrix(M, N, matrix_device, matrix_ld, matrix_host, M, stream);
+	magma_queue_sync(stream);
 	printMatrix_host(matrix_host, M, M, N, row_block, col_block);
 	delete[] matrix_host;
 }
