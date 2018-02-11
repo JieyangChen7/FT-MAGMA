@@ -16,7 +16,7 @@ void abft_checker_colchk(double * dA, int ldda, int m, int n, int nb,
                 dA_colchk_r, ldda_colchk_r, 
                 stream);
 
-	colchk_detect_correct(dA, ldda, nb,
+	colchk_detect_correct(dA, ldda, m, n, nb,
 				          dA_colchk,	ldda_colchk,
 				          dA_colchk_r, 	ldda_colchk_r,
 						  stream);
@@ -44,7 +44,7 @@ void abft_checker_rowchk(double * dA, int ldda, int m, int n, int nb,
                 dA_rowchk_r, ldda_rowchk_r, 
                 stream);
 
-	rowchk_detect_correct(dA, ldda, nb,
+	rowchk_detect_correct(dA, ldda, m, n, nb,
 				          dA_rowchk,	ldda_rowchk,
 				          dA_rowchk_r, 	ldda_rowchk_r,
 						  stream);
