@@ -30,7 +30,7 @@ colchk_detect_correct_kernel(double * dA, int ldda, int nb, double E,
     if(fabs(d1) > E) {
     	//locate the error
 		int loc = round(d2 / d1) - 1;
-		printf("[col check]error detected:%f---%d \n",d1,loc);
+		printf("[col check]error detected (d1 = %f, d2 = %f, loc = %d) \n",d1, d2, loc);
 			
 		//the sum of the rest correct number except the error one
 		double sum = 0.0;
@@ -68,7 +68,7 @@ rowchk_detect_correct_kernel(double * dA, int ldda, int nb, double E,
     if(fabs(d1) > E) {
 		//locate the error
 		int loc = round(d2 / d1) - 1;
-		printf("[row check]error detected:%f---%d \n",d1,loc);
+		printf("[row check]error detected (d1 = %f, d2 = %f, loc = %d) \n",d1, d2, loc);
 			
 		//the sum of the rest correct number except the error one
 		double sum = 0.0;
