@@ -835,7 +835,7 @@ magma_dpotrf3_mgpu(
                          nb, 
                          Alo_colchk(j,j),   ld_colchk, 
                          Alo_rowchk(j,j),   ld_rowchk, 
-                         lo_colchk_r(j,j),  ld_colchk_r, 
+                         Alo_colchk_r(j,j),  ld_colchk_r, 
                          Alo_rowchk_r(j,j), ld_rowchk_r,
                          chk_v,  ld_chk_v, 
                          FT,  DEBUG, CHECK_BEFORE, CHECK_AFTER);
