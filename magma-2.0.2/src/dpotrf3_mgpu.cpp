@@ -835,7 +835,7 @@ magma_dpotrf3_mgpu(
                          nb, 
                          Alo_colchk(j,j),   ld_colchk, 
                          Alo_rowchk(j,j),   ld_rowchk, 
-                         Alo_colchk_r(j,j),  ld_colchk_r, 
+                         Alo_colchk_r(j,j), ld_colchk_r, 
                          Alo_rowchk_r(j,j), ld_rowchk_r,
                          chk_v,  ld_chk_v, 
                          FT,  DEBUG, CHECK_BEFORE, CHECK_AFTER);
@@ -935,7 +935,7 @@ magma_dpotrf3_mgpu(
                         dlpanel_rowchk = dlPT_rowchk(d, 0, 0, buf);
                         ldpanel_rowchk = nb;
 
-                        dlpanel_colchk_r= dlPT_colchk_r(d, 0, 0, buf);
+                        dlpanel_colchk_r = dlPT_colchk_r(d, 0, 0, buf);
                         ldpanel_colchk_r = 2;
                         dlpanel_rowchk_r = dlPT_rowchk_r(d, 0, 0, buf);
                         ldpanel_rowchk_r = nb;
@@ -1061,6 +1061,17 @@ magma_dpotrf3_mgpu(
                                             dlA(d, nb*j_local2, 0), ldda,
                                             Alo(j+jb,0),            lda,
                                             queues[d][stream3] );
+                    if (FT) {
+                        
+                        magma_dgetmatrix_async( (nb0 / nb) * 2, j+jb,
+                                                dlA_colchk(d, nb*j_local2, 0), ldda_colchk,
+                                                Alo_colchk(j+jb,0),            ld_colchk,
+                                                queues[d][stream3] );
+                        magma_dgetmatrix_async( nb0, ((j + jb) / nb) * 2,
+                                                dlA_rowchk(d, nb*j_local2, 0), ldda_rowchk,
+                                                Alo_rowchk(j+jb,0),            ld_rowchk,
+                                                queues[d][stream3] );
+                    }
 
                     magma_event_record( events[d][3], queues[d][stream3] );
                     /* syn on rows on CPU, seem to be needed on Pluto */
@@ -1076,6 +1087,17 @@ magma_dpotrf3_mgpu(
                                                     Alo(j+jb,0),        lda,
                                                     dlPT(d2,0,nb,buf2), nb, // first nbxnb reserved for diagonal block
                                                     queues[d2][stream3] );
+                            if (FT) {
+                                 magma_dsetmatrix_async( (nb0 / nb) * 2, j+jb,
+                                                         Alo_colchk(j+jb,0),        ld_colchk,
+                                                         dlPT_colchk(d2,0,nb,buf2), 2, // first nbxnb reserved for diagonal block
+                                                         queues[d2][stream3] );
+                                 magma_dsetmatrix_async( nb0, ((j + jb) / nb) * 2,
+                                                         Alo_rowchk(j+jb,0),        ld_rowchk,
+                                                         dlPT_rowchk(d2,0,nb,buf2), nb, // first nbxnb reserved for diagonal block
+                                                         queues[d2][stream3] );
+                            }
+
                             magma_event_record( events[d2][0], queues[d2][stream3] );
                         }
                     }
