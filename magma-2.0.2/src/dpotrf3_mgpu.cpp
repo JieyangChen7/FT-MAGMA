@@ -998,13 +998,32 @@ magma_dpotrf3_mgpu(
                             //magmablas_dlaset( MagmaFull, trsm_nb, trsm_n, c_zero, c_zero, dinvA(d,0), trsm_nb );
                             //magmablas_dlaset( MagmaFull, nb2,     jb,     c_zero, c_zero, dx(d,0), nb2 );
                             printf("dtrsm_work-other\n");
-                            magmablas_dtrsm_work( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
-                                                  nb2, jb, c_one,
-                                                  dlpanel,                ldpanel,
-                                                  dlA(d, nb*j_local2, j), ldda,
-                                                  dx(d,0), nb2,
-                                                  1, dinvA(d,0), dinvA_length,
-                                                  queues[d][stream2] );
+                            // magmablas_dtrsm_work( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
+                            //                       nb2, jb, c_one,
+                            //                       dlpanel,                ldpanel,
+                            //                       dlA(d, nb*j_local2, j), ldda,
+                            //                       dx(d,0), nb2,
+                            //                       1, dinvA(d,0), dinvA_length,
+                            //                       queues[d][stream2] );
+                            abft_dtrsm_work(MagmaRight, MagmaLower,
+                                            MagmaConjTrans, MagmaNonUnit,
+                                            nb2, jb, c_one,
+                                            dlpanel, ldpanel,
+                                            dlA(d, nb*j_local2, j), ldda,
+                                            dx(d,0), nb2,
+                                            1, dinvA(d,0), dinvA_length,   
+                                            nb,
+                                            dlpanel_colchk,    ldpanel_colchk,
+                                            dlpanel_rowchk,    ldpanel_rowchk,
+                                            dlpanel_colchk_r,  ldpanel_colchk_r,
+                                            dlpanel_rowchk_r,  ldpanel_rowchk_r,
+                                            dlA_colchk(d, nb*j_local2, j),   ldda_colchk[d],
+                                            dlA_rowchk(d, nb*j_local2, j),   ldda_rowchk[d],
+                                            dlA_colchk_r(d, nb*j_local2, j), ldda_colchk_r[d],
+                                            dlA_rowchk_r(d, nb*j_local2, j), ldda_rowchk_r[d],
+                                            dev_chk_v[d],                    ld_dev_chk_v[d],
+                                            FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+                                            queues[d][stream2], queues[d][stream2]);
                             
                         #else
                             printf("dtrsm-other\n");
