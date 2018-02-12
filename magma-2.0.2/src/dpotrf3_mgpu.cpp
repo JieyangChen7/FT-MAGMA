@@ -1089,11 +1089,11 @@ magma_dpotrf3_mgpu(
                                                     queues[d2][stream3] );
                             if (FT) {
                                  magma_dsetmatrix_async( (nb0 / nb) * 2, j+jb,
-                                                         Alo_colchk(j+jb,0),        ld_colchk[d],
+                                                         Alo_colchk(j+jb,0),        ld_colchk,
                                                          dlPT_colchk(d2,0,nb,buf2), 2, // first nbxnb reserved for diagonal block
                                                          queues[d2][stream3] );
                                  magma_dsetmatrix_async( nb0, ((j + jb) / nb) * 2,
-                                                         Alo_rowchk(j+jb,0),        ld_rowchk[d],
+                                                         Alo_rowchk(j+jb,0),        ld_rowchk,
                                                          dlPT_rowchk(d2,0,nb,buf2), nb, // first nbxnb reserved for diagonal block
                                                          queues[d2][stream3] );
                             }
