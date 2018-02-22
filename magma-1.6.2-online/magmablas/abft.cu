@@ -20,11 +20,8 @@ DetectAndCorrectKernel(double * A, int lda, int B, double E,
 	
 	
     checksum_update = checksum_update + blockIdx.x * 2  + blockIdx.y * B * checksum_update_ld;
-    checksum1_recal = checksum1_recal + blockIdx.x + blockIdx.y * B * checksum1_recal_ld;
-    checksum2_recal = checksum2_recal + blockIdx.x + blockIdx.y * B * checksum2_recal_ld;
-    
-    
-    //printf("block:%f---blockx=%d, blocky=%d \n",*checksum2_recal,blockIdx.x,blockIdx.y);
+    checksum1_recal = checksum1_recal + blockIdx.x      + blockIdx.y * B * checksum1_recal_ld;
+    checksum2_recal = checksum2_recal + blockIdx.x      + blockIdx.y * B * checksum2_recal_ld;
     
     //determine the specific colum to process
     A = A + threadIdx.x * lda;
@@ -32,13 +29,13 @@ DetectAndCorrectKernel(double * A, int lda, int B, double E,
 	checksum1_recal = checksum1_recal + threadIdx.x * checksum1_recal_ld;
 	checksum2_recal = checksum2_recal + threadIdx.x * checksum2_recal_ld;
 	
-	double d1 = (*checksum_update) - (*checksum1_recal);
+	double d1 = (*checksum_update)       - (*checksum1_recal);
 	double d2 = (*(checksum_update + 1)) - (*checksum2_recal);
 	
 	//error detected
 	if(fabs(d1) > E) {
 		//locate the error
-		int loc = round(d2 - d1) - 1;
+		int loc = round(d2 / d1) - 1;
 		printf("error detected:%f---%d \n",d1,loc);
 		
 		//the sum of the rest correct number except the error one
@@ -86,7 +83,7 @@ void ErrorDetectAndCorrectHost(double * A, int lda, int B, int m, int n,
 		double d1 = *(checksum_update + checksum_update_ld * c) - *(checksum1_recal + checksum1_recal_ld * c);
 		double d2 = *(checksum_update + 1 + checksum_update_ld * c) - *(checksum2_recal + checksum2_recal_ld * c);
 		if(fabs(d1) > E) {
-			int loc = round(d2 - d1) - 1;
+			int loc = round(d2 / d1) - 1;
 			printf("error detected:%f---%d \n",d1,loc);
 			
 			//the sum of the rest correct number except the error one
