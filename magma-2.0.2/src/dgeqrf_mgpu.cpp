@@ -9,7 +9,9 @@
 
 */
 #include "magma_internal.h"
-
+#include "abft_printer.h"
+#include "abft_encoder.h"
+#include "abft_kernels.h"
 /**
     Purpose
     -------

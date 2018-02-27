@@ -12,6 +12,10 @@
 
 #include "trace.h"
 #include "magma_timer.h"
+#include "abft_printer.h"
+#include "abft_encoder.h"
+#include "abft_kernels.h"
+
 //#include "../testing/flops.h"
 
 /**

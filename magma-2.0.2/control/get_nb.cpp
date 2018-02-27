@@ -191,6 +191,8 @@ magma_int_t magma_get_dgeqrf_nb( magma_int_t m, magma_int_t n )
         if      (minmn <  4096) nb = 64;
         else                    nb = 128;
     }
+    // debug
+    nb = 4;
     return nb;
 }
 
@@ -373,6 +375,8 @@ magma_int_t magma_get_dgetrf_nb( magma_int_t m, magma_int_t n )
         if      (minmn <  2048) nb = 64;
         else                    nb = 128;
     }
+    //debug
+    nb = 4;
     return nb;
 }
 
