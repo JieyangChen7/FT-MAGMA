@@ -1,4 +1,6 @@
 #include "magma_internal.h"
+#undef max
+#undef min
 #include "abft_checker.h"
 
 void abft_dtrsm_work(

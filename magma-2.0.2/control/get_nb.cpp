@@ -192,7 +192,8 @@ magma_int_t magma_get_dgeqrf_nb( magma_int_t m, magma_int_t n )
         else                    nb = 128;
     }
     // debug
-    nb = 4;
+    //nb = 4;
+    
     return nb;
 }
 

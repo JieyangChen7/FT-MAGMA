@@ -32,3 +32,37 @@ void row_chk_enc(int m, int n, int nb,
                     stream);           
     }
 }
+
+void col_chk_enc(int m, int n, int nb, 
+                 float * A, int lda,
+                 float * chk_v, int ld_chk_v,
+                 float * dcolchk, int ld_dcolchk, 
+                 magma_queue_t stream) {
+
+    for (int i = 0; i < m; i += nb) {        
+        magma_sgemm(MagmaTrans, MagmaNoTrans,
+                    2, n, nb,
+                    MAGMA_D_ONE, 
+                    chk_v, ld_chk_v,
+                    A + i, lda,
+                    MAGMA_D_ZERO, dcolchk + (i / nb) * 2, ld_dcolchk,
+                    stream);           
+    }
+}
+
+void row_chk_enc(int m, int n, int nb, 
+                 float * A, int lda,
+                 float * chk_v, int ld_chk_v,
+                 float * drowchk, int ld_drowchk, 
+                 magma_queue_t stream) {
+
+    for (int i = 0; i < n; i += nb) {        
+        magma_sgemm(MagmaNoTrans, MagmaNoTrans,
+                    m, 2, nb,
+                    MAGMA_D_ONE, 
+                    A + i * lda, lda,
+                    chk_v, ld_chk_v,
+                    MAGMA_D_ZERO, drowchk + ((i / nb) * 2) * ld_drowchk, ld_drowchk,
+                    stream);           
+    }
+}

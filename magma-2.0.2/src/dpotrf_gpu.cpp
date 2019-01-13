@@ -11,6 +11,9 @@
        @generated from src/zpotrf_gpu.cpp normal z -> d, Mon May  2 23:29:59 2016
 */
 #include "magma_internal.h"
+#include "abft_printer.h"
+#include "abft_encoder.h"
+#include "abft_kernels.h"
 
 // === Define what BLAS to use ============================================
     #undef  magma_dtrsm
@@ -82,6 +85,14 @@ magma_dpotrf_gpu(
     #define dA(i_, j_) (dA + (i_) + (j_)*ldda)
     #endif
 
+    /* Define for ABFT */
+    #define dA_colchk(i_, j_)   (dA_colchk   + ((i_)/nb)*2 + (j_)*ldda_colchk)
+	#define dA_rowchk(i_, j_)   (dA_rowchk   + (i_)        + ((j_)/nb)*2*ldda_rowchk)
+    #define dA_colchk_r(i_, j_) (dA_colchk_r + ((i_)/nb)*2 + (j_)*ldda_colchk_r)
+	#define dA_rowchk_r(i_, j_) (dA_rowchk_r + (i_)        + ((j_)/nb)*2*ldda_rowchk_r)
+
+
+
     /* Constants */
     const double c_one     = MAGMA_D_ONE;
     const double c_neg_one = MAGMA_D_NEG_ONE;
@@ -109,7 +120,9 @@ magma_dpotrf_gpu(
     }
     
     nb = magma_get_dpotrf_nb( n );
-    
+
+    //printf("nb=%d\n", nb);
+    nb = 128;
     if (MAGMA_SUCCESS != magma_dmalloc_pinned( &work, nb*nb )) {
         *info = MAGMA_ERR_HOST_ALLOC;
         return *info;
@@ -120,7 +133,127 @@ magma_dpotrf_gpu(
     magma_getdevice( &cdev );
     magma_queue_create( cdev, &queues[0] );
     magma_queue_create( cdev, &queues[1] );
+
+    /* flags */
+    bool FT = true;
+    bool DEBUG = false;
+    bool CHECK_BEFORE = true;
+    bool CHECK_AFTER = true;
     
+    /* matrix sizes to be checksumed */
+    int cpu_row = nb;
+    int cpu_col = nb;
+    int gpu_row = n;
+    int gpu_col = n;
+    
+    printf( "initialize checksum vector on CPU\n");
+    double * chk_v;
+    int ld_chk_v = nb;
+    magma_dmalloc_pinned(&chk_v, nb * 2 * sizeof(double));
+    for (int i = 0; i < nb; ++i) {
+        *(chk_v + i) = 1;
+    }
+    for (int i = 0; i < nb; ++i) {
+        *(chk_v + ld_chk_v + i) = i + 1;
+    }
+
+    if (DEBUG) {
+        printf("checksum vector on CPU:\n");
+        printMatrix_host(chk_v, ld_chk_v, nb, 2, -1, -1);
+    }
+
+    printf( "initialize checksum vector on GPUs\n");
+    double * dev_chk_v;
+    size_t pitch_dev_chk_v = magma_roundup(nb * sizeof(double), 32);
+    int ld_dev_chk_v;
+    
+    magma_dmalloc(&dev_chk_v, pitch_dev_chk_v * 2);
+    ld_dev_chk_v = pitch_dev_chk_v / sizeof(double);
+    magma_dgetmatrix(nb, 2,
+                     chk_v, ld_chk_v, 
+                     dev_chk_v, ld_dev_chk_v,
+                     queues[1]);
+    if (DEBUG) {
+        printMatrix_gpu(dev_chk_v, ld_dev_chk_v,
+                        nb, 2, nb, nb, queues[1]);
+    }
+
+
+	printf( "allocate space for checksum on CPU......\n" );
+    double * colchk;
+    double * colchk_r;
+    magma_dmalloc_pinned(&colchk, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
+    int ld_colchk = (cpu_row / nb) * 2;
+    magma_dmalloc_pinned(&colchk_r, (cpu_row / nb) * 2 * cpu_col * sizeof(double));
+    int ld_colchk_r = (cpu_row / nb) * 2;
+    printf( "done.\n" );
+
+    double * rowchk;
+    double * rowchk_r;
+    magma_dmalloc_pinned(&rowchk, cpu_row * (cpu_col / nb) * 2 * sizeof(double));
+    int ld_rowchk = cpu_row;
+    magma_dmalloc_pinned(&rowchk_r, cpu_row * (cpu_col / nb) * 2 * sizeof(double));
+    int ld_rowchk_r = cpu_row;
+    printf( "done.\n" );
+
+    /* allocate space for col checksum on GPU */
+    printf( "allocate space for checksums on GPUs......\n" );
+    
+    double * dA_colchk;
+    size_t pitch_dA_colchk = magma_roundup((gpu_row / nb) * 2 * sizeof(double), 32);
+    int ldda_colchk = pitch_dA_colchk / sizeof(double);
+    magma_dmalloc(&dA_colchk, pitch_dA_colchk * gpu_col);
+
+    double * dA_colchk_r;
+    size_t pitch_dA_colchk_r = magma_roundup((gpu_row / nb) * 2 * sizeof(double), 32);
+    int ldda_colchk_r = pitch_dA_colchk_r / sizeof(double);
+    magma_dmalloc(&dA_colchk_r, pitch_dA_colchk_r * gpu_col);
+
+    double * dA_rowchk;
+    size_t pitch_dA_rowchk = magma_roundup(gpu_row * sizeof(double), 32);
+    int ldda_rowchk = pitch_dA_rowchk / sizeof(double);
+    magma_dmalloc(&dA_rowchk, pitch_dA_rowchk * (gpu_col / nb) * 2);
+
+
+    double * dA_rowchk_r;
+    size_t pitch_dA_rowchk_r = magma_roundup(gpu_row * sizeof(double), 32);
+    int ldda_rowchk_r = pitch_dA_rowchk_r / sizeof(double);
+    magma_dmalloc(&dA_rowchk_r, pitch_dA_rowchk_r * (gpu_col / nb) * 2);
+       
+    printf( "done.\n" );
+
+   
+    printf( "calculate initial checksum on GPUs......\n" );
+  
+    col_chk_enc(gpu_row, gpu_col, nb, 
+                dA, ldda,  
+                dev_chk_v, ld_dev_chk_v, 
+                dA_colchk, ldda_colchk, 
+                queues[1]);
+
+    row_chk_enc(gpu_row, gpu_col, nb, 
+                dA, ldda,  
+                dev_chk_v, ld_dev_chk_v, 
+                dA_rowchk, ldda_rowchk, 
+                queues[1]);
+
+    printf( "done.\n" );
+
+    if (DEBUG) {
+
+        printf( "input matrix A:\n" );
+        printMatrix_gpu(dA, ldda, gpu_row, gpu_col, nb, nb, queues[1]);
+        printf( "column chk:\n" );
+        printMatrix_gpu(dA_colchk, ldda_colchk, 
+                        (gpu_row / nb) * 2, gpu_col, 2, nb, queues[1]);
+        printf( "row chk:\n" );
+        printMatrix_gpu(dA_rowchk, ldda_rowchk,  
+                        gpu_row, (gpu_col / nb) * 2, nb, 2, queues[1]);
+    }
+
+
+
+
     if (nb <= 1 || nb >= n) {
         /* Use unblocked code. */
         magma_dgetmatrix( n, n, dA(0,0), ldda, work, n, queues[0] );
@@ -182,22 +315,71 @@ magma_dpotrf_gpu(
                 // apply all previous updates to diagonal block,
                 // then transfer it to CPU
                 jb = min( nb, n-j );
-                magma_dsyrk( MagmaLower, MagmaNoTrans, jb, j,
-                             d_neg_one, dA(j, 0), ldda,
-                             d_one,     dA(j, j), ldda, queues[1] );
+                // magma_dsyrk( MagmaLower, MagmaNoTrans, jb, j,
+                //              d_neg_one, dA(j, 0), ldda,
+                //              d_one,     dA(j, j), ldda, queues[1] );
+
+                abft_dsyrk( MagmaLower, MagmaNoTrans, jb, j,
+                            d_neg_one, dA(j, 0), ldda,
+                            d_one,     dA(j, j), ldda,
+		                 	nb,
+		                    dA_colchk(j, 0),    ldda_colchk,
+		                    dA_rowchk(j, 0),    ldda_rowchk,
+		                    dA_colchk_r(j, 0),  ldda_colchk_r,
+		                    dA_rowchk_r(j, 0),  ldda_rowchk_r,
+		                    dA_colchk(j, j),    ldda_colchk,
+		                    dA_rowchk(j, j),    ldda_rowchk,
+		                    dA_colchk_r(j, j),  ldda_colchk_r,
+		                    dA_rowchk_r(j, j),  ldda_rowchk_r,
+		                    dev_chk_v,          ld_dev_chk_v, 
+		                 	FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+		                 	queues[1], queues[1]);
                 
                 magma_queue_sync( queues[1] );
                 magma_dgetmatrix_async( jb, jb,
                                         dA(j, j), ldda,
                                         work,     jb, queues[0] );
+
+              	magma_dgetmatrix_async( 2, jb,
+				                        dA_colchk(j, j), ldda_colchk,
+				                        colchk,     ld_colchk, queues[0] );
+
+              	magma_dgetmatrix_async( jb, 2,
+				                        dA_rowchk(j, j), ldda_rowchk,
+				                        rowchk,     ld_rowchk, queues[0] );
+
                 
                 // apply all previous updates to block column below diagonal block
                 if (j+jb < n) {
-                    magma_dgemm( MagmaNoTrans, MagmaConjTrans,
-                                 n-j-jb, jb, j,
-                                 c_neg_one, dA(j+jb, 0), ldda,
-                                            dA(j,    0), ldda,
-                                 c_one,     dA(j+jb, j), ldda, queues[1] );
+                    // magma_dgemm( MagmaNoTrans, MagmaConjTrans,
+                    //              n-j-jb, jb, j,
+                    //              c_neg_one, dA(j+jb, 0), ldda,
+                    //                         dA(j,    0), ldda,
+                    //              c_one,     dA(j+jb, j), ldda, queues[1] );
+
+                    abft_dgemm( MagmaNoTrans, MagmaConjTrans,
+                                n-j-jb, jb, j,
+                                c_neg_one, dA(j+jb, 0), ldda,
+                                           dA(j,    0), ldda,
+                                c_one,     dA(j+jb, j), ldda,
+					            nb,
+					            dA_colchk(j+jb, 0),   ldda_colchk,
+					            dA_rowchk(j+jb, 0),   ldda_rowchk,
+					            dA_colchk_r(j+jb, 0), ldda_colchk_r,
+					            dA_rowchk_r(j+jb, 0), ldda_rowchk_r,
+
+					            dA_colchk(j,    0),   ldda_colchk,
+					            dA_rowchk(j,    0),   ldda_rowchk,
+					            dA_colchk_r(j,    0), ldda_colchk_r,
+					            dA_rowchk_r(j,    0), ldda_rowchk_r,
+
+					            dA_colchk(j+jb, j),   ldda_colchk,
+					            dA_rowchk(j+jb, j),   ldda_rowchk,
+					            dA_colchk_r(j+jb, j), ldda_colchk_r,
+					            dA_rowchk_r(j+jb, j), ldda_rowchk_r,
+					            dev_chk_v,          ld_dev_chk_v, 
+			                 	FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+			                 	queues[1], queues[1]);
                 }
                 
                 // simultaneous with above dgemm, transfer diagonal block,
@@ -207,6 +389,16 @@ magma_dpotrf_gpu(
                 magma_dsetmatrix_async( jb, jb,
                                         work,     jb,
                                         dA(j, j), ldda, queues[1] );
+
+               //  magma_dsetmatrix_async( 2, jb,
+               //  						colchk,     ld_colchk,
+				           //              dA_colchk(j, j), ldda_colchk, queues[0] );
+
+              	// magma_dsetmatrix_async( jb, 2,
+              	// 						rowchk,     ld_rowchk,
+				           //              dA_rowchk(j, j), ldda_rowchk, queues[0] );
+
+
                 if (*info != 0) {
                     *info = *info + j;
                     break;
@@ -214,10 +406,26 @@ magma_dpotrf_gpu(
                 
                 // apply diagonal block to block column below diagonal
                 if (j+jb < n) {
-                    magma_dtrsm( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
+                    // magma_dtrsm( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
+                    //              n-j-jb, jb,
+                    //              c_one, dA(j,    j), ldda,
+                    //                     dA(j+jb, j), ldda, queues[1] );
+                    abft_dtrsm( MagmaRight, MagmaLower, MagmaConjTrans, MagmaNonUnit,
                                  n-j-jb, jb,
                                  c_one, dA(j,    j), ldda,
-                                        dA(j+jb, j), ldda, queues[1] );
+                                        dA(j+jb, j), ldda,
+							    nb,
+							    dA_colchk(j,    j),   ldda_colchk,
+					            dA_rowchk(j,    j),   ldda_rowchk,
+					            dA_colchk_r(j,    j), ldda_colchk_r,
+					            dA_rowchk_r(j,    j), ldda_rowchk_r,
+							    dA_colchk(j+jb, j),   ldda_colchk,
+					            dA_rowchk(j+jb, j),   ldda_rowchk,
+					            dA_colchk_r(j+jb, j), ldda_colchk_r,
+					            dA_rowchk_r(j+jb, j), ldda_rowchk_r,
+							    dev_chk_v,          ld_dev_chk_v, 
+			                 	FT, DEBUG, CHECK_BEFORE, CHECK_AFTER,
+			                 	queues[1], queues[1]);
                 }
             }
         }
